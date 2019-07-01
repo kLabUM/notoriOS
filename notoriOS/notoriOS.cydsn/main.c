@@ -16,6 +16,8 @@
 //global variables
 alarm alarmMeasure;
 uint8 timeToMeasure;
+alarm alarmMeasure2;
+uint8 timeToMeasure2;
 
 
 // This function must always be called (when the Sleep Timer's interrupt
@@ -41,7 +43,9 @@ void ReadyOrNot()
     RTC_WriteIntervalMask(0b11111111);
     RTC_Start();
     
-    alarmMeasure = CreateAlarm(2,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    alarmMeasure = CreateAlarm(1,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    timeToMeasure = 0;
+    alarmMeasure2 = CreateAlarm(5,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 0;
     
 }
@@ -55,8 +59,21 @@ void ReadyOrNot()
 int WorkWorkWorkWorkWorkWork()
 {
     if(timeToMeasure){
-        LED_Write(!LED_Read());
+        LED_Write(1u);
+        CyDelay(500u);
+        LED_Write(0u);
         timeToMeasure = 0u;
+    }
+    if(timeToMeasure2){
+        LED_Write(1u);
+        CyDelay(1000u);
+        LED_Write(0u);
+        CyDelay(1000u);
+        LED_Write(1u);
+        CyDelay(1000u);
+        LED_Write(0u);
+        CyDelay(1000u);
+        timeToMeasure2 = 0u;
     }
     
     return 0;   
@@ -103,6 +120,12 @@ void AyoItsTime(uint8 alarmType)
          //create new task and pass off to workworkworkworkwork()
         //pass off to work work
         timeToMeasure = 1u;
+    }
+    if(AlarmReady(&alarmMeasure2,alarmType))
+    {
+         //create new task and pass off to workworkworkworkwork()
+        //pass off to work work
+        timeToMeasure2 = 1u;
     }
     
 }
