@@ -38,15 +38,18 @@ CY_ISR(Wakeup_ISR) {
 // ==============================================
 void ReadyOrNot()
 {
+    
+    
     isr_SleepTimer_StartEx(Wakeup_ISR);// Start Sleep ISR
     SleepTimer_Start();             // Start SleepTimer Component
-    RTC_WriteIntervalMask(0b11111111);
-    RTC_Start();
     
-    alarmMeasure = CreateAlarm(1,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    //RTC_WriteIntervalMask(0b11111111);
+    //RTC_Start();
+    
+    alarmMeasure = CreateAlarm(3,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 0;
-    alarmMeasure2 = CreateAlarm(5,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
-    timeToMeasure = 0;
+    //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    //timeToMeasure = 0;
     
 }
 
@@ -58,23 +61,13 @@ void ReadyOrNot()
 // ==============================================
 int WorkWorkWorkWorkWorkWork()
 {
+    CyDelay(100u);
     if(timeToMeasure){
-        LED_Write(1u);
-        CyDelay(500u);
-        LED_Write(0u);
-        timeToMeasure = 0u;
+        CyDelay(1000u);
     }
-    if(timeToMeasure2){
-        LED_Write(1u);
-        CyDelay(1000u);
-        LED_Write(0u);
-        CyDelay(1000u);
-        LED_Write(1u);
-        CyDelay(1000u);
-        LED_Write(0u);
-        CyDelay(1000u);
-        timeToMeasure2 = 0u;
-    }
+    //if(timeToMeasure2){
+        //dosomething
+    //}
     
     return 0;   
 }
