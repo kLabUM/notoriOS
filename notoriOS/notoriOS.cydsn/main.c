@@ -88,6 +88,7 @@ void LayBack()
     //  - PM_SLEEP_TIME_NONE: wakeup time is defined by Sleep Timer
     //  - PM_SLEEP_SRC_CTW :  wakeup on CTW sources is allowed
      //  - If real-time clock is used, it will also wake the device
+    //CyPmHibernate();
     CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW);
   
     // Restore clock configuration
@@ -167,7 +168,7 @@ int main(void)
     CyGlobalIntEnable; /* Enable global interrupts. */
 
     ReadyOrNot();
-
+   
     for(;;)
     {
        if( ! WorkWorkWorkWorkWorkWork() )
