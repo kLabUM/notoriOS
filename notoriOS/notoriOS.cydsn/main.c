@@ -5,182 +5,242 @@
  * A non-premptive operating system for node.
  *
  * "To all the teachers that told me I'd never amount to nothin"
- *      -Notorious BIG (1994)
+ *      - Notorious BIG (1994)
  *
  * ========================================
-*/
+ */
 #include "project.h"
-#include "notoriOS.h"
+#include "cyapicallbacks.h"
 
+#define STACK_SIZE 2048  /* Stack space for each task in bytes */
+#define N_TASKS 4        /* Number of possible tasks, running and blocked */
+#define N_MESSAGES 16    /* Max buffered messages in each port */
+#define N_PORTS 1        /* Number of shared message ports  */
 
-//global variables
-alarm alarmMeasure;
-uint8 timeToMeasure;
-alarm alarmMeasure2;
-uint8 timeToMeasure2;
+/* === Task Scheduling === */
 
+typedef struct {
+  uint32_t regs[10];
+  uint8_t stack[STACK_SIZE];
+  bool blocked;
+} task_t;
 
-// This function must always be called (when the Sleep Timer's interrupt
-// is disabled or enabled) after wake up to clear the ctw_int status bit.
-// It is required to call SleepTimer_GetStatus() within 1 ms (1 clock cycle
-// of the ILO) after CTW event occurred.
-CY_ISR(Wakeup_ISR) {
-    SleepTimer_GetStatus();
+typedef struct {
+  uint8_t buffer[N_TASKS];
+  uint8_t head;
+  uint8_t tail;
+} task_buf;
+
+task_t tasks[N_TASKS];
+task_buf ready;
+uint8_t running;
+
+section(text)
+uint32_t switch_task_asm[] = {
+  0xe8a16ff0,  /* stmia r1!, {r4-r11,sp,lr} */
+  0xe8b0aff0,  /* ldmia r0!, {r4-r11,sp,pc} */
+  0xe12fff1e,  /* bx lr                     */
+};
+void (*switch_task)(uint32_t[10], uint32_t[10]) = switch_task_asm;
+
+static void push_ready(uint8_t val) {
+  assert(num_ready() != N_TASKS);
+  uint8_t idx = ready.head++ & (N_TASKS - 1);
+  ready.buffer[idx] = val;
 }
 
-
-// ==============================================
-// Ready or not, here I come, you can't hide
-// Gonna find you and take it slowly
-//      - The Fugees (1996)
-//
-// Initialize and critical hardware or routines 
-// ==============================================
-void ReadyOrNot()
-{
-    
-    
-    isr_SleepTimer_StartEx(Wakeup_ISR);// Start Sleep ISR
-    SleepTimer_Start();             // Start SleepTimer Component
-    
-    //RTC_WriteIntervalMask(0b11111111);
-    //RTC_Start();
-    
-    alarmMeasure = CreateAlarm(3,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
-    timeToMeasure = 0;
-    //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
-    //timeToMeasure = 0;
-    
+static uint8_t pop_ready(void) {
+  assert(num_ready() != 0);
+  uint8_t idx = ready.tail++ & (N_TASKS - 1);
+  return ready.buffer[idx];
 }
 
-// ==============================================
-// You see me I be work, work, work, work, work, work 
-//      - Rhiana, feat Drake (2016)
-//
-// Prorcesses core tasks
-// ==============================================
-int WorkWorkWorkWorkWorkWork()
-{
-    CyDelay(100u);
-    if(timeToMeasure){
-        CyDelay(1000u);
-    }
-    //if(timeToMeasure2){
-        //dosomething
-    //}
-    
-    return 0;   
+static uint8_t num_ready(void) {
+  return ready.head - ready.tail;
 }
 
-
-// ==============================================
-// sippin on gin and juice, Laid back (with my mind on my money and my money on my mind)
-//      - Snoop Dogg (1993)
-//
-// Put all hardware to sleep and go into low power mode to conserve Amps
-// ==============================================
-void LayBack()
-{
-    // Prepares system clocks for the Sleep mode
-    CyPmSaveClocks();
-    
-    // Switch to the Sleep Mode for the other devices:
-    //  - PM_SLEEP_TIME_NONE: wakeup time is defined by Sleep Timer
-    //  - PM_SLEEP_SRC_CTW :  wakeup on CTW sources is allowed
-     //  - If real-time clock is used, it will also wake the device
-    //CyPmHibernate();
-    CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW);
-  
-    // Restore clock configuration
-    CyPmRestoreClocks();
-    
+/* ==============================================
+ * "sippin on gin and juice, Laid back (with my mind on my money and my money on my mind)"
+ *      - Snoop Dogg (1993)
+ *
+ * Put all hardware to sleep and go into low power mode
+ * ==============================================
+ */
+static void sys_sleep(void) {
+  CyPmSaveClocks();
+  CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_ONE_PPS);
+  CyPmRestoreClocks();
+  check_timers();
 }
 
-
-// ==============================================
-// I never sleep, 'cause sleep is the cousin of death
-//      - NAS (1994)
-//
-// This is the scheduler. It's called from various interrupts and timers,
-// ...in particular from fuctions with in the real-tiem clock interrupts (RTC_INT.c)
-// It will add tasks to the work queue,
-// which will be executed eventually by WorkWorkWorkWorkWorkWork()
-// ==============================================
-void AyoItsTime(uint8 alarmType)
-{
-
-    if(AlarmReady(&alarmMeasure,alarmType))
-    {
-         //create new task and pass off to workworkworkworkwork()
-        //pass off to work work
-        timeToMeasure = 1u;
-    }
-    if(AlarmReady(&alarmMeasure2,alarmType))
-    {
-         //create new task and pass off to workworkworkworkwork()
-        //pass off to work work
-        timeToMeasure2 = 1u;
-    }
-    
-}
-        
-uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType)
-{
-    alarmToBeUpdated->currentCountDownValue--;
-    if(alarmToBeUpdated->currentCountDownValue == 0){
-        ResetAlarm(alarmToBeUpdated);
-        return 1u;
-    } 
-    else if(alarmToBeUpdated->countDownResetCondition == alarmType){
-        ResetAlarm(alarmToBeUpdated);
-    }
-    
-    return 0u;
+/* ==============================================
+ * "I never sleep, 'cause sleep is the cousin of death"
+ *      - NAS (1994)
+ *
+ * Pop task from ready queue and execute it
+ * ==============================================
+ */
+static void schedule(void) {
+  check_timers();
+  while (num_ready() == 0) sys_sleep();
+  uint8_t last = running;
+  running = pop_ready();
+  switch_task(tasks[running].regs, tasks[last].regs);
 }
 
-void ResetAlarm(alarm * alarmToBeReset)
-{
-    alarmToBeReset->currentCountDownValue = alarmToBeReset->countDownValue;
+void block(void) {
+  tasks[running].blocked = true;
+  schedule();
 }
 
-// ==============================================
-// Creates a new alarm, which will be handeled by another cutions
-// ==============================================
-
-alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownResetCondition)
-{
-    alarm newAlarm;
-    
-    newAlarm.countDownValue = countDownValue;
-    newAlarm.countDownType = countDownType;
-    newAlarm.countDownResetCondition = countDownResetCondition;
-    
-    //if you want a reccuring alarm (e.g. resets freshly each hour), then add
-    //account for already exprired time using the RTC. Otherwise, set to the countDownValue
-    newAlarm.currentCountDownValue = countDownValue;
-    
-    return newAlarm;
-    
+void yield(void) {
+  push_ready(running);
+  schedule();
 }
 
-int main(void)
-{
-    CyGlobalIntEnable; /* Enable global interrupts. */
-
-    ReadyOrNot();
-   
-    for(;;)
-    {
-       if( ! WorkWorkWorkWorkWorkWork() )
-       {
-            LayBack();
-       }
-    }
+void exit(void) {
+  tasks[running].blocked = false;
+  schedule();
 }
 
+void awake(uint8_t pid) {
+  if (tasks[pid].blocked) {
+    tasks[pid].blocked = false;
+    push_ready(pid);
+  }
+}
 
+void spawn(uint8_t pid, const void(*main)(void)) {
+  tasks[pid].regs[8] = (uint32_t)(&tasks[pid].stack + STACK_SIZE);
+  tasks[pid].regs[9] = (uint32_t)main;
+  push_ready(pid);
+}
 
+void start_scheduler(void) {
+  uint32_t trash[10];
+  running = pop_ready();
+  switch_task(tasks[running].regs, trash);
+}
 
+/* === Message Passing === */
 
+typedef struct msg_t {
+  uint8_t data[63];
+  uint8_t sender;
+} msg_t;
 
-/* [] END OF FILE */
+typedef struct {
+  msg_t buffer[N_MESSAGES];
+  uint8_t head;
+  uint8_t tail;
+} msg_buf;
+
+msg_buf msgs[N_PORTS];
+
+static void push_msgs(uint8_t port, msg_t *val) {
+  assert(num_msgs(port) != N_MESSAGES);
+  /* if (num_msgs() == N_MESSAGES) msgs.tail++; */
+  uint8_t idx = msgs[port].head++ & (N_MESSAGES - 1);
+  msgs[port].buffer[idx] = *val;
+}
+
+static msg_t *pop_msgs(uint8_t port) {
+  assert(num_msgs(port) != 0);
+  uint8_t idx = msgs[port].tail++ & (N_MESSAGES - 1);
+  return &msgs[port].buffer[idx];
+}
+
+static uint8_t num_msgs(uint8_t port) {
+  return msgs[port].head - msgs[port].tail;
+}
+
+void send(uint8_t port, msg_t *msg_in) {
+  msg->sender = running;
+  push_msgs(port, msg_in);
+}
+
+msg_t *recv(uint8_t port) {
+  if (num_msgs(port) == 0) return NULL;
+  return pop_msgs(port);
+}
+
+/* === Timing === */
+
+typedef struct {
+  uint32_t time;
+  uint8_t pid;
+} timer_t;
+
+/* Sorted array of active timers *
+ * See Hierarchial Timing Wheels *
+ * if we need better performance */
+timer_t timers[N_TIMERS];
+uint8_t num_timers;
+volatile uint32_t now;
+
+void RTC_EverySecondHandler_Callback(void) {
+  ++now;
+}
+
+static void push_timers(timer_t *val) {
+  assert(num_timers != N_TIMERS);
+  uint8_t i = num_timers++;
+  for (; i > 0 && timers[i - 1] < val->time; --i) {
+    timers[i] = timers[i - 1];
+  }
+  timers[i] = *val;
+}
+
+static timer_t *pop_timers(void) {
+  assert(num_timers != 0);
+  return &timers[--num_timers];
+}
+
+static timer_t *top_timers(void) {
+  return &timers[num_timers - 1];
+}
+
+static void check_timers(void) {
+  while (top_timers()->time <= now) {
+    awake(pop_timers()->pid);
+  }
+}
+
+void sleep(uint32_t ticks) {
+  timer_t timer = { now + ticks, running };
+  push_timers(&timer);
+  block();
+}
+
+/* === Testing === */
+
+void firstTask(void) {
+  while (true) {
+    printf("Switching to otherTask... \n");
+    yield();
+    printf("Returned to mainTask!\n");
+  }
+}
+
+void secondTask(void) {
+  while (true) {
+    printf("Hello multitasking world!\n");
+    yield();
+  }
+}
+
+/* redirect printf to uart */
+int _write(int file, char *ptr, int len) {
+  for (int i = 0; i < len; ++i) {
+    UART_1_PutChar(*ptr++);
+  }
+}
+
+int main(void) {
+  RTC_Start();
+  CyGlobalIntEnable;
+
+  spawn(0, firstTask);
+  spawn(1, secondTask);
+  start_scheduler();
+}
