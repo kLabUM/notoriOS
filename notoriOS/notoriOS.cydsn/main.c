@@ -9,13 +9,13 @@
  *
  * ========================================
  */
-#include "project.h"
 #include "cyapicallbacks.h"
+#include "project.h"
 
-#define STACK_SIZE 2048  /* Stack space for each task in bytes */
-#define N_TASKS 4        /* Number of possible tasks, running and blocked */
-#define N_MESSAGES 16    /* Max buffered messages in each port */
-#define N_PORTS 1        /* Number of shared message ports  */
+#define STACK_SIZE 2048 /* Stack space for each task in bytes */
+#define N_TASKS 4       /* Number of possible tasks, running and blocked */
+#define N_MESSAGES 16   /* Max buffered messages in each port */
+#define N_PORTS 1       /* Number of shared message ports  */
 
 /* === Task Scheduling === */
 
@@ -35,11 +35,10 @@ task_t tasks[N_TASKS];
 task_buf ready;
 uint8_t running;
 
-section(text)
-uint32_t switch_task_asm[] = {
-  0xe8a16ff0,  /* stmia r1!, {r4-r11,sp,lr} */
-  0xe8b0aff0,  /* ldmia r0!, {r4-r11,sp,pc} */
-  0xe12fff1e,  /* bx lr                     */
+section(text) uint32_t switch_task_asm[] = {
+    0xe8a16ff0, /* stmia r1!, {r4-r11,sp,lr} */
+    0xe8b0aff0, /* ldmia r0!, {r4-r11,sp,pc} */
+    0xe12fff1e, /* bx lr                     */
 };
 void (*switch_task)(uint32_t[10], uint32_t[10]) = switch_task_asm;
 
@@ -60,7 +59,7 @@ static uint8_t num_ready(void) {
 }
 
 /* ==============================================
- * "sippin on gin and juice, Laid back (with my mind on my money and my money on my mind)"
+ * "sippin on gin and juice, Laid back"
  *      - Snoop Dogg (1993)
  *
  * Put all hardware to sleep and go into low power mode
@@ -82,7 +81,8 @@ static void sys_sleep(void) {
  */
 static void schedule(void) {
   check_timers();
-  while (num_ready() == 0) sys_sleep();
+  while (num_ready() == 0)
+    sys_sleep();
   uint8_t last = running;
   running = pop_ready();
   switch_task(tasks[running].regs, tasks[last].regs);
@@ -110,7 +110,7 @@ void awake(uint8_t pid) {
   }
 }
 
-void spawn(uint8_t pid, const void(*main)(void)) {
+void spawn(uint8_t pid, const void (*main)(void)) {
   tasks[pid].regs[8] = (uint32_t)(&tasks[pid].stack + STACK_SIZE);
   tasks[pid].regs[9] = (uint32_t)main;
   push_ready(pid);
@@ -171,8 +171,7 @@ typedef struct {
   uint8_t pid;
 } timer_t;
 
-/* Sorted array of active timers *
- * See Hierarchial Timing Wheels *
+/* See Hierarchial Timing Wheels *
  * if we need better performance */
 timer_t timers[N_TIMERS];
 uint8_t num_timers;
@@ -207,7 +206,7 @@ static void check_timers(void) {
 }
 
 void sleep(uint32_t ticks) {
-  timer_t timer = { now + ticks, running };
+  timer_t timer = {now + ticks, running};
   push_timers(&timer);
   block();
 }
