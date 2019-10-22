@@ -16,6 +16,7 @@
 #define N_TASKS 4       /* Number of possible tasks, running and blocked */
 #define N_MESSAGES 16   /* Max buffered messages in each port */
 #define N_PORTS 1       /* Number of shared message ports  */
+#define N_TIMERS 16     /* Max concurrently running timers */
 
 /* === Task Scheduling === */
 
@@ -35,12 +36,17 @@ task_t tasks[N_TASKS];
 task_buf ready;
 uint8_t running;
 
-section(text) uint32_t switch_task_asm[] = {
+typedef void func_t(uint32_t[10], uint32_t[10]);
+const uint32_t switch_task_asm[] = {
     0xe8a16ff0, /* stmia r1!, {r4-r11,sp,lr} */
     0xe8b0aff0, /* ldmia r0!, {r4-r11,sp,pc} */
     0xe12fff1e, /* bx lr                     */
 };
-void (*switch_task)(uint32_t[10], uint32_t[10]) = switch_task_asm;
+func_t *switch_task = (func_t*)switch_task_asm;
+
+static uint8_t num_ready(void) {
+  return ready.head - ready.tail;
+}
 
 static void push_ready(uint8_t val) {
   assert(num_ready() != N_TASKS);
@@ -52,10 +58,6 @@ static uint8_t pop_ready(void) {
   assert(num_ready() != 0);
   uint8_t idx = ready.tail++ & (N_TASKS - 1);
   return ready.buffer[idx];
-}
-
-static uint8_t num_ready(void) {
-  return ready.head - ready.tail;
 }
 
 /* ==============================================
@@ -98,7 +100,7 @@ void yield(void) {
   schedule();
 }
 
-void exit(void) {
+void terminate(void) {
   tasks[running].blocked = false;
   schedule();
 }
@@ -137,6 +139,10 @@ typedef struct {
 
 msg_buf msgs[N_PORTS];
 
+static uint8_t num_msgs(uint8_t port) {
+  return msgs[port].head - msgs[port].tail;
+}
+
 static void push_msgs(uint8_t port, msg_t *val) {
   assert(num_msgs(port) != N_MESSAGES);
   /* if (num_msgs() == N_MESSAGES) msgs.tail++; */
@@ -150,12 +156,8 @@ static msg_t *pop_msgs(uint8_t port) {
   return &msgs[port].buffer[idx];
 }
 
-static uint8_t num_msgs(uint8_t port) {
-  return msgs[port].head - msgs[port].tail;
-}
-
 void send(uint8_t port, msg_t *msg_in) {
-  msg->sender = running;
+  msg_in->sender = running;
   push_msgs(port, msg_in);
 }
 
@@ -213,25 +215,20 @@ void sleep(uint32_t ticks) {
 
 /* === Testing === */
 
+char test_buffer[30];
+
 void firstTask(void) {
   while (true) {
-    printf("Switching to otherTask... \n");
+    strcpy(&test_buffer, "Switching to otherTask...");
     yield();
-    printf("Returned to mainTask!\n");
+    strcpy(&test_buffer, "Returned to mainTask!    ");
   }
 }
 
 void secondTask(void) {
   while (true) {
-    printf("Hello multitasking world!\n");
+    strcpy(&test_buffer, "Hello multitasking world!");
     yield();
-  }
-}
-
-/* redirect printf to uart */
-int _write(int file, char *ptr, int len) {
-  for (int i = 0; i < len; ++i) {
-    UART_1_PutChar(*ptr++);
   }
 }
 
