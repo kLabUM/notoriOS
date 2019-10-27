@@ -9,6 +9,8 @@
  *
  * ========================================
  */
+#include <assert.h>
+#include <stdbool.h>
 #include "cyapicallbacks.h"
 #include "project.h"
 
@@ -36,26 +38,31 @@ task_t tasks[N_TASKS];
 task_buf ready;
 uint8_t running;
 
+void check_timers(void);
+
 typedef void func_t(uint32_t[10], uint32_t[10]);
-const uint32_t switch_task_asm[] = {
-    0xe8a16ff0, /* stmia r1!, {r4-r11,sp,lr} */
-    0xe8b0aff0, /* ldmia r0!, {r4-r11,sp,pc} */
-    0xe12fff1e, /* bx lr                     */
+const uint16_t switch_task_asm[] = {
+    0xe8a1, 0x4ff0, /* stmia r1!, {r4-r11,lr} */
+    0xf8c1, 0xd000, /* str sp, [r1]           */
+    0xe8b0, 0x8ff0, /* ldmia r0!, {r4-r11,pc} */
+    0xf8d0, 0xd000, /* ldr sp, [r0]           */
+    0x4770, 0x0000, /* bx lr                  */
 };
-func_t *switch_task = (func_t*)switch_task_asm;
+/* Last bit of branch addresses must be 1 for Thumb */
+func_t *switch_task = (func_t*)((uint8_t*)switch_task_asm + 1);
 
 static uint8_t num_ready(void) {
   return ready.head - ready.tail;
 }
 
 static void push_ready(uint8_t val) {
-  assert(num_ready() != N_TASKS);
+  //assert(num_ready() != N_TASKS);
   uint8_t idx = ready.head++ & (N_TASKS - 1);
   ready.buffer[idx] = val;
 }
 
 static uint8_t pop_ready(void) {
-  assert(num_ready() != 0);
+  //assert(num_ready() != 0);
   uint8_t idx = ready.tail++ & (N_TASKS - 1);
   return ready.buffer[idx];
 }
@@ -112,9 +119,9 @@ void awake(uint8_t pid) {
   }
 }
 
-void spawn(uint8_t pid, const void (*main)(void)) {
-  tasks[pid].regs[8] = (uint32_t)(&tasks[pid].stack + STACK_SIZE);
-  tasks[pid].regs[9] = (uint32_t)main;
+void spawn(uint8_t pid, void (*main)(void)) {
+  tasks[pid].regs[8] = (uint32_t)main;
+  tasks[pid].regs[9] = (uint32_t)(tasks[pid].stack + STACK_SIZE);
   push_ready(pid);
 }
 
@@ -186,7 +193,7 @@ void RTC_EverySecondHandler_Callback(void) {
 static void push_timers(timer_t *val) {
   assert(num_timers != N_TIMERS);
   uint8_t i = num_timers++;
-  for (; i > 0 && timers[i - 1] < val->time; --i) {
+  for (; i > 0 && timers[i - 1].time < val->time; --i) {
     timers[i] = timers[i - 1];
   }
   timers[i] = *val;
@@ -201,8 +208,8 @@ static timer_t *top_timers(void) {
   return &timers[num_timers - 1];
 }
 
-static void check_timers(void) {
-  while (top_timers()->time <= now) {
+void check_timers(void) {
+  while (num_timers != 0 && top_timers()->time <= now) {
     awake(pop_timers()->pid);
   }
 }
@@ -219,15 +226,15 @@ char test_buffer[30];
 
 void firstTask(void) {
   while (true) {
-    strcpy(&test_buffer, "Switching to otherTask...");
+    strcpy(test_buffer, "Switching to otherTask...");
     yield();
-    strcpy(&test_buffer, "Returned to mainTask!    ");
+    strcpy(test_buffer, "Returned to mainTask!    ");
   }
 }
 
 void secondTask(void) {
   while (true) {
-    strcpy(&test_buffer, "Hello multitasking world!");
+    strcpy(test_buffer, "Hello multitasking world!");
     yield();
   }
 }
