@@ -31,9 +31,6 @@ static void RTC_EveryYearHandler(void);
 *  Place your includes, defines and code here
 *******************************************************************************/
 /* `#START RTC_ISR_DEFINITION` */
-
-#include "notoriOS.h"
-
 /* `#END` */
 
 

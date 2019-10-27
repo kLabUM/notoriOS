@@ -1,6 +1,6 @@
 -- Project:   notoriOS
--- Generated: 07/03/2019 16:49:06
--- PSoC Creator  4.2
+-- Generated: 10/27/2019 13:56:47
+-- PSoC Creator  4.1 Update 1
 
 ENTITY notoriOS IS
     PORT(
@@ -27,7 +27,6 @@ ENTITY notoriOS IS
 END notoriOS;
 
 ARCHITECTURE __DEFAULT__ OF notoriOS IS
-    SIGNAL CTW_OUT : bit;
     SIGNAL ClockBlock_100k : bit;
     SIGNAL ClockBlock_1k : bit;
     SIGNAL ClockBlock_32k : bit;
@@ -172,11 +171,11 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     END COMPONENT;
     COMPONENT iocell
         PORT (
+            pin_input : IN std_ulogic;
             oe : IN std_ulogic;
             fb : OUT std_ulogic;
-            pa_out : OUT std_ulogic;
-            pin_input : IN std_ulogic;
             pad_in : IN std_ulogic;
+            pa_out : OUT std_ulogic;
             pad_out : OUT std_ulogic;
             oe_reg : OUT std_ulogic;
             oe_internal : IN std_ulogic;
@@ -1305,14 +1304,6 @@ BEGIN
             out_clock_en => '1',
             out_reset => '0');
 
-    isr_SleepTimer:interrupt
-        GENERIC MAP(
-            int_type => "10",
-            is_nmi => 0)
-        PORT MAP(
-            interrupt => CTW_OUT,
-            clock => ClockBlock_BUS_CLK);
-
     \RTC:isr\:interrupt
         GENERIC MAP(
             int_type => "10",
@@ -1323,7 +1314,6 @@ BEGIN
 
     PM:pmcell
         PORT MAP(
-            ctw_int => CTW_OUT,
             onepps_int => OPPS_OUT);
 
 END __DEFAULT__;
