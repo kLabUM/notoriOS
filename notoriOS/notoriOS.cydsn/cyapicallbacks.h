@@ -12,7 +12,7 @@
 #ifndef CYAPICALLBACKS_H
 #define CYAPICALLBACKS_H
 
-#define RTC_EVERY_SECOND_HANDLER_CALLBACK
-void RTC_EverySecondHandler_Callback(void);
+#define RTC_ISR_ENTRY_CALLBACK
+void RTC_ISR_EntryCallback(void);
 
 #endif

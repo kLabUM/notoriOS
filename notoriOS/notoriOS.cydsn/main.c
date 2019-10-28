@@ -186,7 +186,7 @@ timer_t timers[N_TIMERS];
 uint8_t num_timers;
 volatile uint32_t now;
 
-void RTC_EverySecondHandler_Callback(void) {
+void RTC_ISR_EntryCallback(void) {
   ++now;
 }
 
@@ -227,7 +227,9 @@ char test_buffer[30];
 void firstTask(void) {
   while (true) {
     strcpy(test_buffer, "Switching to otherTask...");
-    yield();
+    msg_t msg = {"Here's a message!", 3};
+    send(0, &msg);
+    sleep(30);
     strcpy(test_buffer, "Returned to mainTask!    ");
     // compiler will remove previous line if we don't yield here
     yield();
@@ -237,6 +239,8 @@ void firstTask(void) {
 void secondTask(void) {
   while (true) {
     strcpy(test_buffer, "Hello multitasking world!");
+    msg_t *msg = recv(0);
+    if (msg) strcpy(test_buffer, (char*)msg->data);
     yield();
   }
 }
