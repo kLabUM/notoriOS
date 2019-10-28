@@ -42,10 +42,10 @@ void check_timers(void);
 
 typedef void func_t(uint32_t[10], uint32_t[10]);
 const uint16_t switch_task_asm[] = {
+    0xf841, 0xdb04, /* str sp, [r1], #4       */
     0xe8a1, 0x4ff0, /* stmia r1!, {r4-r11,lr} */
-    0xf8c1, 0xd000, /* str sp, [r1]           */
+    0xf850, 0xdb04, /* ldr sp, [r0], #4       */
     0xe8b0, 0x8ff0, /* ldmia r0!, {r4-r11,pc} */
-    0xf8d0, 0xd000, /* ldr sp, [r0]           */
     0x4770, 0x0000, /* bx lr                  */
 };
 /* Last bit of branch addresses must be 1 for Thumb */
@@ -120,8 +120,8 @@ void awake(uint8_t pid) {
 }
 
 void spawn(uint8_t pid, void (*main)(void)) {
-  tasks[pid].regs[8] = (uint32_t)main;
-  tasks[pid].regs[9] = (uint32_t)(tasks[pid].stack + STACK_SIZE);
+  tasks[pid].regs[0] = (uint32_t)(tasks[pid].stack + STACK_SIZE);
+  tasks[pid].regs[9] = (uint32_t)main;
   push_ready(pid);
 }
 
@@ -229,6 +229,8 @@ void firstTask(void) {
     strcpy(test_buffer, "Switching to otherTask...");
     yield();
     strcpy(test_buffer, "Returned to mainTask!    ");
+    // compiler will remove previous line if we don't yield here
+    yield();
   }
 }
 
