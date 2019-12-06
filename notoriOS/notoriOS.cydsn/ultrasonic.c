@@ -2,36 +2,31 @@
 #include "uart.h"
 #include <stdbool.h>
 #include <math.h>
+#include <stdlib.h>
 
 /* === Driver Functions === */
 
-#define N_READINGS 10
+#define N_READINGS 1
 #define TAKE_AVERAGE true
 
 static float parse(const char *string, const config_t *config) {
   const char *depth_str = strstr(string, "TempI\rR") + 7;
   float depth = strtof(depth_str, NULL);
   bool valid = !(
-    config->type == ULTRASONIC_MB7384 && !strcmp(depth_str, "5000") ||
-    config->type == ULTRASONIC_MB7383 && !strcmp(depth_str, "9999"));
+    (config->model == ULTRASONIC_MB7384 && !strcmp(depth_str, "5000")) ||
+    (config->model == ULTRASONIC_MB7383 && !strcmp(depth_str, "9999")));
+  uart_clear();
   return valid ? depth : NAN;
 }
 
-static float take_reading(const config_t *config) {
-  /* Initialize UART */
-  uart_set_mux(config->mux);
-  uart_clear_string();
-  uart_set_baud(9600u);
-  uart_start();
-
+float take_reading(const config_t *config) {
   /* Run sensor for 1 second */
-  CyPins_SetPin(config->pwr);
-  ex_sleep(1);
-  CyPins_ClearPin(config->pwr);
-
-  /* Parse reading from sensor */
+  uart_start(config->mux, 9600);
+  wait_for("R\d\d\d\d");
   uart_stop();
-  return parse(uart_get_string());
+
+  /* Return parsed reading */
+  return parse(uart_string(), config);
 }
 
 /* === Main Loop === */
@@ -39,7 +34,7 @@ static float take_reading(const config_t *config) {
 void ultrasonic(const config_t *config) {
   while (true) {
     float average = 0;
-    uint8_t n = NUM_READINGS;
+    uint8_t n = N_READINGS;
     for (uint8_t i = 0; i < n; ++i) {
       float reading = take_reading(config);
       if (isnan(reading)) continue;
@@ -48,8 +43,11 @@ void ultrasonic(const config_t *config) {
     }
     average /= n;
 
-    msg_t msg_out = { .reading = { config->name, average, time(), UNIT_MM } };
-    send(&msg_out, READINGS_PORT);
+    msg_t msg_out = { .reading = {
+      .value = average, .time = time(), .unit = UNIT_MM
+    } };
+    memcpy(msg_out.reading.name, config->name, sizeof(config->name));
+    send(READINGS_PORT, &msg_out);
     sleep(config->interval);
   }
 }

@@ -28,7 +28,7 @@
 * Conditional Compilation Parameters
 ***************************************/
 
-#define Debug_RX_ENABLED                     (1u)
+#define Debug_RX_ENABLED                     (0u)
 #define Debug_TX_ENABLED                     (1u)
 #define Debug_HD_ENABLED                     (0u)
 #define Debug_RX_INTERRUPT_ENABLED           (0u)
@@ -359,7 +359,7 @@ extern uint8 Debug_initVar;
 #endif /* (Debug_RXHW_ADDRESS_ENABLED) */
 
 #define Debug_INIT_RX_INTERRUPTS_MASK \
-                                  (uint8)((1 << Debug_RX_STS_FIFO_NOTEMPTY_SHIFT) \
+                                  (uint8)((0 << Debug_RX_STS_FIFO_NOTEMPTY_SHIFT) \
                                         | (0 << Debug_RX_STS_MRKSPC_SHIFT) \
                                         | (0 << Debug_RX_STS_ADDR_MATCH_SHIFT) \
                                         | (0 << Debug_RX_STS_PAR_ERROR_SHIFT) \

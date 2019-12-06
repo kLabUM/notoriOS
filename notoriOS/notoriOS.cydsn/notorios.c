@@ -9,28 +9,22 @@
  *
  * ========================================
  */
+#include "notorios.h"
 #include <assert.h>
 #include <stdbool.h>
-#include "notorios.h"
 #include "cyapicallbacks.h"
 #include "project.h"
-
-#define STACK_SIZE 2048 /* Stack space for each task in bytes */
-#define N_TASKS 4       /* Number of possible tasks, running and blocked */
-#define N_MESSAGES 16   /* Max buffered messages in each port */
-#define N_PORTS 1       /* Number of shared message ports  */
-#define N_TIMERS 16     /* Max concurrently running timers */
 
 /* === Task Scheduling === */
 
 typedef struct {
-  uint32_t regs[10];
+  uint32_t regs[11];
   uint8_t stack[STACK_SIZE];
   bool blocked;
 } task_t;
 
 typedef struct {
-  uint8_t buffer[N_TASKS];
+  uint8_t buffer[N_READY];
   uint8_t head;
   uint8_t tail;
 } task_buf;
@@ -44,9 +38,9 @@ static void check_timers(void);
 typedef void func_t(uint32_t[10], uint32_t[10]);
 const uint16_t switch_task_asm[] = {
     0xf841, 0xdb04, /* str sp, [r1], #4       */
-    0xe8a1, 0x4ff0, /* stmia r1!, {r4-r11,lr} */
+    0xe881, 0x4ff1, /* stmia r1, {r0,r4-r11,lr} */
     0xf850, 0xdb04, /* ldr sp, [r0], #4       */
-    0xe8b0, 0x8ff0, /* ldmia r0!, {r4-r11,pc} */
+    0xe890, 0x8ff1, /* ldmia r0, {r0,r4-r11,pc} */
     0x4770, 0x0000, /* bx lr                  */
 };
 /* Last bit of branch addresses must be 1 for Thumb */
@@ -57,14 +51,14 @@ static uint8_t num_ready(void) {
 }
 
 static void push_ready(uint8_t val) {
-  //assert(num_ready() != N_TASKS);
-  uint8_t idx = ready.head++ & (N_TASKS - 1);
+  assert(num_ready() != N_READY);
+  uint8_t idx = ready.head++ & (N_READY - 1);
   ready.buffer[idx] = val;
 }
 
 static uint8_t pop_ready(void) {
-  //assert(num_ready() != 0);
-  uint8_t idx = ready.tail++ & (N_TASKS - 1);
+  assert(num_ready() != 0);
+  uint8_t idx = ready.tail++ & (N_READY - 1);
   return ready.buffer[idx];
 }
 
@@ -120,10 +114,11 @@ void awake(uint8_t pid) {
   }
 }
 
-void spawn(uint8_t pid, void (*main)(void*), void *param) {
-  tasks[pid].regs[0] = (uint32_t)(tasks[pid].stack + STACK_SIZE);
-  tasks[pid].regs[1] = (uint32_t)param;
-  tasks[pid].regs[9] = (uint32_t)main;
+void spawn(uint8_t pid, void *main, void *param) {
+  assert(pid < N_TASKS);
+  tasks[pid].regs[0] = (uint32_t)(tasks[pid].stack + STACK_SIZE); // sp
+  tasks[pid].regs[1] = (uint32_t)param; // r0
+  tasks[pid].regs[10] = (uint32_t)main; // pc
   push_ready(pid);
 }
 
@@ -149,7 +144,6 @@ static uint8_t num_msgs(uint8_t port) {
 
 static void push_msgs(uint8_t port, const msg_t *val) {
   assert(num_msgs(port) != N_MESSAGES);
-  /* if (num_msgs() == N_MESSAGES) msgs.tail++; */
   uint8_t idx = msgs[port].head++ & (N_MESSAGES - 1);
   msgs[port].buffer[idx] = *val;
 }
@@ -157,7 +151,7 @@ static void push_msgs(uint8_t port, const msg_t *val) {
 static msg_t *pop_msgs(uint8_t port) {
   assert(num_msgs(port) != 0);
   uint8_t idx = msgs[port].tail++ & (N_MESSAGES - 1);
-  return &msgs[port].buffer[idx];
+  return &(msgs[port].buffer[idx]);
 }
 
 void send(uint8_t port, msg_t *msg_in) {
@@ -217,9 +211,8 @@ void sleep(uint32_t ticks) {
   block();
 }
 
-void ex_sleep(uint32_t ticks) {
-  uint32_t wakeup = now + ticks;
-  while (now <= wakeup) sys_sleep();
+void wait(uint32_t ticks) {
+  CyDelay(ticks);
 }
 
 uint32_t time(void) {
