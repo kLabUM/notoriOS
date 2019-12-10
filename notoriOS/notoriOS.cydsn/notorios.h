@@ -68,7 +68,7 @@ msg_t *recv(uint8_t port);
 /* === Timing === */
 
 void sleep(uint32_t ticks);
-void wait(uint32_t ticks);
+void wait_ms(uint32_t milliseconds);
 uint32_t time(void);
 void set_time(uint32_t time);
 

@@ -1,8 +1,8 @@
-#include "notorios.h"
-#include "uart.h"
 #include <stdbool.h>
 #include <math.h>
 #include <stdlib.h>
+#include "notorios.h"
+#include "uart.h"
 
 /* === Driver Functions === */
 
@@ -22,7 +22,7 @@ static float parse(const char *string, const sensor_t *config) {
 float take_reading(const sensor_t *config) {
   /* Run sensor for 1 second */
   uart_start(config->mux, 9600);
-  wait_for("TempI\r"), wait_for("R");
+  wait_for("TempI\r", 5), wait_for("R", 1);
   uart_stop();
 
   /* Return parsed reading */
@@ -31,7 +31,7 @@ float take_reading(const sensor_t *config) {
 
 /* === Main Loop === */
 
-void ultrasonic(const sensor_t *config) {
+void run_ultrasonic(const sensor_t *config) {
   while (true) {
     float average = 0;
     uint8_t n = N_READINGS;
@@ -45,9 +45,9 @@ void ultrasonic(const sensor_t *config) {
 
     msg_t msg_out = { .reading = {
       .value = average, .time = time(), 
-      .label = config->label,
       .sensor = config->model,
     } };
+    memcpy(msg_out.reading.label, config->name, 17); 
     send(config->port, &msg_out);
     sleep(config->interval);
   }

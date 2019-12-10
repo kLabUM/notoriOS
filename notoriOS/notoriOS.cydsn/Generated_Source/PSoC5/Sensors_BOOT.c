@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Debug_BOOT.c
+* File Name: Sensors_BOOT.c
 * Version 2.50
 *
 * Description:
@@ -15,14 +15,14 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#include "Debug.h"
+#include "Sensors.h"
 
-#if defined(CYDEV_BOOTLOADER_IO_COMP) && (0u != ((CYDEV_BOOTLOADER_IO_COMP == CyBtldr_Debug) || \
+#if defined(CYDEV_BOOTLOADER_IO_COMP) && (0u != ((CYDEV_BOOTLOADER_IO_COMP == CyBtldr_Sensors) || \
                                           (CYDEV_BOOTLOADER_IO_COMP == CyBtldr_Custom_Interface)))
 
 
 /*******************************************************************************
-* Function Name: Debug_CyBtldrCommStart
+* Function Name: Sensors_CyBtldrCommStart
 ********************************************************************************
 *
 * Summary:
@@ -38,17 +38,17 @@
 *  This component automatically enables global interrupt.
 *
 *******************************************************************************/
-void Debug_CyBtldrCommStart(void) CYSMALL 
+void Sensors_CyBtldrCommStart(void) CYSMALL 
 {
     /* Start UART component and clear the Tx,Rx buffers */
-    Debug_Start();
-    Debug_ClearRxBuffer();
-    Debug_ClearTxBuffer();
+    Sensors_Start();
+    Sensors_ClearRxBuffer();
+    Sensors_ClearTxBuffer();
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_CyBtldrCommStop
+* Function Name: Sensors_CyBtldrCommStop
 ********************************************************************************
 *
 * Summary:
@@ -61,15 +61,15 @@ void Debug_CyBtldrCommStart(void) CYSMALL
 *  None
 *
 *******************************************************************************/
-void Debug_CyBtldrCommStop(void) CYSMALL 
+void Sensors_CyBtldrCommStop(void) CYSMALL 
 {
     /* Stop UART component */
-    Debug_Stop();
+    Sensors_Stop();
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_CyBtldrCommReset
+* Function Name: Sensors_CyBtldrCommReset
 ********************************************************************************
 *
 * Summary:
@@ -82,16 +82,16 @@ void Debug_CyBtldrCommStop(void) CYSMALL
 *  None
 *
 *******************************************************************************/
-void Debug_CyBtldrCommReset(void) CYSMALL 
+void Sensors_CyBtldrCommReset(void) CYSMALL 
 {
     /* Clear RX and TX buffers */
-    Debug_ClearRxBuffer();
-    Debug_ClearTxBuffer();
+    Sensors_ClearRxBuffer();
+    Sensors_ClearTxBuffer();
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_CyBtldrCommWrite
+* Function Name: Sensors_CyBtldrCommWrite
 ********************************************************************************
 *
 * Summary:
@@ -113,7 +113,7 @@ void Debug_CyBtldrCommReset(void) CYSMALL
 *  This function should be called after command was received .
 *
 *******************************************************************************/
-cystatus Debug_CyBtldrCommWrite(const uint8 pData[], uint16 size, uint16 * count, uint8 timeOut) CYSMALL
+cystatus Sensors_CyBtldrCommWrite(const uint8 pData[], uint16 size, uint16 * count, uint8 timeOut) CYSMALL
          
 {
     uint16 bufIndex = 0u;
@@ -124,12 +124,12 @@ cystatus Debug_CyBtldrCommWrite(const uint8 pData[], uint16 size, uint16 * count
     }
 
     /* Clear receive buffers */
-    Debug_ClearRxBuffer();
+    Sensors_ClearRxBuffer();
 
     /* Write TX data using blocking function */
     while(bufIndex < size)
     {
-        Debug_PutChar(pData[bufIndex]);
+        Sensors_PutChar(pData[bufIndex]);
         bufIndex++;
     }
 
@@ -141,7 +141,7 @@ cystatus Debug_CyBtldrCommWrite(const uint8 pData[], uint16 size, uint16 * count
 
 
 /*******************************************************************************
-* Function Name: Debug_CyBtldrCommRead
+* Function Name: Sensors_CyBtldrCommRead
 ********************************************************************************
 *
 * Summary:
@@ -167,7 +167,7 @@ cystatus Debug_CyBtldrCommWrite(const uint8 pData[], uint16 size, uint16 * count
 *  host. You have to account for the delay in hardware converters while
 *  calculating this value, if you are using any USB-UART bridges.
 *******************************************************************************/
-cystatus Debug_CyBtldrCommRead(uint8 pData[], uint16 size, uint16 * count, uint8 timeOut) CYSMALL
+cystatus Sensors_CyBtldrCommRead(uint8 pData[], uint16 size, uint16 * count, uint8 timeOut) CYSMALL
          
 {
     uint16 iCntr;
@@ -185,7 +185,7 @@ cystatus Debug_CyBtldrCommRead(uint8 pData[], uint16 size, uint16 * count, uint8
         /* If at least one byte is received within the timeout interval
         *  enter the next loop waiting for more data reception
         */
-        if(0u != Debug_GetRxBufferSize())
+        if(0u != Sensors_GetRxBufferSize())
         {
             /* Wait for more data until 25ms byte to byte time out interval.
             * If no data is received during the last 25 ms(BYTE2BYTE_TIME_OUT)
@@ -195,20 +195,20 @@ cystatus Debug_CyBtldrCommRead(uint8 pData[], uint16 size, uint16 * count, uint8
             */
             do
             {
-                oldDataCount = Debug_GetRxBufferSize();
-                CyDelay(Debug_BYTE2BYTE_TIME_OUT);
+                oldDataCount = Sensors_GetRxBufferSize();
+                CyDelay(Sensors_BYTE2BYTE_TIME_OUT);
             }
-            while(Debug_GetRxBufferSize() > oldDataCount);
+            while(Sensors_GetRxBufferSize() > oldDataCount);
 
             status = CYRET_SUCCESS;
             break;
         }
         /* If the data is not received, give a delay of 
-        *  Debug_BL_CHK_DELAY_MS and check again until the timeOut specified.
+        *  Sensors_BL_CHK_DELAY_MS and check again until the timeOut specified.
         */
         else
         {
-            CyDelay(Debug_BL_CHK_DELAY_MS);
+            CyDelay(Sensors_BL_CHK_DELAY_MS);
         }
     }
 
@@ -217,9 +217,9 @@ cystatus Debug_CyBtldrCommRead(uint8 pData[], uint16 size, uint16 * count, uint8
     dataIndexCntr = 0u;
 
     /* If GetRxBufferSize()>0 , move the received data to the pData buffer */
-    while(Debug_GetRxBufferSize() > 0u)
+    while(Sensors_GetRxBufferSize() > 0u)
     {
-        tempCount = Debug_GetRxBufferSize();
+        tempCount = Sensors_GetRxBufferSize();
         *count  =(*count) + tempCount;
 
         /* Check if buffer overflow will occur before moving the data */
@@ -228,16 +228,16 @@ cystatus Debug_CyBtldrCommRead(uint8 pData[], uint16 size, uint16 * count, uint8
             for (iCntr = 0u; iCntr < tempCount; iCntr++)
             {
                 /* Read the data and move it to the pData buffer */
-                pData[dataIndexCntr] = Debug_ReadRxData();
+                pData[dataIndexCntr] = Sensors_ReadRxData();
                 dataIndexCntr++;
             }
 
             /* Check if the last received byte is end of packet defined by bootloader
-            *  If not wait for additional Debug_WAIT_EOP_DELAY ms.
+            *  If not wait for additional Sensors_WAIT_EOP_DELAY ms.
             */
-            if(pData[dataIndexCntr - 1u] != Debug_PACKET_EOP)
+            if(pData[dataIndexCntr - 1u] != Sensors_PACKET_EOP)
             {
-                CyDelay(Debug_WAIT_EOP_DELAY);
+                CyDelay(Sensors_WAIT_EOP_DELAY);
             }
         }
         /* If there is no space to move data, break from the loop */

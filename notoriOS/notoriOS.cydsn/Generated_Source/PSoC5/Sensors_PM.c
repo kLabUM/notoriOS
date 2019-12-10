@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Debug_PM.c
+* File Name: Sensors_PM.c
 * Version 2.50
 *
 * Description:
@@ -14,14 +14,14 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#include "Debug.h"
+#include "Sensors.h"
 
 
 /***************************************
 * Local data allocation
 ***************************************/
 
-static Debug_BACKUP_STRUCT  Debug_backup =
+static Sensors_BACKUP_STRUCT  Sensors_backup =
 {
     /* enableState - disabled */
     0u,
@@ -30,13 +30,13 @@ static Debug_BACKUP_STRUCT  Debug_backup =
 
 
 /*******************************************************************************
-* Function Name: Debug_SaveConfig
+* Function Name: Sensors_SaveConfig
 ********************************************************************************
 *
 * Summary:
 *  This function saves the component nonretention control register.
 *  Does not save the FIFO which is a set of nonretention registers.
-*  This function is called by the Debug_Sleep() function.
+*  This function is called by the Sensors_Sleep() function.
 *
 * Parameters:
 *  None.
@@ -45,22 +45,22 @@ static Debug_BACKUP_STRUCT  Debug_backup =
 *  None.
 *
 * Global Variables:
-*  Debug_backup - modified when non-retention registers are saved.
+*  Sensors_backup - modified when non-retention registers are saved.
 *
 * Reentrant:
 *  No.
 *
 *******************************************************************************/
-void Debug_SaveConfig(void)
+void Sensors_SaveConfig(void)
 {
-    #if(Debug_CONTROL_REG_REMOVED == 0u)
-        Debug_backup.cr = Debug_CONTROL_REG;
-    #endif /* End Debug_CONTROL_REG_REMOVED */
+    #if(Sensors_CONTROL_REG_REMOVED == 0u)
+        Sensors_backup.cr = Sensors_CONTROL_REG;
+    #endif /* End Sensors_CONTROL_REG_REMOVED */
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_RestoreConfig
+* Function Name: Sensors_RestoreConfig
 ********************************************************************************
 *
 * Summary:
@@ -74,34 +74,34 @@ void Debug_SaveConfig(void)
 *  None.
 *
 * Global Variables:
-*  Debug_backup - used when non-retention registers are restored.
+*  Sensors_backup - used when non-retention registers are restored.
 *
 * Reentrant:
 *  No.
 *
 * Notes:
-*  If this function is called without calling Debug_SaveConfig() 
+*  If this function is called without calling Sensors_SaveConfig() 
 *  first, the data loaded may be incorrect.
 *
 *******************************************************************************/
-void Debug_RestoreConfig(void)
+void Sensors_RestoreConfig(void)
 {
-    #if(Debug_CONTROL_REG_REMOVED == 0u)
-        Debug_CONTROL_REG = Debug_backup.cr;
-    #endif /* End Debug_CONTROL_REG_REMOVED */
+    #if(Sensors_CONTROL_REG_REMOVED == 0u)
+        Sensors_CONTROL_REG = Sensors_backup.cr;
+    #endif /* End Sensors_CONTROL_REG_REMOVED */
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_Sleep
+* Function Name: Sensors_Sleep
 ********************************************************************************
 *
 * Summary:
 *  This is the preferred API to prepare the component for sleep. 
-*  The Debug_Sleep() API saves the current component state. Then it
-*  calls the Debug_Stop() function and calls 
-*  Debug_SaveConfig() to save the hardware configuration.
-*  Call the Debug_Sleep() function before calling the CyPmSleep() 
+*  The Sensors_Sleep() API saves the current component state. Then it
+*  calls the Sensors_Stop() function and calls 
+*  Sensors_SaveConfig() to save the hardware configuration.
+*  Call the Sensors_Sleep() function before calling the CyPmSleep() 
 *  or the CyPmHibernate() function. 
 *
 * Parameters:
@@ -111,49 +111,49 @@ void Debug_RestoreConfig(void)
 *  None.
 *
 * Global Variables:
-*  Debug_backup - modified when non-retention registers are saved.
+*  Sensors_backup - modified when non-retention registers are saved.
 *
 * Reentrant:
 *  No.
 *
 *******************************************************************************/
-void Debug_Sleep(void)
+void Sensors_Sleep(void)
 {
-    #if(Debug_RX_ENABLED || Debug_HD_ENABLED)
-        if((Debug_RXSTATUS_ACTL_REG  & Debug_INT_ENABLE) != 0u)
+    #if(Sensors_RX_ENABLED || Sensors_HD_ENABLED)
+        if((Sensors_RXSTATUS_ACTL_REG  & Sensors_INT_ENABLE) != 0u)
         {
-            Debug_backup.enableState = 1u;
+            Sensors_backup.enableState = 1u;
         }
         else
         {
-            Debug_backup.enableState = 0u;
+            Sensors_backup.enableState = 0u;
         }
     #else
-        if((Debug_TXSTATUS_ACTL_REG  & Debug_INT_ENABLE) !=0u)
+        if((Sensors_TXSTATUS_ACTL_REG  & Sensors_INT_ENABLE) !=0u)
         {
-            Debug_backup.enableState = 1u;
+            Sensors_backup.enableState = 1u;
         }
         else
         {
-            Debug_backup.enableState = 0u;
+            Sensors_backup.enableState = 0u;
         }
-    #endif /* End Debug_RX_ENABLED || Debug_HD_ENABLED*/
+    #endif /* End Sensors_RX_ENABLED || Sensors_HD_ENABLED*/
 
-    Debug_Stop();
-    Debug_SaveConfig();
+    Sensors_Stop();
+    Sensors_SaveConfig();
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_Wakeup
+* Function Name: Sensors_Wakeup
 ********************************************************************************
 *
 * Summary:
 *  This is the preferred API to restore the component to the state when 
-*  Debug_Sleep() was called. The Debug_Wakeup() function
-*  calls the Debug_RestoreConfig() function to restore the 
+*  Sensors_Sleep() was called. The Sensors_Wakeup() function
+*  calls the Sensors_RestoreConfig() function to restore the 
 *  configuration. If the component was enabled before the 
-*  Debug_Sleep() function was called, the Debug_Wakeup()
+*  Sensors_Sleep() function was called, the Sensors_Wakeup()
 *  function will also re-enable the component.
 *
 * Parameters:
@@ -163,25 +163,25 @@ void Debug_Sleep(void)
 *  None.
 *
 * Global Variables:
-*  Debug_backup - used when non-retention registers are restored.
+*  Sensors_backup - used when non-retention registers are restored.
 *
 * Reentrant:
 *  No.
 *
 *******************************************************************************/
-void Debug_Wakeup(void)
+void Sensors_Wakeup(void)
 {
-    Debug_RestoreConfig();
-    #if( (Debug_RX_ENABLED) || (Debug_HD_ENABLED) )
-        Debug_ClearRxBuffer();
-    #endif /* End (Debug_RX_ENABLED) || (Debug_HD_ENABLED) */
-    #if(Debug_TX_ENABLED || Debug_HD_ENABLED)
-        Debug_ClearTxBuffer();
-    #endif /* End Debug_TX_ENABLED || Debug_HD_ENABLED */
+    Sensors_RestoreConfig();
+    #if( (Sensors_RX_ENABLED) || (Sensors_HD_ENABLED) )
+        Sensors_ClearRxBuffer();
+    #endif /* End (Sensors_RX_ENABLED) || (Sensors_HD_ENABLED) */
+    #if(Sensors_TX_ENABLED || Sensors_HD_ENABLED)
+        Sensors_ClearTxBuffer();
+    #endif /* End Sensors_TX_ENABLED || Sensors_HD_ENABLED */
 
-    if(Debug_backup.enableState != 0u)
+    if(Sensors_backup.enableState != 0u)
     {
-        Debug_Enable();
+        Sensors_Enable();
     }
 }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Debug_IntClock.c
+* File Name: Modem_IntClock.c
 * Version 2.20
 *
 *  Description:
@@ -15,7 +15,7 @@
 *******************************************************************************/
 
 #include <cydevice_trm.h>
-#include "Debug_IntClock.h"
+#include "Modem_IntClock.h"
 
 /* Clock Distribution registers. */
 #define CLK_DIST_LD              (* (reg8 *) CYREG_CLKDIST_LD)
@@ -28,7 +28,7 @@
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_Start
+* Function Name: Modem_IntClock_Start
 ********************************************************************************
 *
 * Summary:
@@ -42,16 +42,16 @@
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_Start(void) 
+void Modem_IntClock_Start(void) 
 {
     /* Set the bit to enable the clock. */
-    Debug_IntClock_CLKEN |= Debug_IntClock_CLKEN_MASK;
-	Debug_IntClock_CLKSTBY |= Debug_IntClock_CLKSTBY_MASK;
+    Modem_IntClock_CLKEN |= Modem_IntClock_CLKEN_MASK;
+	Modem_IntClock_CLKSTBY |= Modem_IntClock_CLKSTBY_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_Stop
+* Function Name: Modem_IntClock_Stop
 ********************************************************************************
 *
 * Summary:
@@ -68,11 +68,11 @@ void Debug_IntClock_Start(void)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_Stop(void) 
+void Modem_IntClock_Stop(void) 
 {
     /* Clear the bit to disable the clock. */
-    Debug_IntClock_CLKEN &= (uint8)(~Debug_IntClock_CLKEN_MASK);
-	Debug_IntClock_CLKSTBY &= (uint8)(~Debug_IntClock_CLKSTBY_MASK);
+    Modem_IntClock_CLKEN &= (uint8)(~Modem_IntClock_CLKEN_MASK);
+	Modem_IntClock_CLKSTBY &= (uint8)(~Modem_IntClock_CLKSTBY_MASK);
 }
 
 
@@ -80,7 +80,7 @@ void Debug_IntClock_Stop(void)
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_StopBlock
+* Function Name: Modem_IntClock_StopBlock
 ********************************************************************************
 *
 * Summary:
@@ -97,9 +97,9 @@ void Debug_IntClock_Stop(void)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_StopBlock(void) 
+void Modem_IntClock_StopBlock(void) 
 {
-    if ((Debug_IntClock_CLKEN & Debug_IntClock_CLKEN_MASK) != 0u)
+    if ((Modem_IntClock_CLKEN & Modem_IntClock_CLKEN_MASK) != 0u)
     {
 #if HAS_CLKDIST_LD_DISABLE
         uint16 oldDivider;
@@ -107,18 +107,18 @@ void Debug_IntClock_StopBlock(void)
         CLK_DIST_LD = 0u;
 
         /* Clear all the mask bits except ours. */
-#if defined(Debug_IntClock__CFG3)
-        CLK_DIST_AMASK = Debug_IntClock_CLKEN_MASK;
+#if defined(Modem_IntClock__CFG3)
+        CLK_DIST_AMASK = Modem_IntClock_CLKEN_MASK;
         CLK_DIST_DMASK = 0x00u;
 #else
-        CLK_DIST_DMASK = Debug_IntClock_CLKEN_MASK;
+        CLK_DIST_DMASK = Modem_IntClock_CLKEN_MASK;
         CLK_DIST_AMASK = 0x00u;
-#endif /* Debug_IntClock__CFG3 */
+#endif /* Modem_IntClock__CFG3 */
 
         /* Clear mask of bus clock. */
         CLK_DIST_BCFG2 &= (uint8)(~BCFG2_MASK);
 
-        oldDivider = CY_GET_REG16(Debug_IntClock_DIV_PTR);
+        oldDivider = CY_GET_REG16(Modem_IntClock_DIV_PTR);
         CY_SET_REG16(CYREG_CLKDIST_WRK0, oldDivider);
         CLK_DIST_LD = CYCLK_LD_DISABLE | CYCLK_LD_SYNC_EN | CYCLK_LD_LOAD;
 
@@ -127,13 +127,13 @@ void Debug_IntClock_StopBlock(void)
 #endif /* HAS_CLKDIST_LD_DISABLE */
 
         /* Clear the bit to disable the clock. */
-        Debug_IntClock_CLKEN &= (uint8)(~Debug_IntClock_CLKEN_MASK);
-        Debug_IntClock_CLKSTBY &= (uint8)(~Debug_IntClock_CLKSTBY_MASK);
+        Modem_IntClock_CLKEN &= (uint8)(~Modem_IntClock_CLKEN_MASK);
+        Modem_IntClock_CLKSTBY &= (uint8)(~Modem_IntClock_CLKSTBY_MASK);
 
 #if HAS_CLKDIST_LD_DISABLE
         /* Clear the disable bit */
         CLK_DIST_LD = 0x00u;
-        CY_SET_REG16(Debug_IntClock_DIV_PTR, oldDivider);
+        CY_SET_REG16(Modem_IntClock_DIV_PTR, oldDivider);
 #endif /* HAS_CLKDIST_LD_DISABLE */
     }
 }
@@ -141,7 +141,7 @@ void Debug_IntClock_StopBlock(void)
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_StandbyPower
+* Function Name: Modem_IntClock_StandbyPower
 ********************************************************************************
 *
 * Summary:
@@ -154,21 +154,21 @@ void Debug_IntClock_StopBlock(void)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_StandbyPower(uint8 state) 
+void Modem_IntClock_StandbyPower(uint8 state) 
 {
     if(state == 0u)
     {
-        Debug_IntClock_CLKSTBY &= (uint8)(~Debug_IntClock_CLKSTBY_MASK);
+        Modem_IntClock_CLKSTBY &= (uint8)(~Modem_IntClock_CLKSTBY_MASK);
     }
     else
     {
-        Debug_IntClock_CLKSTBY |= Debug_IntClock_CLKSTBY_MASK;
+        Modem_IntClock_CLKSTBY |= Modem_IntClock_CLKSTBY_MASK;
     }
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_SetDividerRegister
+* Function Name: Modem_IntClock_SetDividerRegister
 ********************************************************************************
 *
 * Summary:
@@ -190,17 +190,17 @@ void Debug_IntClock_StandbyPower(uint8 state)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
+void Modem_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
                                 
 {
     uint8 enabled;
 
-    uint8 currSrc = Debug_IntClock_GetSourceRegister();
-    uint16 oldDivider = Debug_IntClock_GetDividerRegister();
+    uint8 currSrc = Modem_IntClock_GetSourceRegister();
+    uint16 oldDivider = Modem_IntClock_GetDividerRegister();
 
     if (clkDivider != oldDivider)
     {
-        enabled = Debug_IntClock_CLKEN & Debug_IntClock_CLKEN_MASK;
+        enabled = Modem_IntClock_CLKEN & Modem_IntClock_CLKEN_MASK;
 
         if ((currSrc == (uint8)CYCLK_SRC_SEL_CLK_SYNC_D) && ((oldDivider == 0u) || (clkDivider == 0u)))
         {
@@ -210,15 +210,15 @@ void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
                 /* Moving away from SSS, set the divider first so when SSS is cleared we    */
                 /* don't halt the clock.  Using the shadow load isn't required as the       */
                 /* divider is ignored while SSS is set.                                     */
-                CY_SET_REG16(Debug_IntClock_DIV_PTR, clkDivider);
-                Debug_IntClock_MOD_SRC &= (uint8)(~CYCLK_SSS);
+                CY_SET_REG16(Modem_IntClock_DIV_PTR, clkDivider);
+                Modem_IntClock_MOD_SRC &= (uint8)(~CYCLK_SSS);
             }
             else
             {
                 /* Moving to SSS, set SSS which then ignores the divider and we can set     */
                 /* it without bothering with the shadow load.                               */
-                Debug_IntClock_MOD_SRC |= CYCLK_SSS;
-                CY_SET_REG16(Debug_IntClock_DIV_PTR, clkDivider);
+                Modem_IntClock_MOD_SRC |= CYCLK_SSS;
+                CY_SET_REG16(Modem_IntClock_DIV_PTR, clkDivider);
             }
         }
         else
@@ -229,18 +229,18 @@ void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
                 CLK_DIST_LD = 0x00u;
 
                 /* Clear all the mask bits except ours. */
-#if defined(Debug_IntClock__CFG3)
-                CLK_DIST_AMASK = Debug_IntClock_CLKEN_MASK;
+#if defined(Modem_IntClock__CFG3)
+                CLK_DIST_AMASK = Modem_IntClock_CLKEN_MASK;
                 CLK_DIST_DMASK = 0x00u;
 #else
-                CLK_DIST_DMASK = Debug_IntClock_CLKEN_MASK;
+                CLK_DIST_DMASK = Modem_IntClock_CLKEN_MASK;
                 CLK_DIST_AMASK = 0x00u;
-#endif /* Debug_IntClock__CFG3 */
+#endif /* Modem_IntClock__CFG3 */
                 /* Clear mask of bus clock. */
                 CLK_DIST_BCFG2 &= (uint8)(~BCFG2_MASK);
 
                 /* If clock is currently enabled, disable it if async or going from N-to-1*/
-                if (((Debug_IntClock_MOD_SRC & CYCLK_SYNC) == 0u) || (clkDivider == 0u))
+                if (((Modem_IntClock_MOD_SRC & CYCLK_SYNC) == 0u) || (clkDivider == 0u))
                 {
 #if HAS_CLKDIST_LD_DISABLE
                     CY_SET_REG16(CYREG_CLKDIST_WRK0, oldDivider);
@@ -250,7 +250,7 @@ void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
                     while ((CLK_DIST_LD & CYCLK_LD_LOAD) != 0u) { }
 #endif /* HAS_CLKDIST_LD_DISABLE */
 
-                    Debug_IntClock_CLKEN &= (uint8)(~Debug_IntClock_CLKEN_MASK);
+                    Modem_IntClock_CLKEN &= (uint8)(~Modem_IntClock_CLKEN_MASK);
 
 #if HAS_CLKDIST_LD_DISABLE
                     /* Clear the disable bit */
@@ -260,7 +260,7 @@ void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
             }
 
             /* Load divide value. */
-            if ((Debug_IntClock_CLKEN & Debug_IntClock_CLKEN_MASK) != 0u)
+            if ((Modem_IntClock_CLKEN & Modem_IntClock_CLKEN_MASK) != 0u)
             {
                 /* If the clock is still enabled, use the shadow registers */
                 CY_SET_REG16(CYREG_CLKDIST_WRK0, clkDivider);
@@ -271,8 +271,8 @@ void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
             else
             {
                 /* If the clock is disabled, set the divider directly */
-                CY_SET_REG16(Debug_IntClock_DIV_PTR, clkDivider);
-				Debug_IntClock_CLKEN |= enabled;
+                CY_SET_REG16(Modem_IntClock_DIV_PTR, clkDivider);
+				Modem_IntClock_CLKEN |= enabled;
             }
         }
     }
@@ -280,7 +280,7 @@ void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_GetDividerRegister
+* Function Name: Modem_IntClock_GetDividerRegister
 ********************************************************************************
 *
 * Summary:
@@ -294,14 +294,14 @@ void Debug_IntClock_SetDividerRegister(uint16 clkDivider, uint8 restart)
 *  divide by 2, the return value will be 1.
 *
 *******************************************************************************/
-uint16 Debug_IntClock_GetDividerRegister(void) 
+uint16 Modem_IntClock_GetDividerRegister(void) 
 {
-    return CY_GET_REG16(Debug_IntClock_DIV_PTR);
+    return CY_GET_REG16(Modem_IntClock_DIV_PTR);
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_SetModeRegister
+* Function Name: Modem_IntClock_SetModeRegister
 ********************************************************************************
 *
 * Summary:
@@ -329,14 +329,14 @@ uint16 Debug_IntClock_GetDividerRegister(void)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_SetModeRegister(uint8 modeBitMask) 
+void Modem_IntClock_SetModeRegister(uint8 modeBitMask) 
 {
-    Debug_IntClock_MOD_SRC |= modeBitMask & (uint8)Debug_IntClock_MODE_MASK;
+    Modem_IntClock_MOD_SRC |= modeBitMask & (uint8)Modem_IntClock_MODE_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_ClearModeRegister
+* Function Name: Modem_IntClock_ClearModeRegister
 ********************************************************************************
 *
 * Summary:
@@ -364,14 +364,14 @@ void Debug_IntClock_SetModeRegister(uint8 modeBitMask)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_ClearModeRegister(uint8 modeBitMask) 
+void Modem_IntClock_ClearModeRegister(uint8 modeBitMask) 
 {
-    Debug_IntClock_MOD_SRC &= (uint8)(~modeBitMask) | (uint8)(~(uint8)(Debug_IntClock_MODE_MASK));
+    Modem_IntClock_MOD_SRC &= (uint8)(~modeBitMask) | (uint8)(~(uint8)(Modem_IntClock_MODE_MASK));
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_GetModeRegister
+* Function Name: Modem_IntClock_GetModeRegister
 ********************************************************************************
 *
 * Summary:
@@ -385,14 +385,14 @@ void Debug_IntClock_ClearModeRegister(uint8 modeBitMask)
 *  ClearModeRegister descriptions for details about the mode bits.
 *
 *******************************************************************************/
-uint8 Debug_IntClock_GetModeRegister(void) 
+uint8 Modem_IntClock_GetModeRegister(void) 
 {
-    return Debug_IntClock_MOD_SRC & (uint8)(Debug_IntClock_MODE_MASK);
+    return Modem_IntClock_MOD_SRC & (uint8)(Modem_IntClock_MODE_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_SetSourceRegister
+* Function Name: Modem_IntClock_SetSourceRegister
 ********************************************************************************
 *
 * Summary:
@@ -416,39 +416,39 @@ uint8 Debug_IntClock_GetModeRegister(void)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_SetSourceRegister(uint8 clkSource) 
+void Modem_IntClock_SetSourceRegister(uint8 clkSource) 
 {
-    uint16 currDiv = Debug_IntClock_GetDividerRegister();
-    uint8 oldSrc = Debug_IntClock_GetSourceRegister();
+    uint16 currDiv = Modem_IntClock_GetDividerRegister();
+    uint8 oldSrc = Modem_IntClock_GetSourceRegister();
 
     if (((oldSrc != ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D)) && 
         (clkSource == ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D))) && (currDiv == 0u))
     {
         /* Switching to Master and divider is 1, set SSS, which will output master, */
         /* then set the source so we are consistent.                                */
-        Debug_IntClock_MOD_SRC |= CYCLK_SSS;
-        Debug_IntClock_MOD_SRC =
-            (Debug_IntClock_MOD_SRC & (uint8)(~Debug_IntClock_SRC_SEL_MSK)) | clkSource;
+        Modem_IntClock_MOD_SRC |= CYCLK_SSS;
+        Modem_IntClock_MOD_SRC =
+            (Modem_IntClock_MOD_SRC & (uint8)(~Modem_IntClock_SRC_SEL_MSK)) | clkSource;
     }
     else if (((oldSrc == ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D)) && 
             (clkSource != ((uint8)CYCLK_SRC_SEL_CLK_SYNC_D))) && (currDiv == 0u))
     {
         /* Switching from Master to not and divider is 1, set source, so we don't   */
         /* lock when we clear SSS.                                                  */
-        Debug_IntClock_MOD_SRC =
-            (Debug_IntClock_MOD_SRC & (uint8)(~Debug_IntClock_SRC_SEL_MSK)) | clkSource;
-        Debug_IntClock_MOD_SRC &= (uint8)(~CYCLK_SSS);
+        Modem_IntClock_MOD_SRC =
+            (Modem_IntClock_MOD_SRC & (uint8)(~Modem_IntClock_SRC_SEL_MSK)) | clkSource;
+        Modem_IntClock_MOD_SRC &= (uint8)(~CYCLK_SSS);
     }
     else
     {
-        Debug_IntClock_MOD_SRC =
-            (Debug_IntClock_MOD_SRC & (uint8)(~Debug_IntClock_SRC_SEL_MSK)) | clkSource;
+        Modem_IntClock_MOD_SRC =
+            (Modem_IntClock_MOD_SRC & (uint8)(~Modem_IntClock_SRC_SEL_MSK)) | clkSource;
     }
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_GetSourceRegister
+* Function Name: Modem_IntClock_GetSourceRegister
 ********************************************************************************
 *
 * Summary:
@@ -461,17 +461,17 @@ void Debug_IntClock_SetSourceRegister(uint8 clkSource)
 *  The input source of the clock. See SetSourceRegister for details.
 *
 *******************************************************************************/
-uint8 Debug_IntClock_GetSourceRegister(void) 
+uint8 Modem_IntClock_GetSourceRegister(void) 
 {
-    return Debug_IntClock_MOD_SRC & Debug_IntClock_SRC_SEL_MSK;
+    return Modem_IntClock_MOD_SRC & Modem_IntClock_SRC_SEL_MSK;
 }
 
 
-#if defined(Debug_IntClock__CFG3)
+#if defined(Modem_IntClock__CFG3)
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_SetPhaseRegister
+* Function Name: Modem_IntClock_SetPhaseRegister
 ********************************************************************************
 *
 * Summary:
@@ -489,14 +489,14 @@ uint8 Debug_IntClock_GetSourceRegister(void)
 *  None
 *
 *******************************************************************************/
-void Debug_IntClock_SetPhaseRegister(uint8 clkPhase) 
+void Modem_IntClock_SetPhaseRegister(uint8 clkPhase) 
 {
-    Debug_IntClock_PHASE = clkPhase & Debug_IntClock_PHASE_MASK;
+    Modem_IntClock_PHASE = clkPhase & Modem_IntClock_PHASE_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_IntClock_GetPhase
+* Function Name: Modem_IntClock_GetPhase
 ********************************************************************************
 *
 * Summary:
@@ -510,12 +510,12 @@ void Debug_IntClock_SetPhaseRegister(uint8 clkPhase)
 *  Phase of the analog clock. See SetPhaseRegister for details.
 *
 *******************************************************************************/
-uint8 Debug_IntClock_GetPhaseRegister(void) 
+uint8 Modem_IntClock_GetPhaseRegister(void) 
 {
-    return Debug_IntClock_PHASE & Debug_IntClock_PHASE_MASK;
+    return Modem_IntClock_PHASE & Modem_IntClock_PHASE_MASK;
 }
 
-#endif /* Debug_IntClock__CFG3 */
+#endif /* Modem_IntClock__CFG3 */
 
 
 /* [] END OF FILE */

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Debug_PWR.c  
+* File Name: Modem_PWR.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Debug_PWR.h"
+#include "Modem_PWR.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Debug_PWR__PORT == 15 && ((Debug_PWR__MASK & 0xC0) != 0))
+	 Modem_PWR__PORT == 15 && ((Modem_PWR__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Debug_PWR_Write
+* Function Name: Modem_PWR_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Debug_PWR_SUT.c usage_Debug_PWR_Write
+*  \snippet Modem_PWR_SUT.c usage_Modem_PWR_Write
 *******************************************************************************/
-void Debug_PWR_Write(uint8 value)
+void Modem_PWR_Write(uint8 value)
 {
-    uint8 staticBits = (Debug_PWR_DR & (uint8)(~Debug_PWR_MASK));
-    Debug_PWR_DR = staticBits | ((uint8)(value << Debug_PWR_SHIFT) & Debug_PWR_MASK);
+    uint8 staticBits = (Modem_PWR_DR & (uint8)(~Modem_PWR_MASK));
+    Modem_PWR_DR = staticBits | ((uint8)(value << Modem_PWR_SHIFT) & Modem_PWR_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_PWR_SetDriveMode
+* Function Name: Modem_PWR_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Debug_PWR_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Debug_PWR_SUT.c usage_Debug_PWR_SetDriveMode
+*  \snippet Modem_PWR_SUT.c usage_Modem_PWR_SetDriveMode
 *******************************************************************************/
-void Debug_PWR_SetDriveMode(uint8 mode)
+void Modem_PWR_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Debug_PWR_0, mode);
+	CyPins_SetPinDriveMode(Modem_PWR_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_PWR_Read
+* Function Name: Modem_PWR_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Debug_PWR_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Debug_PWR_SUT.c usage_Debug_PWR_Read  
+*  \snippet Modem_PWR_SUT.c usage_Modem_PWR_Read  
 *******************************************************************************/
-uint8 Debug_PWR_Read(void)
+uint8 Modem_PWR_Read(void)
 {
-    return (Debug_PWR_PS & Debug_PWR_MASK) >> Debug_PWR_SHIFT;
+    return (Modem_PWR_PS & Modem_PWR_MASK) >> Modem_PWR_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Debug_PWR_ReadDataReg
+* Function Name: Modem_PWR_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Debug_PWR_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Debug_PWR_Read() API because the 
-* Debug_PWR_ReadDataReg() reads the data register instead of the status 
+* preferred Modem_PWR_Read() API because the 
+* Modem_PWR_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Debug_PWR_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Debug_PWR_SUT.c usage_Debug_PWR_ReadDataReg 
+*  \snippet Modem_PWR_SUT.c usage_Modem_PWR_ReadDataReg 
 *******************************************************************************/
-uint8 Debug_PWR_ReadDataReg(void)
+uint8 Modem_PWR_ReadDataReg(void)
 {
-    return (Debug_PWR_DR & Debug_PWR_MASK) >> Debug_PWR_SHIFT;
+    return (Modem_PWR_DR & Modem_PWR_MASK) >> Modem_PWR_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Debug_PWR_INTSTAT) 
+#if defined(Modem_PWR_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Debug_PWR_SetInterruptMode
+    * Function Name: Modem_PWR_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Debug_PWR_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Debug_PWR_INTR_ALL to configure the
+    *  component. Or you may use Modem_PWR_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Debug_PWR_0_INTR       (First pin in the list)
-    *  - Debug_PWR_1_INTR       (Second pin in the list)
+    *  - Modem_PWR_0_INTR       (First pin in the list)
+    *  - Modem_PWR_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Debug_PWR_INTR_ALL     (All pins in Pins component)
+    *  - Modem_PWR_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Debug_PWR_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Debug_PWR_SUT.c usage_Debug_PWR_SetInterruptMode
+    *  \snippet Modem_PWR_SUT.c usage_Modem_PWR_SetInterruptMode
     *******************************************************************************/
-    void Debug_PWR_SetInterruptMode(uint16 position, uint16 mode)
+    void Modem_PWR_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Debug_PWR_0_INTR) != 0u) 
+		if((position & Modem_PWR_0_INTR) != 0u) 
 		{ 
-			 Debug_PWR_0_INTTYPE_REG = (uint8)mode; 
+			 Modem_PWR_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Debug_PWR_ClearInterrupt
+    * Function Name: Modem_PWR_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Debug_PWR_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Debug_PWR_SUT.c usage_Debug_PWR_ClearInterrupt
+    *  \snippet Modem_PWR_SUT.c usage_Modem_PWR_ClearInterrupt
     *******************************************************************************/
-    uint8 Debug_PWR_ClearInterrupt(void)
+    uint8 Modem_PWR_ClearInterrupt(void)
     {
-        return (Debug_PWR_INTSTAT & Debug_PWR_MASK) >> Debug_PWR_SHIFT;
+        return (Modem_PWR_INTSTAT & Modem_PWR_MASK) >> Modem_PWR_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

@@ -211,8 +211,8 @@ void sleep(uint32_t ticks) {
   block();
 }
 
-void wait(uint32_t ticks) {
-  CyDelay(ticks);
+void wait_ms(uint32_t milliseconds) {
+  CyDelay(milliseconds);
 }
 
 uint32_t time(void) {

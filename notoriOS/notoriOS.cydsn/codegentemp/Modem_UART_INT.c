@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: DebugINT.c
+* File Name: Modem_UARTINT.c
 * Version 2.50
 *
 * Description:
@@ -12,7 +12,7 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#include "Debug.h"
+#include "Modem_UART.h"
 #include "cyapicallbacks.h"
 
 
@@ -23,9 +23,9 @@
 
 /* `#END` */
 
-#if (Debug_RX_INTERRUPT_ENABLED && (Debug_RX_ENABLED || Debug_HD_ENABLED))
+#if (Modem_UART_RX_INTERRUPT_ENABLED && (Modem_UART_RX_ENABLED || Modem_UART_HD_ENABLED))
     /*******************************************************************************
-    * Function Name: Debug_RXISR
+    * Function Name: Modem_UART_RXISR
     ********************************************************************************
     *
     * Summary:
@@ -38,25 +38,25 @@
     *  None.
     *
     * Global Variables:
-    *  Debug_rxBuffer - RAM buffer pointer for save received data.
-    *  Debug_rxBufferWrite - cyclic index for write to rxBuffer,
+    *  Modem_UART_rxBuffer - RAM buffer pointer for save received data.
+    *  Modem_UART_rxBufferWrite - cyclic index for write to rxBuffer,
     *     increments after each byte saved to buffer.
-    *  Debug_rxBufferRead - cyclic index for read from rxBuffer,
+    *  Modem_UART_rxBufferRead - cyclic index for read from rxBuffer,
     *     checked to detect overflow condition.
-    *  Debug_rxBufferOverflow - software overflow flag. Set to one
-    *     when Debug_rxBufferWrite index overtakes
-    *     Debug_rxBufferRead index.
-    *  Debug_rxBufferLoopDetect - additional variable to detect overflow.
-    *     Set to one when Debug_rxBufferWrite is equal to
-    *    Debug_rxBufferRead
-    *  Debug_rxAddressMode - this variable contains the Address mode,
+    *  Modem_UART_rxBufferOverflow - software overflow flag. Set to one
+    *     when Modem_UART_rxBufferWrite index overtakes
+    *     Modem_UART_rxBufferRead index.
+    *  Modem_UART_rxBufferLoopDetect - additional variable to detect overflow.
+    *     Set to one when Modem_UART_rxBufferWrite is equal to
+    *    Modem_UART_rxBufferRead
+    *  Modem_UART_rxAddressMode - this variable contains the Address mode,
     *     selected in customizer or set by UART_SetRxAddressMode() API.
-    *  Debug_rxAddressDetected - set to 1 when correct address received,
+    *  Modem_UART_rxAddressDetected - set to 1 when correct address received,
     *     and analysed to store following addressed data bytes to the buffer.
     *     When not correct address received, set to 0 to skip following data bytes.
     *
     *******************************************************************************/
-    CY_ISR(Debug_RXISR)
+    CY_ISR(Modem_UART_RXISR)
     {
         uint8 readData;
         uint8 readStatus;
@@ -66,12 +66,12 @@
         uint8 int_en;
     #endif /* (CY_PSOC3) */
 
-    #ifdef Debug_RXISR_ENTRY_CALLBACK
-        Debug_RXISR_EntryCallback();
-    #endif /* Debug_RXISR_ENTRY_CALLBACK */
+    #ifdef Modem_UART_RXISR_ENTRY_CALLBACK
+        Modem_UART_RXISR_EntryCallback();
+    #endif /* Modem_UART_RXISR_ENTRY_CALLBACK */
 
         /* User code required at start of ISR */
-        /* `#START Debug_RXISR_START` */
+        /* `#START Modem_UART_RXISR_START` */
 
         /* `#END` */
 
@@ -83,117 +83,117 @@
         do
         {
             /* Read receiver status register */
-            readStatus = Debug_RXSTATUS_REG;
+            readStatus = Modem_UART_RXSTATUS_REG;
             /* Copy the same status to readData variable for backward compatibility support 
-            *  of the user code in Debug_RXISR_ERROR` section. 
+            *  of the user code in Modem_UART_RXISR_ERROR` section. 
             */
             readData = readStatus;
 
-            if((readStatus & (Debug_RX_STS_BREAK | 
-                            Debug_RX_STS_PAR_ERROR |
-                            Debug_RX_STS_STOP_ERROR | 
-                            Debug_RX_STS_OVERRUN)) != 0u)
+            if((readStatus & (Modem_UART_RX_STS_BREAK | 
+                            Modem_UART_RX_STS_PAR_ERROR |
+                            Modem_UART_RX_STS_STOP_ERROR | 
+                            Modem_UART_RX_STS_OVERRUN)) != 0u)
             {
                 /* ERROR handling. */
-                Debug_errorStatus |= readStatus & ( Debug_RX_STS_BREAK | 
-                                                            Debug_RX_STS_PAR_ERROR | 
-                                                            Debug_RX_STS_STOP_ERROR | 
-                                                            Debug_RX_STS_OVERRUN);
-                /* `#START Debug_RXISR_ERROR` */
+                Modem_UART_errorStatus |= readStatus & ( Modem_UART_RX_STS_BREAK | 
+                                                            Modem_UART_RX_STS_PAR_ERROR | 
+                                                            Modem_UART_RX_STS_STOP_ERROR | 
+                                                            Modem_UART_RX_STS_OVERRUN);
+                /* `#START Modem_UART_RXISR_ERROR` */
 
                 /* `#END` */
                 
-            #ifdef Debug_RXISR_ERROR_CALLBACK
-                Debug_RXISR_ERROR_Callback();
-            #endif /* Debug_RXISR_ERROR_CALLBACK */
+            #ifdef Modem_UART_RXISR_ERROR_CALLBACK
+                Modem_UART_RXISR_ERROR_Callback();
+            #endif /* Modem_UART_RXISR_ERROR_CALLBACK */
             }
             
-            if((readStatus & Debug_RX_STS_FIFO_NOTEMPTY) != 0u)
+            if((readStatus & Modem_UART_RX_STS_FIFO_NOTEMPTY) != 0u)
             {
                 /* Read data from the RX data register */
-                readData = Debug_RXDATA_REG;
-            #if (Debug_RXHW_ADDRESS_ENABLED)
-                if(Debug_rxAddressMode == (uint8)Debug__B_UART__AM_SW_DETECT_TO_BUFFER)
+                readData = Modem_UART_RXDATA_REG;
+            #if (Modem_UART_RXHW_ADDRESS_ENABLED)
+                if(Modem_UART_rxAddressMode == (uint8)Modem_UART__B_UART__AM_SW_DETECT_TO_BUFFER)
                 {
-                    if((readStatus & Debug_RX_STS_MRKSPC) != 0u)
+                    if((readStatus & Modem_UART_RX_STS_MRKSPC) != 0u)
                     {
-                        if ((readStatus & Debug_RX_STS_ADDR_MATCH) != 0u)
+                        if ((readStatus & Modem_UART_RX_STS_ADDR_MATCH) != 0u)
                         {
-                            Debug_rxAddressDetected = 1u;
+                            Modem_UART_rxAddressDetected = 1u;
                         }
                         else
                         {
-                            Debug_rxAddressDetected = 0u;
+                            Modem_UART_rxAddressDetected = 0u;
                         }
                     }
-                    if(Debug_rxAddressDetected != 0u)
+                    if(Modem_UART_rxAddressDetected != 0u)
                     {   /* Store only addressed data */
-                        Debug_rxBuffer[Debug_rxBufferWrite] = readData;
+                        Modem_UART_rxBuffer[Modem_UART_rxBufferWrite] = readData;
                         increment_pointer = 1u;
                     }
                 }
                 else /* Without software addressing */
                 {
-                    Debug_rxBuffer[Debug_rxBufferWrite] = readData;
+                    Modem_UART_rxBuffer[Modem_UART_rxBufferWrite] = readData;
                     increment_pointer = 1u;
                 }
             #else  /* Without addressing */
-                Debug_rxBuffer[Debug_rxBufferWrite] = readData;
+                Modem_UART_rxBuffer[Modem_UART_rxBufferWrite] = readData;
                 increment_pointer = 1u;
-            #endif /* (Debug_RXHW_ADDRESS_ENABLED) */
+            #endif /* (Modem_UART_RXHW_ADDRESS_ENABLED) */
 
                 /* Do not increment buffer pointer when skip not addressed data */
                 if(increment_pointer != 0u)
                 {
-                    if(Debug_rxBufferLoopDetect != 0u)
+                    if(Modem_UART_rxBufferLoopDetect != 0u)
                     {   /* Set Software Buffer status Overflow */
-                        Debug_rxBufferOverflow = 1u;
+                        Modem_UART_rxBufferOverflow = 1u;
                     }
                     /* Set next pointer. */
-                    Debug_rxBufferWrite++;
+                    Modem_UART_rxBufferWrite++;
 
                     /* Check pointer for a loop condition */
-                    if(Debug_rxBufferWrite >= Debug_RX_BUFFER_SIZE)
+                    if(Modem_UART_rxBufferWrite >= Modem_UART_RX_BUFFER_SIZE)
                     {
-                        Debug_rxBufferWrite = 0u;
+                        Modem_UART_rxBufferWrite = 0u;
                     }
 
                     /* Detect pre-overload condition and set flag */
-                    if(Debug_rxBufferWrite == Debug_rxBufferRead)
+                    if(Modem_UART_rxBufferWrite == Modem_UART_rxBufferRead)
                     {
-                        Debug_rxBufferLoopDetect = 1u;
+                        Modem_UART_rxBufferLoopDetect = 1u;
                         /* When Hardware Flow Control selected */
-                        #if (Debug_FLOW_CONTROL != 0u)
+                        #if (Modem_UART_FLOW_CONTROL != 0u)
                             /* Disable RX interrupt mask, it is enabled when user read data from the buffer using APIs */
-                            Debug_RXSTATUS_MASK_REG  &= (uint8)~Debug_RX_STS_FIFO_NOTEMPTY;
-                            CyIntClearPending(Debug_RX_VECT_NUM);
+                            Modem_UART_RXSTATUS_MASK_REG  &= (uint8)~Modem_UART_RX_STS_FIFO_NOTEMPTY;
+                            CyIntClearPending(Modem_UART_RX_VECT_NUM);
                             break; /* Break the reading of the FIFO loop, leave the data there for generating RTS signal */
-                        #endif /* (Debug_FLOW_CONTROL != 0u) */
+                        #endif /* (Modem_UART_FLOW_CONTROL != 0u) */
                     }
                 }
             }
-        }while((readStatus & Debug_RX_STS_FIFO_NOTEMPTY) != 0u);
+        }while((readStatus & Modem_UART_RX_STS_FIFO_NOTEMPTY) != 0u);
 
         /* User code required at end of ISR (Optional) */
-        /* `#START Debug_RXISR_END` */
+        /* `#START Modem_UART_RXISR_END` */
 
         /* `#END` */
 
-    #ifdef Debug_RXISR_EXIT_CALLBACK
-        Debug_RXISR_ExitCallback();
-    #endif /* Debug_RXISR_EXIT_CALLBACK */
+    #ifdef Modem_UART_RXISR_EXIT_CALLBACK
+        Modem_UART_RXISR_ExitCallback();
+    #endif /* Modem_UART_RXISR_EXIT_CALLBACK */
 
     #if(CY_PSOC3)
         EA = int_en;
     #endif /* (CY_PSOC3) */
     }
     
-#endif /* (Debug_RX_INTERRUPT_ENABLED && (Debug_RX_ENABLED || Debug_HD_ENABLED)) */
+#endif /* (Modem_UART_RX_INTERRUPT_ENABLED && (Modem_UART_RX_ENABLED || Modem_UART_HD_ENABLED)) */
 
 
-#if (Debug_TX_INTERRUPT_ENABLED && Debug_TX_ENABLED)
+#if (Modem_UART_TX_INTERRUPT_ENABLED && Modem_UART_TX_ENABLED)
     /*******************************************************************************
-    * Function Name: Debug_TXISR
+    * Function Name: Modem_UART_TXISR
     ********************************************************************************
     *
     * Summary:
@@ -206,25 +206,25 @@
     *  None.
     *
     * Global Variables:
-    *  Debug_txBuffer - RAM buffer pointer for transmit data from.
-    *  Debug_txBufferRead - cyclic index for read and transmit data
+    *  Modem_UART_txBuffer - RAM buffer pointer for transmit data from.
+    *  Modem_UART_txBufferRead - cyclic index for read and transmit data
     *     from txBuffer, increments after each transmitted byte.
-    *  Debug_rxBufferWrite - cyclic index for write to txBuffer,
+    *  Modem_UART_rxBufferWrite - cyclic index for write to txBuffer,
     *     checked to detect available for transmission bytes.
     *
     *******************************************************************************/
-    CY_ISR(Debug_TXISR)
+    CY_ISR(Modem_UART_TXISR)
     {
     #if(CY_PSOC3)
         uint8 int_en;
     #endif /* (CY_PSOC3) */
 
-    #ifdef Debug_TXISR_ENTRY_CALLBACK
-        Debug_TXISR_EntryCallback();
-    #endif /* Debug_TXISR_ENTRY_CALLBACK */
+    #ifdef Modem_UART_TXISR_ENTRY_CALLBACK
+        Modem_UART_TXISR_EntryCallback();
+    #endif /* Modem_UART_TXISR_ENTRY_CALLBACK */
 
         /* User code required at start of ISR */
-        /* `#START Debug_TXISR_START` */
+        /* `#START Modem_UART_TXISR_START` */
 
         /* `#END` */
 
@@ -233,35 +233,35 @@
         CyGlobalIntEnable;
     #endif /* (CY_PSOC3) */
 
-        while((Debug_txBufferRead != Debug_txBufferWrite) &&
-             ((Debug_TXSTATUS_REG & Debug_TX_STS_FIFO_FULL) == 0u))
+        while((Modem_UART_txBufferRead != Modem_UART_txBufferWrite) &&
+             ((Modem_UART_TXSTATUS_REG & Modem_UART_TX_STS_FIFO_FULL) == 0u))
         {
             /* Check pointer wrap around */
-            if(Debug_txBufferRead >= Debug_TX_BUFFER_SIZE)
+            if(Modem_UART_txBufferRead >= Modem_UART_TX_BUFFER_SIZE)
             {
-                Debug_txBufferRead = 0u;
+                Modem_UART_txBufferRead = 0u;
             }
 
-            Debug_TXDATA_REG = Debug_txBuffer[Debug_txBufferRead];
+            Modem_UART_TXDATA_REG = Modem_UART_txBuffer[Modem_UART_txBufferRead];
 
             /* Set next pointer */
-            Debug_txBufferRead++;
+            Modem_UART_txBufferRead++;
         }
 
         /* User code required at end of ISR (Optional) */
-        /* `#START Debug_TXISR_END` */
+        /* `#START Modem_UART_TXISR_END` */
 
         /* `#END` */
 
-    #ifdef Debug_TXISR_EXIT_CALLBACK
-        Debug_TXISR_ExitCallback();
-    #endif /* Debug_TXISR_EXIT_CALLBACK */
+    #ifdef Modem_UART_TXISR_EXIT_CALLBACK
+        Modem_UART_TXISR_ExitCallback();
+    #endif /* Modem_UART_TXISR_EXIT_CALLBACK */
 
     #if(CY_PSOC3)
         EA = int_en;
     #endif /* (CY_PSOC3) */
    }
-#endif /* (Debug_TX_INTERRUPT_ENABLED && Debug_TX_ENABLED) */
+#endif /* (Modem_UART_TX_INTERRUPT_ENABLED && Modem_UART_TX_ENABLED) */
 
 
 /* [] END OF FILE */

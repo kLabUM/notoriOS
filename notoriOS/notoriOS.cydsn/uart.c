@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include "notorios.h"
 #include "project.h"
-#include "re.h"
 
 #define MASTER_CLOCK_FREQ 24000000  // 24 MHz Clock
 

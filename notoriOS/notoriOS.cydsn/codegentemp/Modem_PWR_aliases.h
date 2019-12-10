@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Debug_PWR.h  
+* File Name: Modem_PWR.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Debug_PWR_ALIASES_H) /* Pins Debug_PWR_ALIASES_H */
-#define CY_PINS_Debug_PWR_ALIASES_H
+#if !defined(CY_PINS_Modem_PWR_ALIASES_H) /* Pins Modem_PWR_ALIASES_H */
+#define CY_PINS_Modem_PWR_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Debug_PWR_0			(Debug_PWR__0__PC)
-#define Debug_PWR_0_INTR	((uint16)((uint16)0x0001u << Debug_PWR__0__SHIFT))
+#define Modem_PWR_0			(Modem_PWR__0__PC)
+#define Modem_PWR_0_INTR	((uint16)((uint16)0x0001u << Modem_PWR__0__SHIFT))
 
-#define Debug_PWR_INTR_ALL	 ((uint16)(Debug_PWR_0_INTR))
+#define Modem_PWR_INTR_ALL	 ((uint16)(Modem_PWR_0_INTR))
 
-#endif /* End Pins Debug_PWR_ALIASES_H */
+#endif /* End Pins Modem_PWR_ALIASES_H */
 
 
 /* [] END OF FILE */
