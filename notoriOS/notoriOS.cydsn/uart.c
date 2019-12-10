@@ -11,9 +11,9 @@
 static char uart_chars[257] = {0};
 static uint8_t num_chars = 0;
 
-static char *line = uart_chars;
-static int match = -1;
-const char *pattern = NULL;
+static const char *line = uart_chars;
+static const char *match = NULL;
+static const char *pattern = NULL;
 
 static void uart_set_baud(uint32_t baud) {
   uint32_t clock = 8 * baud;
@@ -51,20 +51,20 @@ void uart_clear(void) {
   num_chars = 0;
 }
 
-void wait_for(const char *regex, uint32_t timeout) {
-  pattern = regex, match = -1;
+void wait_for(const char *string, uint32_t timeout) {
+  pattern = string, match = NULL;
   uint32_t end = time() + timeout;
-  while (match == -1 && time() < end);
+  while (!match && time() < end);
 }
 
 CY_ISR(Sensors_ISR) {
-  /* Store received char in uart_buf */
+  /* Store received char in uart_chars */
   char rx_char = Sensors_UART_GetChar();
   if (rx_char) uart_chars[num_chars++] = rx_char;
 
-  /* Check regex at end of line */
+  /* Check pattern at end of line */
   if (rx_char == '\r') {
-    match = re_match(pattern, line);
+    match = strstr(line, pattern);
     line = uart_chars + num_chars;
   }
 }

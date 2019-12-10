@@ -138,7 +138,7 @@ typedef struct {
 
 msg_buf msgs[N_PORTS];
 
-static uint8_t num_msgs(uint8_t port) {
+uint8_t num_msgs(uint8_t port) {
   return msgs[port].head - msgs[port].tail;
 }
 

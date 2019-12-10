@@ -9,7 +9,7 @@
 #define N_READINGS 1
 #define TAKE_AVERAGE true
 
-static float parse(const char *string, const config_t *config) {
+static float parse(const char *string, const sensor_t *config) {
   const char *depth_str = strstr(string, "TempI\rR") + 7;
   float depth = strtof(depth_str, NULL);
   bool valid = !(
@@ -19,10 +19,10 @@ static float parse(const char *string, const config_t *config) {
   return valid ? depth : NAN;
 }
 
-float take_reading(const config_t *config) {
+float take_reading(const sensor_t *config) {
   /* Run sensor for 1 second */
   uart_start(config->mux, 9600);
-  wait_for("R\d\d\d\d");
+  wait_for("TempI\r"), wait_for("R");
   uart_stop();
 
   /* Return parsed reading */
@@ -31,7 +31,7 @@ float take_reading(const config_t *config) {
 
 /* === Main Loop === */
 
-void ultrasonic(const config_t *config) {
+void ultrasonic(const sensor_t *config) {
   while (true) {
     float average = 0;
     uint8_t n = N_READINGS;
@@ -44,10 +44,11 @@ void ultrasonic(const config_t *config) {
     average /= n;
 
     msg_t msg_out = { .reading = {
-      .value = average, .time = time(), .unit = UNIT_MM
+      .value = average, .time = time(), 
+      .label = config->label,
+      .sensor = config->model,
     } };
-    memcpy(msg_out.reading.name, config->name, sizeof(config->name));
-    send(READINGS_PORT, &msg_out);
+    send(config->port, &msg_out);
     sleep(config->interval);
   }
 }
