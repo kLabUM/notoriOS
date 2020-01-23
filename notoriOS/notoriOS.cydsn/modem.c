@@ -78,6 +78,13 @@ static void power_off(void) {
   Modem_UART_Stop();
 }
 
+static void reset(void) {
+  Modem_RST_Write(1);
+  wait_ms(200);
+  Modem_RST_Write(0);
+  wait_ms(5000);
+}
+
 /* == Modem Interactions == */
 
 static bool setup(const modem_t *config) {
@@ -108,11 +115,11 @@ static bool set_context(bool activate) {
 static uint8_t startup(const modem_t *config) {
   for (uint8_t i = 1; i < MAX_STARTS; ++i) {
     // Turn on modem, cycle power on failure
-    if (!power_on()) { power_off(); continue; }
+    if (!power_on()) { reset(); continue; }
     // Attempt to connect to network
     if (setup(config) && set_context(true)) return i;
   }
-  return MAX_STARTS;
+  power_off(); return MAX_STARTS;
 }
 
 static bool get_meid(char *meid) {
