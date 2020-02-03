@@ -28,12 +28,14 @@ static sensor_t sensors[] = {
 };
 
 static modem_t modem = {
-  .main = run_modem, .port = 0,
+  .main = run_modem,
   .interval = 1 * 15,
+  .hash = FIRMWARE_HASH,
   .node_id = "invalid_node",
   .apn = "VZWINTERNET",
   .host = "http://167.99.145.246:27317",
   .auth = "dXN1cjpFV1m+PS1MnXTz1tSUkA="
+  .port_in = 0, .port_out = 1;
 };
 
 /* === Debugging === */

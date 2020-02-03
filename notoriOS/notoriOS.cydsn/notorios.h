@@ -7,7 +7,7 @@
 #define N_READY 4        /* Max ready tasks, must be power of 2 > N_TASKS */
 #define STACK_SIZE 2048  /* Stack space for each task in bytes */
 #define N_MESSAGES 16    /* Max buffered messages in each port */
-#define N_PORTS 1        /* Number of shared message ports  */
+#define N_PORTS 2        /* Number of shared message ports  */
 #define N_TIMERS 16      /* Max concurrently running timers */
 
 #define MODEM_STREAM 10
@@ -19,11 +19,13 @@
 typedef struct {
   void *main;         /* Modem driver function */
   uint32_t interval;  /* Sleep interval in seconds */
-  char node_id[20];   /* Up to 20 digit MEID / CCID */
-  char host[48];      /* Server base url (with port) */
+  uint32_t hash;      /* Firmware version hash */
+  char node_id[24];   /* Up to 24 digit MEID / CCID */
+  char host[44];      /* Server base url (with port) */
   char apn[16];       /* APN */
-  char auth[31];      /* Base64 encoded username:password */
-  uint8_t port;       /* Local port to get messages from */
+  char auth[31];      /* X-Api-Key value */
+  uint8_t port_in;    /* Local port to get messages from */
+  uint8_t port_out;   /* Local port to send messages to */
 } modem_t;
 
 typedef struct { 
