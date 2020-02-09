@@ -164,6 +164,10 @@ msg_t *recv(uint8_t port) {
   return pop_msgs(port);
 }
 
+void unack(uint8_t port, uint8_t n) {
+    msgs[port].tail -= n;
+}
+
 /* === Timing === */
 
 typedef struct {

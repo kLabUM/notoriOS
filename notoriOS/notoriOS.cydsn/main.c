@@ -27,23 +27,28 @@ static sensor_t sensors[] = {
   }
 };
 
+#define FIRMWARE_HASH 0x72ea6ec
+
 static modem_t modem = {
   .main = run_modem,
   .interval = 1 * 15,
-  .hash = FIRMWARE_HASH,
-  .node_id = "invalid_node",
+  .header = {
+    .magic = 0xf100d000,
+    .hash = FIRMWARE_HASH,
+    .id = "invalid_node"
+  },
   .apn = "VZWINTERNET",
-  .host = "http://167.99.145.246:27317",
-  .auth = "dXN1cjpFV1m+PS1MnXTz1tSUkA="
-  .port_in = 0, .port_out = 1;
+  .host = "d10s8krdpon9ll.cloudfront.net",
+  .auth = "u8GgAafVx34dvj0BVdOaI5olIyckODrd2hGAgfSM",
+  .port_in = 0, .port_out = 1
 };
 
 /* === Debugging === */
 
 int _write(int file, char *buf, int len) {
   if (file == 1) {
-    // for (int i = 0; i < len; ++i)
-    //   Debug_UART_PutChar(*buf++);
+    for (int i = 0; i < len; ++i)
+      Debug_UART_PutChar(*buf++);
     return len;
   } else if (file == MODEM_STREAM) {
     for (int i = 0; i < len; ++i)
@@ -54,7 +59,6 @@ int _write(int file, char *buf, int len) {
 }
 
 void logger(void) {
-  // Debug_Start();
   while (true) {
     msg_t *msg_in;
     while (!(msg_in = recv(0))) yield();
@@ -66,6 +70,7 @@ void logger(void) {
 
 int main(void) {
   RTC_Start();
+  Debug_UART_Start();
   CyGlobalIntEnable;
   // eventually runs out of heap space
   // so we're leaking memory somewhere
