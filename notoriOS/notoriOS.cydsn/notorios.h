@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define field_size(t, f) (sizeof(((t*)0)->f))
+
 #define N_TASKS 3        /* Total number of possible tasks */
 #define N_READY 4        /* Max ready tasks, must be power of 2 > N_TASKS */
 #define STACK_SIZE 2048  /* Stack space for each task in bytes */

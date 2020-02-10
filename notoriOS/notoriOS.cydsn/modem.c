@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -11,8 +10,6 @@
 
 #define MAX_RETRY 8
 #define MAX_REQUEST 1024
-#define FIXED_HEADER "Content-Length: "
-#define CHUNKED_HEADER "Transfer-Encoder: chunked"
 
 static char chars[257] = {0};
 static uint8_t num_chars = 0;
@@ -24,6 +21,8 @@ static const char *pattern = NULL;
 int _write(int file, char *buf, int len);
 
 static void clear_chars(void) {
+  printf("[%x]\n", time());
+  _write(1, chars, num_chars);
   Modem_UART_ClearRxBuffer();
   memset((void*)chars, 0, 256);
   num_chars = 0;
@@ -61,20 +60,20 @@ static bool at_write(const char *format, uint32_t timeout, ...) {
 }
 
 static bool power_on(void) {
-  // Initialize UART interrupts
+  /* Initialize UART interrupts */
   Modem_UART_Start();
   Modem_ISR_StartEx(Modem_ISR);
   Modem_ON_Write(1);
   Modem_PWR_Write(1);
-  // Start boot sequence
+
+  /* Start boot sequence */
   Modem_ON_Write(0);
   wait_ms(100);
   Modem_ON_Write(1);
-  // Poll for response
-  //wait_ms(40000);
-  //return at_write("AT\r", 2);
-  for (uint8_t i = 0; i < 30; ++i, wait_ms(1000))
-    if (at_write("AT\r", 2)) return true;
+
+  /* Poll for response */
+  for (uint8_t i = 0; i < 30; ++i)
+    if (at_write("AT\r", 1)) return true;
   return false;
 }
 
@@ -97,13 +96,13 @@ static void reset(void) {
 /* == Modem Interactions == */
 
 static bool setup(const modem_t *config) {
-  // Set APN to config->apn
+  /* Set configured APN, full functionality, verbose errors */
   return (at_write("AT+CGDCONT=3,\"IPV4V6\",\"%s\"\r", 2, config->apn) &&
-    at_write("AT+CFUN=1\r", 2) && // Set functionality to full
-    at_write("AT+CMEE=2\r", 2));  // Set verbose error reports
+    at_write("AT+CFUN=1\r", 2) && at_write("AT+CMEE=2\r", 2));
 }
 
 static bool registered(void) {
+  /* Poll until registered to home network */
   for (uint8_t i = 0; i < 30; ++i, wait_ms(1000)) {
     at_write("AT+CEREG?\r", 2);
     if (strstr(chars, "+CEREG: 0,0")) return false;
@@ -124,12 +123,10 @@ static bool set_context(bool activate) {
           OK
   */
   if (!registered() || !at_write("AT^SICA?\r", 2)) return false;
-  // Check if PDP context 3 state already matches 
   unsigned pdp_state = atoi(strstr(chars, "^SICA: 3,") + 9);
   if (pdp_state == activate) return true;
-  if (!at_write("AT^SICA=%u,3\r", 60, activate)) {
-    at_write("AT+CEER\r", 2); return false;
-  }
+  if (!at_write("AT^SICA=%u,3\r", 60, activate))
+    return at_write("AT+CEER\r", 2), false;
   return true;
 }
 
@@ -146,7 +143,7 @@ static bool get_meid(char *meid) {
   if (!at_write("AT+CCID?\r", 2)) return false;
   const char *start = strstr(chars, "+CCID: \"") + 8;
   const char *end = strstr(start, "\",\"");
-  if (!start || !end || end - start > 20) return false;
+  if (!start || !end || end - start > 24) return false;
   memcpy(meid, start, end - start);
   return true;
 }
@@ -170,7 +167,7 @@ static bool socket_connected(void) {
 }
 
 static bool socket_open(const char *host) {
-  // Open TCP socket to specified address
+  /* Open TCP socket to specified address */
   return (at_write("AT^SISS=0,srvType,\"Socket\"\r", 2) &&
     at_write("AT^SISS=0,conID,\"3\"\r", 2) &&
     at_write("AT^SISS=0,address,\"socktcp://%s:%u\"\r", 2, host, 80) &&
@@ -178,8 +175,8 @@ static bool socket_open(const char *host) {
 }
 
 static bool socket_close(void) {
-  // Close active TCP socket
-  return at_write("AT^SISC=0\r", 2);  
+  /* Close active TCP socket */
+  return at_write("AT^SISC=0\r", 2);
 }
 
 /* == High Level Interface == */
@@ -187,52 +184,43 @@ static bool socket_close(void) {
 static char req_buf[MAX_REQUEST] = {0};
 
 static bool send_request(char *request, uint32_t len) {
-  // Write request string to socket in blocks
+  /* Write request string to socket in blocks */
   uint8_t n_blocks = (len + 255) / 256;
   for (uint8_t i = 0; i < n_blocks; ++i) {
     uint32_t wlen = (i == n_blocks - 1 ? len % 256 : 256);
-    at_write("AT^SISW=0,%u\r", 5, wlen);
+    at_write("AT^SISW=0,%u,0\r", 5, wlen);
     wlen = _write(MODEM_STREAM, request + i * 256, wlen);
     if (!socket_connected()) return false;
   }
-  for (uint8_t i = 0; i < 15; ++i, wait_ms(1000)) {
-    at_write("AT^SISI=0\r", 2);
-  }
-  return true;
+  return at_write("AT^SISW=0,0,1\r");
 }
 
 static bool read_status() {
+  /* Check response code in 200 range */
   at_write("AT^SISR=0,224\r", 5);
   const char *resp = strstr(chars, "HTTP/1.1");
   return resp && resp[9] == '2';
 }
 
 static uint32_t read_response(char *buf, uint32_t max_len) {
-  // Check response code in 200 range
-  at_write("AT^SISR=0,224\r", 5);
-  const char *resp = strstr(chars, "HTTP/1.1");
-  if (!resp || resp[9] != '2') return 0;
-  printf("%s", resp);
+  /* Read response length */
+  if (!read_status()) return 0;
+  uint32_t len = atoi(strstr(chars, "Content-Length: "));
+  len = (len > max_len ? max_len : len);
 
-  // Read response length, setup first chunk
-  uint32_t len = atoi(strstr(resp, FIXED_HEADER));
-  if (len > max_len) len = max_len;
-  resp = strstr(resp, "\r\n\r\n") + 4;
+  /* Discard remaining headers */
+  const char *resp = 0;
+  while (!(resp = strstr(chars, "\n\r")))
+    at_write("AT^SISR=0,224\r", 5);
   const char *end = strstr(resp, "\r\n");
 
-  // Keep copying buffers to buf
-  printf("msg len: %u, msg: %s\n", len, resp);
-  uint32_t i = 0, clen = end - resp;
-  for (; i < len; i += clen) {
+  /* Keep copying chars to buf */
+  uint32_t clen = end - resp;
+  for (uint32_t i = 0; i < len; i += clen) {
     memcpy(buf + i, resp, clen);
     at_write("AT^SISR=0,224\r", 5);
     resp = strstr(chars, "\r\n") + 2;
     end = strstr(resp, "\r\n");
-
-    printf("MESSAGE:\n");
-    for (uint32_t j = 0; j < max_len; ++j)
-      printf("%02x", (uint8_t)(buf[j]));
-    printf("\n---\n");
   }
   return len;
 }
@@ -240,7 +228,7 @@ static uint32_t read_response(char *buf, uint32_t max_len) {
 static char *write_post(const modem_t *config, const char *path, uint32_t len) {
   char *ptr = (char*)memset(req_buf, 0, MAX_REQUEST);
   ptr += sprintf(ptr, "POST %s HTTP/1.1\r\n", path);
-  ptr += sprintf(ptr, "Host: %s\r\n", config->host); // Connection: Close\r\n
+  ptr += sprintf(ptr, "Host: %s\r\nConnection: Close\r\n", config->host);
   ptr += sprintf(ptr, "X-Api-Key: %s\r\n", config->auth);
   ptr += sprintf(ptr, "Content-Type: application/octet-stream\r\n");
   ptr += sprintf(ptr, "Accept: application/octet-stream\r\n");
@@ -248,10 +236,12 @@ static char *write_post(const modem_t *config, const char *path, uint32_t len) {
 }
 
 static bool write_readings(const modem_t *config) {
+  if (!socket_open(config->host)) return socket_close(), false;
   uint32_t len = num_msgs(config->port_in);
-  char *ptr = write_post(config, "/write", 32 + len * sizeof(reading_t));
+  uint32_t size = sizeof(header_t) + len * sizeof(reading_t);
+  char *ptr = write_post(config, "/write", size);
 
-  // Copy sensor readings to request body
+  /* Copy sensor readings to request body */
   memcpy(ptr, &(config->header), sizeof(header_t));
   ptr += sizeof(header_t);
   for (uint8_t i = 0; i < len; ++i) {
@@ -259,29 +249,33 @@ static bool write_readings(const modem_t *config) {
     memcpy(ptr, &(recv(config->port_in)->reading), sizeof(reading_t));
     ptr += sizeof(reading_t);
   }
-  // Check response OK, otherwise unack msgs
+
+  /* Check response OK, otherwise unack msgs */
   bool ok = send_request(req_buf, ptr - req_buf) && read_status();
   if (!ok) printf("Failed upload\n"), unack(config->port_in, len);
-  return ok;
+  return socket_close() && ok;
 }
 
 static bool read_updates(const modem_t *config) {
-  char *ptr = write_post(config, "/read/flag", 24);
-  memcpy(ptr, config->header.id, 24);
-  send_request(req_buf, ptr + 24 - req_buf);
+  if (!socket_open(config->host)) return socket_close(), false;
+  char *ptr = write_post(config, "/read/flag", field_size(header_t, id));
+  memcpy(ptr, config->header.id, field_size(header_t, id));
+  send_request(req_buf, ptr + field_size(header_t, id) - req_buf);
 
-  // Verify magic bytes in header_t
+  /* Verify magic bytes in header_t */
   uint32_t len = read_response(req_buf, MAX_REQUEST);
-  if (((header_t*)req_buf)->magic != 0xf100d100)
-    return printf("Invalid download\n"), false;
+  if (((header_t*)req_buf)->magic != 0xf100d100) {
+    printf("Invalid download\n");
+    return socket_close(), false;
+  }
   
-  // Copy messages to local port
+  /* Copy messages to local port */
   msg_t msg_out;
-  for (uint32_t i = 4; i < len; i += sizeof(reading_t)) {
+  for (uint32_t i = sizeof(header_t); i < len; i += sizeof(reading_t)) {
     memcpy(&msg_out.reading, req_buf + i, sizeof(reading_t));
     send(config->port_out, &msg_out);
   }
-  return true;
+  return socket_close();
 }
 
 void run_modem(modem_t *config) {
@@ -292,11 +286,10 @@ void run_modem(modem_t *config) {
         setup(config) &&
         set_context(true) &&
         get_meid(config->header.id) &&
-        socket_open(config->host) &&
         write_readings(config) &&
         read_updates(config)) break;
     }
-    socket_close(); power_off();
+    power_off();
     sleep(config->interval);
   }
 }

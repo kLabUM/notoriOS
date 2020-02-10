@@ -37,11 +37,11 @@ static void check_timers(void);
 
 typedef void func_t(uint32_t[10], uint32_t[10]);
 const uint16_t switch_task_asm[] = {
-    0xf841, 0xdb04, /* str sp, [r1], #4       */
+    0xf841, 0xdb04, /* str sp, [r1], #4         */
     0xe881, 0x4ff1, /* stmia r1, {r0,r4-r11,lr} */
-    0xf850, 0xdb04, /* ldr sp, [r0], #4       */
+    0xf850, 0xdb04, /* ldr sp, [r0], #4         */
     0xe890, 0x8ff1, /* ldmia r0, {r0,r4-r11,pc} */
-    0x4770, 0x0000, /* bx lr                  */
+    0x4770, 0x0000, /* bx lr                    */
 };
 /* Last bit of branch addresses must be 1 for Thumb */
 func_t *switch_task = (func_t*)((uint8_t*)switch_task_asm + 1);
@@ -115,10 +115,11 @@ void awake(uint8_t pid) {
 }
 
 void spawn(uint8_t pid, void *main, void *param) {
+  /* Set sp to stack, r0 to param, pc to main */
   assert(pid < N_TASKS);
-  tasks[pid].regs[0] = (uint32_t)(tasks[pid].stack + STACK_SIZE); // sp
-  tasks[pid].regs[1] = (uint32_t)param; // r0
-  tasks[pid].regs[10] = (uint32_t)main; // pc
+  tasks[pid].regs[0] = (uint32_t)(tasks[pid].stack + STACK_SIZE);
+  tasks[pid].regs[1] = (uint32_t)param;
+  tasks[pid].regs[10] = (uint32_t)main;
   push_ready(pid);
 }
 
