@@ -11,6 +11,7 @@
 */
 #include "project.h"
 #include "notoriOS.h"
+#include "level_sensor.h"
 
 
 //global variables
@@ -39,14 +40,13 @@ CY_ISR(Wakeup_ISR) {
 void ReadyOrNot()
 {
     
-    
     isr_SleepTimer_StartEx(Wakeup_ISR);// Start Sleep ISR
     SleepTimer_Start();             // Start SleepTimer Component
     
-    //RTC_WriteIntervalMask(0b11111111);
-    //RTC_Start();
+    RTC_WriteIntervalMask(0b11111111);
+    RTC_Start();
     
-    alarmMeasure = CreateAlarm(3,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    alarmMeasure = CreateAlarm(2,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 0;
     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     //timeToMeasure = 0;
@@ -61,9 +61,13 @@ void ReadyOrNot()
 // ==============================================
 int WorkWorkWorkWorkWorkWork()
 {
-    CyDelay(100u);
+   
     if(timeToMeasure){
-        CyDelay(1000u);
+        //CyDelay(1000u);
+       LED_Write(1u);
+        CyDelay(100u);
+        LED_Write(0u);
+        timeToMeasure = 0u;
     }
     //if(timeToMeasure2){
         //dosomething
@@ -163,11 +167,20 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
     
 }
 
+
+void test_components(){
+
+    test_t t_level_sensor = level_sensor_test();     
+  
+}
+
 int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
 
     ReadyOrNot();
+    
+    test_components();
    
     for(;;)
     {

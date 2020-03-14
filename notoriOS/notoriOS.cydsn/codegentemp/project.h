@@ -32,8 +32,7 @@
 #include "Power_VDD1.h"
 #include "Power_VDD2_aliases.h"
 #include "Power_VDD2.h"
-#include "Power_VDD3_aliases.h"
-#include "Power_VDD3.h"
+#include "Clock_IMO.h"
 #include "Power_VDD4_aliases.h"
 #include "Power_VDD4.h"
 #include "Power_VBAT_Read_aliases.h"
@@ -46,6 +45,11 @@
 #include "Modem_RX.h"
 #include "Modem_TX_aliases.h"
 #include "Modem_TX.h"
+#include "Level_Sensor_UART.h"
+#include "Level_Sensor_ISR.h"
+#include "Level_Sensor_Power_aliases.h"
+#include "Level_Sensor_Power.h"
+#include "cy_em_eeprom.h"
 #include "core_cm3_psoc5.h"
 #include "CyDmac.h"
 #include "CyFlash.h"
@@ -54,7 +58,6 @@
 #include "cyPm.h"
 #include "CySpc.h"
 #include "cytypes.h"
-#include "cy_em_eeprom.h"
 
 /*[]*/
 

@@ -1,0 +1,2286 @@
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"level_sensor.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.bss
+  20              		.align	2
+  21              	uart_chars:
+  22 0000 00000000 		.space	257
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  22      00000000 
+  23              	num_chars:
+  24 0101 00       		.space	1
+  25              		.data
+  26              		.align	2
+  27              		.type	line, %object
+  28              		.size	line, 4
+  29              	line:
+  30 0000 00000000 		.word	uart_chars
+  31              		.bss
+  32 0102 0000     		.align	2
+  33              	match:
+  34 0104 00000000 		.space	4
+  35              		.align	2
+  36              	pattern:
+  37 0108 00000000 		.space	4
+  38              		.section	.text.uart_string,"ax",%progbits
+  39              		.align	2
+  40              		.global	uart_string
+  41              		.thumb
+  42              		.thumb_func
+  43              		.type	uart_string, %function
+  44              	uart_string:
+  45              	.LFB64:
+  46              		.file 1 "level_sensor.c"
+   1:level_sensor.c **** #include "level_sensor.h"
+   2:level_sensor.c **** #include <assert.h>
+   3:level_sensor.c **** #include <stdint.h>
+   4:level_sensor.c **** #include <stdbool.h>
+   5:level_sensor.c **** #include <math.h>
+   6:level_sensor.c **** #include <stdio.h>
+   7:level_sensor.c **** #include "level_sensor.h"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 2
+
+
+   8:level_sensor.c **** #include "notoriOS.h"
+   9:level_sensor.c **** #include "project.h"
+  10:level_sensor.c **** 
+  11:level_sensor.c **** 
+  12:level_sensor.c **** /* === Driver Functions === */
+  13:level_sensor.c **** 
+  14:level_sensor.c **** //sensor realated global calls
+  15:level_sensor.c **** 
+  16:level_sensor.c **** 
+  17:level_sensor.c **** 
+  18:level_sensor.c **** 
+  19:level_sensor.c **** /* Circular buffer of recently received chars */
+  20:level_sensor.c **** static char uart_chars[257] = {0};
+  21:level_sensor.c **** static uint8_t num_chars = 0;
+  22:level_sensor.c **** 
+  23:level_sensor.c **** static const char *line = uart_chars;
+  24:level_sensor.c **** static const char *match = NULL;
+  25:level_sensor.c **** static const char *pattern = NULL;
+  26:level_sensor.c **** 
+  27:level_sensor.c **** 
+  28:level_sensor.c **** 
+  29:level_sensor.c **** const char *uart_string(void) {
+  47              		.loc 1 29 0
+  48              		.cfi_startproc
+  49              		@ args = 0, pretend = 0, frame = 0
+  50              		@ frame_needed = 1, uses_anonymous_args = 0
+  51              		@ link register save eliminated.
+  52 0000 80B4     		push	{r7}
+  53              		.cfi_def_cfa_offset 4
+  54              		.cfi_offset 7, -4
+  55 0002 00AF     		add	r7, sp, #0
+  56              		.cfi_def_cfa_register 7
+  30:level_sensor.c ****   return (char*)uart_chars;
+  57              		.loc 1 30 0
+  58 0004 024B     		ldr	r3, .L3
+  31:level_sensor.c **** }
+  59              		.loc 1 31 0
+  60 0006 1846     		mov	r0, r3
+  61 0008 BD46     		mov	sp, r7
+  62              		.cfi_def_cfa_register 13
+  63              		@ sp needed
+  64 000a 80BC     		pop	{r7}
+  65              		.cfi_restore 7
+  66              		.cfi_def_cfa_offset 0
+  67 000c 7047     		bx	lr
+  68              	.L4:
+  69 000e 00BF     		.align	2
+  70              	.L3:
+  71 0010 00000000 		.word	uart_chars
+  72              		.cfi_endproc
+  73              	.LFE64:
+  74              		.size	uart_string, .-uart_string
+  75              		.section	.text.uart_len,"ax",%progbits
+  76              		.align	2
+  77              		.global	uart_len
+  78              		.thumb
+  79              		.thumb_func
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 3
+
+
+  80              		.type	uart_len, %function
+  81              	uart_len:
+  82              	.LFB65:
+  32:level_sensor.c **** 
+  33:level_sensor.c **** uint8_t uart_len(void) {
+  83              		.loc 1 33 0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 1, uses_anonymous_args = 0
+  87              		@ link register save eliminated.
+  88 0000 80B4     		push	{r7}
+  89              		.cfi_def_cfa_offset 4
+  90              		.cfi_offset 7, -4
+  91 0002 00AF     		add	r7, sp, #0
+  92              		.cfi_def_cfa_register 7
+  34:level_sensor.c ****   return num_chars;
+  93              		.loc 1 34 0
+  94 0004 024B     		ldr	r3, .L7
+  95 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  35:level_sensor.c **** }
+  96              		.loc 1 35 0
+  97 0008 1846     		mov	r0, r3
+  98 000a BD46     		mov	sp, r7
+  99              		.cfi_def_cfa_register 13
+ 100              		@ sp needed
+ 101 000c 80BC     		pop	{r7}
+ 102              		.cfi_restore 7
+ 103              		.cfi_def_cfa_offset 0
+ 104 000e 7047     		bx	lr
+ 105              	.L8:
+ 106              		.align	2
+ 107              	.L7:
+ 108 0010 01010000 		.word	num_chars
+ 109              		.cfi_endproc
+ 110              	.LFE65:
+ 111              		.size	uart_len, .-uart_len
+ 112              		.section	.text.uart_clear,"ax",%progbits
+ 113              		.align	2
+ 114              		.global	uart_clear
+ 115              		.thumb
+ 116              		.thumb_func
+ 117              		.type	uart_clear, %function
+ 118              	uart_clear:
+ 119              	.LFB66:
+  36:level_sensor.c **** 
+  37:level_sensor.c **** void uart_clear(void) {
+ 120              		.loc 1 37 0
+ 121              		.cfi_startproc
+ 122              		@ args = 0, pretend = 0, frame = 0
+ 123              		@ frame_needed = 1, uses_anonymous_args = 0
+ 124 0000 80B5     		push	{r7, lr}
+ 125              		.cfi_def_cfa_offset 8
+ 126              		.cfi_offset 7, -8
+ 127              		.cfi_offset 14, -4
+ 128 0002 00AF     		add	r7, sp, #0
+ 129              		.cfi_def_cfa_register 7
+  38:level_sensor.c ****   Level_Sensor_UART_ClearRxBuffer();
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 4
+
+
+ 130              		.loc 1 38 0
+ 131 0004 FFF7FEFF 		bl	Level_Sensor_UART_ClearRxBuffer
+  39:level_sensor.c ****   memset((void*)uart_chars, 0, 256);
+ 132              		.loc 1 39 0
+ 133 0008 4FF48072 		mov	r2, #256
+ 134 000c 0021     		movs	r1, #0
+ 135 000e 0448     		ldr	r0, .L10
+ 136 0010 FFF7FEFF 		bl	memset
+  40:level_sensor.c ****   num_chars = 0;
+ 137              		.loc 1 40 0
+ 138 0014 034B     		ldr	r3, .L10+4
+ 139 0016 0022     		movs	r2, #0
+ 140 0018 1A70     		strb	r2, [r3]
+  41:level_sensor.c **** }
+ 141              		.loc 1 41 0
+ 142 001a 00BF     		nop
+ 143 001c 80BD     		pop	{r7, pc}
+ 144              	.L11:
+ 145 001e 00BF     		.align	2
+ 146              	.L10:
+ 147 0020 00000000 		.word	uart_chars
+ 148 0024 01010000 		.word	num_chars
+ 149              		.cfi_endproc
+ 150              	.LFE66:
+ 151              		.size	uart_clear, .-uart_clear
+ 152              		.section	.text.Level_Sensor_ISR,"ax",%progbits
+ 153              		.align	2
+ 154              		.global	Level_Sensor_ISR
+ 155              		.thumb
+ 156              		.thumb_func
+ 157              		.type	Level_Sensor_ISR, %function
+ 158              	Level_Sensor_ISR:
+ 159              	.LFB67:
+  42:level_sensor.c **** 
+  43:level_sensor.c **** CY_ISR(Level_Sensor_ISR) {
+ 160              		.loc 1 43 0
+ 161              		.cfi_startproc
+ 162              		@ args = 0, pretend = 0, frame = 8
+ 163              		@ frame_needed = 1, uses_anonymous_args = 0
+ 164 0000 80B5     		push	{r7, lr}
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 7, -8
+ 167              		.cfi_offset 14, -4
+ 168 0002 82B0     		sub	sp, sp, #8
+ 169              		.cfi_def_cfa_offset 16
+ 170 0004 00AF     		add	r7, sp, #0
+ 171              		.cfi_def_cfa_register 7
+  44:level_sensor.c ****   /* Store received char in uart_chars */
+  45:level_sensor.c ****   char rx_char = Level_Sensor_UART_GetChar();
+ 172              		.loc 1 45 0
+ 173 0006 FFF7FEFF 		bl	Level_Sensor_UART_GetChar
+ 174 000a 0346     		mov	r3, r0
+ 175 000c FB71     		strb	r3, [r7, #7]
+  46:level_sensor.c ****   if (rx_char) uart_chars[num_chars++] = rx_char;
+ 176              		.loc 1 46 0
+ 177 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 178 0010 002B     		cmp	r3, #0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 5
+
+
+ 179 0012 09D0     		beq	.L13
+ 180              		.loc 1 46 0 is_stmt 0 discriminator 1
+ 181 0014 114B     		ldr	r3, .L16
+ 182 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 183 0018 5A1C     		adds	r2, r3, #1
+ 184 001a D1B2     		uxtb	r1, r2
+ 185 001c 0F4A     		ldr	r2, .L16
+ 186 001e 1170     		strb	r1, [r2]
+ 187 0020 1946     		mov	r1, r3
+ 188 0022 0F4A     		ldr	r2, .L16+4
+ 189 0024 FB79     		ldrb	r3, [r7, #7]
+ 190 0026 5354     		strb	r3, [r2, r1]
+ 191              	.L13:
+  47:level_sensor.c **** 
+  48:level_sensor.c ****   /* Check pattern at end of line */
+  49:level_sensor.c ****   if (rx_char == '\r') {
+ 192              		.loc 1 49 0 is_stmt 1
+ 193 0028 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 194 002a 0D2B     		cmp	r3, #13
+ 195 002c 11D1     		bne	.L15
+  50:level_sensor.c ****     match = strstr(line, pattern);
+ 196              		.loc 1 50 0
+ 197 002e 0D4B     		ldr	r3, .L16+8
+ 198 0030 1A68     		ldr	r2, [r3]
+ 199 0032 0D4B     		ldr	r3, .L16+12
+ 200 0034 1B68     		ldr	r3, [r3]
+ 201 0036 1946     		mov	r1, r3
+ 202 0038 1046     		mov	r0, r2
+ 203 003a FFF7FEFF 		bl	strstr
+ 204 003e 0246     		mov	r2, r0
+ 205 0040 0A4B     		ldr	r3, .L16+16
+ 206 0042 1A60     		str	r2, [r3]
+  51:level_sensor.c ****     line = uart_chars + num_chars;
+ 207              		.loc 1 51 0
+ 208 0044 054B     		ldr	r3, .L16
+ 209 0046 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 210 0048 1A46     		mov	r2, r3
+ 211 004a 054B     		ldr	r3, .L16+4
+ 212 004c 1344     		add	r3, r3, r2
+ 213 004e 054A     		ldr	r2, .L16+8
+ 214 0050 1360     		str	r3, [r2]
+ 215              	.L15:
+  52:level_sensor.c ****   }
+  53:level_sensor.c **** }
+ 216              		.loc 1 53 0
+ 217 0052 00BF     		nop
+ 218 0054 0837     		adds	r7, r7, #8
+ 219              		.cfi_def_cfa_offset 8
+ 220 0056 BD46     		mov	sp, r7
+ 221              		.cfi_def_cfa_register 13
+ 222              		@ sp needed
+ 223 0058 80BD     		pop	{r7, pc}
+ 224              	.L17:
+ 225 005a 00BF     		.align	2
+ 226              	.L16:
+ 227 005c 01010000 		.word	num_chars
+ 228 0060 00000000 		.word	uart_chars
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 6
+
+
+ 229 0064 00000000 		.word	line
+ 230 0068 08010000 		.word	pattern
+ 231 006c 04010000 		.word	match
+ 232              		.cfi_endproc
+ 233              	.LFE67:
+ 234              		.size	Level_Sensor_ISR, .-Level_Sensor_ISR
+ 235              		.section	.rodata
+ 236              		.align	2
+ 237              	.LC0:
+ 238 0000 5200     		.ascii	"R\000"
+ 239              		.section	.text.level_sensor_take_reading,"ax",%progbits
+ 240              		.align	2
+ 241              		.global	level_sensor_take_reading
+ 242              		.thumb
+ 243              		.thumb_func
+ 244              		.type	level_sensor_take_reading, %function
+ 245              	level_sensor_take_reading:
+ 246              	.LFB68:
+  54:level_sensor.c **** 
+  55:level_sensor.c **** 
+  56:level_sensor.c **** level_sensor_t level_sensor_take_reading(){
+ 247              		.loc 1 56 0
+ 248              		.cfi_startproc
+ 249              		@ args = 0, pretend = 0, frame = 40
+ 250              		@ frame_needed = 1, uses_anonymous_args = 0
+ 251 0000 B0B5     		push	{r4, r5, r7, lr}
+ 252              		.cfi_def_cfa_offset 16
+ 253              		.cfi_offset 4, -16
+ 254              		.cfi_offset 5, -12
+ 255              		.cfi_offset 7, -8
+ 256              		.cfi_offset 14, -4
+ 257 0002 8AB0     		sub	sp, sp, #40
+ 258              		.cfi_def_cfa_offset 56
+ 259 0004 00AF     		add	r7, sp, #0
+ 260              		.cfi_def_cfa_register 7
+ 261 0006 7860     		str	r0, [r7, #4]
+  57:level_sensor.c ****     
+  58:level_sensor.c ****     
+  59:level_sensor.c ****     level_sensor_t level_sensor_output;
+  60:level_sensor.c ****     level_sensor_output.num_invalid_readings = 0;
+ 262              		.loc 1 60 0
+ 263 0008 0023     		movs	r3, #0
+ 264 000a 87F82130 		strb	r3, [r7, #33]
+  61:level_sensor.c ****     level_sensor_output.num_valid_readings = 0;
+ 265              		.loc 1 61 0
+ 266 000e 0023     		movs	r3, #0
+ 267 0010 87F82030 		strb	r3, [r7, #32]
+  62:level_sensor.c ****     
+  63:level_sensor.c ****     uart_clear();
+ 268              		.loc 1 63 0
+ 269 0014 FFF7FEFF 		bl	uart_clear
+  64:level_sensor.c ****     
+  65:level_sensor.c ****     //start sensor power, uart, and isr
+  66:level_sensor.c ****     Level_Sensor_Power_Write(ON);
+ 270              		.loc 1 66 0
+ 271 0018 0120     		movs	r0, #1
+ 272 001a FFF7FEFF 		bl	Level_Sensor_Power_Write
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 7
+
+
+  67:level_sensor.c ****     CyDelay(200u);//sensor bootup sequence ~200ms -- senosor will spit out ID info, but we don't ne
+ 273              		.loc 1 67 0
+ 274 001e C820     		movs	r0, #200
+ 275 0020 FFF7FEFF 		bl	CyDelay
+  68:level_sensor.c ****     Level_Sensor_UART_Start();
+ 276              		.loc 1 68 0
+ 277 0024 FFF7FEFF 		bl	Level_Sensor_UART_Start
+  69:level_sensor.c ****     Level_Sensor_ISR_StartEx(Level_Sensor_ISR);
+ 278              		.loc 1 69 0
+ 279 0028 3448     		ldr	r0, .L27
+ 280 002a FFF7FEFF 		bl	Level_Sensor_ISR_StartEx
+  70:level_sensor.c ****     
+  71:level_sensor.c ****     //wait to take  reading
+  72:level_sensor.c ****     //sensor will take ~200ms to send first reading, and 200ms for subsequent readings
+  73:level_sensor.c ****     CyDelay(2000u);//take a few seconds to get readings, 2 secs ~10 readings
+ 281              		.loc 1 73 0
+ 282 002e 4FF4FA60 		mov	r0, #2000
+ 283 0032 FFF7FEFF 		bl	CyDelay
+  74:level_sensor.c ****     
+  75:level_sensor.c ****     //stop all sensor processes
+  76:level_sensor.c ****     Level_Sensor_UART_Stop();
+ 284              		.loc 1 76 0
+ 285 0036 FFF7FEFF 		bl	Level_Sensor_UART_Stop
+  77:level_sensor.c ****     Level_Sensor_ISR_Stop();
+ 286              		.loc 1 77 0
+ 287 003a FFF7FEFF 		bl	Level_Sensor_ISR_Stop
+  78:level_sensor.c ****     Level_Sensor_Power_Write(OFF);
+ 288              		.loc 1 78 0
+ 289 003e 0020     		movs	r0, #0
+ 290 0040 FFF7FEFF 		bl	Level_Sensor_Power_Write
+  79:level_sensor.c **** 
+  80:level_sensor.c ****     /* Return parsed reading */
+  81:level_sensor.c ****     //parse string and put all values into array
+  82:level_sensor.c ****     //the sensor will power on and do a few things, after which the readigs will follow with the se
+  83:level_sensor.c ****     //readings are stashed between "R" and "\000"
+  84:level_sensor.c ****     char *token;
+  85:level_sensor.c ****     token = strtok(uart_chars, "R");
+ 291              		.loc 1 85 0
+ 292 0044 2E49     		ldr	r1, .L27+4
+ 293 0046 2F48     		ldr	r0, .L27+8
+ 294 0048 FFF7FEFF 		bl	strtok
+ 295 004c 7862     		str	r0, [r7, #36]
+  86:level_sensor.c ****     /* walk through other tokens */
+  87:level_sensor.c ****    while( token != NULL ) 
+ 296              		.loc 1 87 0
+ 297 004e 33E0     		b	.L19
+ 298              	.L24:
+  88:level_sensor.c ****    {
+  89:level_sensor.c ****       if(strstr(token, "\r") != NULL){//full reading is delimieted by "R" + reading + "\r"
+ 299              		.loc 1 89 0
+ 300 0050 0D21     		movs	r1, #13
+ 301 0052 786A     		ldr	r0, [r7, #36]
+ 302 0054 FFF7FEFF 		bl	strchr
+ 303 0058 0346     		mov	r3, r0
+ 304 005a 002B     		cmp	r3, #0
+ 305 005c 27D0     		beq	.L20
+ 306              	.LBB2:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 8
+
+
+  90:level_sensor.c ****         uint16 reading = atoi(token);
+ 307              		.loc 1 90 0
+ 308 005e 786A     		ldr	r0, [r7, #36]
+ 309 0060 FFF7FEFF 		bl	atoi
+ 310 0064 0346     		mov	r3, r0
+ 311 0066 7B84     		strh	r3, [r7, #34]	@ movhi
+  91:level_sensor.c ****         if(reading != 0){
+ 312              		.loc 1 91 0
+ 313 0068 7B8C     		ldrh	r3, [r7, #34]
+ 314 006a 002B     		cmp	r3, #0
+ 315 006c 1FD0     		beq	.L20
+  92:level_sensor.c ****             if(reading != READING_INVALID){//invald readings by maxbotix
+ 316              		.loc 1 92 0
+ 317 006e 7B8C     		ldrh	r3, [r7, #34]
+ 318 0070 42F20F72 		movw	r2, #9999
+ 319 0074 9342     		cmp	r3, r2
+ 320 0076 14D0     		beq	.L21
+  93:level_sensor.c ****                 level_sensor_output.all_level_readings[level_sensor_output.num_valid_readings] = re
+ 321              		.loc 1 93 0
+ 322 0078 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
+ 323 007c B7F92220 		ldrsh	r2, [r7, #34]
+ 324 0080 5B00     		lsls	r3, r3, #1
+ 325 0082 07F12801 		add	r1, r7, #40
+ 326 0086 0B44     		add	r3, r3, r1
+ 327 0088 23F8202C 		strh	r2, [r3, #-32]	@ movhi
+  94:level_sensor.c ****                 if(level_sensor_output.num_valid_readings < N_READINGS){
+ 328              		.loc 1 94 0
+ 329 008c 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
+ 330 0090 0A2B     		cmp	r3, #10
+ 331 0092 15D8     		bhi	.L26
+  95:level_sensor.c ****                     level_sensor_output.num_valid_readings++;
+ 332              		.loc 1 95 0
+ 333 0094 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
+ 334 0098 0133     		adds	r3, r3, #1
+ 335 009a DBB2     		uxtb	r3, r3
+ 336 009c 87F82030 		strb	r3, [r7, #32]
+ 337 00a0 05E0     		b	.L20
+ 338              	.L21:
+  96:level_sensor.c ****                 }else{
+  97:level_sensor.c ****                  break;   
+  98:level_sensor.c ****                 }
+  99:level_sensor.c ****                 
+ 100:level_sensor.c ****             }else{
+ 101:level_sensor.c ****                 level_sensor_output.num_invalid_readings++;
+ 339              		.loc 1 101 0
+ 340 00a2 97F82130 		ldrb	r3, [r7, #33]	@ zero_extendqisi2
+ 341 00a6 0133     		adds	r3, r3, #1
+ 342 00a8 DBB2     		uxtb	r3, r3
+ 343 00aa 87F82130 		strb	r3, [r7, #33]
+ 344              	.L20:
+ 345              	.LBE2:
+ 102:level_sensor.c ****             }
+ 103:level_sensor.c ****         }
+ 104:level_sensor.c ****       }
+ 105:level_sensor.c ****       token = strtok(NULL, "R");
+ 346              		.loc 1 105 0
+ 347 00ae 1449     		ldr	r1, .L27+4
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 9
+
+
+ 348 00b0 0020     		movs	r0, #0
+ 349 00b2 FFF7FEFF 		bl	strtok
+ 350 00b6 7862     		str	r0, [r7, #36]
+ 351              	.L19:
+  87:level_sensor.c ****    {
+ 352              		.loc 1 87 0
+ 353 00b8 7B6A     		ldr	r3, [r7, #36]
+ 354 00ba 002B     		cmp	r3, #0
+ 355 00bc C8D1     		bne	.L24
+ 356 00be 00E0     		b	.L23
+ 357              	.L26:
+ 358              	.LBB3:
+  97:level_sensor.c ****                 }
+ 359              		.loc 1 97 0
+ 360 00c0 00BF     		nop
+ 361              	.L23:
+ 362              	.LBE3:
+ 106:level_sensor.c ****    }
+ 107:level_sensor.c ****     //calculate median
+ 108:level_sensor.c ****     level_sensor_output.level_reading = find_median(level_sensor_output.all_level_readings,level_se
+ 363              		.loc 1 108 0
+ 364 00c2 97F82020 		ldrb	r2, [r7, #32]	@ zero_extendqisi2
+ 365 00c6 07F10803 		add	r3, r7, #8
+ 366 00ca 1146     		mov	r1, r2
+ 367 00cc 1846     		mov	r0, r3
+ 368 00ce FFF7FEFF 		bl	find_median
+ 369 00d2 0346     		mov	r3, r0
+ 370 00d4 1BB2     		sxth	r3, r3
+ 371 00d6 FB83     		strh	r3, [r7, #30]	@ movhi
+ 109:level_sensor.c ****  
+ 110:level_sensor.c ****     return level_sensor_output;
+ 372              		.loc 1 110 0
+ 373 00d8 7B68     		ldr	r3, [r7, #4]
+ 374 00da 1D46     		mov	r5, r3
+ 375 00dc 07F10804 		add	r4, r7, #8
+ 376 00e0 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 377 00e2 2860     		str	r0, [r5]	@ unaligned
+ 378 00e4 6960     		str	r1, [r5, #4]	@ unaligned
+ 379 00e6 AA60     		str	r2, [r5, #8]	@ unaligned
+ 380 00e8 EB60     		str	r3, [r5, #12]	@ unaligned
+ 381 00ea 03CC     		ldmia	r4!, {r0, r1}
+ 382 00ec 2861     		str	r0, [r5, #16]	@ unaligned
+ 383 00ee 6961     		str	r1, [r5, #20]	@ unaligned
+ 384 00f0 2388     		ldrh	r3, [r4]	@ unaligned
+ 385 00f2 2B83     		strh	r3, [r5, #24]	@ unaligned
+ 111:level_sensor.c **** }
+ 386              		.loc 1 111 0
+ 387 00f4 7868     		ldr	r0, [r7, #4]
+ 388 00f6 2837     		adds	r7, r7, #40
+ 389              		.cfi_def_cfa_offset 16
+ 390 00f8 BD46     		mov	sp, r7
+ 391              		.cfi_def_cfa_register 13
+ 392              		@ sp needed
+ 393 00fa B0BD     		pop	{r4, r5, r7, pc}
+ 394              	.L28:
+ 395              		.align	2
+ 396              	.L27:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 10
+
+
+ 397 00fc 00000000 		.word	Level_Sensor_ISR
+ 398 0100 00000000 		.word	.LC0
+ 399 0104 00000000 		.word	uart_chars
+ 400              		.cfi_endproc
+ 401              	.LFE68:
+ 402              		.size	level_sensor_take_reading, .-level_sensor_take_reading
+ 403              		.section	.rodata
+ 404 0002 0000     		.align	2
+ 405              	.LC1:
+ 406 0004 54455354 		.ascii	"TEST_LEVEL_SENSOR\015\000"
+ 406      5F4C4556 
+ 406      454C5F53 
+ 406      454E534F 
+ 406      520D00
+ 407 0017 00       		.align	2
+ 408              	.LC2:
+ 409 0018 6E57414E 		.ascii	"nWANTED=%d,nRECEIVED=%d,nVALID=%d,nMEDIAN=%d.\015\000"
+ 409      5445443D 
+ 409      25642C6E 
+ 409      52454345 
+ 409      49564544 
+ 410              		.section	.text.level_sensor_test,"ax",%progbits
+ 411              		.align	2
+ 412              		.global	level_sensor_test
+ 413              		.thumb
+ 414              		.thumb_func
+ 415              		.type	level_sensor_test, %function
+ 416              	level_sensor_test:
+ 417              	.LFB69:
+ 112:level_sensor.c **** 
+ 113:level_sensor.c **** 
+ 114:level_sensor.c **** test_t level_sensor_test(){
+ 418              		.loc 1 114 0
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 424
+ 421              		@ frame_needed = 1, uses_anonymous_args = 0
+ 422 0000 B0B5     		push	{r4, r5, r7, lr}
+ 423              		.cfi_def_cfa_offset 16
+ 424              		.cfi_offset 4, -16
+ 425              		.cfi_offset 5, -12
+ 426              		.cfi_offset 7, -8
+ 427              		.cfi_offset 14, -4
+ 428 0002 ECB0     		sub	sp, sp, #432
+ 429              		.cfi_def_cfa_offset 448
+ 430 0004 02AF     		add	r7, sp, #8
+ 431              		.cfi_def_cfa 7, 440
+ 432 0006 3B1D     		adds	r3, r7, #4
+ 433 0008 1860     		str	r0, [r3]
+ 115:level_sensor.c ****     test_t test;
+ 116:level_sensor.c ****     test.status = 0;
+ 434              		.loc 1 116 0
+ 435 000a 07F12403 		add	r3, r7, #36
+ 436 000e 0022     		movs	r2, #0
+ 437 0010 83F88020 		strb	r2, [r3, #128]
+ 117:level_sensor.c ****     sprintf(test.test_name,"TEST_LEVEL_SENSOR\r");
+ 438              		.loc 1 117 0
+ 439 0014 07F12403 		add	r3, r7, #36
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 11
+
+
+ 440 0018 2B4A     		ldr	r2, .L33
+ 441 001a 1C46     		mov	r4, r3
+ 442 001c 1546     		mov	r5, r2
+ 443 001e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 444 0020 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 445 0022 2B68     		ldr	r3, [r5]
+ 446 0024 1A46     		mov	r2, r3	@ movhi
+ 447 0026 2280     		strh	r2, [r4]	@ movhi
+ 448 0028 0234     		adds	r4, r4, #2
+ 449 002a 1B0C     		lsrs	r3, r3, #16
+ 450 002c 2370     		strb	r3, [r4]
+ 118:level_sensor.c **** 
+ 119:level_sensor.c ****     level_sensor_t sensor = level_sensor_take_reading();
+ 451              		.loc 1 119 0
+ 452 002e 07F10803 		add	r3, r7, #8
+ 453 0032 1846     		mov	r0, r3
+ 454 0034 FFF7FEFF 		bl	level_sensor_take_reading
+ 120:level_sensor.c ****     
+ 121:level_sensor.c ****     sprintf(test.reason,"nWANTED=%d,nRECEIVED=%d,nVALID=%d,nMEDIAN=%d.\r",
+ 122:level_sensor.c ****         N_READINGS,
+ 123:level_sensor.c ****         sensor.num_valid_readings+sensor.num_invalid_readings,
+ 455              		.loc 1 123 0
+ 456 0038 07F10803 		add	r3, r7, #8
+ 457 003c 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
+ 121:level_sensor.c ****         N_READINGS,
+ 458              		.loc 1 121 0
+ 459 003e 1A46     		mov	r2, r3
+ 460              		.loc 1 123 0
+ 461 0040 07F10803 		add	r3, r7, #8
+ 462 0044 5B7E     		ldrb	r3, [r3, #25]	@ zero_extendqisi2
+ 121:level_sensor.c ****         N_READINGS,
+ 463              		.loc 1 121 0
+ 464 0046 1A44     		add	r2, r2, r3
+ 124:level_sensor.c ****         sensor.num_valid_readings,
+ 465              		.loc 1 124 0
+ 466 0048 07F10803 		add	r3, r7, #8
+ 467 004c 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
+ 121:level_sensor.c ****         N_READINGS,
+ 468              		.loc 1 121 0
+ 469 004e 1946     		mov	r1, r3
+ 125:level_sensor.c ****         sensor.level_reading
+ 470              		.loc 1 125 0
+ 471 0050 07F10803 		add	r3, r7, #8
+ 472 0054 B3F91630 		ldrsh	r3, [r3, #22]
+ 121:level_sensor.c ****         N_READINGS,
+ 473              		.loc 1 121 0
+ 474 0058 1C46     		mov	r4, r3
+ 475 005a 07F12403 		add	r3, r7, #36
+ 476 005e 03F18100 		add	r0, r3, #129
+ 477 0062 0194     		str	r4, [sp, #4]
+ 478 0064 0091     		str	r1, [sp]
+ 479 0066 1346     		mov	r3, r2
+ 480 0068 0B22     		movs	r2, #11
+ 481 006a 1849     		ldr	r1, .L33+4
+ 482 006c FFF7FEFF 		bl	sprintf
+ 126:level_sensor.c ****     );
+ 127:level_sensor.c ****    
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 12
+
+
+ 128:level_sensor.c ****     
+ 129:level_sensor.c ****     if(sensor.num_valid_readings == N_READINGS){//pass
+ 483              		.loc 1 129 0
+ 484 0070 07F10803 		add	r3, r7, #8
+ 485 0074 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
+ 486 0076 0B2B     		cmp	r3, #11
+ 487 0078 05D1     		bne	.L30
+ 130:level_sensor.c ****         test.status = 1;
+ 488              		.loc 1 130 0
+ 489 007a 07F12403 		add	r3, r7, #36
+ 490 007e 0122     		movs	r2, #1
+ 491 0080 83F88020 		strb	r2, [r3, #128]
+ 492 0084 0EE0     		b	.L31
+ 493              	.L30:
+ 131:level_sensor.c ****     }else if((sensor.num_valid_readings > 0) && (sensor.num_valid_readings < N_READINGS)){//pass
+ 494              		.loc 1 131 0
+ 495 0086 07F10803 		add	r3, r7, #8
+ 496 008a 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
+ 497 008c 002B     		cmp	r3, #0
+ 498 008e 09D0     		beq	.L31
+ 499              		.loc 1 131 0 is_stmt 0 discriminator 1
+ 500 0090 07F10803 		add	r3, r7, #8
+ 501 0094 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
+ 502 0096 0A2B     		cmp	r3, #10
+ 503 0098 04D8     		bhi	.L31
+ 132:level_sensor.c ****         test.status = 2;//not bad, since we got some OK readings
+ 504              		.loc 1 132 0 is_stmt 1
+ 505 009a 07F12403 		add	r3, r7, #36
+ 506 009e 0222     		movs	r2, #2
+ 507 00a0 83F88020 		strb	r2, [r3, #128]
+ 508              	.L31:
+ 133:level_sensor.c ****     }
+ 134:level_sensor.c ****         
+ 135:level_sensor.c ****     return test;
+ 509              		.loc 1 135 0
+ 510 00a4 3B1D     		adds	r3, r7, #4
+ 511 00a6 1A68     		ldr	r2, [r3]
+ 512 00a8 07F12403 		add	r3, r7, #36
+ 513 00ac 1046     		mov	r0, r2
+ 514 00ae 1946     		mov	r1, r3
+ 515 00b0 40F28113 		movw	r3, #385
+ 516 00b4 1A46     		mov	r2, r3
+ 517 00b6 FFF7FEFF 		bl	memcpy
+ 136:level_sensor.c **** }
+ 518              		.loc 1 136 0
+ 519 00ba 3B1D     		adds	r3, r7, #4
+ 520 00bc 1868     		ldr	r0, [r3]
+ 521 00be 07F5D477 		add	r7, r7, #424
+ 522              		.cfi_def_cfa_offset 16
+ 523 00c2 BD46     		mov	sp, r7
+ 524              		.cfi_def_cfa_register 13
+ 525              		@ sp needed
+ 526 00c4 B0BD     		pop	{r4, r5, r7, pc}
+ 527              	.L34:
+ 528 00c6 00BF     		.align	2
+ 529              	.L33:
+ 530 00c8 04000000 		.word	.LC1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 13
+
+
+ 531 00cc 18000000 		.word	.LC2
+ 532              		.cfi_endproc
+ 533              	.LFE69:
+ 534              		.size	level_sensor_test, .-level_sensor_test
+ 535              		.global	__aeabi_i2d
+ 536              		.global	__aeabi_ddiv
+ 537              		.global	__aeabi_d2iz
+ 538              		.section	.text.find_median,"ax",%progbits
+ 539              		.align	2
+ 540              		.global	find_median
+ 541              		.thumb
+ 542              		.thumb_func
+ 543              		.type	find_median, %function
+ 544              	find_median:
+ 545              	.LFB70:
+ 137:level_sensor.c **** 
+ 138:level_sensor.c **** 
+ 139:level_sensor.c **** // function to calculate the median of the array, after array is sorted
+ 140:level_sensor.c **** uint16 find_median(int16 array[] , uint8 n)
+ 141:level_sensor.c **** {
+ 546              		.loc 1 141 0
+ 547              		.cfi_startproc
+ 548              		@ args = 0, pretend = 0, frame = 16
+ 549              		@ frame_needed = 1, uses_anonymous_args = 0
+ 550 0000 90B5     		push	{r4, r7, lr}
+ 551              		.cfi_def_cfa_offset 12
+ 552              		.cfi_offset 4, -12
+ 553              		.cfi_offset 7, -8
+ 554              		.cfi_offset 14, -4
+ 555 0002 85B0     		sub	sp, sp, #20
+ 556              		.cfi_def_cfa_offset 32
+ 557 0004 00AF     		add	r7, sp, #0
+ 558              		.cfi_def_cfa_register 7
+ 559 0006 7860     		str	r0, [r7, #4]
+ 560 0008 0B46     		mov	r3, r1
+ 561 000a FB70     		strb	r3, [r7, #3]
+ 142:level_sensor.c ****     int16 median=0;
+ 562              		.loc 1 142 0
+ 563 000c 0023     		movs	r3, #0
+ 564 000e FB81     		strh	r3, [r7, #14]	@ movhi
+ 143:level_sensor.c ****     sort(array,n);
+ 565              		.loc 1 143 0
+ 566 0010 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 567 0012 1BB2     		sxth	r3, r3
+ 568 0014 1946     		mov	r1, r3
+ 569 0016 7868     		ldr	r0, [r7, #4]
+ 570 0018 FFF7FEFF 		bl	sort
+ 144:level_sensor.c ****     
+ 145:level_sensor.c ****     // if number of elements are even
+ 146:level_sensor.c ****     if(n%2 == 0)
+ 571              		.loc 1 146 0
+ 572 001c FB78     		ldrb	r3, [r7, #3]
+ 573 001e 03F00103 		and	r3, r3, #1
+ 574 0022 DBB2     		uxtb	r3, r3
+ 575 0024 002B     		cmp	r3, #0
+ 576 0026 25D1     		bne	.L36
+ 147:level_sensor.c ****         median = (array[(n-1)/2] + array[n/2])/2.0;
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 14
+
+
+ 577              		.loc 1 147 0
+ 578 0028 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 579 002a 013B     		subs	r3, r3, #1
+ 580 002c DA0F     		lsrs	r2, r3, #31
+ 581 002e 1344     		add	r3, r3, r2
+ 582 0030 5B10     		asrs	r3, r3, #1
+ 583 0032 5B00     		lsls	r3, r3, #1
+ 584 0034 7A68     		ldr	r2, [r7, #4]
+ 585 0036 1344     		add	r3, r3, r2
+ 586 0038 B3F90030 		ldrsh	r3, [r3]
+ 587 003c 1946     		mov	r1, r3
+ 588 003e FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 589 0040 5B08     		lsrs	r3, r3, #1
+ 590 0042 DBB2     		uxtb	r3, r3
+ 591 0044 5B00     		lsls	r3, r3, #1
+ 592 0046 7A68     		ldr	r2, [r7, #4]
+ 593 0048 1344     		add	r3, r3, r2
+ 594 004a B3F90030 		ldrsh	r3, [r3]
+ 595 004e 0B44     		add	r3, r3, r1
+ 596 0050 1846     		mov	r0, r3
+ 597 0052 FFF7FEFF 		bl	__aeabi_i2d
+ 598 0056 4FF00002 		mov	r2, #0
+ 599 005a 4FF08043 		mov	r3, #1073741824
+ 600 005e FFF7FEFF 		bl	__aeabi_ddiv
+ 601 0062 0346     		mov	r3, r0
+ 602 0064 0C46     		mov	r4, r1
+ 603 0066 1846     		mov	r0, r3
+ 604 0068 2146     		mov	r1, r4
+ 605 006a FFF7FEFF 		bl	__aeabi_d2iz
+ 606 006e 0346     		mov	r3, r0
+ 607 0070 FB81     		strh	r3, [r7, #14]	@ movhi
+ 608 0072 07E0     		b	.L37
+ 609              	.L36:
+ 148:level_sensor.c ****     // if number of elements are odd
+ 149:level_sensor.c ****     else
+ 150:level_sensor.c ****         median = array[n/2];
+ 610              		.loc 1 150 0
+ 611 0074 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 612 0076 5B08     		lsrs	r3, r3, #1
+ 613 0078 DBB2     		uxtb	r3, r3
+ 614 007a 5B00     		lsls	r3, r3, #1
+ 615 007c 7A68     		ldr	r2, [r7, #4]
+ 616 007e 1344     		add	r3, r3, r2
+ 617 0080 1B88     		ldrh	r3, [r3]	@ movhi
+ 618 0082 FB81     		strh	r3, [r7, #14]	@ movhi
+ 619              	.L37:
+ 151:level_sensor.c ****     
+ 152:level_sensor.c ****     return median;
+ 620              		.loc 1 152 0
+ 621 0084 FB89     		ldrh	r3, [r7, #14]
+ 153:level_sensor.c **** }
+ 622              		.loc 1 153 0
+ 623 0086 1846     		mov	r0, r3
+ 624 0088 1437     		adds	r7, r7, #20
+ 625              		.cfi_def_cfa_offset 12
+ 626 008a BD46     		mov	sp, r7
+ 627              		.cfi_def_cfa_register 13
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 15
+
+
+ 628              		@ sp needed
+ 629 008c 90BD     		pop	{r4, r7, pc}
+ 630              		.cfi_endproc
+ 631              	.LFE70:
+ 632              		.size	find_median, .-find_median
+ 633              		.section	.text.sort,"ax",%progbits
+ 634              		.align	2
+ 635              		.global	sort
+ 636              		.thumb
+ 637              		.thumb_func
+ 638              		.type	sort, %function
+ 639              	sort:
+ 640              	.LFB71:
+ 154:level_sensor.c **** 
+ 155:level_sensor.c **** 
+ 156:level_sensor.c **** void sort(int16 a[],int16 n) { 
+ 641              		.loc 1 156 0
+ 642              		.cfi_startproc
+ 643              		@ args = 0, pretend = 0, frame = 16
+ 644              		@ frame_needed = 1, uses_anonymous_args = 0
+ 645 0000 80B5     		push	{r7, lr}
+ 646              		.cfi_def_cfa_offset 8
+ 647              		.cfi_offset 7, -8
+ 648              		.cfi_offset 14, -4
+ 649 0002 84B0     		sub	sp, sp, #16
+ 650              		.cfi_def_cfa_offset 24
+ 651 0004 00AF     		add	r7, sp, #0
+ 652              		.cfi_def_cfa_register 7
+ 653 0006 7860     		str	r0, [r7, #4]
+ 654 0008 0B46     		mov	r3, r1
+ 655 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 157:level_sensor.c ****    int16 i,j;
+ 158:level_sensor.c **** 
+ 159:level_sensor.c ****    for(i = 0;i < n-1;i++) {
+ 656              		.loc 1 159 0
+ 657 000c 0023     		movs	r3, #0
+ 658 000e FB81     		strh	r3, [r7, #14]	@ movhi
+ 659 0010 37E0     		b	.L40
+ 660              	.L44:
+ 160:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 661              		.loc 1 160 0
+ 662 0012 0023     		movs	r3, #0
+ 663 0014 BB81     		strh	r3, [r7, #12]	@ movhi
+ 664 0016 24E0     		b	.L41
+ 665              	.L43:
+ 161:level_sensor.c ****          if(a[j] > a[j+1])
+ 666              		.loc 1 161 0
+ 667 0018 B7F90C30 		ldrsh	r3, [r7, #12]
+ 668 001c 5B00     		lsls	r3, r3, #1
+ 669 001e 7A68     		ldr	r2, [r7, #4]
+ 670 0020 1344     		add	r3, r3, r2
+ 671 0022 B3F90020 		ldrsh	r2, [r3]
+ 672 0026 B7F90C30 		ldrsh	r3, [r7, #12]
+ 673 002a 0133     		adds	r3, r3, #1
+ 674 002c 5B00     		lsls	r3, r3, #1
+ 675 002e 7968     		ldr	r1, [r7, #4]
+ 676 0030 0B44     		add	r3, r3, r1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 16
+
+
+ 677 0032 B3F90030 		ldrsh	r3, [r3]
+ 678 0036 9A42     		cmp	r2, r3
+ 679 0038 0DDD     		ble	.L42
+ 162:level_sensor.c ****             swap(&a[j],&a[j+1]);
+ 680              		.loc 1 162 0
+ 681 003a B7F90C30 		ldrsh	r3, [r7, #12]
+ 682 003e 5B00     		lsls	r3, r3, #1
+ 683 0040 7A68     		ldr	r2, [r7, #4]
+ 684 0042 D018     		adds	r0, r2, r3
+ 685 0044 B7F90C30 		ldrsh	r3, [r7, #12]
+ 686 0048 0133     		adds	r3, r3, #1
+ 687 004a 5B00     		lsls	r3, r3, #1
+ 688 004c 7A68     		ldr	r2, [r7, #4]
+ 689 004e 1344     		add	r3, r3, r2
+ 690 0050 1946     		mov	r1, r3
+ 691 0052 FFF7FEFF 		bl	swap
+ 692              	.L42:
+ 160:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 693              		.loc 1 160 0 discriminator 2
+ 694 0056 B7F90C30 		ldrsh	r3, [r7, #12]
+ 695 005a 9BB2     		uxth	r3, r3
+ 696 005c 0133     		adds	r3, r3, #1
+ 697 005e 9BB2     		uxth	r3, r3
+ 698 0060 BB81     		strh	r3, [r7, #12]	@ movhi
+ 699              	.L41:
+ 160:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 700              		.loc 1 160 0 is_stmt 0 discriminator 1
+ 701 0062 B7F90C20 		ldrsh	r2, [r7, #12]
+ 702 0066 B7F90210 		ldrsh	r1, [r7, #2]
+ 703 006a B7F90E30 		ldrsh	r3, [r7, #14]
+ 704 006e CB1A     		subs	r3, r1, r3
+ 705 0070 013B     		subs	r3, r3, #1
+ 706 0072 9A42     		cmp	r2, r3
+ 707 0074 D0DB     		blt	.L43
+ 159:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 708              		.loc 1 159 0 is_stmt 1 discriminator 2
+ 709 0076 B7F90E30 		ldrsh	r3, [r7, #14]
+ 710 007a 9BB2     		uxth	r3, r3
+ 711 007c 0133     		adds	r3, r3, #1
+ 712 007e 9BB2     		uxth	r3, r3
+ 713 0080 FB81     		strh	r3, [r7, #14]	@ movhi
+ 714              	.L40:
+ 159:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 715              		.loc 1 159 0 is_stmt 0 discriminator 1
+ 716 0082 B7F90E20 		ldrsh	r2, [r7, #14]
+ 717 0086 B7F90230 		ldrsh	r3, [r7, #2]
+ 718 008a 013B     		subs	r3, r3, #1
+ 719 008c 9A42     		cmp	r2, r3
+ 720 008e C0DB     		blt	.L44
+ 163:level_sensor.c ****       }
+ 164:level_sensor.c ****    }
+ 165:level_sensor.c **** }
+ 721              		.loc 1 165 0 is_stmt 1
+ 722 0090 00BF     		nop
+ 723 0092 1037     		adds	r7, r7, #16
+ 724              		.cfi_def_cfa_offset 8
+ 725 0094 BD46     		mov	sp, r7
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 17
+
+
+ 726              		.cfi_def_cfa_register 13
+ 727              		@ sp needed
+ 728 0096 80BD     		pop	{r7, pc}
+ 729              		.cfi_endproc
+ 730              	.LFE71:
+ 731              		.size	sort, .-sort
+ 732              		.section	.text.swap,"ax",%progbits
+ 733              		.align	2
+ 734              		.global	swap
+ 735              		.thumb
+ 736              		.thumb_func
+ 737              		.type	swap, %function
+ 738              	swap:
+ 739              	.LFB72:
+ 166:level_sensor.c **** 
+ 167:level_sensor.c **** void swap(int16 *p,int16 *q) {
+ 740              		.loc 1 167 0
+ 741              		.cfi_startproc
+ 742              		@ args = 0, pretend = 0, frame = 16
+ 743              		@ frame_needed = 1, uses_anonymous_args = 0
+ 744              		@ link register save eliminated.
+ 745 0000 80B4     		push	{r7}
+ 746              		.cfi_def_cfa_offset 4
+ 747              		.cfi_offset 7, -4
+ 748 0002 85B0     		sub	sp, sp, #20
+ 749              		.cfi_def_cfa_offset 24
+ 750 0004 00AF     		add	r7, sp, #0
+ 751              		.cfi_def_cfa_register 7
+ 752 0006 7860     		str	r0, [r7, #4]
+ 753 0008 3960     		str	r1, [r7]
+ 168:level_sensor.c ****    int16 t;
+ 169:level_sensor.c ****    
+ 170:level_sensor.c ****    t=*p; 
+ 754              		.loc 1 170 0
+ 755 000a 7B68     		ldr	r3, [r7, #4]
+ 756 000c 1B88     		ldrh	r3, [r3]	@ movhi
+ 757 000e FB81     		strh	r3, [r7, #14]	@ movhi
+ 171:level_sensor.c ****    *p=*q; 
+ 758              		.loc 1 171 0
+ 759 0010 3B68     		ldr	r3, [r7]
+ 760 0012 B3F90020 		ldrsh	r2, [r3]
+ 761 0016 7B68     		ldr	r3, [r7, #4]
+ 762 0018 1A80     		strh	r2, [r3]	@ movhi
+ 172:level_sensor.c ****    *q=t;
+ 763              		.loc 1 172 0
+ 764 001a 3B68     		ldr	r3, [r7]
+ 765 001c FA89     		ldrh	r2, [r7, #14]	@ movhi
+ 766 001e 1A80     		strh	r2, [r3]	@ movhi
+ 173:level_sensor.c **** }
+ 767              		.loc 1 173 0
+ 768 0020 00BF     		nop
+ 769 0022 1437     		adds	r7, r7, #20
+ 770              		.cfi_def_cfa_offset 4
+ 771 0024 BD46     		mov	sp, r7
+ 772              		.cfi_def_cfa_register 13
+ 773              		@ sp needed
+ 774 0026 80BC     		pop	{r7}
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 18
+
+
+ 775              		.cfi_restore 7
+ 776              		.cfi_def_cfa_offset 0
+ 777 0028 7047     		bx	lr
+ 778              		.cfi_endproc
+ 779              	.LFE72:
+ 780              		.size	swap, .-swap
+ 781 002a 00BF     		.text
+ 782              	.Letext0:
+ 783              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 784              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 785              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 786              		.file 5 "testing.h"
+ 787              		.file 6 "level_sensor.h"
+ 788              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 789              		.section	.debug_info,"",%progbits
+ 790              	.Ldebug_info0:
+ 791 0000 B9030000 		.4byte	0x3b9
+ 792 0004 0400     		.2byte	0x4
+ 793 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 794 000a 04       		.byte	0x4
+ 795 000b 01       		.uleb128 0x1
+ 796 000c 5E000000 		.4byte	.LASF50
+ 797 0010 0C       		.byte	0xc
+ 798 0011 E4010000 		.4byte	.LASF51
+ 799 0015 E1020000 		.4byte	.LASF52
+ 800 0019 18000000 		.4byte	.Ldebug_ranges0+0x18
+ 801 001d 00000000 		.4byte	0
+ 802 0021 00000000 		.4byte	.Ldebug_line0
+ 803 0025 02       		.uleb128 0x2
+ 804 0026 01       		.byte	0x1
+ 805 0027 06       		.byte	0x6
+ 806 0028 D8010000 		.4byte	.LASF0
+ 807 002c 03       		.uleb128 0x3
+ 808 002d 8D010000 		.4byte	.LASF4
+ 809 0031 02       		.byte	0x2
+ 810 0032 1D       		.byte	0x1d
+ 811 0033 37000000 		.4byte	0x37
+ 812 0037 02       		.uleb128 0x2
+ 813 0038 01       		.byte	0x1
+ 814 0039 08       		.byte	0x8
+ 815 003a A0010000 		.4byte	.LASF1
+ 816 003e 02       		.uleb128 0x2
+ 817 003f 02       		.byte	0x2
+ 818 0040 05       		.byte	0x5
+ 819 0041 22000000 		.4byte	.LASF2
+ 820 0045 02       		.uleb128 0x2
+ 821 0046 02       		.byte	0x2
+ 822 0047 07       		.byte	0x7
+ 823 0048 00020000 		.4byte	.LASF3
+ 824 004c 03       		.uleb128 0x3
+ 825 004d AF020000 		.4byte	.LASF5
+ 826 0051 02       		.byte	0x2
+ 827 0052 3F       		.byte	0x3f
+ 828 0053 57000000 		.4byte	0x57
+ 829 0057 02       		.uleb128 0x2
+ 830 0058 04       		.byte	0x4
+ 831 0059 05       		.byte	0x5
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 19
+
+
+ 832 005a 7B010000 		.4byte	.LASF6
+ 833 005e 02       		.uleb128 0x2
+ 834 005f 04       		.byte	0x4
+ 835 0060 07       		.byte	0x7
+ 836 0061 6E020000 		.4byte	.LASF7
+ 837 0065 02       		.uleb128 0x2
+ 838 0066 08       		.byte	0x8
+ 839 0067 05       		.byte	0x5
+ 840 0068 EC000000 		.4byte	.LASF8
+ 841 006c 02       		.uleb128 0x2
+ 842 006d 08       		.byte	0x8
+ 843 006e 07       		.byte	0x7
+ 844 006f 5D010000 		.4byte	.LASF9
+ 845 0073 04       		.uleb128 0x4
+ 846 0074 04       		.byte	0x4
+ 847 0075 05       		.byte	0x5
+ 848 0076 696E7400 		.ascii	"int\000"
+ 849 007a 02       		.uleb128 0x2
+ 850 007b 04       		.byte	0x4
+ 851 007c 07       		.byte	0x7
+ 852 007d F3010000 		.4byte	.LASF10
+ 853 0081 03       		.uleb128 0x3
+ 854 0082 CD020000 		.4byte	.LASF11
+ 855 0086 03       		.byte	0x3
+ 856 0087 18       		.byte	0x18
+ 857 0088 2C000000 		.4byte	0x2c
+ 858 008c 03       		.uleb128 0x3
+ 859 008d 40020000 		.4byte	.LASF12
+ 860 0091 03       		.byte	0x3
+ 861 0092 2C       		.byte	0x2c
+ 862 0093 4C000000 		.4byte	0x4c
+ 863 0097 05       		.uleb128 0x5
+ 864 0098 37010000 		.4byte	.LASF13
+ 865 009c 04       		.byte	0x4
+ 866 009d E401     		.2byte	0x1e4
+ 867 009f 37000000 		.4byte	0x37
+ 868 00a3 05       		.uleb128 0x5
+ 869 00a4 23010000 		.4byte	.LASF14
+ 870 00a8 04       		.byte	0x4
+ 871 00a9 E501     		.2byte	0x1e5
+ 872 00ab 45000000 		.4byte	0x45
+ 873 00af 05       		.uleb128 0x5
+ 874 00b0 31010000 		.4byte	.LASF15
+ 875 00b4 04       		.byte	0x4
+ 876 00b5 E801     		.2byte	0x1e8
+ 877 00b7 3E000000 		.4byte	0x3e
+ 878 00bb 02       		.uleb128 0x2
+ 879 00bc 04       		.byte	0x4
+ 880 00bd 04       		.byte	0x4
+ 881 00be 42010000 		.4byte	.LASF16
+ 882 00c2 02       		.uleb128 0x2
+ 883 00c3 08       		.byte	0x8
+ 884 00c4 04       		.byte	0x4
+ 885 00c5 94020000 		.4byte	.LASF17
+ 886 00c9 02       		.uleb128 0x2
+ 887 00ca 01       		.byte	0x1
+ 888 00cb 08       		.byte	0x8
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 20
+
+
+ 889 00cc 34020000 		.4byte	.LASF18
+ 890 00d0 02       		.uleb128 0x2
+ 891 00d1 08       		.byte	0x8
+ 892 00d2 04       		.byte	0x4
+ 893 00d3 AE010000 		.4byte	.LASF19
+ 894 00d7 02       		.uleb128 0x2
+ 895 00d8 04       		.byte	0x4
+ 896 00d9 07       		.byte	0x7
+ 897 00da 84010000 		.4byte	.LASF20
+ 898 00de 06       		.uleb128 0x6
+ 899 00df 04       		.byte	0x4
+ 900 00e0 C9000000 		.4byte	0xc9
+ 901 00e4 06       		.uleb128 0x6
+ 902 00e5 04       		.byte	0x4
+ 903 00e6 EA000000 		.4byte	0xea
+ 904 00ea 07       		.uleb128 0x7
+ 905 00eb C9000000 		.4byte	0xc9
+ 906 00ef 08       		.uleb128 0x8
+ 907 00f0 8101     		.2byte	0x181
+ 908 00f2 05       		.byte	0x5
+ 909 00f3 08       		.byte	0x8
+ 910 00f4 1D010000 		.4byte	0x11d
+ 911 00f8 09       		.uleb128 0x9
+ 912 00f9 57020000 		.4byte	.LASF21
+ 913 00fd 05       		.byte	0x5
+ 914 00fe 09       		.byte	0x9
+ 915 00ff 1D010000 		.4byte	0x11d
+ 916 0103 00       		.byte	0
+ 917 0104 09       		.uleb128 0x9
+ 918 0105 13020000 		.4byte	.LASF22
+ 919 0109 05       		.byte	0x5
+ 920 010a 0A       		.byte	0xa
+ 921 010b 97000000 		.4byte	0x97
+ 922 010f 80       		.byte	0x80
+ 923 0110 09       		.uleb128 0x9
+ 924 0111 74010000 		.4byte	.LASF23
+ 925 0115 05       		.byte	0x5
+ 926 0116 0B       		.byte	0xb
+ 927 0117 2D010000 		.4byte	0x12d
+ 928 011b 81       		.byte	0x81
+ 929 011c 00       		.byte	0
+ 930 011d 0A       		.uleb128 0xa
+ 931 011e C9000000 		.4byte	0xc9
+ 932 0122 2D010000 		.4byte	0x12d
+ 933 0126 0B       		.uleb128 0xb
+ 934 0127 D7000000 		.4byte	0xd7
+ 935 012b 7F       		.byte	0x7f
+ 936 012c 00       		.byte	0
+ 937 012d 0A       		.uleb128 0xa
+ 938 012e C9000000 		.4byte	0xc9
+ 939 0132 3D010000 		.4byte	0x13d
+ 940 0136 0B       		.uleb128 0xb
+ 941 0137 D7000000 		.4byte	0xd7
+ 942 013b FF       		.byte	0xff
+ 943 013c 00       		.byte	0
+ 944 013d 03       		.uleb128 0x3
+ 945 013e 39020000 		.4byte	.LASF24
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 21
+
+
+ 946 0142 05       		.byte	0x5
+ 947 0143 0C       		.byte	0xc
+ 948 0144 EF000000 		.4byte	0xef
+ 949 0148 0C       		.uleb128 0xc
+ 950 0149 1A       		.byte	0x1a
+ 951 014a 06       		.byte	0x6
+ 952 014b 0C       		.byte	0xc
+ 953 014c 81010000 		.4byte	0x181
+ 954 0150 09       		.uleb128 0x9
+ 955 0151 38000000 		.4byte	.LASF25
+ 956 0155 06       		.byte	0x6
+ 957 0156 0D       		.byte	0xd
+ 958 0157 81010000 		.4byte	0x181
+ 959 015b 00       		.byte	0
+ 960 015c 09       		.uleb128 0x9
+ 961 015d A1020000 		.4byte	.LASF26
+ 962 0161 06       		.byte	0x6
+ 963 0162 0E       		.byte	0xe
+ 964 0163 AF000000 		.4byte	0xaf
+ 965 0167 16       		.byte	0x16
+ 966 0168 09       		.uleb128 0x9
+ 967 0169 4B000000 		.4byte	.LASF27
+ 968 016d 06       		.byte	0x6
+ 969 016e 0F       		.byte	0xf
+ 970 016f 97000000 		.4byte	0x97
+ 971 0173 18       		.byte	0x18
+ 972 0174 09       		.uleb128 0x9
+ 973 0175 48010000 		.4byte	.LASF28
+ 974 0179 06       		.byte	0x6
+ 975 017a 10       		.byte	0x10
+ 976 017b 97000000 		.4byte	0x97
+ 977 017f 19       		.byte	0x19
+ 978 0180 00       		.byte	0
+ 979 0181 0A       		.uleb128 0xa
+ 980 0182 AF000000 		.4byte	0xaf
+ 981 0186 91010000 		.4byte	0x191
+ 982 018a 0B       		.uleb128 0xb
+ 983 018b D7000000 		.4byte	0xd7
+ 984 018f 0A       		.byte	0xa
+ 985 0190 00       		.byte	0
+ 986 0191 03       		.uleb128 0x3
+ 987 0192 48020000 		.4byte	.LASF29
+ 988 0196 06       		.byte	0x6
+ 989 0197 11       		.byte	0x11
+ 990 0198 48010000 		.4byte	0x148
+ 991 019c 0D       		.uleb128 0xd
+ 992 019d D5020000 		.4byte	.LASF30
+ 993 01a1 01       		.byte	0x1
+ 994 01a2 1D       		.byte	0x1d
+ 995 01a3 E4000000 		.4byte	0xe4
+ 996 01a7 00000000 		.4byte	.LFB64
+ 997 01ab 14000000 		.4byte	.LFE64-.LFB64
+ 998 01af 01       		.uleb128 0x1
+ 999 01b0 9C       		.byte	0x9c
+ 1000 01b1 0D       		.uleb128 0xd
+ 1001 01b2 97010000 		.4byte	.LASF31
+ 1002 01b6 01       		.byte	0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 22
+
+
+ 1003 01b7 21       		.byte	0x21
+ 1004 01b8 81000000 		.4byte	0x81
+ 1005 01bc 00000000 		.4byte	.LFB65
+ 1006 01c0 14000000 		.4byte	.LFE65-.LFB65
+ 1007 01c4 01       		.uleb128 0x1
+ 1008 01c5 9C       		.byte	0x9c
+ 1009 01c6 0E       		.uleb128 0xe
+ 1010 01c7 10000000 		.4byte	.LASF53
+ 1011 01cb 01       		.byte	0x1
+ 1012 01cc 25       		.byte	0x25
+ 1013 01cd 00000000 		.4byte	.LFB66
+ 1014 01d1 28000000 		.4byte	.LFE66-.LFB66
+ 1015 01d5 01       		.uleb128 0x1
+ 1016 01d6 9C       		.byte	0x9c
+ 1017 01d7 0F       		.uleb128 0xf
+ 1018 01d8 C7010000 		.4byte	.LASF32
+ 1019 01dc 01       		.byte	0x1
+ 1020 01dd 2B       		.byte	0x2b
+ 1021 01de 00000000 		.4byte	.LFB67
+ 1022 01e2 70000000 		.4byte	.LFE67-.LFB67
+ 1023 01e6 01       		.uleb128 0x1
+ 1024 01e7 9C       		.byte	0x9c
+ 1025 01e8 FB010000 		.4byte	0x1fb
+ 1026 01ec 10       		.uleb128 0x10
+ 1027 01ed B9020000 		.4byte	.LASF34
+ 1028 01f1 01       		.byte	0x1
+ 1029 01f2 2D       		.byte	0x2d
+ 1030 01f3 C9000000 		.4byte	0xc9
+ 1031 01f7 02       		.uleb128 0x2
+ 1032 01f8 91       		.byte	0x91
+ 1033 01f9 77       		.sleb128 -9
+ 1034 01fa 00       		.byte	0
+ 1035 01fb 11       		.uleb128 0x11
+ 1036 01fc 1A020000 		.4byte	.LASF33
+ 1037 0200 01       		.byte	0x1
+ 1038 0201 38       		.byte	0x38
+ 1039 0202 91010000 		.4byte	0x191
+ 1040 0206 00000000 		.4byte	.LFB68
+ 1041 020a 08010000 		.4byte	.LFE68-.LFB68
+ 1042 020e 01       		.uleb128 0x1
+ 1043 020f 9C       		.byte	0x9c
+ 1044 0210 45020000 		.4byte	0x245
+ 1045 0214 10       		.uleb128 0x10
+ 1046 0215 80020000 		.4byte	.LASF35
+ 1047 0219 01       		.byte	0x1
+ 1048 021a 3B       		.byte	0x3b
+ 1049 021b 91010000 		.4byte	0x191
+ 1050 021f 02       		.uleb128 0x2
+ 1051 0220 91       		.byte	0x91
+ 1052 0221 50       		.sleb128 -48
+ 1053 0222 10       		.uleb128 0x10
+ 1054 0223 C7020000 		.4byte	.LASF36
+ 1055 0227 01       		.byte	0x1
+ 1056 0228 54       		.byte	0x54
+ 1057 0229 DE000000 		.4byte	0xde
+ 1058 022d 02       		.uleb128 0x2
+ 1059 022e 91       		.byte	0x91
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 23
+
+
+ 1060 022f 6C       		.sleb128 -20
+ 1061 0230 12       		.uleb128 0x12
+ 1062 0231 00000000 		.4byte	.Ldebug_ranges0+0
+ 1063 0235 10       		.uleb128 0x10
+ 1064 0236 66020000 		.4byte	.LASF37
+ 1065 023a 01       		.byte	0x1
+ 1066 023b 5A       		.byte	0x5a
+ 1067 023c A3000000 		.4byte	0xa3
+ 1068 0240 02       		.uleb128 0x2
+ 1069 0241 91       		.byte	0x91
+ 1070 0242 6A       		.sleb128 -22
+ 1071 0243 00       		.byte	0
+ 1072 0244 00       		.byte	0
+ 1073 0245 11       		.uleb128 0x11
+ 1074 0246 07010000 		.4byte	.LASF38
+ 1075 024a 01       		.byte	0x1
+ 1076 024b 72       		.byte	0x72
+ 1077 024c 3D010000 		.4byte	0x13d
+ 1078 0250 00000000 		.4byte	.LFB69
+ 1079 0254 D0000000 		.4byte	.LFE69-.LFB69
+ 1080 0258 01       		.uleb128 0x1
+ 1081 0259 9C       		.byte	0x9c
+ 1082 025a 7D020000 		.4byte	0x27d
+ 1083 025e 10       		.uleb128 0x10
+ 1084 025f 61020000 		.4byte	.LASF39
+ 1085 0263 01       		.byte	0x1
+ 1086 0264 73       		.byte	0x73
+ 1087 0265 3D010000 		.4byte	0x13d
+ 1088 0269 03       		.uleb128 0x3
+ 1089 026a 91       		.byte	0x91
+ 1090 026b EC7C     		.sleb128 -404
+ 1091 026d 10       		.uleb128 0x10
+ 1092 026e 2A010000 		.4byte	.LASF40
+ 1093 0272 01       		.byte	0x1
+ 1094 0273 77       		.byte	0x77
+ 1095 0274 91010000 		.4byte	0x191
+ 1096 0278 03       		.uleb128 0x3
+ 1097 0279 91       		.byte	0x91
+ 1098 027a D07C     		.sleb128 -432
+ 1099 027c 00       		.byte	0
+ 1100 027d 13       		.uleb128 0x13
+ 1101 027e 2C000000 		.4byte	.LASF54
+ 1102 0282 01       		.byte	0x1
+ 1103 0283 8C       		.byte	0x8c
+ 1104 0284 A3000000 		.4byte	0xa3
+ 1105 0288 00000000 		.4byte	.LFB70
+ 1106 028c 8E000000 		.4byte	.LFE70-.LFB70
+ 1107 0290 01       		.uleb128 0x1
+ 1108 0291 9C       		.byte	0x9c
+ 1109 0292 BF020000 		.4byte	0x2bf
+ 1110 0296 14       		.uleb128 0x14
+ 1111 0297 9B020000 		.4byte	.LASF41
+ 1112 029b 01       		.byte	0x1
+ 1113 029c 8C       		.byte	0x8c
+ 1114 029d BF020000 		.4byte	0x2bf
+ 1115 02a1 02       		.uleb128 0x2
+ 1116 02a2 91       		.byte	0x91
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 24
+
+
+ 1117 02a3 64       		.sleb128 -28
+ 1118 02a4 15       		.uleb128 0x15
+ 1119 02a5 6E00     		.ascii	"n\000"
+ 1120 02a7 01       		.byte	0x1
+ 1121 02a8 8C       		.byte	0x8c
+ 1122 02a9 97000000 		.4byte	0x97
+ 1123 02ad 02       		.uleb128 0x2
+ 1124 02ae 91       		.byte	0x91
+ 1125 02af 63       		.sleb128 -29
+ 1126 02b0 10       		.uleb128 0x10
+ 1127 02b1 1B000000 		.4byte	.LASF42
+ 1128 02b5 01       		.byte	0x1
+ 1129 02b6 8E       		.byte	0x8e
+ 1130 02b7 AF000000 		.4byte	0xaf
+ 1131 02bb 02       		.uleb128 0x2
+ 1132 02bc 91       		.byte	0x91
+ 1133 02bd 6E       		.sleb128 -18
+ 1134 02be 00       		.byte	0
+ 1135 02bf 06       		.uleb128 0x6
+ 1136 02c0 04       		.byte	0x4
+ 1137 02c1 AF000000 		.4byte	0xaf
+ 1138 02c5 0F       		.uleb128 0xf
+ 1139 02c6 0B000000 		.4byte	.LASF43
+ 1140 02ca 01       		.byte	0x1
+ 1141 02cb 9C       		.byte	0x9c
+ 1142 02cc 00000000 		.4byte	.LFB71
+ 1143 02d0 98000000 		.4byte	.LFE71-.LFB71
+ 1144 02d4 01       		.uleb128 0x1
+ 1145 02d5 9C       		.byte	0x9c
+ 1146 02d6 0B030000 		.4byte	0x30b
+ 1147 02da 15       		.uleb128 0x15
+ 1148 02db 6100     		.ascii	"a\000"
+ 1149 02dd 01       		.byte	0x1
+ 1150 02de 9C       		.byte	0x9c
+ 1151 02df BF020000 		.4byte	0x2bf
+ 1152 02e3 02       		.uleb128 0x2
+ 1153 02e4 91       		.byte	0x91
+ 1154 02e5 6C       		.sleb128 -20
+ 1155 02e6 15       		.uleb128 0x15
+ 1156 02e7 6E00     		.ascii	"n\000"
+ 1157 02e9 01       		.byte	0x1
+ 1158 02ea 9C       		.byte	0x9c
+ 1159 02eb AF000000 		.4byte	0xaf
+ 1160 02ef 02       		.uleb128 0x2
+ 1161 02f0 91       		.byte	0x91
+ 1162 02f1 6A       		.sleb128 -22
+ 1163 02f2 16       		.uleb128 0x16
+ 1164 02f3 6900     		.ascii	"i\000"
+ 1165 02f5 01       		.byte	0x1
+ 1166 02f6 9D       		.byte	0x9d
+ 1167 02f7 AF000000 		.4byte	0xaf
+ 1168 02fb 02       		.uleb128 0x2
+ 1169 02fc 91       		.byte	0x91
+ 1170 02fd 76       		.sleb128 -10
+ 1171 02fe 16       		.uleb128 0x16
+ 1172 02ff 6A00     		.ascii	"j\000"
+ 1173 0301 01       		.byte	0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 25
+
+
+ 1174 0302 9D       		.byte	0x9d
+ 1175 0303 AF000000 		.4byte	0xaf
+ 1176 0307 02       		.uleb128 0x2
+ 1177 0308 91       		.byte	0x91
+ 1178 0309 74       		.sleb128 -12
+ 1179 030a 00       		.byte	0
+ 1180 030b 17       		.uleb128 0x17
+ 1181 030c FA000000 		.4byte	.LASF44
+ 1182 0310 01       		.byte	0x1
+ 1183 0311 A7       		.byte	0xa7
+ 1184 0312 00000000 		.4byte	.LFB72
+ 1185 0316 2A000000 		.4byte	.LFE72-.LFB72
+ 1186 031a 01       		.uleb128 0x1
+ 1187 031b 9C       		.byte	0x9c
+ 1188 031c 45030000 		.4byte	0x345
+ 1189 0320 15       		.uleb128 0x15
+ 1190 0321 7000     		.ascii	"p\000"
+ 1191 0323 01       		.byte	0x1
+ 1192 0324 A7       		.byte	0xa7
+ 1193 0325 BF020000 		.4byte	0x2bf
+ 1194 0329 02       		.uleb128 0x2
+ 1195 032a 91       		.byte	0x91
+ 1196 032b 6C       		.sleb128 -20
+ 1197 032c 15       		.uleb128 0x15
+ 1198 032d 7100     		.ascii	"q\000"
+ 1199 032f 01       		.byte	0x1
+ 1200 0330 A7       		.byte	0xa7
+ 1201 0331 BF020000 		.4byte	0x2bf
+ 1202 0335 02       		.uleb128 0x2
+ 1203 0336 91       		.byte	0x91
+ 1204 0337 68       		.sleb128 -24
+ 1205 0338 16       		.uleb128 0x16
+ 1206 0339 7400     		.ascii	"t\000"
+ 1207 033b 01       		.byte	0x1
+ 1208 033c A8       		.byte	0xa8
+ 1209 033d AF000000 		.4byte	0xaf
+ 1210 0341 02       		.uleb128 0x2
+ 1211 0342 91       		.byte	0x91
+ 1212 0343 76       		.sleb128 -10
+ 1213 0344 00       		.byte	0
+ 1214 0345 0A       		.uleb128 0xa
+ 1215 0346 C9000000 		.4byte	0xc9
+ 1216 034a 56030000 		.4byte	0x356
+ 1217 034e 18       		.uleb128 0x18
+ 1218 034f D7000000 		.4byte	0xd7
+ 1219 0353 0001     		.2byte	0x100
+ 1220 0355 00       		.byte	0
+ 1221 0356 10       		.uleb128 0x10
+ 1222 0357 00000000 		.4byte	.LASF45
+ 1223 035b 01       		.byte	0x1
+ 1224 035c 14       		.byte	0x14
+ 1225 035d 45030000 		.4byte	0x345
+ 1226 0361 05       		.uleb128 0x5
+ 1227 0362 03       		.byte	0x3
+ 1228 0363 00000000 		.4byte	uart_chars
+ 1229 0367 10       		.uleb128 0x10
+ 1230 0368 19010000 		.4byte	.LASF46
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 26
+
+
+ 1231 036c 01       		.byte	0x1
+ 1232 036d 15       		.byte	0x15
+ 1233 036e 81000000 		.4byte	0x81
+ 1234 0372 05       		.uleb128 0x5
+ 1235 0373 03       		.byte	0x3
+ 1236 0374 01010000 		.4byte	num_chars
+ 1237 0378 10       		.uleb128 0x10
+ 1238 0379 3D010000 		.4byte	.LASF47
+ 1239 037d 01       		.byte	0x1
+ 1240 037e 17       		.byte	0x17
+ 1241 037f E4000000 		.4byte	0xe4
+ 1242 0383 05       		.uleb128 0x5
+ 1243 0384 03       		.byte	0x3
+ 1244 0385 00000000 		.4byte	line
+ 1245 0389 10       		.uleb128 0x10
+ 1246 038a C1020000 		.4byte	.LASF48
+ 1247 038e 01       		.byte	0x1
+ 1248 038f 18       		.byte	0x18
+ 1249 0390 E4000000 		.4byte	0xe4
+ 1250 0394 05       		.uleb128 0x5
+ 1251 0395 03       		.byte	0x3
+ 1252 0396 04010000 		.4byte	match
+ 1253 039a 10       		.uleb128 0x10
+ 1254 039b FF000000 		.4byte	.LASF49
+ 1255 039f 01       		.byte	0x1
+ 1256 03a0 19       		.byte	0x19
+ 1257 03a1 E4000000 		.4byte	0xe4
+ 1258 03a5 05       		.uleb128 0x5
+ 1259 03a6 03       		.byte	0x3
+ 1260 03a7 08010000 		.4byte	pattern
+ 1261 03ab 19       		.uleb128 0x19
+ 1262 03ac BA010000 		.4byte	.LASF55
+ 1263 03b0 07       		.byte	0x7
+ 1264 03b1 1207     		.2byte	0x712
+ 1265 03b3 B7030000 		.4byte	0x3b7
+ 1266 03b7 1A       		.uleb128 0x1a
+ 1267 03b8 8C000000 		.4byte	0x8c
+ 1268 03bc 00       		.byte	0
+ 1269              		.section	.debug_abbrev,"",%progbits
+ 1270              	.Ldebug_abbrev0:
+ 1271 0000 01       		.uleb128 0x1
+ 1272 0001 11       		.uleb128 0x11
+ 1273 0002 01       		.byte	0x1
+ 1274 0003 25       		.uleb128 0x25
+ 1275 0004 0E       		.uleb128 0xe
+ 1276 0005 13       		.uleb128 0x13
+ 1277 0006 0B       		.uleb128 0xb
+ 1278 0007 03       		.uleb128 0x3
+ 1279 0008 0E       		.uleb128 0xe
+ 1280 0009 1B       		.uleb128 0x1b
+ 1281 000a 0E       		.uleb128 0xe
+ 1282 000b 55       		.uleb128 0x55
+ 1283 000c 17       		.uleb128 0x17
+ 1284 000d 11       		.uleb128 0x11
+ 1285 000e 01       		.uleb128 0x1
+ 1286 000f 10       		.uleb128 0x10
+ 1287 0010 17       		.uleb128 0x17
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 27
+
+
+ 1288 0011 00       		.byte	0
+ 1289 0012 00       		.byte	0
+ 1290 0013 02       		.uleb128 0x2
+ 1291 0014 24       		.uleb128 0x24
+ 1292 0015 00       		.byte	0
+ 1293 0016 0B       		.uleb128 0xb
+ 1294 0017 0B       		.uleb128 0xb
+ 1295 0018 3E       		.uleb128 0x3e
+ 1296 0019 0B       		.uleb128 0xb
+ 1297 001a 03       		.uleb128 0x3
+ 1298 001b 0E       		.uleb128 0xe
+ 1299 001c 00       		.byte	0
+ 1300 001d 00       		.byte	0
+ 1301 001e 03       		.uleb128 0x3
+ 1302 001f 16       		.uleb128 0x16
+ 1303 0020 00       		.byte	0
+ 1304 0021 03       		.uleb128 0x3
+ 1305 0022 0E       		.uleb128 0xe
+ 1306 0023 3A       		.uleb128 0x3a
+ 1307 0024 0B       		.uleb128 0xb
+ 1308 0025 3B       		.uleb128 0x3b
+ 1309 0026 0B       		.uleb128 0xb
+ 1310 0027 49       		.uleb128 0x49
+ 1311 0028 13       		.uleb128 0x13
+ 1312 0029 00       		.byte	0
+ 1313 002a 00       		.byte	0
+ 1314 002b 04       		.uleb128 0x4
+ 1315 002c 24       		.uleb128 0x24
+ 1316 002d 00       		.byte	0
+ 1317 002e 0B       		.uleb128 0xb
+ 1318 002f 0B       		.uleb128 0xb
+ 1319 0030 3E       		.uleb128 0x3e
+ 1320 0031 0B       		.uleb128 0xb
+ 1321 0032 03       		.uleb128 0x3
+ 1322 0033 08       		.uleb128 0x8
+ 1323 0034 00       		.byte	0
+ 1324 0035 00       		.byte	0
+ 1325 0036 05       		.uleb128 0x5
+ 1326 0037 16       		.uleb128 0x16
+ 1327 0038 00       		.byte	0
+ 1328 0039 03       		.uleb128 0x3
+ 1329 003a 0E       		.uleb128 0xe
+ 1330 003b 3A       		.uleb128 0x3a
+ 1331 003c 0B       		.uleb128 0xb
+ 1332 003d 3B       		.uleb128 0x3b
+ 1333 003e 05       		.uleb128 0x5
+ 1334 003f 49       		.uleb128 0x49
+ 1335 0040 13       		.uleb128 0x13
+ 1336 0041 00       		.byte	0
+ 1337 0042 00       		.byte	0
+ 1338 0043 06       		.uleb128 0x6
+ 1339 0044 0F       		.uleb128 0xf
+ 1340 0045 00       		.byte	0
+ 1341 0046 0B       		.uleb128 0xb
+ 1342 0047 0B       		.uleb128 0xb
+ 1343 0048 49       		.uleb128 0x49
+ 1344 0049 13       		.uleb128 0x13
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 28
+
+
+ 1345 004a 00       		.byte	0
+ 1346 004b 00       		.byte	0
+ 1347 004c 07       		.uleb128 0x7
+ 1348 004d 26       		.uleb128 0x26
+ 1349 004e 00       		.byte	0
+ 1350 004f 49       		.uleb128 0x49
+ 1351 0050 13       		.uleb128 0x13
+ 1352 0051 00       		.byte	0
+ 1353 0052 00       		.byte	0
+ 1354 0053 08       		.uleb128 0x8
+ 1355 0054 13       		.uleb128 0x13
+ 1356 0055 01       		.byte	0x1
+ 1357 0056 0B       		.uleb128 0xb
+ 1358 0057 05       		.uleb128 0x5
+ 1359 0058 3A       		.uleb128 0x3a
+ 1360 0059 0B       		.uleb128 0xb
+ 1361 005a 3B       		.uleb128 0x3b
+ 1362 005b 0B       		.uleb128 0xb
+ 1363 005c 01       		.uleb128 0x1
+ 1364 005d 13       		.uleb128 0x13
+ 1365 005e 00       		.byte	0
+ 1366 005f 00       		.byte	0
+ 1367 0060 09       		.uleb128 0x9
+ 1368 0061 0D       		.uleb128 0xd
+ 1369 0062 00       		.byte	0
+ 1370 0063 03       		.uleb128 0x3
+ 1371 0064 0E       		.uleb128 0xe
+ 1372 0065 3A       		.uleb128 0x3a
+ 1373 0066 0B       		.uleb128 0xb
+ 1374 0067 3B       		.uleb128 0x3b
+ 1375 0068 0B       		.uleb128 0xb
+ 1376 0069 49       		.uleb128 0x49
+ 1377 006a 13       		.uleb128 0x13
+ 1378 006b 38       		.uleb128 0x38
+ 1379 006c 0B       		.uleb128 0xb
+ 1380 006d 00       		.byte	0
+ 1381 006e 00       		.byte	0
+ 1382 006f 0A       		.uleb128 0xa
+ 1383 0070 01       		.uleb128 0x1
+ 1384 0071 01       		.byte	0x1
+ 1385 0072 49       		.uleb128 0x49
+ 1386 0073 13       		.uleb128 0x13
+ 1387 0074 01       		.uleb128 0x1
+ 1388 0075 13       		.uleb128 0x13
+ 1389 0076 00       		.byte	0
+ 1390 0077 00       		.byte	0
+ 1391 0078 0B       		.uleb128 0xb
+ 1392 0079 21       		.uleb128 0x21
+ 1393 007a 00       		.byte	0
+ 1394 007b 49       		.uleb128 0x49
+ 1395 007c 13       		.uleb128 0x13
+ 1396 007d 2F       		.uleb128 0x2f
+ 1397 007e 0B       		.uleb128 0xb
+ 1398 007f 00       		.byte	0
+ 1399 0080 00       		.byte	0
+ 1400 0081 0C       		.uleb128 0xc
+ 1401 0082 13       		.uleb128 0x13
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 29
+
+
+ 1402 0083 01       		.byte	0x1
+ 1403 0084 0B       		.uleb128 0xb
+ 1404 0085 0B       		.uleb128 0xb
+ 1405 0086 3A       		.uleb128 0x3a
+ 1406 0087 0B       		.uleb128 0xb
+ 1407 0088 3B       		.uleb128 0x3b
+ 1408 0089 0B       		.uleb128 0xb
+ 1409 008a 01       		.uleb128 0x1
+ 1410 008b 13       		.uleb128 0x13
+ 1411 008c 00       		.byte	0
+ 1412 008d 00       		.byte	0
+ 1413 008e 0D       		.uleb128 0xd
+ 1414 008f 2E       		.uleb128 0x2e
+ 1415 0090 00       		.byte	0
+ 1416 0091 3F       		.uleb128 0x3f
+ 1417 0092 19       		.uleb128 0x19
+ 1418 0093 03       		.uleb128 0x3
+ 1419 0094 0E       		.uleb128 0xe
+ 1420 0095 3A       		.uleb128 0x3a
+ 1421 0096 0B       		.uleb128 0xb
+ 1422 0097 3B       		.uleb128 0x3b
+ 1423 0098 0B       		.uleb128 0xb
+ 1424 0099 27       		.uleb128 0x27
+ 1425 009a 19       		.uleb128 0x19
+ 1426 009b 49       		.uleb128 0x49
+ 1427 009c 13       		.uleb128 0x13
+ 1428 009d 11       		.uleb128 0x11
+ 1429 009e 01       		.uleb128 0x1
+ 1430 009f 12       		.uleb128 0x12
+ 1431 00a0 06       		.uleb128 0x6
+ 1432 00a1 40       		.uleb128 0x40
+ 1433 00a2 18       		.uleb128 0x18
+ 1434 00a3 9742     		.uleb128 0x2117
+ 1435 00a5 19       		.uleb128 0x19
+ 1436 00a6 00       		.byte	0
+ 1437 00a7 00       		.byte	0
+ 1438 00a8 0E       		.uleb128 0xe
+ 1439 00a9 2E       		.uleb128 0x2e
+ 1440 00aa 00       		.byte	0
+ 1441 00ab 3F       		.uleb128 0x3f
+ 1442 00ac 19       		.uleb128 0x19
+ 1443 00ad 03       		.uleb128 0x3
+ 1444 00ae 0E       		.uleb128 0xe
+ 1445 00af 3A       		.uleb128 0x3a
+ 1446 00b0 0B       		.uleb128 0xb
+ 1447 00b1 3B       		.uleb128 0x3b
+ 1448 00b2 0B       		.uleb128 0xb
+ 1449 00b3 27       		.uleb128 0x27
+ 1450 00b4 19       		.uleb128 0x19
+ 1451 00b5 11       		.uleb128 0x11
+ 1452 00b6 01       		.uleb128 0x1
+ 1453 00b7 12       		.uleb128 0x12
+ 1454 00b8 06       		.uleb128 0x6
+ 1455 00b9 40       		.uleb128 0x40
+ 1456 00ba 18       		.uleb128 0x18
+ 1457 00bb 9642     		.uleb128 0x2116
+ 1458 00bd 19       		.uleb128 0x19
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 30
+
+
+ 1459 00be 00       		.byte	0
+ 1460 00bf 00       		.byte	0
+ 1461 00c0 0F       		.uleb128 0xf
+ 1462 00c1 2E       		.uleb128 0x2e
+ 1463 00c2 01       		.byte	0x1
+ 1464 00c3 3F       		.uleb128 0x3f
+ 1465 00c4 19       		.uleb128 0x19
+ 1466 00c5 03       		.uleb128 0x3
+ 1467 00c6 0E       		.uleb128 0xe
+ 1468 00c7 3A       		.uleb128 0x3a
+ 1469 00c8 0B       		.uleb128 0xb
+ 1470 00c9 3B       		.uleb128 0x3b
+ 1471 00ca 0B       		.uleb128 0xb
+ 1472 00cb 27       		.uleb128 0x27
+ 1473 00cc 19       		.uleb128 0x19
+ 1474 00cd 11       		.uleb128 0x11
+ 1475 00ce 01       		.uleb128 0x1
+ 1476 00cf 12       		.uleb128 0x12
+ 1477 00d0 06       		.uleb128 0x6
+ 1478 00d1 40       		.uleb128 0x40
+ 1479 00d2 18       		.uleb128 0x18
+ 1480 00d3 9642     		.uleb128 0x2116
+ 1481 00d5 19       		.uleb128 0x19
+ 1482 00d6 01       		.uleb128 0x1
+ 1483 00d7 13       		.uleb128 0x13
+ 1484 00d8 00       		.byte	0
+ 1485 00d9 00       		.byte	0
+ 1486 00da 10       		.uleb128 0x10
+ 1487 00db 34       		.uleb128 0x34
+ 1488 00dc 00       		.byte	0
+ 1489 00dd 03       		.uleb128 0x3
+ 1490 00de 0E       		.uleb128 0xe
+ 1491 00df 3A       		.uleb128 0x3a
+ 1492 00e0 0B       		.uleb128 0xb
+ 1493 00e1 3B       		.uleb128 0x3b
+ 1494 00e2 0B       		.uleb128 0xb
+ 1495 00e3 49       		.uleb128 0x49
+ 1496 00e4 13       		.uleb128 0x13
+ 1497 00e5 02       		.uleb128 0x2
+ 1498 00e6 18       		.uleb128 0x18
+ 1499 00e7 00       		.byte	0
+ 1500 00e8 00       		.byte	0
+ 1501 00e9 11       		.uleb128 0x11
+ 1502 00ea 2E       		.uleb128 0x2e
+ 1503 00eb 01       		.byte	0x1
+ 1504 00ec 3F       		.uleb128 0x3f
+ 1505 00ed 19       		.uleb128 0x19
+ 1506 00ee 03       		.uleb128 0x3
+ 1507 00ef 0E       		.uleb128 0xe
+ 1508 00f0 3A       		.uleb128 0x3a
+ 1509 00f1 0B       		.uleb128 0xb
+ 1510 00f2 3B       		.uleb128 0x3b
+ 1511 00f3 0B       		.uleb128 0xb
+ 1512 00f4 49       		.uleb128 0x49
+ 1513 00f5 13       		.uleb128 0x13
+ 1514 00f6 11       		.uleb128 0x11
+ 1515 00f7 01       		.uleb128 0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 31
+
+
+ 1516 00f8 12       		.uleb128 0x12
+ 1517 00f9 06       		.uleb128 0x6
+ 1518 00fa 40       		.uleb128 0x40
+ 1519 00fb 18       		.uleb128 0x18
+ 1520 00fc 9642     		.uleb128 0x2116
+ 1521 00fe 19       		.uleb128 0x19
+ 1522 00ff 01       		.uleb128 0x1
+ 1523 0100 13       		.uleb128 0x13
+ 1524 0101 00       		.byte	0
+ 1525 0102 00       		.byte	0
+ 1526 0103 12       		.uleb128 0x12
+ 1527 0104 0B       		.uleb128 0xb
+ 1528 0105 01       		.byte	0x1
+ 1529 0106 55       		.uleb128 0x55
+ 1530 0107 17       		.uleb128 0x17
+ 1531 0108 00       		.byte	0
+ 1532 0109 00       		.byte	0
+ 1533 010a 13       		.uleb128 0x13
+ 1534 010b 2E       		.uleb128 0x2e
+ 1535 010c 01       		.byte	0x1
+ 1536 010d 3F       		.uleb128 0x3f
+ 1537 010e 19       		.uleb128 0x19
+ 1538 010f 03       		.uleb128 0x3
+ 1539 0110 0E       		.uleb128 0xe
+ 1540 0111 3A       		.uleb128 0x3a
+ 1541 0112 0B       		.uleb128 0xb
+ 1542 0113 3B       		.uleb128 0x3b
+ 1543 0114 0B       		.uleb128 0xb
+ 1544 0115 27       		.uleb128 0x27
+ 1545 0116 19       		.uleb128 0x19
+ 1546 0117 49       		.uleb128 0x49
+ 1547 0118 13       		.uleb128 0x13
+ 1548 0119 11       		.uleb128 0x11
+ 1549 011a 01       		.uleb128 0x1
+ 1550 011b 12       		.uleb128 0x12
+ 1551 011c 06       		.uleb128 0x6
+ 1552 011d 40       		.uleb128 0x40
+ 1553 011e 18       		.uleb128 0x18
+ 1554 011f 9642     		.uleb128 0x2116
+ 1555 0121 19       		.uleb128 0x19
+ 1556 0122 01       		.uleb128 0x1
+ 1557 0123 13       		.uleb128 0x13
+ 1558 0124 00       		.byte	0
+ 1559 0125 00       		.byte	0
+ 1560 0126 14       		.uleb128 0x14
+ 1561 0127 05       		.uleb128 0x5
+ 1562 0128 00       		.byte	0
+ 1563 0129 03       		.uleb128 0x3
+ 1564 012a 0E       		.uleb128 0xe
+ 1565 012b 3A       		.uleb128 0x3a
+ 1566 012c 0B       		.uleb128 0xb
+ 1567 012d 3B       		.uleb128 0x3b
+ 1568 012e 0B       		.uleb128 0xb
+ 1569 012f 49       		.uleb128 0x49
+ 1570 0130 13       		.uleb128 0x13
+ 1571 0131 02       		.uleb128 0x2
+ 1572 0132 18       		.uleb128 0x18
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 32
+
+
+ 1573 0133 00       		.byte	0
+ 1574 0134 00       		.byte	0
+ 1575 0135 15       		.uleb128 0x15
+ 1576 0136 05       		.uleb128 0x5
+ 1577 0137 00       		.byte	0
+ 1578 0138 03       		.uleb128 0x3
+ 1579 0139 08       		.uleb128 0x8
+ 1580 013a 3A       		.uleb128 0x3a
+ 1581 013b 0B       		.uleb128 0xb
+ 1582 013c 3B       		.uleb128 0x3b
+ 1583 013d 0B       		.uleb128 0xb
+ 1584 013e 49       		.uleb128 0x49
+ 1585 013f 13       		.uleb128 0x13
+ 1586 0140 02       		.uleb128 0x2
+ 1587 0141 18       		.uleb128 0x18
+ 1588 0142 00       		.byte	0
+ 1589 0143 00       		.byte	0
+ 1590 0144 16       		.uleb128 0x16
+ 1591 0145 34       		.uleb128 0x34
+ 1592 0146 00       		.byte	0
+ 1593 0147 03       		.uleb128 0x3
+ 1594 0148 08       		.uleb128 0x8
+ 1595 0149 3A       		.uleb128 0x3a
+ 1596 014a 0B       		.uleb128 0xb
+ 1597 014b 3B       		.uleb128 0x3b
+ 1598 014c 0B       		.uleb128 0xb
+ 1599 014d 49       		.uleb128 0x49
+ 1600 014e 13       		.uleb128 0x13
+ 1601 014f 02       		.uleb128 0x2
+ 1602 0150 18       		.uleb128 0x18
+ 1603 0151 00       		.byte	0
+ 1604 0152 00       		.byte	0
+ 1605 0153 17       		.uleb128 0x17
+ 1606 0154 2E       		.uleb128 0x2e
+ 1607 0155 01       		.byte	0x1
+ 1608 0156 3F       		.uleb128 0x3f
+ 1609 0157 19       		.uleb128 0x19
+ 1610 0158 03       		.uleb128 0x3
+ 1611 0159 0E       		.uleb128 0xe
+ 1612 015a 3A       		.uleb128 0x3a
+ 1613 015b 0B       		.uleb128 0xb
+ 1614 015c 3B       		.uleb128 0x3b
+ 1615 015d 0B       		.uleb128 0xb
+ 1616 015e 27       		.uleb128 0x27
+ 1617 015f 19       		.uleb128 0x19
+ 1618 0160 11       		.uleb128 0x11
+ 1619 0161 01       		.uleb128 0x1
+ 1620 0162 12       		.uleb128 0x12
+ 1621 0163 06       		.uleb128 0x6
+ 1622 0164 40       		.uleb128 0x40
+ 1623 0165 18       		.uleb128 0x18
+ 1624 0166 9742     		.uleb128 0x2117
+ 1625 0168 19       		.uleb128 0x19
+ 1626 0169 01       		.uleb128 0x1
+ 1627 016a 13       		.uleb128 0x13
+ 1628 016b 00       		.byte	0
+ 1629 016c 00       		.byte	0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 33
+
+
+ 1630 016d 18       		.uleb128 0x18
+ 1631 016e 21       		.uleb128 0x21
+ 1632 016f 00       		.byte	0
+ 1633 0170 49       		.uleb128 0x49
+ 1634 0171 13       		.uleb128 0x13
+ 1635 0172 2F       		.uleb128 0x2f
+ 1636 0173 05       		.uleb128 0x5
+ 1637 0174 00       		.byte	0
+ 1638 0175 00       		.byte	0
+ 1639 0176 19       		.uleb128 0x19
+ 1640 0177 34       		.uleb128 0x34
+ 1641 0178 00       		.byte	0
+ 1642 0179 03       		.uleb128 0x3
+ 1643 017a 0E       		.uleb128 0xe
+ 1644 017b 3A       		.uleb128 0x3a
+ 1645 017c 0B       		.uleb128 0xb
+ 1646 017d 3B       		.uleb128 0x3b
+ 1647 017e 05       		.uleb128 0x5
+ 1648 017f 49       		.uleb128 0x49
+ 1649 0180 13       		.uleb128 0x13
+ 1650 0181 3F       		.uleb128 0x3f
+ 1651 0182 19       		.uleb128 0x19
+ 1652 0183 3C       		.uleb128 0x3c
+ 1653 0184 19       		.uleb128 0x19
+ 1654 0185 00       		.byte	0
+ 1655 0186 00       		.byte	0
+ 1656 0187 1A       		.uleb128 0x1a
+ 1657 0188 35       		.uleb128 0x35
+ 1658 0189 00       		.byte	0
+ 1659 018a 49       		.uleb128 0x49
+ 1660 018b 13       		.uleb128 0x13
+ 1661 018c 00       		.byte	0
+ 1662 018d 00       		.byte	0
+ 1663 018e 00       		.byte	0
+ 1664              		.section	.debug_aranges,"",%progbits
+ 1665 0000 5C000000 		.4byte	0x5c
+ 1666 0004 0200     		.2byte	0x2
+ 1667 0006 00000000 		.4byte	.Ldebug_info0
+ 1668 000a 04       		.byte	0x4
+ 1669 000b 00       		.byte	0
+ 1670 000c 0000     		.2byte	0
+ 1671 000e 0000     		.2byte	0
+ 1672 0010 00000000 		.4byte	.LFB64
+ 1673 0014 14000000 		.4byte	.LFE64-.LFB64
+ 1674 0018 00000000 		.4byte	.LFB65
+ 1675 001c 14000000 		.4byte	.LFE65-.LFB65
+ 1676 0020 00000000 		.4byte	.LFB66
+ 1677 0024 28000000 		.4byte	.LFE66-.LFB66
+ 1678 0028 00000000 		.4byte	.LFB67
+ 1679 002c 70000000 		.4byte	.LFE67-.LFB67
+ 1680 0030 00000000 		.4byte	.LFB68
+ 1681 0034 08010000 		.4byte	.LFE68-.LFB68
+ 1682 0038 00000000 		.4byte	.LFB69
+ 1683 003c D0000000 		.4byte	.LFE69-.LFB69
+ 1684 0040 00000000 		.4byte	.LFB70
+ 1685 0044 8E000000 		.4byte	.LFE70-.LFB70
+ 1686 0048 00000000 		.4byte	.LFB71
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 34
+
+
+ 1687 004c 98000000 		.4byte	.LFE71-.LFB71
+ 1688 0050 00000000 		.4byte	.LFB72
+ 1689 0054 2A000000 		.4byte	.LFE72-.LFB72
+ 1690 0058 00000000 		.4byte	0
+ 1691 005c 00000000 		.4byte	0
+ 1692              		.section	.debug_ranges,"",%progbits
+ 1693              	.Ldebug_ranges0:
+ 1694 0000 5E000000 		.4byte	.LBB2
+ 1695 0004 AE000000 		.4byte	.LBE2
+ 1696 0008 C0000000 		.4byte	.LBB3
+ 1697 000c C2000000 		.4byte	.LBE3
+ 1698 0010 00000000 		.4byte	0
+ 1699 0014 00000000 		.4byte	0
+ 1700 0018 00000000 		.4byte	.LFB64
+ 1701 001c 14000000 		.4byte	.LFE64
+ 1702 0020 00000000 		.4byte	.LFB65
+ 1703 0024 14000000 		.4byte	.LFE65
+ 1704 0028 00000000 		.4byte	.LFB66
+ 1705 002c 28000000 		.4byte	.LFE66
+ 1706 0030 00000000 		.4byte	.LFB67
+ 1707 0034 70000000 		.4byte	.LFE67
+ 1708 0038 00000000 		.4byte	.LFB68
+ 1709 003c 08010000 		.4byte	.LFE68
+ 1710 0040 00000000 		.4byte	.LFB69
+ 1711 0044 D0000000 		.4byte	.LFE69
+ 1712 0048 00000000 		.4byte	.LFB70
+ 1713 004c 8E000000 		.4byte	.LFE70
+ 1714 0050 00000000 		.4byte	.LFB71
+ 1715 0054 98000000 		.4byte	.LFE71
+ 1716 0058 00000000 		.4byte	.LFB72
+ 1717 005c 2A000000 		.4byte	.LFE72
+ 1718 0060 00000000 		.4byte	0
+ 1719 0064 00000000 		.4byte	0
+ 1720              		.section	.debug_line,"",%progbits
+ 1721              	.Ldebug_line0:
+ 1722 0000 7D020000 		.section	.debug_str,"MS",%progbits,1
+ 1722      02007301 
+ 1722      00000201 
+ 1722      FB0E0D00 
+ 1722      01010101 
+ 1723              	.LASF45:
+ 1724 0000 75617274 		.ascii	"uart_chars\000"
+ 1724      5F636861 
+ 1724      727300
+ 1725              	.LASF43:
+ 1726 000b 736F7274 		.ascii	"sort\000"
+ 1726      00
+ 1727              	.LASF53:
+ 1728 0010 75617274 		.ascii	"uart_clear\000"
+ 1728      5F636C65 
+ 1728      617200
+ 1729              	.LASF42:
+ 1730 001b 6D656469 		.ascii	"median\000"
+ 1730      616E00
+ 1731              	.LASF2:
+ 1732 0022 73686F72 		.ascii	"short int\000"
+ 1732      7420696E 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 35
+
+
+ 1732      7400
+ 1733              	.LASF54:
+ 1734 002c 66696E64 		.ascii	"find_median\000"
+ 1734      5F6D6564 
+ 1734      69616E00 
+ 1735              	.LASF25:
+ 1736 0038 616C6C5F 		.ascii	"all_level_readings\000"
+ 1736      6C657665 
+ 1736      6C5F7265 
+ 1736      6164696E 
+ 1736      677300
+ 1737              	.LASF27:
+ 1738 004b 6E756D5F 		.ascii	"num_valid_readings\000"
+ 1738      76616C69 
+ 1738      645F7265 
+ 1738      6164696E 
+ 1738      677300
+ 1739              	.LASF50:
+ 1740 005e 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1740      43313120 
+ 1740      352E342E 
+ 1740      31203230 
+ 1740      31363036 
+ 1741 0091 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1741      20726576 
+ 1741      6973696F 
+ 1741      6E203233 
+ 1741      37373135 
+ 1742 00c4 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1742      66756E63 
+ 1742      74696F6E 
+ 1742      2D736563 
+ 1742      74696F6E 
+ 1743              	.LASF8:
+ 1744 00ec 6C6F6E67 		.ascii	"long long int\000"
+ 1744      206C6F6E 
+ 1744      6720696E 
+ 1744      7400
+ 1745              	.LASF44:
+ 1746 00fa 73776170 		.ascii	"swap\000"
+ 1746      00
+ 1747              	.LASF49:
+ 1748 00ff 70617474 		.ascii	"pattern\000"
+ 1748      65726E00 
+ 1749              	.LASF38:
+ 1750 0107 6C657665 		.ascii	"level_sensor_test\000"
+ 1750      6C5F7365 
+ 1750      6E736F72 
+ 1750      5F746573 
+ 1750      7400
+ 1751              	.LASF46:
+ 1752 0119 6E756D5F 		.ascii	"num_chars\000"
+ 1752      63686172 
+ 1752      7300
+ 1753              	.LASF14:
+ 1754 0123 75696E74 		.ascii	"uint16\000"
+ 1754      313600
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 36
+
+
+ 1755              	.LASF40:
+ 1756 012a 73656E73 		.ascii	"sensor\000"
+ 1756      6F7200
+ 1757              	.LASF15:
+ 1758 0131 696E7431 		.ascii	"int16\000"
+ 1758      3600
+ 1759              	.LASF13:
+ 1760 0137 75696E74 		.ascii	"uint8\000"
+ 1760      3800
+ 1761              	.LASF47:
+ 1762 013d 6C696E65 		.ascii	"line\000"
+ 1762      00
+ 1763              	.LASF16:
+ 1764 0142 666C6F61 		.ascii	"float\000"
+ 1764      7400
+ 1765              	.LASF28:
+ 1766 0148 6E756D5F 		.ascii	"num_invalid_readings\000"
+ 1766      696E7661 
+ 1766      6C69645F 
+ 1766      72656164 
+ 1766      696E6773 
+ 1767              	.LASF9:
+ 1768 015d 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1768      206C6F6E 
+ 1768      6720756E 
+ 1768      7369676E 
+ 1768      65642069 
+ 1769              	.LASF23:
+ 1770 0174 72656173 		.ascii	"reason\000"
+ 1770      6F6E00
+ 1771              	.LASF6:
+ 1772 017b 6C6F6E67 		.ascii	"long int\000"
+ 1772      20696E74 
+ 1772      00
+ 1773              	.LASF20:
+ 1774 0184 73697A65 		.ascii	"sizetype\000"
+ 1774      74797065 
+ 1774      00
+ 1775              	.LASF4:
+ 1776 018d 5F5F7569 		.ascii	"__uint8_t\000"
+ 1776      6E74385F 
+ 1776      7400
+ 1777              	.LASF31:
+ 1778 0197 75617274 		.ascii	"uart_len\000"
+ 1778      5F6C656E 
+ 1778      00
+ 1779              	.LASF1:
+ 1780 01a0 756E7369 		.ascii	"unsigned char\000"
+ 1780      676E6564 
+ 1780      20636861 
+ 1780      7200
+ 1781              	.LASF19:
+ 1782 01ae 6C6F6E67 		.ascii	"long double\000"
+ 1782      20646F75 
+ 1782      626C6500 
+ 1783              	.LASF55:
+ 1784 01ba 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 37
+
+
+ 1784      52784275 
+ 1784      66666572 
+ 1784      00
+ 1785              	.LASF32:
+ 1786 01c7 4C657665 		.ascii	"Level_Sensor_ISR\000"
+ 1786      6C5F5365 
+ 1786      6E736F72 
+ 1786      5F495352 
+ 1786      00
+ 1787              	.LASF0:
+ 1788 01d8 7369676E 		.ascii	"signed char\000"
+ 1788      65642063 
+ 1788      68617200 
+ 1789              	.LASF51:
+ 1790 01e4 6C657665 		.ascii	"level_sensor.c\000"
+ 1790      6C5F7365 
+ 1790      6E736F72 
+ 1790      2E6300
+ 1791              	.LASF10:
+ 1792 01f3 756E7369 		.ascii	"unsigned int\000"
+ 1792      676E6564 
+ 1792      20696E74 
+ 1792      00
+ 1793              	.LASF3:
+ 1794 0200 73686F72 		.ascii	"short unsigned int\000"
+ 1794      7420756E 
+ 1794      7369676E 
+ 1794      65642069 
+ 1794      6E7400
+ 1795              	.LASF22:
+ 1796 0213 73746174 		.ascii	"status\000"
+ 1796      757300
+ 1797              	.LASF33:
+ 1798 021a 6C657665 		.ascii	"level_sensor_take_reading\000"
+ 1798      6C5F7365 
+ 1798      6E736F72 
+ 1798      5F74616B 
+ 1798      655F7265 
+ 1799              	.LASF18:
+ 1800 0234 63686172 		.ascii	"char\000"
+ 1800      00
+ 1801              	.LASF24:
+ 1802 0239 74657374 		.ascii	"test_t\000"
+ 1802      5F7400
+ 1803              	.LASF12:
+ 1804 0240 696E7433 		.ascii	"int32_t\000"
+ 1804      325F7400 
+ 1805              	.LASF29:
+ 1806 0248 6C657665 		.ascii	"level_sensor_t\000"
+ 1806      6C5F7365 
+ 1806      6E736F72 
+ 1806      5F7400
+ 1807              	.LASF21:
+ 1808 0257 74657374 		.ascii	"test_name\000"
+ 1808      5F6E616D 
+ 1808      6500
+ 1809              	.LASF39:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 38
+
+
+ 1810 0261 74657374 		.ascii	"test\000"
+ 1810      00
+ 1811              	.LASF37:
+ 1812 0266 72656164 		.ascii	"reading\000"
+ 1812      696E6700 
+ 1813              	.LASF7:
+ 1814 026e 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1814      20756E73 
+ 1814      69676E65 
+ 1814      6420696E 
+ 1814      7400
+ 1815              	.LASF35:
+ 1816 0280 6C657665 		.ascii	"level_sensor_output\000"
+ 1816      6C5F7365 
+ 1816      6E736F72 
+ 1816      5F6F7574 
+ 1816      70757400 
+ 1817              	.LASF17:
+ 1818 0294 646F7562 		.ascii	"double\000"
+ 1818      6C6500
+ 1819              	.LASF41:
+ 1820 029b 61727261 		.ascii	"array\000"
+ 1820      7900
+ 1821              	.LASF26:
+ 1822 02a1 6C657665 		.ascii	"level_reading\000"
+ 1822      6C5F7265 
+ 1822      6164696E 
+ 1822      6700
+ 1823              	.LASF5:
+ 1824 02af 5F5F696E 		.ascii	"__int32_t\000"
+ 1824      7433325F 
+ 1824      7400
+ 1825              	.LASF34:
+ 1826 02b9 72785F63 		.ascii	"rx_char\000"
+ 1826      68617200 
+ 1827              	.LASF48:
+ 1828 02c1 6D617463 		.ascii	"match\000"
+ 1828      6800
+ 1829              	.LASF36:
+ 1830 02c7 746F6B65 		.ascii	"token\000"
+ 1830      6E00
+ 1831              	.LASF11:
+ 1832 02cd 75696E74 		.ascii	"uint8_t\000"
+ 1832      385F7400 
+ 1833              	.LASF30:
+ 1834 02d5 75617274 		.ascii	"uart_string\000"
+ 1834      5F737472 
+ 1834      696E6700 
+ 1835              	.LASF52:
+ 1836 02e1 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
+ 1836      73657273 
+ 1836      5C626B5C 
+ 1836      446F6375 
+ 1836      6D656E74 
+ 1837 030e 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
+ 1837      6E6F746F 
+ 1837      72694F53 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccEaTPzH.s 			page 39
+
+
+ 1837      5C6E6F74 
+ 1837      6F72694F 
+ 1838              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

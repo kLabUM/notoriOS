@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 1
 
 
    1              		.syntax unified
@@ -10,7 +10,7 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
    7              		.eabi_attribute 24, 1
    8              		.eabi_attribute 25, 1
    9              		.eabi_attribute 26, 1
-  10              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 30, 6
   11              		.eabi_attribute 34, 1
   12              		.eabi_attribute 18, 4
   13              		.thumb
@@ -19,15 +19,21 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
   16              		.text
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
-  19              		.section	.text.SleepTimer_Enable,"ax",%progbits
-  20              		.align	2
-  21              		.global	SleepTimer_Enable
-  22              		.thumb
-  23              		.thumb_func
-  24              		.type	SleepTimer_Enable, %function
-  25              	SleepTimer_Enable:
-  26              	.LFB2:
-  27              		.file 1 "Generated_Source\\PSoC5\\SleepTimer.c"
+  19              		.global	SleepTimer_initVar
+  20              		.bss
+  21              		.type	SleepTimer_initVar, %object
+  22              		.size	SleepTimer_initVar, 1
+  23              	SleepTimer_initVar:
+  24 0000 00       		.space	1
+  25              		.section	.text.SleepTimer_Start,"ax",%progbits
+  26              		.align	2
+  27              		.global	SleepTimer_Start
+  28              		.thumb
+  29              		.thumb_func
+  30              		.type	SleepTimer_Start, %function
+  31              	SleepTimer_Start:
+  32              	.LFB0:
+  33              		.file 1 "Generated_Source\\PSoC5\\SleepTimer.c"
    1:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
    2:Generated_Source\PSoC5/SleepTimer.c **** * File Name: SleepTimer.c
    3:Generated_Source\PSoC5/SleepTimer.c **** * Version 3.20
@@ -52,15 +58,15 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
   22:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
   23:Generated_Source\PSoC5/SleepTimer.c **** * Function Name: SleepTimer_Start
   24:Generated_Source\PSoC5/SleepTimer.c **** ********************************************************************************
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 2
+
+
   25:Generated_Source\PSoC5/SleepTimer.c **** *
   26:Generated_Source\PSoC5/SleepTimer.c **** * Summary:
   27:Generated_Source\PSoC5/SleepTimer.c **** *  This is the preferred method to begin component operation. SleepTimer_Start()
   28:Generated_Source\PSoC5/SleepTimer.c **** *  sets the initVar variable, calls the SleepTimer_Init() function, and then
   29:Generated_Source\PSoC5/SleepTimer.c **** *  calls the SleepTimer_Enable() function. It enables the 1-kHz ILO clock and
   30:Generated_Source\PSoC5/SleepTimer.c **** *  leaves it enabled after the Sleep Timer component is stopped.
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 2
-
-
   31:Generated_Source\PSoC5/SleepTimer.c **** *
   32:Generated_Source\PSoC5/SleepTimer.c **** * Parameters:
   33:Generated_Source\PSoC5/SleepTimer.c **** *  None
@@ -85,16 +91,61 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
   52:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
   53:Generated_Source\PSoC5/SleepTimer.c **** void SleepTimer_Start(void) 
   54:Generated_Source\PSoC5/SleepTimer.c **** {
+  34              		.loc 1 54 0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 1, uses_anonymous_args = 0
+  38 0000 80B5     		push	{r7, lr}
+  39              		.cfi_def_cfa_offset 8
+  40              		.cfi_offset 7, -8
+  41              		.cfi_offset 14, -4
+  42 0002 00AF     		add	r7, sp, #0
+  43              		.cfi_def_cfa_register 7
   55:Generated_Source\PSoC5/SleepTimer.c ****     /* Execute once in normal flow */
   56:Generated_Source\PSoC5/SleepTimer.c ****     if (0u == SleepTimer_initVar)
+  44              		.loc 1 56 0
+  45 0004 064B     		ldr	r3, .L3
+  46 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  47 0008 002B     		cmp	r3, #0
+  48 000a 04D1     		bne	.L2
   57:Generated_Source\PSoC5/SleepTimer.c ****     {
   58:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_Init();
+  49              		.loc 1 58 0
+  50 000c FFF7FEFF 		bl	SleepTimer_Init
   59:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_initVar = 1u;
+  51              		.loc 1 59 0
+  52 0010 034B     		ldr	r3, .L3
+  53 0012 0122     		movs	r2, #1
+  54 0014 1A70     		strb	r2, [r3]
+  55              	.L2:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 3
+
+
   60:Generated_Source\PSoC5/SleepTimer.c ****     }
   61:Generated_Source\PSoC5/SleepTimer.c **** 
   62:Generated_Source\PSoC5/SleepTimer.c ****     /* Enables the component operation */
   63:Generated_Source\PSoC5/SleepTimer.c ****     SleepTimer_Enable();
+  56              		.loc 1 63 0
+  57 0016 FFF7FEFF 		bl	SleepTimer_Enable
   64:Generated_Source\PSoC5/SleepTimer.c **** }
+  58              		.loc 1 64 0
+  59 001a 00BF     		nop
+  60 001c 80BD     		pop	{r7, pc}
+  61              	.L4:
+  62 001e 00BF     		.align	2
+  63              	.L3:
+  64 0020 00000000 		.word	SleepTimer_initVar
+  65              		.cfi_endproc
+  66              	.LFE0:
+  67              		.size	SleepTimer_Start, .-SleepTimer_Start
+  68              		.section	.text.SleepTimer_Init,"ax",%progbits
+  69              		.align	2
+  70              		.global	SleepTimer_Init
+  71              		.thumb
+  72              		.thumb_func
+  73              		.type	SleepTimer_Init, %function
+  74              	SleepTimer_Init:
+  75              	.LFB1:
   65:Generated_Source\PSoC5/SleepTimer.c **** 
   66:Generated_Source\PSoC5/SleepTimer.c **** 
   67:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
@@ -118,17 +169,32 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
   85:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
   86:Generated_Source\PSoC5/SleepTimer.c **** void SleepTimer_Init(void)  
   87:Generated_Source\PSoC5/SleepTimer.c **** {
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 3
+  76              		.loc 1 87 0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 1, uses_anonymous_args = 0
+  80 0000 80B5     		push	{r7, lr}
+  81              		.cfi_def_cfa_offset 8
+  82              		.cfi_offset 7, -8
+  83              		.cfi_offset 14, -4
+  84 0002 00AF     		add	r7, sp, #0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 4
 
 
+  85              		.cfi_def_cfa_register 7
   88:Generated_Source\PSoC5/SleepTimer.c ****     /* Sets default (passed from customizer) interval */
   89:Generated_Source\PSoC5/SleepTimer.c ****     SleepTimer_SetInterval(SleepTimer_INTERVAL);
+  86              		.loc 1 89 0
+  87 0004 0920     		movs	r0, #9
+  88 0006 FFF7FEFF 		bl	SleepTimer_SetInterval
   90:Generated_Source\PSoC5/SleepTimer.c **** 
   91:Generated_Source\PSoC5/SleepTimer.c ****     /* Check if user sets to issue an interrupt in customizer */
   92:Generated_Source\PSoC5/SleepTimer.c ****     #if (1u == SleepTimer_ENABLE_INTERRUPT)
   93:Generated_Source\PSoC5/SleepTimer.c ****     {
   94:Generated_Source\PSoC5/SleepTimer.c ****         /* Enable interrupt */
   95:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_EnableInt();
+  89              		.loc 1 95 0
+  90 000a FFF7FEFF 		bl	SleepTimer_EnableInt
   96:Generated_Source\PSoC5/SleepTimer.c ****     }
   97:Generated_Source\PSoC5/SleepTimer.c ****     #else /* interrupt should be disabled */
   98:Generated_Source\PSoC5/SleepTimer.c ****     {
@@ -137,6 +203,20 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  101:Generated_Source\PSoC5/SleepTimer.c ****     }   /* Interrupt is disabled  */
  102:Generated_Source\PSoC5/SleepTimer.c ****     #endif  /* (1u == SleepTimer_ENABLE_INTERRUPT) */
  103:Generated_Source\PSoC5/SleepTimer.c **** }
+  91              		.loc 1 103 0
+  92 000e 00BF     		nop
+  93 0010 80BD     		pop	{r7, pc}
+  94              		.cfi_endproc
+  95              	.LFE1:
+  96              		.size	SleepTimer_Init, .-SleepTimer_Init
+  97 0012 00BF     		.section	.text.SleepTimer_Enable,"ax",%progbits
+  98              		.align	2
+  99              		.global	SleepTimer_Enable
+ 100              		.thumb
+ 101              		.thumb_func
+ 102              		.type	SleepTimer_Enable, %function
+ 103              	SleepTimer_Enable:
+ 104              	.LFB2:
  104:Generated_Source\PSoC5/SleepTimer.c **** 
  105:Generated_Source\PSoC5/SleepTimer.c **** 
  106:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
@@ -158,103 +238,137 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  122:Generated_Source\PSoC5/SleepTimer.c **** *  Enables 1 kHz ILO clocks and leaves it enabled after Sleep Time component
  123:Generated_Source\PSoC5/SleepTimer.c **** *  is stopped.
  124:Generated_Source\PSoC5/SleepTimer.c **** *
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 5
+
+
  125:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
  126:Generated_Source\PSoC5/SleepTimer.c **** void SleepTimer_Enable(void) 
  127:Generated_Source\PSoC5/SleepTimer.c **** {
-  28              		.loc 1 127 0
-  29              		.cfi_startproc
-  30              		@ args = 0, pretend = 0, frame = 0
-  31              		@ frame_needed = 0, uses_anonymous_args = 0
-  32 0000 08B5     		push	{r3, lr}
-  33              		.cfi_def_cfa_offset 8
-  34              		.cfi_offset 3, -8
-  35              		.cfi_offset 14, -4
+ 105              		.loc 1 127 0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 8
+ 108              		@ frame_needed = 1, uses_anonymous_args = 0
+ 109 0000 80B5     		push	{r7, lr}
+ 110              		.cfi_def_cfa_offset 8
+ 111              		.cfi_offset 7, -8
+ 112              		.cfi_offset 14, -4
+ 113 0002 82B0     		sub	sp, sp, #8
+ 114              		.cfi_def_cfa_offset 16
+ 115 0004 00AF     		add	r7, sp, #0
+ 116              		.cfi_def_cfa_register 7
  128:Generated_Source\PSoC5/SleepTimer.c ****     uint8 interruptState;
  129:Generated_Source\PSoC5/SleepTimer.c **** 
  130:Generated_Source\PSoC5/SleepTimer.c ****     /* If 1kHz ILO is disabled */
  131:Generated_Source\PSoC5/SleepTimer.c ****     if(0u == (SleepTimer_ILO_CFG_REG & SleepTimer_ILO_1KHZ_EN))
-  36              		.loc 1 131 0
-  37 0002 0F4B     		ldr	r3, .L5
-  38 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  39 0006 13F0020F 		tst	r3, #2
-  40 000a 0ED1     		bne	.L2
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 4
-
-
+ 117              		.loc 1 131 0
+ 118 0006 1A4B     		ldr	r3, .L10
+ 119 0008 1B78     		ldrb	r3, [r3]
+ 120 000a DBB2     		uxtb	r3, r3
+ 121 000c 03F00203 		and	r3, r3, #2
+ 122 0010 002B     		cmp	r3, #0
+ 123 0012 18D1     		bne	.L7
  132:Generated_Source\PSoC5/SleepTimer.c ****     {
  133:Generated_Source\PSoC5/SleepTimer.c ****         /* Enter critical section */
  134:Generated_Source\PSoC5/SleepTimer.c ****         interruptState = CyEnterCriticalSection();
-  41              		.loc 1 134 0
-  42 000c FFF7FEFF 		bl	CyEnterCriticalSection
-  43              	.LVL0:
+ 124              		.loc 1 134 0
+ 125 0014 FFF7FEFF 		bl	CyEnterCriticalSection
+ 126 0018 0346     		mov	r3, r0
+ 127 001a FB71     		strb	r3, [r7, #7]
  135:Generated_Source\PSoC5/SleepTimer.c **** 
  136:Generated_Source\PSoC5/SleepTimer.c ****         /* Enable 1kHz ILO */
  137:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_ILO_CFG_REG |=SleepTimer_ILO_1KHZ_EN;
-  44              		.loc 1 137 0
-  45 0010 0B4A     		ldr	r2, .L5
-  46 0012 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  47 0014 43F00203 		orr	r3, r3, #2
-  48 0018 1370     		strb	r3, [r2]
+ 128              		.loc 1 137 0
+ 129 001c 144A     		ldr	r2, .L10
+ 130 001e 144B     		ldr	r3, .L10
+ 131 0020 1B78     		ldrb	r3, [r3]
+ 132 0022 DBB2     		uxtb	r3, r3
+ 133 0024 43F00203 		orr	r3, r3, #2
+ 134 0028 DBB2     		uxtb	r3, r3
+ 135 002a 1370     		strb	r3, [r2]
  138:Generated_Source\PSoC5/SleepTimer.c **** 
  139:Generated_Source\PSoC5/SleepTimer.c ****         /* Enable the CTW counter */
  140:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_TW_CFG_REG |= SleepTimer_CTW_EN;
-  49              		.loc 1 140 0
-  50 001a 8232     		adds	r2, r2, #130
-  51 001c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  52 001e 43F00403 		orr	r3, r3, #4
-  53 0022 1370     		strb	r3, [r2]
+ 136              		.loc 1 140 0
+ 137 002c 114A     		ldr	r2, .L10+4
+ 138 002e 114B     		ldr	r3, .L10+4
+ 139 0030 1B78     		ldrb	r3, [r3]
+ 140 0032 DBB2     		uxtb	r3, r3
+ 141 0034 43F00403 		orr	r3, r3, #4
+ 142 0038 DBB2     		uxtb	r3, r3
+ 143 003a 1370     		strb	r3, [r2]
  141:Generated_Source\PSoC5/SleepTimer.c **** 
  142:Generated_Source\PSoC5/SleepTimer.c ****         /* Exit critical section */
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 6
+
+
  143:Generated_Source\PSoC5/SleepTimer.c ****         CyExitCriticalSection(interruptState);
-  54              		.loc 1 143 0
-  55 0024 FFF7FEFF 		bl	CyExitCriticalSection
-  56              	.LVL1:
-  57 0028 08BD     		pop	{r3, pc}
-  58              	.L2:
+ 144              		.loc 1 143 0
+ 145 003c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 146 003e 1846     		mov	r0, r3
+ 147 0040 FFF7FEFF 		bl	CyExitCriticalSection
  144:Generated_Source\PSoC5/SleepTimer.c ****     }
  145:Generated_Source\PSoC5/SleepTimer.c ****     else /* If 1kHz ILO is enabled - enable CTW counter */
  146:Generated_Source\PSoC5/SleepTimer.c ****     {
  147:Generated_Source\PSoC5/SleepTimer.c ****         /* Enter critical section */
  148:Generated_Source\PSoC5/SleepTimer.c ****         interruptState = CyEnterCriticalSection();
-  59              		.loc 1 148 0
-  60 002a FFF7FEFF 		bl	CyEnterCriticalSection
-  61              	.LVL2:
  149:Generated_Source\PSoC5/SleepTimer.c **** 
  150:Generated_Source\PSoC5/SleepTimer.c ****         /* Enable the CTW counter */
  151:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_TW_CFG_REG |= SleepTimer_CTW_EN;
-  62              		.loc 1 151 0
-  63 002e 054A     		ldr	r2, .L5+4
-  64 0030 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-  65 0032 43F00403 		orr	r3, r3, #4
-  66 0036 1370     		strb	r3, [r2]
  152:Generated_Source\PSoC5/SleepTimer.c **** 
  153:Generated_Source\PSoC5/SleepTimer.c ****         /* Exit critical section */
  154:Generated_Source\PSoC5/SleepTimer.c ****         CyExitCriticalSection(interruptState);
-  67              		.loc 1 154 0
-  68 0038 FFF7FEFF 		bl	CyExitCriticalSection
-  69              	.LVL3:
-  70 003c 08BD     		pop	{r3, pc}
-  71              	.L6:
-  72 003e 00BF     		.align	2
-  73              	.L5:
-  74 0040 00430040 		.word	1073758976
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 5
-
-
-  75 0044 82430040 		.word	1073759106
-  76              		.cfi_endproc
-  77              	.LFE2:
-  78              		.size	SleepTimer_Enable, .-SleepTimer_Enable
-  79              		.section	.text.SleepTimer_Stop,"ax",%progbits
-  80              		.align	2
-  81              		.global	SleepTimer_Stop
-  82              		.thumb
-  83              		.thumb_func
-  84              		.type	SleepTimer_Stop, %function
-  85              	SleepTimer_Stop:
-  86              	.LFB3:
  155:Generated_Source\PSoC5/SleepTimer.c ****     }
  156:Generated_Source\PSoC5/SleepTimer.c **** }
+ 148              		.loc 1 156 0
+ 149 0044 0FE0     		b	.L9
+ 150              	.L7:
+ 148:Generated_Source\PSoC5/SleepTimer.c **** 
+ 151              		.loc 1 148 0
+ 152 0046 FFF7FEFF 		bl	CyEnterCriticalSection
+ 153 004a 0346     		mov	r3, r0
+ 154 004c FB71     		strb	r3, [r7, #7]
+ 151:Generated_Source\PSoC5/SleepTimer.c **** 
+ 155              		.loc 1 151 0
+ 156 004e 094A     		ldr	r2, .L10+4
+ 157 0050 084B     		ldr	r3, .L10+4
+ 158 0052 1B78     		ldrb	r3, [r3]
+ 159 0054 DBB2     		uxtb	r3, r3
+ 160 0056 43F00403 		orr	r3, r3, #4
+ 161 005a DBB2     		uxtb	r3, r3
+ 162 005c 1370     		strb	r3, [r2]
+ 154:Generated_Source\PSoC5/SleepTimer.c ****     }
+ 163              		.loc 1 154 0
+ 164 005e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 165 0060 1846     		mov	r0, r3
+ 166 0062 FFF7FEFF 		bl	CyExitCriticalSection
+ 167              	.L9:
+ 168              		.loc 1 156 0
+ 169 0066 00BF     		nop
+ 170 0068 0837     		adds	r7, r7, #8
+ 171              		.cfi_def_cfa_offset 8
+ 172 006a BD46     		mov	sp, r7
+ 173              		.cfi_def_cfa_register 13
+ 174              		@ sp needed
+ 175 006c 80BD     		pop	{r7, pc}
+ 176              	.L11:
+ 177 006e 00BF     		.align	2
+ 178              	.L10:
+ 179 0070 00430040 		.word	1073758976
+ 180 0074 82430040 		.word	1073759106
+ 181              		.cfi_endproc
+ 182              	.LFE2:
+ 183              		.size	SleepTimer_Enable, .-SleepTimer_Enable
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 7
+
+
+ 184              		.section	.text.SleepTimer_Stop,"ax",%progbits
+ 185              		.align	2
+ 186              		.global	SleepTimer_Stop
+ 187              		.thumb
+ 188              		.thumb_func
+ 189              		.type	SleepTimer_Stop, %function
+ 190              	SleepTimer_Stop:
+ 191              	.LFB3:
  157:Generated_Source\PSoC5/SleepTimer.c **** 
  158:Generated_Source\PSoC5/SleepTimer.c **** 
  159:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
@@ -278,55 +392,71 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  177:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
  178:Generated_Source\PSoC5/SleepTimer.c **** void SleepTimer_Stop(void) 
  179:Generated_Source\PSoC5/SleepTimer.c **** {
-  87              		.loc 1 179 0
-  88              		.cfi_startproc
-  89              		@ args = 0, pretend = 0, frame = 0
-  90              		@ frame_needed = 0, uses_anonymous_args = 0
-  91 0000 08B5     		push	{r3, lr}
-  92              		.cfi_def_cfa_offset 8
-  93              		.cfi_offset 3, -8
-  94              		.cfi_offset 14, -4
+ 192              		.loc 1 179 0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 8
+ 195              		@ frame_needed = 1, uses_anonymous_args = 0
+ 196 0000 80B5     		push	{r7, lr}
+ 197              		.cfi_def_cfa_offset 8
+ 198              		.cfi_offset 7, -8
+ 199              		.cfi_offset 14, -4
+ 200 0002 82B0     		sub	sp, sp, #8
+ 201              		.cfi_def_cfa_offset 16
+ 202 0004 00AF     		add	r7, sp, #0
+ 203              		.cfi_def_cfa_register 7
  180:Generated_Source\PSoC5/SleepTimer.c ****     uint8 interruptState;
  181:Generated_Source\PSoC5/SleepTimer.c **** 
  182:Generated_Source\PSoC5/SleepTimer.c ****     /* Enter critical section */
  183:Generated_Source\PSoC5/SleepTimer.c ****     interruptState = CyEnterCriticalSection();
-  95              		.loc 1 183 0
-  96 0002 FFF7FEFF 		bl	CyEnterCriticalSection
-  97              	.LVL4:
+ 204              		.loc 1 183 0
+ 205 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 206 000a 0346     		mov	r3, r0
+ 207 000c FB71     		strb	r3, [r7, #7]
  184:Generated_Source\PSoC5/SleepTimer.c **** 
  185:Generated_Source\PSoC5/SleepTimer.c ****     /* Disable CTW counter */
  186:Generated_Source\PSoC5/SleepTimer.c ****     SleepTimer_TW_CFG_REG &= (uint8)(~SleepTimer_CTW_EN);
-  98              		.loc 1 186 0
-  99 0006 044A     		ldr	r2, .L9
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 6
+ 208              		.loc 1 186 0
+ 209 000e 084A     		ldr	r2, .L13
+ 210 0010 074B     		ldr	r3, .L13
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 8
 
 
- 100 0008 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 101 000a 03F0FB03 		and	r3, r3, #251
- 102 000e 1370     		strb	r3, [r2]
+ 211 0012 1B78     		ldrb	r3, [r3]
+ 212 0014 DBB2     		uxtb	r3, r3
+ 213 0016 23F00403 		bic	r3, r3, #4
+ 214 001a DBB2     		uxtb	r3, r3
+ 215 001c 1370     		strb	r3, [r2]
  187:Generated_Source\PSoC5/SleepTimer.c **** 
  188:Generated_Source\PSoC5/SleepTimer.c ****     /* Exit critical section */
  189:Generated_Source\PSoC5/SleepTimer.c ****     CyExitCriticalSection(interruptState);
- 103              		.loc 1 189 0
- 104 0010 FFF7FEFF 		bl	CyExitCriticalSection
- 105              	.LVL5:
- 106 0014 08BD     		pop	{r3, pc}
- 107              	.L10:
- 108 0016 00BF     		.align	2
- 109              	.L9:
- 110 0018 82430040 		.word	1073759106
- 111              		.cfi_endproc
- 112              	.LFE3:
- 113              		.size	SleepTimer_Stop, .-SleepTimer_Stop
- 114              		.section	.text.SleepTimer_EnableInt,"ax",%progbits
- 115              		.align	2
- 116              		.global	SleepTimer_EnableInt
- 117              		.thumb
- 118              		.thumb_func
- 119              		.type	SleepTimer_EnableInt, %function
- 120              	SleepTimer_EnableInt:
- 121              	.LFB4:
+ 216              		.loc 1 189 0
+ 217 001e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 218 0020 1846     		mov	r0, r3
+ 219 0022 FFF7FEFF 		bl	CyExitCriticalSection
  190:Generated_Source\PSoC5/SleepTimer.c **** }
+ 220              		.loc 1 190 0
+ 221 0026 00BF     		nop
+ 222 0028 0837     		adds	r7, r7, #8
+ 223              		.cfi_def_cfa_offset 8
+ 224 002a BD46     		mov	sp, r7
+ 225              		.cfi_def_cfa_register 13
+ 226              		@ sp needed
+ 227 002c 80BD     		pop	{r7, pc}
+ 228              	.L14:
+ 229 002e 00BF     		.align	2
+ 230              	.L13:
+ 231 0030 82430040 		.word	1073759106
+ 232              		.cfi_endproc
+ 233              	.LFE3:
+ 234              		.size	SleepTimer_Stop, .-SleepTimer_Stop
+ 235              		.section	.text.SleepTimer_EnableInt,"ax",%progbits
+ 236              		.align	2
+ 237              		.global	SleepTimer_EnableInt
+ 238              		.thumb
+ 239              		.thumb_func
+ 240              		.type	SleepTimer_EnableInt, %function
+ 241              	SleepTimer_EnableInt:
+ 242              	.LFB4:
  191:Generated_Source\PSoC5/SleepTimer.c **** 
  192:Generated_Source\PSoC5/SleepTimer.c **** 
  193:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
@@ -345,55 +475,74 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  206:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
  207:Generated_Source\PSoC5/SleepTimer.c **** void SleepTimer_EnableInt(void) 
  208:Generated_Source\PSoC5/SleepTimer.c **** {
- 122              		.loc 1 208 0
- 123              		.cfi_startproc
- 124              		@ args = 0, pretend = 0, frame = 0
- 125              		@ frame_needed = 0, uses_anonymous_args = 0
- 126 0000 08B5     		push	{r3, lr}
- 127              		.cfi_def_cfa_offset 8
- 128              		.cfi_offset 3, -8
- 129              		.cfi_offset 14, -4
+ 243              		.loc 1 208 0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 8
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 9
+
+
+ 246              		@ frame_needed = 1, uses_anonymous_args = 0
+ 247 0000 80B5     		push	{r7, lr}
+ 248              		.cfi_def_cfa_offset 8
+ 249              		.cfi_offset 7, -8
+ 250              		.cfi_offset 14, -4
+ 251 0002 82B0     		sub	sp, sp, #8
+ 252              		.cfi_def_cfa_offset 16
+ 253 0004 00AF     		add	r7, sp, #0
+ 254              		.cfi_def_cfa_register 7
  209:Generated_Source\PSoC5/SleepTimer.c ****     uint8 interruptState;
  210:Generated_Source\PSoC5/SleepTimer.c **** 
  211:Generated_Source\PSoC5/SleepTimer.c ****     /* Enter critical section */
  212:Generated_Source\PSoC5/SleepTimer.c ****     interruptState = CyEnterCriticalSection();
- 130              		.loc 1 212 0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 7
-
-
- 131 0002 FFF7FEFF 		bl	CyEnterCriticalSection
- 132              	.LVL6:
+ 255              		.loc 1 212 0
+ 256 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 257 000a 0346     		mov	r3, r0
+ 258 000c FB71     		strb	r3, [r7, #7]
  213:Generated_Source\PSoC5/SleepTimer.c **** 
  214:Generated_Source\PSoC5/SleepTimer.c ****      /* Enable interrupt on wake up */
  215:Generated_Source\PSoC5/SleepTimer.c ****     SleepTimer_TW_CFG_REG |= SleepTimer_CTW_IE;
- 133              		.loc 1 215 0
- 134 0006 044A     		ldr	r2, .L13
- 135 0008 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 136 000a 43F00803 		orr	r3, r3, #8
- 137 000e 1370     		strb	r3, [r2]
+ 259              		.loc 1 215 0
+ 260 000e 084A     		ldr	r2, .L16
+ 261 0010 074B     		ldr	r3, .L16
+ 262 0012 1B78     		ldrb	r3, [r3]
+ 263 0014 DBB2     		uxtb	r3, r3
+ 264 0016 43F00803 		orr	r3, r3, #8
+ 265 001a DBB2     		uxtb	r3, r3
+ 266 001c 1370     		strb	r3, [r2]
  216:Generated_Source\PSoC5/SleepTimer.c **** 
  217:Generated_Source\PSoC5/SleepTimer.c ****     /* Exit critical section */
  218:Generated_Source\PSoC5/SleepTimer.c ****     CyExitCriticalSection(interruptState);
- 138              		.loc 1 218 0
- 139 0010 FFF7FEFF 		bl	CyExitCriticalSection
- 140              	.LVL7:
- 141 0014 08BD     		pop	{r3, pc}
- 142              	.L14:
- 143 0016 00BF     		.align	2
- 144              	.L13:
- 145 0018 82430040 		.word	1073759106
- 146              		.cfi_endproc
- 147              	.LFE4:
- 148              		.size	SleepTimer_EnableInt, .-SleepTimer_EnableInt
- 149              		.section	.text.SleepTimer_DisableInt,"ax",%progbits
- 150              		.align	2
- 151              		.global	SleepTimer_DisableInt
- 152              		.thumb
- 153              		.thumb_func
- 154              		.type	SleepTimer_DisableInt, %function
- 155              	SleepTimer_DisableInt:
- 156              	.LFB5:
+ 267              		.loc 1 218 0
+ 268 001e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 269 0020 1846     		mov	r0, r3
+ 270 0022 FFF7FEFF 		bl	CyExitCriticalSection
  219:Generated_Source\PSoC5/SleepTimer.c **** }
+ 271              		.loc 1 219 0
+ 272 0026 00BF     		nop
+ 273 0028 0837     		adds	r7, r7, #8
+ 274              		.cfi_def_cfa_offset 8
+ 275 002a BD46     		mov	sp, r7
+ 276              		.cfi_def_cfa_register 13
+ 277              		@ sp needed
+ 278 002c 80BD     		pop	{r7, pc}
+ 279              	.L17:
+ 280 002e 00BF     		.align	2
+ 281              	.L16:
+ 282 0030 82430040 		.word	1073759106
+ 283              		.cfi_endproc
+ 284              	.LFE4:
+ 285              		.size	SleepTimer_EnableInt, .-SleepTimer_EnableInt
+ 286              		.section	.text.SleepTimer_DisableInt,"ax",%progbits
+ 287              		.align	2
+ 288              		.global	SleepTimer_DisableInt
+ 289              		.thumb
+ 290              		.thumb_func
+ 291              		.type	SleepTimer_DisableInt, %function
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 10
+
+
+ 292              	SleepTimer_DisableInt:
+ 293              	.LFB5:
  220:Generated_Source\PSoC5/SleepTimer.c **** 
  221:Generated_Source\PSoC5/SleepTimer.c **** 
  222:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
@@ -412,55 +561,71 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  235:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
  236:Generated_Source\PSoC5/SleepTimer.c **** void SleepTimer_DisableInt(void) 
  237:Generated_Source\PSoC5/SleepTimer.c **** {
- 157              		.loc 1 237 0
- 158              		.cfi_startproc
- 159              		@ args = 0, pretend = 0, frame = 0
- 160              		@ frame_needed = 0, uses_anonymous_args = 0
- 161 0000 08B5     		push	{r3, lr}
- 162              		.cfi_def_cfa_offset 8
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 8
-
-
- 163              		.cfi_offset 3, -8
- 164              		.cfi_offset 14, -4
+ 294              		.loc 1 237 0
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 8
+ 297              		@ frame_needed = 1, uses_anonymous_args = 0
+ 298 0000 80B5     		push	{r7, lr}
+ 299              		.cfi_def_cfa_offset 8
+ 300              		.cfi_offset 7, -8
+ 301              		.cfi_offset 14, -4
+ 302 0002 82B0     		sub	sp, sp, #8
+ 303              		.cfi_def_cfa_offset 16
+ 304 0004 00AF     		add	r7, sp, #0
+ 305              		.cfi_def_cfa_register 7
  238:Generated_Source\PSoC5/SleepTimer.c ****     uint8 interruptState;
  239:Generated_Source\PSoC5/SleepTimer.c **** 
  240:Generated_Source\PSoC5/SleepTimer.c ****     /* Enter critical section */
  241:Generated_Source\PSoC5/SleepTimer.c ****     interruptState = CyEnterCriticalSection();
- 165              		.loc 1 241 0
- 166 0002 FFF7FEFF 		bl	CyEnterCriticalSection
- 167              	.LVL8:
+ 306              		.loc 1 241 0
+ 307 0006 FFF7FEFF 		bl	CyEnterCriticalSection
+ 308 000a 0346     		mov	r3, r0
+ 309 000c FB71     		strb	r3, [r7, #7]
  242:Generated_Source\PSoC5/SleepTimer.c **** 
  243:Generated_Source\PSoC5/SleepTimer.c ****     /* Disable interrupt on wake up */
  244:Generated_Source\PSoC5/SleepTimer.c ****     SleepTimer_TW_CFG_REG &= (uint8)(~SleepTimer_CTW_IE);
- 168              		.loc 1 244 0
- 169 0006 044A     		ldr	r2, .L17
- 170 0008 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
- 171 000a 03F0F703 		and	r3, r3, #247
- 172 000e 1370     		strb	r3, [r2]
+ 310              		.loc 1 244 0
+ 311 000e 084A     		ldr	r2, .L19
+ 312 0010 074B     		ldr	r3, .L19
+ 313 0012 1B78     		ldrb	r3, [r3]
+ 314 0014 DBB2     		uxtb	r3, r3
+ 315 0016 23F00803 		bic	r3, r3, #8
+ 316 001a DBB2     		uxtb	r3, r3
+ 317 001c 1370     		strb	r3, [r2]
  245:Generated_Source\PSoC5/SleepTimer.c **** 
  246:Generated_Source\PSoC5/SleepTimer.c ****     /* Exit critical section */
  247:Generated_Source\PSoC5/SleepTimer.c ****     CyExitCriticalSection(interruptState);
- 173              		.loc 1 247 0
- 174 0010 FFF7FEFF 		bl	CyExitCriticalSection
- 175              	.LVL9:
- 176 0014 08BD     		pop	{r3, pc}
- 177              	.L18:
- 178 0016 00BF     		.align	2
- 179              	.L17:
- 180 0018 82430040 		.word	1073759106
- 181              		.cfi_endproc
- 182              	.LFE5:
- 183              		.size	SleepTimer_DisableInt, .-SleepTimer_DisableInt
- 184              		.section	.text.SleepTimer_SetInterval,"ax",%progbits
- 185              		.align	2
- 186              		.global	SleepTimer_SetInterval
- 187              		.thumb
- 188              		.thumb_func
- 189              		.type	SleepTimer_SetInterval, %function
- 190              	SleepTimer_SetInterval:
- 191              	.LFB6:
+ 318              		.loc 1 247 0
+ 319 001e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 320 0020 1846     		mov	r0, r3
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 11
+
+
+ 321 0022 FFF7FEFF 		bl	CyExitCriticalSection
  248:Generated_Source\PSoC5/SleepTimer.c **** }
+ 322              		.loc 1 248 0
+ 323 0026 00BF     		nop
+ 324 0028 0837     		adds	r7, r7, #8
+ 325              		.cfi_def_cfa_offset 8
+ 326 002a BD46     		mov	sp, r7
+ 327              		.cfi_def_cfa_register 13
+ 328              		@ sp needed
+ 329 002c 80BD     		pop	{r7, pc}
+ 330              	.L20:
+ 331 002e 00BF     		.align	2
+ 332              	.L19:
+ 333 0030 82430040 		.word	1073759106
+ 334              		.cfi_endproc
+ 335              	.LFE5:
+ 336              		.size	SleepTimer_DisableInt, .-SleepTimer_DisableInt
+ 337              		.section	.text.SleepTimer_SetInterval,"ax",%progbits
+ 338              		.align	2
+ 339              		.global	SleepTimer_SetInterval
+ 340              		.thumb
+ 341              		.thumb_func
+ 342              		.type	SleepTimer_SetInterval, %function
+ 343              	SleepTimer_SetInterval:
+ 344              	.LFB6:
  249:Generated_Source\PSoC5/SleepTimer.c **** 
  250:Generated_Source\PSoC5/SleepTimer.c **** 
  251:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
@@ -478,9 +643,6 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  263:Generated_Source\PSoC5/SleepTimer.c **** *
  264:Generated_Source\PSoC5/SleepTimer.c **** *  PSoC 5:
  265:Generated_Source\PSoC5/SleepTimer.c **** *  Only the 4-, 8-, 16-, 32-, 64-, 128-, and 256-ms selections are supported.
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 9
-
-
  266:Generated_Source\PSoC5/SleepTimer.c **** *
  267:Generated_Source\PSoC5/SleepTimer.c **** *           Name                    Value        Period
  268:Generated_Source\PSoC5/SleepTimer.c **** *   SleepTimer__CTW_2_MS      4'b0001        2 ms
@@ -496,6 +658,9 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  278:Generated_Source\PSoC5/SleepTimer.c **** *   SleepTimer__CTW_2048_MS   4'b1011        2048 ms
  279:Generated_Source\PSoC5/SleepTimer.c **** *   SleepTimer__CTW_4096_MS   4'b1100        4096 ms
  280:Generated_Source\PSoC5/SleepTimer.c **** *
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 12
+
+
  281:Generated_Source\PSoC5/SleepTimer.c **** * Return:
  282:Generated_Source\PSoC5/SleepTimer.c **** *  None
  283:Generated_Source\PSoC5/SleepTimer.c **** *
@@ -506,19 +671,29 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  288:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
  289:Generated_Source\PSoC5/SleepTimer.c **** void SleepTimer_SetInterval(uint8 interval) 
  290:Generated_Source\PSoC5/SleepTimer.c **** {
- 192              		.loc 1 290 0
- 193              		.cfi_startproc
- 194              		@ args = 0, pretend = 0, frame = 0
- 195              		@ frame_needed = 0, uses_anonymous_args = 0
- 196              		@ link register save eliminated.
- 197              	.LVL10:
+ 345              		.loc 1 290 0
+ 346              		.cfi_startproc
+ 347              		@ args = 0, pretend = 0, frame = 8
+ 348              		@ frame_needed = 1, uses_anonymous_args = 0
+ 349              		@ link register save eliminated.
+ 350 0000 80B4     		push	{r7}
+ 351              		.cfi_def_cfa_offset 4
+ 352              		.cfi_offset 7, -4
+ 353 0002 83B0     		sub	sp, sp, #12
+ 354              		.cfi_def_cfa_offset 16
+ 355 0004 00AF     		add	r7, sp, #0
+ 356              		.cfi_def_cfa_register 7
+ 357 0006 0346     		mov	r3, r0
+ 358 0008 FB71     		strb	r3, [r7, #7]
  291:Generated_Source\PSoC5/SleepTimer.c ****     /* Check if CTW is disabled */
  292:Generated_Source\PSoC5/SleepTimer.c ****     if (0u == (SleepTimer_TW_CFG_REG & SleepTimer_CTW_EN))
- 198              		.loc 1 292 0
- 199 0000 064B     		ldr	r3, .L21
- 200 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 201 0004 13F0040F 		tst	r3, #4
- 202 0008 07D1     		bne	.L19
+ 359              		.loc 1 292 0
+ 360 000a 0D4B     		ldr	r3, .L24
+ 361 000c 1B78     		ldrb	r3, [r3]
+ 362 000e DBB2     		uxtb	r3, r3
+ 363 0010 03F00403 		and	r3, r3, #4
+ 364 0014 002B     		cmp	r3, #0
+ 365 0016 0DD1     		bne	.L23
  293:Generated_Source\PSoC5/SleepTimer.c ****     {
  294:Generated_Source\PSoC5/SleepTimer.c ****         #if(CY_PSOC5A)
  295:Generated_Source\PSoC5/SleepTimer.c **** 
@@ -534,119 +709,58 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  305:Generated_Source\PSoC5/SleepTimer.c **** 
  306:Generated_Source\PSoC5/SleepTimer.c ****         /* Set CTW interval */
  307:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_CTW_INTERVAL_REG = \
+ 366              		.loc 1 307 0
+ 367 0018 0A49     		ldr	r1, .L24+4
  308:Generated_Source\PSoC5/SleepTimer.c ****             (SleepTimer_CTW_INTERVAL_REG & ((uint8)~SleepTimer_INTERVAL_MASK)) | \
- 203              		.loc 1 308 0
- 204 000a 054A     		ldr	r2, .L21+4
- 205 000c 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 10
-
-
+ 368              		.loc 1 308 0
+ 369 001a 0A4B     		ldr	r3, .L24+4
+ 370 001c 1B78     		ldrb	r3, [r3]
+ 371 001e DBB2     		uxtb	r3, r3
  307:Generated_Source\PSoC5/SleepTimer.c ****             (SleepTimer_CTW_INTERVAL_REG & ((uint8)~SleepTimer_INTERVAL_MASK)) | \
- 206              		.loc 1 307 0
- 207 000e 03F0F003 		and	r3, r3, #240
- 208 0012 00F00F00 		and	r0, r0, #15
- 209              	.LVL11:
- 210 0016 1843     		orrs	r0, r0, r3
- 211 0018 1070     		strb	r0, [r2]
- 212              	.L19:
- 213 001a 7047     		bx	lr
- 214              	.L22:
- 215              		.align	2
- 216              	.L21:
- 217 001c 82430040 		.word	1073759106
- 218 0020 81430040 		.word	1073759105
- 219              		.cfi_endproc
- 220              	.LFE6:
- 221              		.size	SleepTimer_SetInterval, .-SleepTimer_SetInterval
- 222              		.section	.text.SleepTimer_Init,"ax",%progbits
- 223              		.align	2
- 224              		.global	SleepTimer_Init
- 225              		.thumb
- 226              		.thumb_func
- 227              		.type	SleepTimer_Init, %function
- 228              	SleepTimer_Init:
- 229              	.LFB1:
-  87:Generated_Source\PSoC5/SleepTimer.c ****     /* Sets default (passed from customizer) interval */
- 230              		.loc 1 87 0
- 231              		.cfi_startproc
- 232              		@ args = 0, pretend = 0, frame = 0
- 233              		@ frame_needed = 0, uses_anonymous_args = 0
- 234 0000 08B5     		push	{r3, lr}
- 235              		.cfi_def_cfa_offset 8
- 236              		.cfi_offset 3, -8
- 237              		.cfi_offset 14, -4
-  89:Generated_Source\PSoC5/SleepTimer.c **** 
- 238              		.loc 1 89 0
- 239 0002 0920     		movs	r0, #9
- 240 0004 FFF7FEFF 		bl	SleepTimer_SetInterval
- 241              	.LVL12:
-  95:Generated_Source\PSoC5/SleepTimer.c ****     }
- 242              		.loc 1 95 0
- 243 0008 FFF7FEFF 		bl	SleepTimer_EnableInt
- 244              	.LVL13:
- 245 000c 08BD     		pop	{r3, pc}
- 246              		.cfi_endproc
- 247              	.LFE1:
- 248              		.size	SleepTimer_Init, .-SleepTimer_Init
- 249 000e 00BF     		.section	.text.SleepTimer_Start,"ax",%progbits
- 250              		.align	2
- 251              		.global	SleepTimer_Start
- 252              		.thumb
- 253              		.thumb_func
- 254              		.type	SleepTimer_Start, %function
- 255              	SleepTimer_Start:
- 256              	.LFB0:
-  54:Generated_Source\PSoC5/SleepTimer.c ****     /* Execute once in normal flow */
- 257              		.loc 1 54 0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 11
+ 372              		.loc 1 307 0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 13
 
 
- 258              		.cfi_startproc
- 259              		@ args = 0, pretend = 0, frame = 0
- 260              		@ frame_needed = 0, uses_anonymous_args = 0
- 261 0000 08B5     		push	{r3, lr}
- 262              		.cfi_def_cfa_offset 8
- 263              		.cfi_offset 3, -8
- 264              		.cfi_offset 14, -4
-  56:Generated_Source\PSoC5/SleepTimer.c ****     {
- 265              		.loc 1 56 0
- 266 0002 054B     		ldr	r3, .L28
- 267 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 268 0006 23B9     		cbnz	r3, .L26
-  58:Generated_Source\PSoC5/SleepTimer.c ****         SleepTimer_initVar = 1u;
- 269              		.loc 1 58 0
- 270 0008 FFF7FEFF 		bl	SleepTimer_Init
- 271              	.LVL14:
-  59:Generated_Source\PSoC5/SleepTimer.c ****     }
- 272              		.loc 1 59 0
- 273 000c 0122     		movs	r2, #1
- 274 000e 024B     		ldr	r3, .L28
- 275 0010 1A70     		strb	r2, [r3]
- 276              	.L26:
-  63:Generated_Source\PSoC5/SleepTimer.c **** }
- 277              		.loc 1 63 0
- 278 0012 FFF7FEFF 		bl	SleepTimer_Enable
- 279              	.LVL15:
- 280 0016 08BD     		pop	{r3, pc}
- 281              	.L29:
- 282              		.align	2
- 283              	.L28:
- 284 0018 00000000 		.word	.LANCHOR0
- 285              		.cfi_endproc
- 286              	.LFE0:
- 287              		.size	SleepTimer_Start, .-SleepTimer_Start
- 288              		.section	.text.SleepTimer_GetStatus,"ax",%progbits
- 289              		.align	2
- 290              		.global	SleepTimer_GetStatus
- 291              		.thumb
- 292              		.thumb_func
- 293              		.type	SleepTimer_GetStatus, %function
- 294              	SleepTimer_GetStatus:
- 295              	.LFB7:
+ 373 0020 23F00F03 		bic	r3, r3, #15
+ 374 0024 DAB2     		uxtb	r2, r3
+ 375 0026 FB79     		ldrb	r3, [r7, #7]
+ 376 0028 03F00F03 		and	r3, r3, #15
+ 377 002c DBB2     		uxtb	r3, r3
+ 378 002e 1343     		orrs	r3, r3, r2
+ 379 0030 DBB2     		uxtb	r3, r3
+ 380 0032 0B70     		strb	r3, [r1]
+ 381              	.L23:
  309:Generated_Source\PSoC5/SleepTimer.c ****             (interval & SleepTimer_INTERVAL_MASK);
  310:Generated_Source\PSoC5/SleepTimer.c ****     }
  311:Generated_Source\PSoC5/SleepTimer.c ****     /* Do nothing if CTW is enabled. */
  312:Generated_Source\PSoC5/SleepTimer.c **** }
+ 382              		.loc 1 312 0
+ 383 0034 00BF     		nop
+ 384 0036 0C37     		adds	r7, r7, #12
+ 385              		.cfi_def_cfa_offset 4
+ 386 0038 BD46     		mov	sp, r7
+ 387              		.cfi_def_cfa_register 13
+ 388              		@ sp needed
+ 389 003a 80BC     		pop	{r7}
+ 390              		.cfi_restore 7
+ 391              		.cfi_def_cfa_offset 0
+ 392 003c 7047     		bx	lr
+ 393              	.L25:
+ 394 003e 00BF     		.align	2
+ 395              	.L24:
+ 396 0040 82430040 		.word	1073759106
+ 397 0044 81430040 		.word	1073759105
+ 398              		.cfi_endproc
+ 399              	.LFE6:
+ 400              		.size	SleepTimer_SetInterval, .-SleepTimer_SetInterval
+ 401              		.section	.text.SleepTimer_GetStatus,"ax",%progbits
+ 402              		.align	2
+ 403              		.global	SleepTimer_GetStatus
+ 404              		.thumb
+ 405              		.thumb_func
+ 406              		.type	SleepTimer_GetStatus, %function
+ 407              	SleepTimer_GetStatus:
+ 408              	.LFB7:
  313:Generated_Source\PSoC5/SleepTimer.c **** 
  314:Generated_Source\PSoC5/SleepTimer.c **** 
  315:Generated_Source\PSoC5/SleepTimer.c **** /*******************************************************************************
@@ -658,15 +772,15 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  321:Generated_Source\PSoC5/SleepTimer.c **** *  clears the pending interrupt status bit. The application code must always
  322:Generated_Source\PSoC5/SleepTimer.c **** *  call this function after wakeup to clear the ctw_int status bit. The code
  323:Generated_Source\PSoC5/SleepTimer.c **** *  must call this function whether the Sleep Timer's interrupt is disabled or
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 12
-
-
  324:Generated_Source\PSoC5/SleepTimer.c **** *  enabled.
  325:Generated_Source\PSoC5/SleepTimer.c **** *
  326:Generated_Source\PSoC5/SleepTimer.c **** * Parameters:
  327:Generated_Source\PSoC5/SleepTimer.c **** *  None
  328:Generated_Source\PSoC5/SleepTimer.c **** *
  329:Generated_Source\PSoC5/SleepTimer.c **** * Return:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 14
+
+
  330:Generated_Source\PSoC5/SleepTimer.c **** *  Returns an 8-bit value (uint8) with bits set if a corresponding event has
  331:Generated_Source\PSoC5/SleepTimer.c **** *  occurred. The constants shown in the following table describe the two-bit
  332:Generated_Source\PSoC5/SleepTimer.c **** *  masks for the two events that this return value can contain.
@@ -700,883 +814,700 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 1
  360:Generated_Source\PSoC5/SleepTimer.c **** *******************************************************************************/
  361:Generated_Source\PSoC5/SleepTimer.c **** uint8 SleepTimer_GetStatus(void) 
  362:Generated_Source\PSoC5/SleepTimer.c **** {
- 296              		.loc 1 362 0
- 297              		.cfi_startproc
- 298              		@ args = 0, pretend = 0, frame = 0
- 299              		@ frame_needed = 0, uses_anonymous_args = 0
- 300 0000 08B5     		push	{r3, lr}
- 301              		.cfi_def_cfa_offset 8
- 302              		.cfi_offset 3, -8
- 303              		.cfi_offset 14, -4
+ 409              		.loc 1 362 0
+ 410              		.cfi_startproc
+ 411              		@ args = 0, pretend = 0, frame = 0
+ 412              		@ frame_needed = 1, uses_anonymous_args = 0
+ 413 0000 80B5     		push	{r7, lr}
+ 414              		.cfi_def_cfa_offset 8
+ 415              		.cfi_offset 7, -8
+ 416              		.cfi_offset 14, -4
+ 417 0002 00AF     		add	r7, sp, #0
+ 418              		.cfi_def_cfa_register 7
  363:Generated_Source\PSoC5/SleepTimer.c ****     /* Read to clear  */
  364:Generated_Source\PSoC5/SleepTimer.c ****     return CyPmReadStatus(CY_PM_CTW_INT);
- 304              		.loc 1 364 0
- 305 0002 0220     		movs	r0, #2
- 306 0004 FFF7FEFF 		bl	CyPmReadStatus
- 307              	.LVL16:
+ 419              		.loc 1 364 0
+ 420 0004 0220     		movs	r0, #2
+ 421 0006 FFF7FEFF 		bl	CyPmReadStatus
+ 422 000a 0346     		mov	r3, r0
  365:Generated_Source\PSoC5/SleepTimer.c **** }
- 308              		.loc 1 365 0
- 309 0008 08BD     		pop	{r3, pc}
- 310              		.cfi_endproc
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 13
+ 423              		.loc 1 365 0
+ 424 000c 1846     		mov	r0, r3
+ 425 000e 80BD     		pop	{r7, pc}
+ 426              		.cfi_endproc
+ 427              	.LFE7:
+ 428              		.size	SleepTimer_GetStatus, .-SleepTimer_GetStatus
+ 429              		.text
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 15
 
 
- 311              	.LFE7:
- 312              		.size	SleepTimer_GetStatus, .-SleepTimer_GetStatus
- 313              		.global	SleepTimer_initVar
- 314 000a 00BF     		.bss
- 315              		.set	.LANCHOR0,. + 0
- 316              		.type	SleepTimer_initVar, %object
- 317              		.size	SleepTimer_initVar, 1
- 318              	SleepTimer_initVar:
- 319 0000 00       		.space	1
- 320              		.text
- 321              	.Letext0:
- 322              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
- 323              		.file 3 "Generated_Source\\PSoC5\\CyLib.h"
- 324              		.file 4 "Generated_Source\\PSoC5\\cyPm.h"
- 325              		.section	.debug_info,"",%progbits
- 326              	.Ldebug_info0:
- 327 0000 73020000 		.4byte	0x273
- 328 0004 0400     		.2byte	0x4
- 329 0006 00000000 		.4byte	.Ldebug_abbrev0
- 330 000a 04       		.byte	0x4
- 331 000b 01       		.uleb128 0x1
- 332 000c A2000000 		.4byte	.LASF27
- 333 0010 0C       		.byte	0xc
- 334 0011 36020000 		.4byte	.LASF28
- 335 0015 C4010000 		.4byte	.LASF29
- 336 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 337 001d 00000000 		.4byte	0
- 338 0021 00000000 		.4byte	.Ldebug_line0
- 339 0025 02       		.uleb128 0x2
- 340 0026 01       		.byte	0x1
- 341 0027 06       		.byte	0x6
- 342 0028 97020000 		.4byte	.LASF0
- 343 002c 02       		.uleb128 0x2
- 344 002d 01       		.byte	0x1
- 345 002e 08       		.byte	0x8
- 346 002f 94000000 		.4byte	.LASF1
- 347 0033 02       		.uleb128 0x2
- 348 0034 02       		.byte	0x2
- 349 0035 05       		.byte	0x5
- 350 0036 5F020000 		.4byte	.LASF2
- 351 003a 02       		.uleb128 0x2
- 352 003b 02       		.byte	0x2
- 353 003c 07       		.byte	0x7
- 354 003d 1D000000 		.4byte	.LASF3
- 355 0041 02       		.uleb128 0x2
- 356 0042 04       		.byte	0x4
- 357 0043 05       		.byte	0x5
- 358 0044 72020000 		.4byte	.LASF4
- 359 0048 02       		.uleb128 0x2
- 360 0049 04       		.byte	0x4
- 361 004a 07       		.byte	0x7
- 362 004b 44010000 		.4byte	.LASF5
- 363 004f 02       		.uleb128 0x2
- 364 0050 08       		.byte	0x8
- 365 0051 05       		.byte	0x5
- 366 0052 28020000 		.4byte	.LASF6
- 367 0056 02       		.uleb128 0x2
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 14
+ 430              	.Letext0:
+ 431              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 432              		.section	.debug_info,"",%progbits
+ 433              	.Ldebug_info0:
+ 434 0000 A7010000 		.4byte	0x1a7
+ 435 0004 0400     		.2byte	0x4
+ 436 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 437 000a 04       		.byte	0x4
+ 438 000b 01       		.uleb128 0x1
+ 439 000c 00000000 		.4byte	.LASF24
+ 440 0010 0C       		.byte	0xc
+ 441 0011 09020000 		.4byte	.LASF25
+ 442 0015 F6000000 		.4byte	.LASF26
+ 443 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 444 001d 00000000 		.4byte	0
+ 445 0021 00000000 		.4byte	.Ldebug_line0
+ 446 0025 02       		.uleb128 0x2
+ 447 0026 01       		.byte	0x1
+ 448 0027 06       		.byte	0x6
+ 449 0028 6A020000 		.4byte	.LASF0
+ 450 002c 02       		.uleb128 0x2
+ 451 002d 01       		.byte	0x1
+ 452 002e 08       		.byte	0x8
+ 453 002f 54010000 		.4byte	.LASF1
+ 454 0033 02       		.uleb128 0x2
+ 455 0034 02       		.byte	0x2
+ 456 0035 05       		.byte	0x5
+ 457 0036 32020000 		.4byte	.LASF2
+ 458 003a 02       		.uleb128 0x2
+ 459 003b 02       		.byte	0x2
+ 460 003c 07       		.byte	0x7
+ 461 003d AB000000 		.4byte	.LASF3
+ 462 0041 02       		.uleb128 0x2
+ 463 0042 04       		.byte	0x4
+ 464 0043 05       		.byte	0x5
+ 465 0044 45020000 		.4byte	.LASF4
+ 466 0048 02       		.uleb128 0x2
+ 467 0049 04       		.byte	0x4
+ 468 004a 07       		.byte	0x7
+ 469 004b 76010000 		.4byte	.LASF5
+ 470 004f 02       		.uleb128 0x2
+ 471 0050 08       		.byte	0x8
+ 472 0051 05       		.byte	0x5
+ 473 0052 FB010000 		.4byte	.LASF6
+ 474 0056 02       		.uleb128 0x2
+ 475 0057 08       		.byte	0x8
+ 476 0058 07       		.byte	0x7
+ 477 0059 B3010000 		.4byte	.LASF7
+ 478 005d 03       		.uleb128 0x3
+ 479 005e 04       		.byte	0x4
+ 480 005f 05       		.byte	0x5
+ 481 0060 696E7400 		.ascii	"int\000"
+ 482 0064 02       		.uleb128 0x2
+ 483 0065 04       		.byte	0x4
+ 484 0066 07       		.byte	0x7
+ 485 0067 A6010000 		.4byte	.LASF8
+ 486 006b 04       		.uleb128 0x4
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 16
 
 
- 368 0057 08       		.byte	0x8
- 369 0058 07       		.byte	0x7
- 370 0059 68000000 		.4byte	.LASF7
- 371 005d 03       		.uleb128 0x3
- 372 005e 04       		.byte	0x4
- 373 005f 05       		.byte	0x5
- 374 0060 696E7400 		.ascii	"int\000"
- 375 0064 02       		.uleb128 0x2
- 376 0065 04       		.byte	0x4
- 377 0066 07       		.byte	0x7
- 378 0067 8B010000 		.4byte	.LASF8
- 379 006b 04       		.uleb128 0x4
- 380 006c 56010000 		.4byte	.LASF12
- 381 0070 02       		.byte	0x2
- 382 0071 E401     		.2byte	0x1e4
- 383 0073 2C000000 		.4byte	0x2c
- 384 0077 02       		.uleb128 0x2
- 385 0078 04       		.byte	0x4
- 386 0079 04       		.byte	0x4
- 387 007a 00000000 		.4byte	.LASF9
- 388 007e 02       		.uleb128 0x2
- 389 007f 08       		.byte	0x8
- 390 0080 04       		.byte	0x4
- 391 0081 6D010000 		.4byte	.LASF10
- 392 0085 02       		.uleb128 0x2
- 393 0086 01       		.byte	0x1
- 394 0087 08       		.byte	0x8
- 395 0088 5A020000 		.4byte	.LASF11
- 396 008c 04       		.uleb128 0x4
- 397 008d 30010000 		.4byte	.LASF13
- 398 0091 02       		.byte	0x2
- 399 0092 8E02     		.2byte	0x28e
- 400 0094 98000000 		.4byte	0x98
- 401 0098 05       		.uleb128 0x5
- 402 0099 6B000000 		.4byte	0x6b
- 403 009d 02       		.uleb128 0x2
- 404 009e 08       		.byte	0x8
- 405 009f 04       		.byte	0x4
- 406 00a0 7B020000 		.4byte	.LASF14
- 407 00a4 02       		.uleb128 0x2
- 408 00a5 04       		.byte	0x4
- 409 00a6 07       		.byte	0x7
- 410 00a7 0D020000 		.4byte	.LASF15
- 411 00ab 06       		.uleb128 0x6
- 412 00ac 16020000 		.4byte	.LASF16
- 413 00b0 01       		.byte	0x1
- 414 00b1 7E       		.byte	0x7e
- 415 00b2 00000000 		.4byte	.LFB2
- 416 00b6 48000000 		.4byte	.LFE2-.LFB2
- 417 00ba 01       		.uleb128 0x1
- 418 00bb 9C       		.byte	0x9c
- 419 00bc F4000000 		.4byte	0xf4
- 420 00c0 07       		.uleb128 0x7
- 421 00c1 35010000 		.4byte	.LASF18
- 422 00c5 01       		.byte	0x1
- 423 00c6 80       		.byte	0x80
- 424 00c7 6B000000 		.4byte	0x6b
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 15
+ 487 006c 88010000 		.4byte	.LASF12
+ 488 0070 02       		.byte	0x2
+ 489 0071 E401     		.2byte	0x1e4
+ 490 0073 2C000000 		.4byte	0x2c
+ 491 0077 02       		.uleb128 0x2
+ 492 0078 04       		.byte	0x4
+ 493 0079 04       		.byte	0x4
+ 494 007a 8E000000 		.4byte	.LASF9
+ 495 007e 02       		.uleb128 0x2
+ 496 007f 08       		.byte	0x8
+ 497 0080 04       		.byte	0x4
+ 498 0081 9F010000 		.4byte	.LASF10
+ 499 0085 02       		.uleb128 0x2
+ 500 0086 01       		.byte	0x1
+ 501 0087 08       		.byte	0x8
+ 502 0088 2D020000 		.4byte	.LASF11
+ 503 008c 04       		.uleb128 0x4
+ 504 008d 62010000 		.4byte	.LASF13
+ 505 0091 02       		.byte	0x2
+ 506 0092 8E02     		.2byte	0x28e
+ 507 0094 98000000 		.4byte	0x98
+ 508 0098 05       		.uleb128 0x5
+ 509 0099 6B000000 		.4byte	0x6b
+ 510 009d 02       		.uleb128 0x2
+ 511 009e 08       		.byte	0x8
+ 512 009f 04       		.byte	0x4
+ 513 00a0 4E020000 		.4byte	.LASF14
+ 514 00a4 02       		.uleb128 0x2
+ 515 00a5 04       		.byte	0x4
+ 516 00a6 07       		.byte	0x7
+ 517 00a7 E0010000 		.4byte	.LASF15
+ 518 00ab 06       		.uleb128 0x6
+ 519 00ac 8E010000 		.4byte	.LASF16
+ 520 00b0 01       		.byte	0x1
+ 521 00b1 35       		.byte	0x35
+ 522 00b2 00000000 		.4byte	.LFB0
+ 523 00b6 24000000 		.4byte	.LFE0-.LFB0
+ 524 00ba 01       		.uleb128 0x1
+ 525 00bb 9C       		.byte	0x9c
+ 526 00bc 06       		.uleb128 0x6
+ 527 00bd 5A020000 		.4byte	.LASF17
+ 528 00c1 01       		.byte	0x1
+ 529 00c2 56       		.byte	0x56
+ 530 00c3 00000000 		.4byte	.LFB1
+ 531 00c7 12000000 		.4byte	.LFE1-.LFB1
+ 532 00cb 01       		.uleb128 0x1
+ 533 00cc 9C       		.byte	0x9c
+ 534 00cd 07       		.uleb128 0x7
+ 535 00ce E9010000 		.4byte	.LASF18
+ 536 00d2 01       		.byte	0x1
+ 537 00d3 7E       		.byte	0x7e
+ 538 00d4 00000000 		.4byte	.LFB2
+ 539 00d8 78000000 		.4byte	.LFE2-.LFB2
+ 540 00dc 01       		.uleb128 0x1
+ 541 00dd 9C       		.byte	0x9c
+ 542 00de F1000000 		.4byte	0xf1
+ 543 00e2 08       		.uleb128 0x8
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 17
 
 
- 425 00cb 00000000 		.4byte	.LLST0
- 426 00cf 08       		.uleb128 0x8
- 427 00d0 10000000 		.4byte	.LVL0
- 428 00d4 55020000 		.4byte	0x255
- 429 00d8 08       		.uleb128 0x8
- 430 00d9 28000000 		.4byte	.LVL1
- 431 00dd 60020000 		.4byte	0x260
- 432 00e1 08       		.uleb128 0x8
- 433 00e2 2E000000 		.4byte	.LVL2
- 434 00e6 55020000 		.4byte	0x255
- 435 00ea 08       		.uleb128 0x8
- 436 00eb 3C000000 		.4byte	.LVL3
- 437 00ef 60020000 		.4byte	0x260
- 438 00f3 00       		.byte	0
- 439 00f4 06       		.uleb128 0x6
- 440 00f5 45000000 		.4byte	.LASF17
- 441 00f9 01       		.byte	0x1
- 442 00fa B2       		.byte	0xb2
- 443 00fb 00000000 		.4byte	.LFB3
- 444 00ff 1C000000 		.4byte	.LFE3-.LFB3
- 445 0103 01       		.uleb128 0x1
- 446 0104 9C       		.byte	0x9c
- 447 0105 2B010000 		.4byte	0x12b
- 448 0109 07       		.uleb128 0x7
- 449 010a 35010000 		.4byte	.LASF18
- 450 010e 01       		.byte	0x1
- 451 010f B4       		.byte	0xb4
- 452 0110 6B000000 		.4byte	0x6b
- 453 0114 1E000000 		.4byte	.LLST1
- 454 0118 08       		.uleb128 0x8
- 455 0119 06000000 		.4byte	.LVL4
- 456 011d 55020000 		.4byte	0x255
- 457 0121 08       		.uleb128 0x8
- 458 0122 14000000 		.4byte	.LVL5
- 459 0126 60020000 		.4byte	0x260
- 460 012a 00       		.byte	0
- 461 012b 06       		.uleb128 0x6
- 462 012c 30000000 		.4byte	.LASF19
- 463 0130 01       		.byte	0x1
- 464 0131 CF       		.byte	0xcf
- 465 0132 00000000 		.4byte	.LFB4
- 466 0136 1C000000 		.4byte	.LFE4-.LFB4
- 467 013a 01       		.uleb128 0x1
- 468 013b 9C       		.byte	0x9c
- 469 013c 62010000 		.4byte	0x162
- 470 0140 07       		.uleb128 0x7
- 471 0141 35010000 		.4byte	.LASF18
- 472 0145 01       		.byte	0x1
- 473 0146 D1       		.byte	0xd1
- 474 0147 6B000000 		.4byte	0x6b
- 475 014b 31000000 		.4byte	.LLST2
- 476 014f 08       		.uleb128 0x8
- 477 0150 06000000 		.4byte	.LVL6
- 478 0154 55020000 		.4byte	0x255
- 479 0158 08       		.uleb128 0x8
- 480 0159 14000000 		.4byte	.LVL7
- 481 015d 60020000 		.4byte	0x260
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 16
+ 544 00e3 67010000 		.4byte	.LASF20
+ 545 00e7 01       		.byte	0x1
+ 546 00e8 80       		.byte	0x80
+ 547 00e9 6B000000 		.4byte	0x6b
+ 548 00ed 02       		.uleb128 0x2
+ 549 00ee 91       		.byte	0x91
+ 550 00ef 77       		.sleb128 -9
+ 551 00f0 00       		.byte	0
+ 552 00f1 07       		.uleb128 0x7
+ 553 00f2 D3000000 		.4byte	.LASF19
+ 554 00f6 01       		.byte	0x1
+ 555 00f7 B2       		.byte	0xb2
+ 556 00f8 00000000 		.4byte	.LFB3
+ 557 00fc 34000000 		.4byte	.LFE3-.LFB3
+ 558 0100 01       		.uleb128 0x1
+ 559 0101 9C       		.byte	0x9c
+ 560 0102 15010000 		.4byte	0x115
+ 561 0106 08       		.uleb128 0x8
+ 562 0107 67010000 		.4byte	.LASF20
+ 563 010b 01       		.byte	0x1
+ 564 010c B4       		.byte	0xb4
+ 565 010d 6B000000 		.4byte	0x6b
+ 566 0111 02       		.uleb128 0x2
+ 567 0112 91       		.byte	0x91
+ 568 0113 77       		.sleb128 -9
+ 569 0114 00       		.byte	0
+ 570 0115 07       		.uleb128 0x7
+ 571 0116 BE000000 		.4byte	.LASF21
+ 572 011a 01       		.byte	0x1
+ 573 011b CF       		.byte	0xcf
+ 574 011c 00000000 		.4byte	.LFB4
+ 575 0120 34000000 		.4byte	.LFE4-.LFB4
+ 576 0124 01       		.uleb128 0x1
+ 577 0125 9C       		.byte	0x9c
+ 578 0126 39010000 		.4byte	0x139
+ 579 012a 08       		.uleb128 0x8
+ 580 012b 67010000 		.4byte	.LASF20
+ 581 012f 01       		.byte	0x1
+ 582 0130 D1       		.byte	0xd1
+ 583 0131 6B000000 		.4byte	0x6b
+ 584 0135 02       		.uleb128 0x2
+ 585 0136 91       		.byte	0x91
+ 586 0137 77       		.sleb128 -9
+ 587 0138 00       		.byte	0
+ 588 0139 07       		.uleb128 0x7
+ 589 013a CA010000 		.4byte	.LASF22
+ 590 013e 01       		.byte	0x1
+ 591 013f EC       		.byte	0xec
+ 592 0140 00000000 		.4byte	.LFB5
+ 593 0144 34000000 		.4byte	.LFE5-.LFB5
+ 594 0148 01       		.uleb128 0x1
+ 595 0149 9C       		.byte	0x9c
+ 596 014a 5D010000 		.4byte	0x15d
+ 597 014e 08       		.uleb128 0x8
+ 598 014f 67010000 		.4byte	.LASF20
+ 599 0153 01       		.byte	0x1
+ 600 0154 EE       		.byte	0xee
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 18
 
 
- 482 0161 00       		.byte	0
- 483 0162 06       		.uleb128 0x6
- 484 0163 AE010000 		.4byte	.LASF20
- 485 0167 01       		.byte	0x1
- 486 0168 EC       		.byte	0xec
- 487 0169 00000000 		.4byte	.LFB5
- 488 016d 1C000000 		.4byte	.LFE5-.LFB5
- 489 0171 01       		.uleb128 0x1
- 490 0172 9C       		.byte	0x9c
- 491 0173 99010000 		.4byte	0x199
- 492 0177 07       		.uleb128 0x7
- 493 0178 35010000 		.4byte	.LASF18
- 494 017c 01       		.byte	0x1
- 495 017d EE       		.byte	0xee
- 496 017e 6B000000 		.4byte	0x6b
- 497 0182 44000000 		.4byte	.LLST3
- 498 0186 08       		.uleb128 0x8
- 499 0187 06000000 		.4byte	.LVL8
- 500 018b 55020000 		.4byte	0x255
- 501 018f 08       		.uleb128 0x8
- 502 0190 14000000 		.4byte	.LVL9
- 503 0194 60020000 		.4byte	0x260
- 504 0198 00       		.byte	0
- 505 0199 09       		.uleb128 0x9
- 506 019a 06000000 		.4byte	.LASF21
- 507 019e 01       		.byte	0x1
- 508 019f 2101     		.2byte	0x121
- 509 01a1 00000000 		.4byte	.LFB6
- 510 01a5 24000000 		.4byte	.LFE6-.LFB6
- 511 01a9 01       		.uleb128 0x1
- 512 01aa 9C       		.byte	0x9c
- 513 01ab C0010000 		.4byte	0x1c0
- 514 01af 0A       		.uleb128 0xa
- 515 01b0 69020000 		.4byte	.LASF30
- 516 01b4 01       		.byte	0x1
- 517 01b5 2101     		.2byte	0x121
- 518 01b7 6B000000 		.4byte	0x6b
- 519 01bb 57000000 		.4byte	.LLST4
- 520 01bf 00       		.byte	0
- 521 01c0 06       		.uleb128 0x6
- 522 01c1 87020000 		.4byte	.LASF22
- 523 01c5 01       		.byte	0x1
- 524 01c6 56       		.byte	0x56
- 525 01c7 00000000 		.4byte	.LFB1
- 526 01cb 0E000000 		.4byte	.LFE1-.LFB1
- 527 01cf 01       		.uleb128 0x1
- 528 01d0 9C       		.byte	0x9c
- 529 01d1 F2010000 		.4byte	0x1f2
- 530 01d5 0B       		.uleb128 0xb
- 531 01d6 08000000 		.4byte	.LVL12
- 532 01da 99010000 		.4byte	0x199
- 533 01de E8010000 		.4byte	0x1e8
- 534 01e2 0C       		.uleb128 0xc
- 535 01e3 01       		.uleb128 0x1
- 536 01e4 50       		.byte	0x50
- 537 01e5 01       		.uleb128 0x1
- 538 01e6 39       		.byte	0x39
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 17
+ 601 0155 6B000000 		.4byte	0x6b
+ 602 0159 02       		.uleb128 0x2
+ 603 015a 91       		.byte	0x91
+ 604 015b 77       		.sleb128 -9
+ 605 015c 00       		.byte	0
+ 606 015d 09       		.uleb128 0x9
+ 607 015e 94000000 		.4byte	.LASF23
+ 608 0162 01       		.byte	0x1
+ 609 0163 2101     		.2byte	0x121
+ 610 0165 00000000 		.4byte	.LFB6
+ 611 0169 48000000 		.4byte	.LFE6-.LFB6
+ 612 016d 01       		.uleb128 0x1
+ 613 016e 9C       		.byte	0x9c
+ 614 016f 83010000 		.4byte	0x183
+ 615 0173 0A       		.uleb128 0xa
+ 616 0174 3C020000 		.4byte	.LASF27
+ 617 0178 01       		.byte	0x1
+ 618 0179 2101     		.2byte	0x121
+ 619 017b 6B000000 		.4byte	0x6b
+ 620 017f 02       		.uleb128 0x2
+ 621 0180 91       		.byte	0x91
+ 622 0181 77       		.sleb128 -9
+ 623 0182 00       		.byte	0
+ 624 0183 0B       		.uleb128 0xb
+ 625 0184 3F010000 		.4byte	.LASF28
+ 626 0188 01       		.byte	0x1
+ 627 0189 6901     		.2byte	0x169
+ 628 018b 6B000000 		.4byte	0x6b
+ 629 018f 00000000 		.4byte	.LFB7
+ 630 0193 10000000 		.4byte	.LFE7-.LFB7
+ 631 0197 01       		.uleb128 0x1
+ 632 0198 9C       		.byte	0x9c
+ 633 0199 0C       		.uleb128 0xc
+ 634 019a E3000000 		.4byte	.LASF29
+ 635 019e 01       		.byte	0x1
+ 636 019f 13       		.byte	0x13
+ 637 01a0 6B000000 		.4byte	0x6b
+ 638 01a4 05       		.uleb128 0x5
+ 639 01a5 03       		.byte	0x3
+ 640 01a6 00000000 		.4byte	SleepTimer_initVar
+ 641 01aa 00       		.byte	0
+ 642              		.section	.debug_abbrev,"",%progbits
+ 643              	.Ldebug_abbrev0:
+ 644 0000 01       		.uleb128 0x1
+ 645 0001 11       		.uleb128 0x11
+ 646 0002 01       		.byte	0x1
+ 647 0003 25       		.uleb128 0x25
+ 648 0004 0E       		.uleb128 0xe
+ 649 0005 13       		.uleb128 0x13
+ 650 0006 0B       		.uleb128 0xb
+ 651 0007 03       		.uleb128 0x3
+ 652 0008 0E       		.uleb128 0xe
+ 653 0009 1B       		.uleb128 0x1b
+ 654 000a 0E       		.uleb128 0xe
+ 655 000b 55       		.uleb128 0x55
+ 656 000c 17       		.uleb128 0x17
+ 657 000d 11       		.uleb128 0x11
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 19
 
 
- 539 01e7 00       		.byte	0
- 540 01e8 08       		.uleb128 0x8
- 541 01e9 0C000000 		.4byte	.LVL13
- 542 01ed 2B010000 		.4byte	0x12b
- 543 01f1 00       		.byte	0
- 544 01f2 06       		.uleb128 0x6
- 545 01f3 5C010000 		.4byte	.LASF23
- 546 01f7 01       		.byte	0x1
- 547 01f8 35       		.byte	0x35
- 548 01f9 00000000 		.4byte	.LFB0
- 549 01fd 1C000000 		.4byte	.LFE0-.LFB0
- 550 0201 01       		.uleb128 0x1
- 551 0202 9C       		.byte	0x9c
- 552 0203 1A020000 		.4byte	0x21a
- 553 0207 08       		.uleb128 0x8
- 554 0208 0C000000 		.4byte	.LVL14
- 555 020c C0010000 		.4byte	0x1c0
- 556 0210 08       		.uleb128 0x8
- 557 0211 16000000 		.4byte	.LVL15
- 558 0215 AB000000 		.4byte	0xab
- 559 0219 00       		.byte	0
- 560 021a 0D       		.uleb128 0xd
- 561 021b 7F000000 		.4byte	.LASF31
- 562 021f 01       		.byte	0x1
- 563 0220 6901     		.2byte	0x169
- 564 0222 6B000000 		.4byte	0x6b
- 565 0226 00000000 		.4byte	.LFB7
- 566 022a 0A000000 		.4byte	.LFE7-.LFB7
- 567 022e 01       		.uleb128 0x1
- 568 022f 9C       		.byte	0x9c
- 569 0230 44020000 		.4byte	0x244
- 570 0234 0E       		.uleb128 0xe
- 571 0235 08000000 		.4byte	.LVL16
- 572 0239 6B020000 		.4byte	0x26b
- 573 023d 0C       		.uleb128 0xc
- 574 023e 01       		.uleb128 0x1
- 575 023f 50       		.byte	0x50
- 576 0240 01       		.uleb128 0x1
- 577 0241 32       		.byte	0x32
- 578 0242 00       		.byte	0
- 579 0243 00       		.byte	0
- 580 0244 0F       		.uleb128 0xf
- 581 0245 55000000 		.4byte	.LASF32
- 582 0249 01       		.byte	0x1
- 583 024a 13       		.byte	0x13
- 584 024b 6B000000 		.4byte	0x6b
- 585 024f 05       		.uleb128 0x5
- 586 0250 03       		.byte	0x3
- 587 0251 00000000 		.4byte	SleepTimer_initVar
- 588 0255 10       		.uleb128 0x10
- 589 0256 74010000 		.4byte	.LASF24
- 590 025a 74010000 		.4byte	.LASF24
- 591 025e 03       		.byte	0x3
- 592 025f 7D       		.byte	0x7d
- 593 0260 10       		.uleb128 0x10
- 594 0261 98010000 		.4byte	.LASF25
- 595 0265 98010000 		.4byte	.LASF25
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 18
+ 658 000e 01       		.uleb128 0x1
+ 659 000f 10       		.uleb128 0x10
+ 660 0010 17       		.uleb128 0x17
+ 661 0011 00       		.byte	0
+ 662 0012 00       		.byte	0
+ 663 0013 02       		.uleb128 0x2
+ 664 0014 24       		.uleb128 0x24
+ 665 0015 00       		.byte	0
+ 666 0016 0B       		.uleb128 0xb
+ 667 0017 0B       		.uleb128 0xb
+ 668 0018 3E       		.uleb128 0x3e
+ 669 0019 0B       		.uleb128 0xb
+ 670 001a 03       		.uleb128 0x3
+ 671 001b 0E       		.uleb128 0xe
+ 672 001c 00       		.byte	0
+ 673 001d 00       		.byte	0
+ 674 001e 03       		.uleb128 0x3
+ 675 001f 24       		.uleb128 0x24
+ 676 0020 00       		.byte	0
+ 677 0021 0B       		.uleb128 0xb
+ 678 0022 0B       		.uleb128 0xb
+ 679 0023 3E       		.uleb128 0x3e
+ 680 0024 0B       		.uleb128 0xb
+ 681 0025 03       		.uleb128 0x3
+ 682 0026 08       		.uleb128 0x8
+ 683 0027 00       		.byte	0
+ 684 0028 00       		.byte	0
+ 685 0029 04       		.uleb128 0x4
+ 686 002a 16       		.uleb128 0x16
+ 687 002b 00       		.byte	0
+ 688 002c 03       		.uleb128 0x3
+ 689 002d 0E       		.uleb128 0xe
+ 690 002e 3A       		.uleb128 0x3a
+ 691 002f 0B       		.uleb128 0xb
+ 692 0030 3B       		.uleb128 0x3b
+ 693 0031 05       		.uleb128 0x5
+ 694 0032 49       		.uleb128 0x49
+ 695 0033 13       		.uleb128 0x13
+ 696 0034 00       		.byte	0
+ 697 0035 00       		.byte	0
+ 698 0036 05       		.uleb128 0x5
+ 699 0037 35       		.uleb128 0x35
+ 700 0038 00       		.byte	0
+ 701 0039 49       		.uleb128 0x49
+ 702 003a 13       		.uleb128 0x13
+ 703 003b 00       		.byte	0
+ 704 003c 00       		.byte	0
+ 705 003d 06       		.uleb128 0x6
+ 706 003e 2E       		.uleb128 0x2e
+ 707 003f 00       		.byte	0
+ 708 0040 3F       		.uleb128 0x3f
+ 709 0041 19       		.uleb128 0x19
+ 710 0042 03       		.uleb128 0x3
+ 711 0043 0E       		.uleb128 0xe
+ 712 0044 3A       		.uleb128 0x3a
+ 713 0045 0B       		.uleb128 0xb
+ 714 0046 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 20
 
 
- 596 0269 03       		.byte	0x3
- 597 026a 7E       		.byte	0x7e
- 598 026b 10       		.uleb128 0x10
- 599 026c A3020000 		.4byte	.LASF26
- 600 0270 A3020000 		.4byte	.LASF26
- 601 0274 04       		.byte	0x4
- 602 0275 26       		.byte	0x26
- 603 0276 00       		.byte	0
- 604              		.section	.debug_abbrev,"",%progbits
- 605              	.Ldebug_abbrev0:
- 606 0000 01       		.uleb128 0x1
- 607 0001 11       		.uleb128 0x11
- 608 0002 01       		.byte	0x1
- 609 0003 25       		.uleb128 0x25
- 610 0004 0E       		.uleb128 0xe
- 611 0005 13       		.uleb128 0x13
- 612 0006 0B       		.uleb128 0xb
- 613 0007 03       		.uleb128 0x3
- 614 0008 0E       		.uleb128 0xe
- 615 0009 1B       		.uleb128 0x1b
- 616 000a 0E       		.uleb128 0xe
- 617 000b 55       		.uleb128 0x55
- 618 000c 17       		.uleb128 0x17
- 619 000d 11       		.uleb128 0x11
- 620 000e 01       		.uleb128 0x1
- 621 000f 10       		.uleb128 0x10
- 622 0010 17       		.uleb128 0x17
- 623 0011 00       		.byte	0
- 624 0012 00       		.byte	0
- 625 0013 02       		.uleb128 0x2
- 626 0014 24       		.uleb128 0x24
- 627 0015 00       		.byte	0
- 628 0016 0B       		.uleb128 0xb
- 629 0017 0B       		.uleb128 0xb
- 630 0018 3E       		.uleb128 0x3e
- 631 0019 0B       		.uleb128 0xb
- 632 001a 03       		.uleb128 0x3
- 633 001b 0E       		.uleb128 0xe
- 634 001c 00       		.byte	0
- 635 001d 00       		.byte	0
- 636 001e 03       		.uleb128 0x3
- 637 001f 24       		.uleb128 0x24
- 638 0020 00       		.byte	0
- 639 0021 0B       		.uleb128 0xb
- 640 0022 0B       		.uleb128 0xb
- 641 0023 3E       		.uleb128 0x3e
- 642 0024 0B       		.uleb128 0xb
- 643 0025 03       		.uleb128 0x3
- 644 0026 08       		.uleb128 0x8
- 645 0027 00       		.byte	0
- 646 0028 00       		.byte	0
- 647 0029 04       		.uleb128 0x4
- 648 002a 16       		.uleb128 0x16
- 649 002b 00       		.byte	0
- 650 002c 03       		.uleb128 0x3
- 651 002d 0E       		.uleb128 0xe
- 652 002e 3A       		.uleb128 0x3a
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 19
+ 715 0047 0B       		.uleb128 0xb
+ 716 0048 27       		.uleb128 0x27
+ 717 0049 19       		.uleb128 0x19
+ 718 004a 11       		.uleb128 0x11
+ 719 004b 01       		.uleb128 0x1
+ 720 004c 12       		.uleb128 0x12
+ 721 004d 06       		.uleb128 0x6
+ 722 004e 40       		.uleb128 0x40
+ 723 004f 18       		.uleb128 0x18
+ 724 0050 9642     		.uleb128 0x2116
+ 725 0052 19       		.uleb128 0x19
+ 726 0053 00       		.byte	0
+ 727 0054 00       		.byte	0
+ 728 0055 07       		.uleb128 0x7
+ 729 0056 2E       		.uleb128 0x2e
+ 730 0057 01       		.byte	0x1
+ 731 0058 3F       		.uleb128 0x3f
+ 732 0059 19       		.uleb128 0x19
+ 733 005a 03       		.uleb128 0x3
+ 734 005b 0E       		.uleb128 0xe
+ 735 005c 3A       		.uleb128 0x3a
+ 736 005d 0B       		.uleb128 0xb
+ 737 005e 3B       		.uleb128 0x3b
+ 738 005f 0B       		.uleb128 0xb
+ 739 0060 27       		.uleb128 0x27
+ 740 0061 19       		.uleb128 0x19
+ 741 0062 11       		.uleb128 0x11
+ 742 0063 01       		.uleb128 0x1
+ 743 0064 12       		.uleb128 0x12
+ 744 0065 06       		.uleb128 0x6
+ 745 0066 40       		.uleb128 0x40
+ 746 0067 18       		.uleb128 0x18
+ 747 0068 9642     		.uleb128 0x2116
+ 748 006a 19       		.uleb128 0x19
+ 749 006b 01       		.uleb128 0x1
+ 750 006c 13       		.uleb128 0x13
+ 751 006d 00       		.byte	0
+ 752 006e 00       		.byte	0
+ 753 006f 08       		.uleb128 0x8
+ 754 0070 34       		.uleb128 0x34
+ 755 0071 00       		.byte	0
+ 756 0072 03       		.uleb128 0x3
+ 757 0073 0E       		.uleb128 0xe
+ 758 0074 3A       		.uleb128 0x3a
+ 759 0075 0B       		.uleb128 0xb
+ 760 0076 3B       		.uleb128 0x3b
+ 761 0077 0B       		.uleb128 0xb
+ 762 0078 49       		.uleb128 0x49
+ 763 0079 13       		.uleb128 0x13
+ 764 007a 02       		.uleb128 0x2
+ 765 007b 18       		.uleb128 0x18
+ 766 007c 00       		.byte	0
+ 767 007d 00       		.byte	0
+ 768 007e 09       		.uleb128 0x9
+ 769 007f 2E       		.uleb128 0x2e
+ 770 0080 01       		.byte	0x1
+ 771 0081 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 21
 
 
- 653 002f 0B       		.uleb128 0xb
- 654 0030 3B       		.uleb128 0x3b
- 655 0031 05       		.uleb128 0x5
- 656 0032 49       		.uleb128 0x49
- 657 0033 13       		.uleb128 0x13
- 658 0034 00       		.byte	0
- 659 0035 00       		.byte	0
- 660 0036 05       		.uleb128 0x5
- 661 0037 35       		.uleb128 0x35
- 662 0038 00       		.byte	0
- 663 0039 49       		.uleb128 0x49
- 664 003a 13       		.uleb128 0x13
- 665 003b 00       		.byte	0
- 666 003c 00       		.byte	0
- 667 003d 06       		.uleb128 0x6
- 668 003e 2E       		.uleb128 0x2e
- 669 003f 01       		.byte	0x1
- 670 0040 3F       		.uleb128 0x3f
- 671 0041 19       		.uleb128 0x19
- 672 0042 03       		.uleb128 0x3
- 673 0043 0E       		.uleb128 0xe
- 674 0044 3A       		.uleb128 0x3a
- 675 0045 0B       		.uleb128 0xb
- 676 0046 3B       		.uleb128 0x3b
- 677 0047 0B       		.uleb128 0xb
- 678 0048 27       		.uleb128 0x27
- 679 0049 19       		.uleb128 0x19
- 680 004a 11       		.uleb128 0x11
- 681 004b 01       		.uleb128 0x1
- 682 004c 12       		.uleb128 0x12
- 683 004d 06       		.uleb128 0x6
- 684 004e 40       		.uleb128 0x40
- 685 004f 18       		.uleb128 0x18
- 686 0050 9742     		.uleb128 0x2117
- 687 0052 19       		.uleb128 0x19
- 688 0053 01       		.uleb128 0x1
- 689 0054 13       		.uleb128 0x13
- 690 0055 00       		.byte	0
- 691 0056 00       		.byte	0
- 692 0057 07       		.uleb128 0x7
- 693 0058 34       		.uleb128 0x34
- 694 0059 00       		.byte	0
- 695 005a 03       		.uleb128 0x3
- 696 005b 0E       		.uleb128 0xe
- 697 005c 3A       		.uleb128 0x3a
- 698 005d 0B       		.uleb128 0xb
- 699 005e 3B       		.uleb128 0x3b
- 700 005f 0B       		.uleb128 0xb
- 701 0060 49       		.uleb128 0x49
- 702 0061 13       		.uleb128 0x13
- 703 0062 02       		.uleb128 0x2
- 704 0063 17       		.uleb128 0x17
- 705 0064 00       		.byte	0
- 706 0065 00       		.byte	0
- 707 0066 08       		.uleb128 0x8
- 708 0067 898201   		.uleb128 0x4109
- 709 006a 00       		.byte	0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 20
+ 772 0082 19       		.uleb128 0x19
+ 773 0083 03       		.uleb128 0x3
+ 774 0084 0E       		.uleb128 0xe
+ 775 0085 3A       		.uleb128 0x3a
+ 776 0086 0B       		.uleb128 0xb
+ 777 0087 3B       		.uleb128 0x3b
+ 778 0088 05       		.uleb128 0x5
+ 779 0089 27       		.uleb128 0x27
+ 780 008a 19       		.uleb128 0x19
+ 781 008b 11       		.uleb128 0x11
+ 782 008c 01       		.uleb128 0x1
+ 783 008d 12       		.uleb128 0x12
+ 784 008e 06       		.uleb128 0x6
+ 785 008f 40       		.uleb128 0x40
+ 786 0090 18       		.uleb128 0x18
+ 787 0091 9742     		.uleb128 0x2117
+ 788 0093 19       		.uleb128 0x19
+ 789 0094 01       		.uleb128 0x1
+ 790 0095 13       		.uleb128 0x13
+ 791 0096 00       		.byte	0
+ 792 0097 00       		.byte	0
+ 793 0098 0A       		.uleb128 0xa
+ 794 0099 05       		.uleb128 0x5
+ 795 009a 00       		.byte	0
+ 796 009b 03       		.uleb128 0x3
+ 797 009c 0E       		.uleb128 0xe
+ 798 009d 3A       		.uleb128 0x3a
+ 799 009e 0B       		.uleb128 0xb
+ 800 009f 3B       		.uleb128 0x3b
+ 801 00a0 05       		.uleb128 0x5
+ 802 00a1 49       		.uleb128 0x49
+ 803 00a2 13       		.uleb128 0x13
+ 804 00a3 02       		.uleb128 0x2
+ 805 00a4 18       		.uleb128 0x18
+ 806 00a5 00       		.byte	0
+ 807 00a6 00       		.byte	0
+ 808 00a7 0B       		.uleb128 0xb
+ 809 00a8 2E       		.uleb128 0x2e
+ 810 00a9 00       		.byte	0
+ 811 00aa 3F       		.uleb128 0x3f
+ 812 00ab 19       		.uleb128 0x19
+ 813 00ac 03       		.uleb128 0x3
+ 814 00ad 0E       		.uleb128 0xe
+ 815 00ae 3A       		.uleb128 0x3a
+ 816 00af 0B       		.uleb128 0xb
+ 817 00b0 3B       		.uleb128 0x3b
+ 818 00b1 05       		.uleb128 0x5
+ 819 00b2 27       		.uleb128 0x27
+ 820 00b3 19       		.uleb128 0x19
+ 821 00b4 49       		.uleb128 0x49
+ 822 00b5 13       		.uleb128 0x13
+ 823 00b6 11       		.uleb128 0x11
+ 824 00b7 01       		.uleb128 0x1
+ 825 00b8 12       		.uleb128 0x12
+ 826 00b9 06       		.uleb128 0x6
+ 827 00ba 40       		.uleb128 0x40
+ 828 00bb 18       		.uleb128 0x18
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 22
 
 
- 710 006b 11       		.uleb128 0x11
- 711 006c 01       		.uleb128 0x1
- 712 006d 31       		.uleb128 0x31
- 713 006e 13       		.uleb128 0x13
- 714 006f 00       		.byte	0
- 715 0070 00       		.byte	0
- 716 0071 09       		.uleb128 0x9
- 717 0072 2E       		.uleb128 0x2e
- 718 0073 01       		.byte	0x1
- 719 0074 3F       		.uleb128 0x3f
- 720 0075 19       		.uleb128 0x19
- 721 0076 03       		.uleb128 0x3
- 722 0077 0E       		.uleb128 0xe
- 723 0078 3A       		.uleb128 0x3a
- 724 0079 0B       		.uleb128 0xb
- 725 007a 3B       		.uleb128 0x3b
- 726 007b 05       		.uleb128 0x5
- 727 007c 27       		.uleb128 0x27
- 728 007d 19       		.uleb128 0x19
- 729 007e 11       		.uleb128 0x11
- 730 007f 01       		.uleb128 0x1
- 731 0080 12       		.uleb128 0x12
- 732 0081 06       		.uleb128 0x6
- 733 0082 40       		.uleb128 0x40
- 734 0083 18       		.uleb128 0x18
- 735 0084 9742     		.uleb128 0x2117
- 736 0086 19       		.uleb128 0x19
- 737 0087 01       		.uleb128 0x1
- 738 0088 13       		.uleb128 0x13
- 739 0089 00       		.byte	0
- 740 008a 00       		.byte	0
- 741 008b 0A       		.uleb128 0xa
- 742 008c 05       		.uleb128 0x5
- 743 008d 00       		.byte	0
- 744 008e 03       		.uleb128 0x3
- 745 008f 0E       		.uleb128 0xe
- 746 0090 3A       		.uleb128 0x3a
- 747 0091 0B       		.uleb128 0xb
- 748 0092 3B       		.uleb128 0x3b
- 749 0093 05       		.uleb128 0x5
- 750 0094 49       		.uleb128 0x49
- 751 0095 13       		.uleb128 0x13
- 752 0096 02       		.uleb128 0x2
- 753 0097 17       		.uleb128 0x17
- 754 0098 00       		.byte	0
- 755 0099 00       		.byte	0
- 756 009a 0B       		.uleb128 0xb
- 757 009b 898201   		.uleb128 0x4109
- 758 009e 01       		.byte	0x1
- 759 009f 11       		.uleb128 0x11
- 760 00a0 01       		.uleb128 0x1
- 761 00a1 31       		.uleb128 0x31
- 762 00a2 13       		.uleb128 0x13
- 763 00a3 01       		.uleb128 0x1
- 764 00a4 13       		.uleb128 0x13
- 765 00a5 00       		.byte	0
- 766 00a6 00       		.byte	0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 21
+ 829 00bc 9642     		.uleb128 0x2116
+ 830 00be 19       		.uleb128 0x19
+ 831 00bf 00       		.byte	0
+ 832 00c0 00       		.byte	0
+ 833 00c1 0C       		.uleb128 0xc
+ 834 00c2 34       		.uleb128 0x34
+ 835 00c3 00       		.byte	0
+ 836 00c4 03       		.uleb128 0x3
+ 837 00c5 0E       		.uleb128 0xe
+ 838 00c6 3A       		.uleb128 0x3a
+ 839 00c7 0B       		.uleb128 0xb
+ 840 00c8 3B       		.uleb128 0x3b
+ 841 00c9 0B       		.uleb128 0xb
+ 842 00ca 49       		.uleb128 0x49
+ 843 00cb 13       		.uleb128 0x13
+ 844 00cc 3F       		.uleb128 0x3f
+ 845 00cd 19       		.uleb128 0x19
+ 846 00ce 02       		.uleb128 0x2
+ 847 00cf 18       		.uleb128 0x18
+ 848 00d0 00       		.byte	0
+ 849 00d1 00       		.byte	0
+ 850 00d2 00       		.byte	0
+ 851              		.section	.debug_aranges,"",%progbits
+ 852 0000 54000000 		.4byte	0x54
+ 853 0004 0200     		.2byte	0x2
+ 854 0006 00000000 		.4byte	.Ldebug_info0
+ 855 000a 04       		.byte	0x4
+ 856 000b 00       		.byte	0
+ 857 000c 0000     		.2byte	0
+ 858 000e 0000     		.2byte	0
+ 859 0010 00000000 		.4byte	.LFB0
+ 860 0014 24000000 		.4byte	.LFE0-.LFB0
+ 861 0018 00000000 		.4byte	.LFB1
+ 862 001c 12000000 		.4byte	.LFE1-.LFB1
+ 863 0020 00000000 		.4byte	.LFB2
+ 864 0024 78000000 		.4byte	.LFE2-.LFB2
+ 865 0028 00000000 		.4byte	.LFB3
+ 866 002c 34000000 		.4byte	.LFE3-.LFB3
+ 867 0030 00000000 		.4byte	.LFB4
+ 868 0034 34000000 		.4byte	.LFE4-.LFB4
+ 869 0038 00000000 		.4byte	.LFB5
+ 870 003c 34000000 		.4byte	.LFE5-.LFB5
+ 871 0040 00000000 		.4byte	.LFB6
+ 872 0044 48000000 		.4byte	.LFE6-.LFB6
+ 873 0048 00000000 		.4byte	.LFB7
+ 874 004c 10000000 		.4byte	.LFE7-.LFB7
+ 875 0050 00000000 		.4byte	0
+ 876 0054 00000000 		.4byte	0
+ 877              		.section	.debug_ranges,"",%progbits
+ 878              	.Ldebug_ranges0:
+ 879 0000 00000000 		.4byte	.LFB0
+ 880 0004 24000000 		.4byte	.LFE0
+ 881 0008 00000000 		.4byte	.LFB1
+ 882 000c 12000000 		.4byte	.LFE1
+ 883 0010 00000000 		.4byte	.LFB2
+ 884 0014 78000000 		.4byte	.LFE2
+ 885 0018 00000000 		.4byte	.LFB3
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 23
 
 
- 767 00a7 0C       		.uleb128 0xc
- 768 00a8 8A8201   		.uleb128 0x410a
- 769 00ab 00       		.byte	0
- 770 00ac 02       		.uleb128 0x2
- 771 00ad 18       		.uleb128 0x18
- 772 00ae 9142     		.uleb128 0x2111
- 773 00b0 18       		.uleb128 0x18
- 774 00b1 00       		.byte	0
- 775 00b2 00       		.byte	0
- 776 00b3 0D       		.uleb128 0xd
- 777 00b4 2E       		.uleb128 0x2e
- 778 00b5 01       		.byte	0x1
- 779 00b6 3F       		.uleb128 0x3f
- 780 00b7 19       		.uleb128 0x19
- 781 00b8 03       		.uleb128 0x3
- 782 00b9 0E       		.uleb128 0xe
- 783 00ba 3A       		.uleb128 0x3a
- 784 00bb 0B       		.uleb128 0xb
- 785 00bc 3B       		.uleb128 0x3b
- 786 00bd 05       		.uleb128 0x5
- 787 00be 27       		.uleb128 0x27
- 788 00bf 19       		.uleb128 0x19
- 789 00c0 49       		.uleb128 0x49
- 790 00c1 13       		.uleb128 0x13
- 791 00c2 11       		.uleb128 0x11
- 792 00c3 01       		.uleb128 0x1
- 793 00c4 12       		.uleb128 0x12
- 794 00c5 06       		.uleb128 0x6
- 795 00c6 40       		.uleb128 0x40
- 796 00c7 18       		.uleb128 0x18
- 797 00c8 9742     		.uleb128 0x2117
- 798 00ca 19       		.uleb128 0x19
- 799 00cb 01       		.uleb128 0x1
- 800 00cc 13       		.uleb128 0x13
- 801 00cd 00       		.byte	0
- 802 00ce 00       		.byte	0
- 803 00cf 0E       		.uleb128 0xe
- 804 00d0 898201   		.uleb128 0x4109
- 805 00d3 01       		.byte	0x1
- 806 00d4 11       		.uleb128 0x11
- 807 00d5 01       		.uleb128 0x1
- 808 00d6 31       		.uleb128 0x31
- 809 00d7 13       		.uleb128 0x13
- 810 00d8 00       		.byte	0
- 811 00d9 00       		.byte	0
- 812 00da 0F       		.uleb128 0xf
- 813 00db 34       		.uleb128 0x34
- 814 00dc 00       		.byte	0
- 815 00dd 03       		.uleb128 0x3
- 816 00de 0E       		.uleb128 0xe
- 817 00df 3A       		.uleb128 0x3a
- 818 00e0 0B       		.uleb128 0xb
- 819 00e1 3B       		.uleb128 0x3b
- 820 00e2 0B       		.uleb128 0xb
- 821 00e3 49       		.uleb128 0x49
- 822 00e4 13       		.uleb128 0x13
- 823 00e5 3F       		.uleb128 0x3f
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 22
+ 886 001c 34000000 		.4byte	.LFE3
+ 887 0020 00000000 		.4byte	.LFB4
+ 888 0024 34000000 		.4byte	.LFE4
+ 889 0028 00000000 		.4byte	.LFB5
+ 890 002c 34000000 		.4byte	.LFE5
+ 891 0030 00000000 		.4byte	.LFB6
+ 892 0034 48000000 		.4byte	.LFE6
+ 893 0038 00000000 		.4byte	.LFB7
+ 894 003c 10000000 		.4byte	.LFE7
+ 895 0040 00000000 		.4byte	0
+ 896 0044 00000000 		.4byte	0
+ 897              		.section	.debug_line,"",%progbits
+ 898              	.Ldebug_line0:
+ 899 0000 F7000000 		.section	.debug_str,"MS",%progbits,1
+ 899      02004700 
+ 899      00000201 
+ 899      FB0E0D00 
+ 899      01010101 
+ 900              	.LASF24:
+ 901 0000 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 901      43313120 
+ 901      352E342E 
+ 901      31203230 
+ 901      31363036 
+ 902 0033 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 902      20726576 
+ 902      6973696F 
+ 902      6E203233 
+ 902      37373135 
+ 903 0066 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 903      66756E63 
+ 903      74696F6E 
+ 903      2D736563 
+ 903      74696F6E 
+ 904              	.LASF9:
+ 905 008e 666C6F61 		.ascii	"float\000"
+ 905      7400
+ 906              	.LASF23:
+ 907 0094 536C6565 		.ascii	"SleepTimer_SetInterval\000"
+ 907      7054696D 
+ 907      65725F53 
+ 907      6574496E 
+ 907      74657276 
+ 908              	.LASF3:
+ 909 00ab 73686F72 		.ascii	"short unsigned int\000"
+ 909      7420756E 
+ 909      7369676E 
+ 909      65642069 
+ 909      6E7400
+ 910              	.LASF21:
+ 911 00be 536C6565 		.ascii	"SleepTimer_EnableInt\000"
+ 911      7054696D 
+ 911      65725F45 
+ 911      6E61626C 
+ 911      65496E74 
+ 912              	.LASF19:
+ 913 00d3 536C6565 		.ascii	"SleepTimer_Stop\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 24
 
 
- 824 00e6 19       		.uleb128 0x19
- 825 00e7 02       		.uleb128 0x2
- 826 00e8 18       		.uleb128 0x18
- 827 00e9 00       		.byte	0
- 828 00ea 00       		.byte	0
- 829 00eb 10       		.uleb128 0x10
- 830 00ec 2E       		.uleb128 0x2e
- 831 00ed 00       		.byte	0
- 832 00ee 3F       		.uleb128 0x3f
- 833 00ef 19       		.uleb128 0x19
- 834 00f0 3C       		.uleb128 0x3c
- 835 00f1 19       		.uleb128 0x19
- 836 00f2 6E       		.uleb128 0x6e
- 837 00f3 0E       		.uleb128 0xe
- 838 00f4 03       		.uleb128 0x3
- 839 00f5 0E       		.uleb128 0xe
- 840 00f6 3A       		.uleb128 0x3a
- 841 00f7 0B       		.uleb128 0xb
- 842 00f8 3B       		.uleb128 0x3b
- 843 00f9 0B       		.uleb128 0xb
- 844 00fa 00       		.byte	0
- 845 00fb 00       		.byte	0
- 846 00fc 00       		.byte	0
- 847              		.section	.debug_loc,"",%progbits
- 848              	.Ldebug_loc0:
- 849              	.LLST0:
- 850 0000 10000000 		.4byte	.LVL0
- 851 0004 27000000 		.4byte	.LVL1-1
- 852 0008 0100     		.2byte	0x1
- 853 000a 50       		.byte	0x50
- 854 000b 2E000000 		.4byte	.LVL2
- 855 000f 3B000000 		.4byte	.LVL3-1
- 856 0013 0100     		.2byte	0x1
- 857 0015 50       		.byte	0x50
- 858 0016 00000000 		.4byte	0
- 859 001a 00000000 		.4byte	0
- 860              	.LLST1:
- 861 001e 06000000 		.4byte	.LVL4
- 862 0022 13000000 		.4byte	.LVL5-1
- 863 0026 0100     		.2byte	0x1
- 864 0028 50       		.byte	0x50
- 865 0029 00000000 		.4byte	0
- 866 002d 00000000 		.4byte	0
- 867              	.LLST2:
- 868 0031 06000000 		.4byte	.LVL6
- 869 0035 13000000 		.4byte	.LVL7-1
- 870 0039 0100     		.2byte	0x1
- 871 003b 50       		.byte	0x50
- 872 003c 00000000 		.4byte	0
- 873 0040 00000000 		.4byte	0
- 874              	.LLST3:
- 875 0044 06000000 		.4byte	.LVL8
- 876 0048 13000000 		.4byte	.LVL9-1
- 877 004c 0100     		.2byte	0x1
- 878 004e 50       		.byte	0x50
- 879 004f 00000000 		.4byte	0
- 880 0053 00000000 		.4byte	0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 23
+ 913      7054696D 
+ 913      65725F53 
+ 913      746F7000 
+ 914              	.LASF29:
+ 915 00e3 536C6565 		.ascii	"SleepTimer_initVar\000"
+ 915      7054696D 
+ 915      65725F69 
+ 915      6E697456 
+ 915      617200
+ 916              	.LASF26:
+ 917 00f6 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
+ 917      73657273 
+ 917      5C626B5C 
+ 917      446F6375 
+ 917      6D656E74 
+ 918 0123 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
+ 918      6E6F746F 
+ 918      72694F53 
+ 918      5C6E6F74 
+ 918      6F72694F 
+ 919              	.LASF28:
+ 920 013f 536C6565 		.ascii	"SleepTimer_GetStatus\000"
+ 920      7054696D 
+ 920      65725F47 
+ 920      65745374 
+ 920      61747573 
+ 921              	.LASF1:
+ 922 0154 756E7369 		.ascii	"unsigned char\000"
+ 922      676E6564 
+ 922      20636861 
+ 922      7200
+ 923              	.LASF13:
+ 924 0162 72656738 		.ascii	"reg8\000"
+ 924      00
+ 925              	.LASF20:
+ 926 0167 696E7465 		.ascii	"interruptState\000"
+ 926      72727570 
+ 926      74537461 
+ 926      746500
+ 927              	.LASF5:
+ 928 0176 6C6F6E67 		.ascii	"long unsigned int\000"
+ 928      20756E73 
+ 928      69676E65 
+ 928      6420696E 
+ 928      7400
+ 929              	.LASF12:
+ 930 0188 75696E74 		.ascii	"uint8\000"
+ 930      3800
+ 931              	.LASF16:
+ 932 018e 536C6565 		.ascii	"SleepTimer_Start\000"
+ 932      7054696D 
+ 932      65725F53 
+ 932      74617274 
+ 932      00
+ 933              	.LASF10:
+ 934 019f 646F7562 		.ascii	"double\000"
+ 934      6C6500
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 25
 
 
- 881              	.LLST4:
- 882 0057 00000000 		.4byte	.LVL10
- 883 005b 16000000 		.4byte	.LVL11
- 884 005f 0100     		.2byte	0x1
- 885 0061 50       		.byte	0x50
- 886 0062 16000000 		.4byte	.LVL11
- 887 0066 24000000 		.4byte	.LFE6
- 888 006a 0400     		.2byte	0x4
- 889 006c F3       		.byte	0xf3
- 890 006d 01       		.uleb128 0x1
- 891 006e 50       		.byte	0x50
- 892 006f 9F       		.byte	0x9f
- 893 0070 00000000 		.4byte	0
- 894 0074 00000000 		.4byte	0
- 895              		.section	.debug_aranges,"",%progbits
- 896 0000 54000000 		.4byte	0x54
- 897 0004 0200     		.2byte	0x2
- 898 0006 00000000 		.4byte	.Ldebug_info0
- 899 000a 04       		.byte	0x4
- 900 000b 00       		.byte	0
- 901 000c 0000     		.2byte	0
- 902 000e 0000     		.2byte	0
- 903 0010 00000000 		.4byte	.LFB2
- 904 0014 48000000 		.4byte	.LFE2-.LFB2
- 905 0018 00000000 		.4byte	.LFB3
- 906 001c 1C000000 		.4byte	.LFE3-.LFB3
- 907 0020 00000000 		.4byte	.LFB4
- 908 0024 1C000000 		.4byte	.LFE4-.LFB4
- 909 0028 00000000 		.4byte	.LFB5
- 910 002c 1C000000 		.4byte	.LFE5-.LFB5
- 911 0030 00000000 		.4byte	.LFB6
- 912 0034 24000000 		.4byte	.LFE6-.LFB6
- 913 0038 00000000 		.4byte	.LFB1
- 914 003c 0E000000 		.4byte	.LFE1-.LFB1
- 915 0040 00000000 		.4byte	.LFB0
- 916 0044 1C000000 		.4byte	.LFE0-.LFB0
- 917 0048 00000000 		.4byte	.LFB7
- 918 004c 0A000000 		.4byte	.LFE7-.LFB7
- 919 0050 00000000 		.4byte	0
- 920 0054 00000000 		.4byte	0
- 921              		.section	.debug_ranges,"",%progbits
- 922              	.Ldebug_ranges0:
- 923 0000 00000000 		.4byte	.LFB2
- 924 0004 48000000 		.4byte	.LFE2
- 925 0008 00000000 		.4byte	.LFB3
- 926 000c 1C000000 		.4byte	.LFE3
- 927 0010 00000000 		.4byte	.LFB4
- 928 0014 1C000000 		.4byte	.LFE4
- 929 0018 00000000 		.4byte	.LFB5
- 930 001c 1C000000 		.4byte	.LFE5
- 931 0020 00000000 		.4byte	.LFB6
- 932 0024 24000000 		.4byte	.LFE6
- 933 0028 00000000 		.4byte	.LFB1
- 934 002c 0E000000 		.4byte	.LFE1
- 935 0030 00000000 		.4byte	.LFB0
- 936 0034 1C000000 		.4byte	.LFE0
- 937 0038 00000000 		.4byte	.LFB7
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 24
+ 935              	.LASF8:
+ 936 01a6 756E7369 		.ascii	"unsigned int\000"
+ 936      676E6564 
+ 936      20696E74 
+ 936      00
+ 937              	.LASF7:
+ 938 01b3 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 938      206C6F6E 
+ 938      6720756E 
+ 938      7369676E 
+ 938      65642069 
+ 939              	.LASF22:
+ 940 01ca 536C6565 		.ascii	"SleepTimer_DisableInt\000"
+ 940      7054696D 
+ 940      65725F44 
+ 940      69736162 
+ 940      6C65496E 
+ 941              	.LASF15:
+ 942 01e0 73697A65 		.ascii	"sizetype\000"
+ 942      74797065 
+ 942      00
+ 943              	.LASF18:
+ 944 01e9 536C6565 		.ascii	"SleepTimer_Enable\000"
+ 944      7054696D 
+ 944      65725F45 
+ 944      6E61626C 
+ 944      6500
+ 945              	.LASF6:
+ 946 01fb 6C6F6E67 		.ascii	"long long int\000"
+ 946      206C6F6E 
+ 946      6720696E 
+ 946      7400
+ 947              	.LASF25:
+ 948 0209 47656E65 		.ascii	"Generated_Source\\PSoC5\\SleepTimer.c\000"
+ 948      72617465 
+ 948      645F536F 
+ 948      75726365 
+ 948      5C50536F 
+ 949              	.LASF11:
+ 950 022d 63686172 		.ascii	"char\000"
+ 950      00
+ 951              	.LASF2:
+ 952 0232 73686F72 		.ascii	"short int\000"
+ 952      7420696E 
+ 952      7400
+ 953              	.LASF27:
+ 954 023c 696E7465 		.ascii	"interval\000"
+ 954      7276616C 
+ 954      00
+ 955              	.LASF4:
+ 956 0245 6C6F6E67 		.ascii	"long int\000"
+ 956      20696E74 
+ 956      00
+ 957              	.LASF14:
+ 958 024e 6C6F6E67 		.ascii	"long double\000"
+ 958      20646F75 
+ 958      626C6500 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccR8o9KV.s 			page 26
 
 
- 938 003c 0A000000 		.4byte	.LFE7
- 939 0040 00000000 		.4byte	0
- 940 0044 00000000 		.4byte	0
- 941              		.section	.debug_line,"",%progbits
- 942              	.Ldebug_line0:
- 943 0000 FF000000 		.section	.debug_str,"MS",%progbits,1
- 943      02005C00 
- 943      00000201 
- 943      FB0E0D00 
- 943      01010101 
- 944              	.LASF9:
- 945 0000 666C6F61 		.ascii	"float\000"
- 945      7400
- 946              	.LASF21:
- 947 0006 536C6565 		.ascii	"SleepTimer_SetInterval\000"
- 947      7054696D 
- 947      65725F53 
- 947      6574496E 
- 947      74657276 
- 948              	.LASF3:
- 949 001d 73686F72 		.ascii	"short unsigned int\000"
- 949      7420756E 
- 949      7369676E 
- 949      65642069 
- 949      6E7400
- 950              	.LASF19:
- 951 0030 536C6565 		.ascii	"SleepTimer_EnableInt\000"
- 951      7054696D 
- 951      65725F45 
- 951      6E61626C 
- 951      65496E74 
- 952              	.LASF17:
- 953 0045 536C6565 		.ascii	"SleepTimer_Stop\000"
- 953      7054696D 
- 953      65725F53 
- 953      746F7000 
- 954              	.LASF32:
- 955 0055 536C6565 		.ascii	"SleepTimer_initVar\000"
- 955      7054696D 
- 955      65725F69 
- 955      6E697456 
- 955      617200
- 956              	.LASF7:
- 957 0068 6C6F6E67 		.ascii	"long long unsigned int\000"
- 957      206C6F6E 
- 957      6720756E 
- 957      7369676E 
- 957      65642069 
- 958              	.LASF31:
- 959 007f 536C6565 		.ascii	"SleepTimer_GetStatus\000"
- 959      7054696D 
- 959      65725F47 
- 959      65745374 
- 959      61747573 
- 960              	.LASF1:
- 961 0094 756E7369 		.ascii	"unsigned char\000"
- 961      676E6564 
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 25
-
-
- 961      20636861 
- 961      7200
- 962              	.LASF27:
- 963 00a2 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 963      43313120 
- 963      352E342E 
- 963      31203230 
- 963      31363036 
- 964 00d5 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 964      20726576 
- 964      6973696F 
- 964      6E203233 
- 964      37373135 
- 965 0108 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
- 965      66756E63 
- 965      74696F6E 
- 965      2D736563 
- 965      74696F6E 
- 966              	.LASF13:
- 967 0130 72656738 		.ascii	"reg8\000"
- 967      00
- 968              	.LASF18:
- 969 0135 696E7465 		.ascii	"interruptState\000"
- 969      72727570 
- 969      74537461 
- 969      746500
- 970              	.LASF5:
- 971 0144 6C6F6E67 		.ascii	"long unsigned int\000"
- 971      20756E73 
- 971      69676E65 
- 971      6420696E 
- 971      7400
- 972              	.LASF12:
- 973 0156 75696E74 		.ascii	"uint8\000"
- 973      3800
- 974              	.LASF23:
- 975 015c 536C6565 		.ascii	"SleepTimer_Start\000"
- 975      7054696D 
- 975      65725F53 
- 975      74617274 
- 975      00
- 976              	.LASF10:
- 977 016d 646F7562 		.ascii	"double\000"
- 977      6C6500
- 978              	.LASF24:
- 979 0174 4379456E 		.ascii	"CyEnterCriticalSection\000"
- 979      74657243 
- 979      72697469 
- 979      63616C53 
- 979      65637469 
- 980              	.LASF8:
- 981 018b 756E7369 		.ascii	"unsigned int\000"
- 981      676E6564 
- 981      20696E74 
- 981      00
- 982              	.LASF25:
- 983 0198 43794578 		.ascii	"CyExitCriticalSection\000"
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 26
-
-
- 983      69744372 
- 983      69746963 
- 983      616C5365 
- 983      6374696F 
- 984              	.LASF20:
- 985 01ae 536C6565 		.ascii	"SleepTimer_DisableInt\000"
- 985      7054696D 
- 985      65725F44 
- 985      69736162 
- 985      6C65496E 
- 986              	.LASF29:
- 987 01c4 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
- 987      73657273 
- 987      5C626B5C 
- 987      446F6375 
- 987      6D656E74 
- 988 01f1 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
- 988      6E6F746F 
- 988      72694F53 
- 988      5C6E6F74 
- 988      6F72694F 
- 989              	.LASF15:
- 990 020d 73697A65 		.ascii	"sizetype\000"
- 990      74797065 
- 990      00
- 991              	.LASF16:
- 992 0216 536C6565 		.ascii	"SleepTimer_Enable\000"
- 992      7054696D 
- 992      65725F45 
- 992      6E61626C 
- 992      6500
- 993              	.LASF6:
- 994 0228 6C6F6E67 		.ascii	"long long int\000"
- 994      206C6F6E 
- 994      6720696E 
- 994      7400
- 995              	.LASF28:
- 996 0236 47656E65 		.ascii	"Generated_Source\\PSoC5\\SleepTimer.c\000"
- 996      72617465 
- 996      645F536F 
- 996      75726365 
- 996      5C50536F 
- 997              	.LASF11:
- 998 025a 63686172 		.ascii	"char\000"
- 998      00
- 999              	.LASF2:
- 1000 025f 73686F72 		.ascii	"short int\000"
- 1000      7420696E 
- 1000      7400
- 1001              	.LASF30:
- 1002 0269 696E7465 		.ascii	"interval\000"
- 1002      7276616C 
- 1002      00
- 1003              	.LASF4:
- 1004 0272 6C6F6E67 		.ascii	"long int\000"
- 1004      20696E74 
- 1004      00
-ARM GAS  C:\Users\bk\AppData\Local\Temp\cclh0KO4.s 			page 27
-
-
- 1005              	.LASF14:
- 1006 027b 6C6F6E67 		.ascii	"long double\000"
- 1006      20646F75 
- 1006      626C6500 
- 1007              	.LASF22:
- 1008 0287 536C6565 		.ascii	"SleepTimer_Init\000"
- 1008      7054696D 
- 1008      65725F49 
- 1008      6E697400 
- 1009              	.LASF0:
- 1010 0297 7369676E 		.ascii	"signed char\000"
- 1010      65642063 
- 1010      68617200 
- 1011              	.LASF26:
- 1012 02a3 4379506D 		.ascii	"CyPmReadStatus\000"
- 1012      52656164 
- 1012      53746174 
- 1012      757300
- 1013              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 959              	.LASF17:
+ 960 025a 536C6565 		.ascii	"SleepTimer_Init\000"
+ 960      7054696D 
+ 960      65725F49 
+ 960      6E697400 
+ 961              	.LASF0:
+ 962 026a 7369676E 		.ascii	"signed char\000"
+ 962      65642063 
+ 962      68617200 
+ 963              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

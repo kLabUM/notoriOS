@@ -16,6 +16,10 @@
 #define ALARM_TYPE_YEAR         6u
 #define ALARM_TYPE_CONTINUOUS   7u
 
+//generallu usefull macros
+#define ON  1u
+#define  OFF 0u
+
 //uised to create alarms, which fire when a tasks needs doing
 typedef struct
 {
@@ -26,6 +30,13 @@ typedef struct
     
 } volatile alarm;
 
+
+/* === Driver Interface === */
+
+#define ULTRASONIC_MB7384 0
+#define ULTRASONIC_MB7383 1
+
+
 void ReadyOrNot();
 int WorkWorkWorkWorkWorkWork();
 void LayBack();
@@ -33,5 +44,9 @@ void AyoItsTime(uint8 alarmType);
 alarm CreateAlarm(uint16 countDownValue,uint8 countDownType,uint8 countDownResetCondition);
 uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType);
 void ResetAlarm(alarm * alarmToBeReset);
+
+
+
+
 
 /* [] END OF FILE */
