@@ -1,0 +1,1882 @@
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"sd_card.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	SD_dir
+  20              		.bss
+  21              		.align	2
+  22              		.type	SD_dir, %object
+  23              		.size	SD_dir, 10
+  24              	SD_dir:
+  25 0000 00000000 		.space	10
+  25      00000000 
+  25      0000
+  26              		.global	SD_body
+  27 000a 0000     		.align	2
+  28              		.type	SD_body, %object
+  29              		.size	SD_body, 3000
+  30              	SD_body:
+  31 000c 00000000 		.space	3000
+  31      00000000 
+  31      00000000 
+  31      00000000 
+  31      00000000 
+  32              		.global	SD_filename
+  33              		.data
+  34              		.align	2
+  35              		.type	SD_filename, %object
+  36              		.size	SD_filename, 30
+  37              	SD_filename:
+  38 0000 46696C65 		.ascii	"Filename.txt\000"
+  38      6E616D65 
+  38      2E747874 
+  38      00
+  39 000d 00000000 		.space	17
+  39      00000000 
+  39      00000000 
+  39      00000000 
+  39      00
+  40              		.global	SD_filemode
+  41 001e 0000     		.align	2
+  42              		.type	SD_filemode, %object
+  43              		.size	SD_filemode, 5
+  44              	SD_filemode:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 2
+
+
+  45 0020 612B00   		.ascii	"a+\000"
+  46 0023 0000     		.space	2
+  47              		.section	.text.SD_init,"ax",%progbits
+  48              		.align	2
+  49              		.global	SD_init
+  50              		.thumb
+  51              		.thumb_func
+  52              		.type	SD_init, %function
+  53              	SD_init:
+  54              	.LFB64:
+  55              		.file 1 "sd_card.c"
+   1:sd_card.c     **** /* ========================================
+   2:sd_card.c     ****  *
+   3:sd_card.c     ****  * Copyright YOUR COMPANY, THE YEAR
+   4:sd_card.c     ****  * All Rights Reserved
+   5:sd_card.c     ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:sd_card.c     ****  *
+   7:sd_card.c     ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:sd_card.c     ****  * WHICH IS THE PROPERTY OF your company.
+   9:sd_card.c     ****  *
+  10:sd_card.c     ****  * ========================================
+  11:sd_card.c     **** */
+  12:sd_card.c     **** /**
+  13:sd_card.c     ****  * @file sdcard.c
+  14:sd_card.c     ****  * @brief  Write to an SD card.
+  15:sd_card.c     ****  * @author Brandon Wong
+  16:sd_card.c     ****  * @version 0.0.01
+  17:sd_card.c     ****  * @date 2019-05-15
+  18:sd_card.c     ****  */
+  19:sd_card.c     **** #include <stdio.h>
+  20:sd_card.c     **** #include "sd_card.h"
+  21:sd_card.c     **** #include "notoriOS.h"
+  22:sd_card.c     **** 
+  23:sd_card.c     **** // Preallocate card
+  24:sd_card.c     **** char    SD_dir[10]      = {'\0'};
+  25:sd_card.c     **** char    SD_body[3000]   = {'\0'};
+  26:sd_card.c     **** char    SD_filename[30] = "Filename.txt";
+  27:sd_card.c     **** char    SD_filemode[5]  = "a+";
+  28:sd_card.c     **** 
+  29:sd_card.c     **** void SD_init()
+  30:sd_card.c     **** {
+  56              		.loc 1 30 0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 1, uses_anonymous_args = 0
+  60 0000 80B5     		push	{r7, lr}
+  61              		.cfi_def_cfa_offset 8
+  62              		.cfi_offset 7, -8
+  63              		.cfi_offset 14, -4
+  64 0002 00AF     		add	r7, sp, #0
+  65              		.cfi_def_cfa_register 7
+  31:sd_card.c     ****     FS_Init();  
+  66              		.loc 1 31 0
+  67 0004 FFF7FEFF 		bl	FS_Init
+  32:sd_card.c     ****     emFile_Sleep();
+  68              		.loc 1 32 0
+  69 0008 FFF7FEFF 		bl	emFile_Sleep
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 3
+
+
+  33:sd_card.c     ****     return;
+  70              		.loc 1 33 0
+  71 000c 00BF     		nop
+  34:sd_card.c     ****     
+  35:sd_card.c     ****     /* Uncomment to enable support for long file names
+  36:sd_card.c     ****      * Note: To use long file names (LFN) support on PSoC 5LP devices, you must call
+  37:sd_card.c     ****      * FS_FAT_SupportLFN(). For PSoC 3 devices, this feature is enabled by default.
+  38:sd_card.c     ****      */
+  39:sd_card.c     ****     //FS_FAT_SupportLFN();    
+  40:sd_card.c     **** }
+  72              		.loc 1 40 0
+  73 000e 80BD     		pop	{r7, pc}
+  74              		.cfi_endproc
+  75              	.LFE64:
+  76              		.size	SD_init, .-SD_init
+  77              		.section	.rodata
+  78              		.align	2
+  79              	.LC0:
+  80 0000 252E3873 		.ascii	"%.8s\000"
+  80      00
+  81              		.section	.text.SD_mkdir,"ax",%progbits
+  82              		.align	2
+  83              		.global	SD_mkdir
+  84              		.thumb
+  85              		.thumb_func
+  86              		.type	SD_mkdir, %function
+  87              	SD_mkdir:
+  88              	.LFB65:
+  41:sd_card.c     **** 
+  42:sd_card.c     **** /**
+  43:sd_card.c     ****  * @brief Make a directory on the SD card
+  44:sd_card.c     ****  *
+  45:sd_card.c     ****  * @param dir_name is the name of the directory to create
+  46:sd_card.c     ****  *
+  47:sd_card.c     ****  * @return 1u on success, 0u otherwise
+  48:sd_card.c     ****  */
+  49:sd_card.c     **** uint8 SD_mkdir(char* dir_name)
+  50:sd_card.c     **** {
+  89              		.loc 1 50 0
+  90              		.cfi_startproc
+  91              		@ args = 0, pretend = 0, frame = 16
+  92              		@ frame_needed = 1, uses_anonymous_args = 0
+  93 0000 80B5     		push	{r7, lr}
+  94              		.cfi_def_cfa_offset 8
+  95              		.cfi_offset 7, -8
+  96              		.cfi_offset 14, -4
+  97 0002 84B0     		sub	sp, sp, #16
+  98              		.cfi_def_cfa_offset 24
+  99 0004 00AF     		add	r7, sp, #0
+ 100              		.cfi_def_cfa_register 7
+ 101 0006 7860     		str	r0, [r7, #4]
+  51:sd_card.c     ****     uint8 status = 9; // initialize to a value not 0 or -1
+ 102              		.loc 1 51 0
+ 103 0008 0923     		movs	r3, #9
+ 104 000a FB73     		strb	r3, [r7, #15]
+  52:sd_card.c     ****     
+  53:sd_card.c     ****     // Wakeup the SD Card component
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 4
+
+
+  54:sd_card.c     ****     emFile_Wakeup();
+ 105              		.loc 1 54 0
+ 106 000c FFF7FEFF 		bl	emFile_Wakeup
+  55:sd_card.c     ****     
+  56:sd_card.c     ****     // We are using the "No Long File Name (LFN)" library,
+  57:sd_card.c     ****     //  so names are limited to 8 characters and 3 bytes for extensions
+  58:sd_card.c     ****     // Turn on the SD Card
+  59:sd_card.c     ****     SD_Card_Power_Write(ON);
+ 107              		.loc 1 59 0
+ 108 0010 0120     		movs	r0, #1
+ 109 0012 FFF7FEFF 		bl	SD_Card_Power_Write
+  60:sd_card.c     ****     
+  61:sd_card.c     ****     sprintf(SD_dir,"%.8s",dir_name); 
+ 110              		.loc 1 61 0
+ 111 0016 7A68     		ldr	r2, [r7, #4]
+ 112 0018 0A49     		ldr	r1, .L5
+ 113 001a 0B48     		ldr	r0, .L5+4
+ 114 001c FFF7FEFF 		bl	sprintf
+  62:sd_card.c     ****     status = (uint8) ( 1+FS_MkDir(SD_dir) );
+ 115              		.loc 1 62 0
+ 116 0020 0948     		ldr	r0, .L5+4
+ 117 0022 FFF7FEFF 		bl	FS_MkDir
+ 118 0026 0346     		mov	r3, r0
+ 119 0028 DBB2     		uxtb	r3, r3
+ 120 002a 0133     		adds	r3, r3, #1
+ 121 002c FB73     		strb	r3, [r7, #15]
+  63:sd_card.c     ****     // The arithmetic makes it 0 if a failure, 1 if successful
+  64:sd_card.c     ****     
+  65:sd_card.c     ****     // Turn off the SD Card
+  66:sd_card.c     ****     SD_Card_Power_Write(OFF);   
+ 122              		.loc 1 66 0
+ 123 002e 0020     		movs	r0, #0
+ 124 0030 FFF7FEFF 		bl	SD_Card_Power_Write
+  67:sd_card.c     ****     
+  68:sd_card.c     ****     // Sleep the SD Card component
+  69:sd_card.c     ****     emFile_Sleep();
+ 125              		.loc 1 69 0
+ 126 0034 FFF7FEFF 		bl	emFile_Sleep
+  70:sd_card.c     ****     
+  71:sd_card.c     ****     return status;
+ 127              		.loc 1 71 0
+ 128 0038 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+  72:sd_card.c     **** }
+ 129              		.loc 1 72 0
+ 130 003a 1846     		mov	r0, r3
+ 131 003c 1037     		adds	r7, r7, #16
+ 132              		.cfi_def_cfa_offset 8
+ 133 003e BD46     		mov	sp, r7
+ 134              		.cfi_def_cfa_register 13
+ 135              		@ sp needed
+ 136 0040 80BD     		pop	{r7, pc}
+ 137              	.L6:
+ 138 0042 00BF     		.align	2
+ 139              	.L5:
+ 140 0044 00000000 		.word	.LC0
+ 141 0048 00000000 		.word	SD_dir
+ 142              		.cfi_endproc
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 5
+
+
+ 143              	.LFE65:
+ 144              		.size	SD_mkdir, .-SD_mkdir
+ 145              		.section	.text.SD_rmfile,"ax",%progbits
+ 146              		.align	2
+ 147              		.global	SD_rmfile
+ 148              		.thumb
+ 149              		.thumb_func
+ 150              		.type	SD_rmfile, %function
+ 151              	SD_rmfile:
+ 152              	.LFB66:
+  73:sd_card.c     **** 
+  74:sd_card.c     **** /**
+  75:sd_card.c     ****  * @brief Delete a file
+  76:sd_card.c     ****  *
+  77:sd_card.c     ****  * @param dir_name is the name of the directory to create
+  78:sd_card.c     ****  *
+  79:sd_card.c     ****  * @return 1u on success, 0u otherwise
+  80:sd_card.c     ****  */
+  81:sd_card.c     **** uint8 SD_rmfile(const char * fileName)
+  82:sd_card.c     **** {
+ 153              		.loc 1 82 0
+ 154              		.cfi_startproc
+ 155              		@ args = 0, pretend = 0, frame = 16
+ 156              		@ frame_needed = 1, uses_anonymous_args = 0
+ 157 0000 80B5     		push	{r7, lr}
+ 158              		.cfi_def_cfa_offset 8
+ 159              		.cfi_offset 7, -8
+ 160              		.cfi_offset 14, -4
+ 161 0002 84B0     		sub	sp, sp, #16
+ 162              		.cfi_def_cfa_offset 24
+ 163 0004 00AF     		add	r7, sp, #0
+ 164              		.cfi_def_cfa_register 7
+ 165 0006 7860     		str	r0, [r7, #4]
+  83:sd_card.c     ****     uint8 status = 9; // initialize to a value not 0 or -1
+ 166              		.loc 1 83 0
+ 167 0008 0923     		movs	r3, #9
+ 168 000a FB73     		strb	r3, [r7, #15]
+  84:sd_card.c     ****     
+  85:sd_card.c     ****     // Wakeup the SD Card component
+  86:sd_card.c     ****     emFile_Wakeup();
+ 169              		.loc 1 86 0
+ 170 000c FFF7FEFF 		bl	emFile_Wakeup
+  87:sd_card.c     ****     
+  88:sd_card.c     ****     // We are using the "No Long File Name (LFN)" library,
+  89:sd_card.c     ****     //  so names are limited to 8 characters and 3 bytes for extensions
+  90:sd_card.c     ****     // Turn on the SD Card
+  91:sd_card.c     ****     SD_Card_Power_Write(ON);
+ 171              		.loc 1 91 0
+ 172 0010 0120     		movs	r0, #1
+ 173 0012 FFF7FEFF 		bl	SD_Card_Power_Write
+  92:sd_card.c     ****     
+  93:sd_card.c     ****    
+  94:sd_card.c     ****     status = (uint8) ( 1+FS_Remove(fileName));
+ 174              		.loc 1 94 0
+ 175 0016 7868     		ldr	r0, [r7, #4]
+ 176 0018 FFF7FEFF 		bl	FS_Remove
+ 177 001c 0346     		mov	r3, r0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 6
+
+
+ 178 001e DBB2     		uxtb	r3, r3
+ 179 0020 0133     		adds	r3, r3, #1
+ 180 0022 FB73     		strb	r3, [r7, #15]
+  95:sd_card.c     ****     // The arithmetic makes it 0 if a failure, 1 if successful
+  96:sd_card.c     ****     
+  97:sd_card.c     ****     // Turn off the SD Card
+  98:sd_card.c     ****     SD_Card_Power_Write(OFF);   
+ 181              		.loc 1 98 0
+ 182 0024 0020     		movs	r0, #0
+ 183 0026 FFF7FEFF 		bl	SD_Card_Power_Write
+  99:sd_card.c     ****     
+ 100:sd_card.c     ****     // Sleep the SD Card component
+ 101:sd_card.c     ****     emFile_Sleep();
+ 184              		.loc 1 101 0
+ 185 002a FFF7FEFF 		bl	emFile_Sleep
+ 102:sd_card.c     ****     
+ 103:sd_card.c     ****     return status;
+ 186              		.loc 1 103 0
+ 187 002e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 104:sd_card.c     **** }
+ 188              		.loc 1 104 0
+ 189 0030 1846     		mov	r0, r3
+ 190 0032 1037     		adds	r7, r7, #16
+ 191              		.cfi_def_cfa_offset 8
+ 192 0034 BD46     		mov	sp, r7
+ 193              		.cfi_def_cfa_register 13
+ 194              		@ sp needed
+ 195 0036 80BD     		pop	{r7, pc}
+ 196              		.cfi_endproc
+ 197              	.LFE66:
+ 198              		.size	SD_rmfile, .-SD_rmfile
+ 199              		.section	.text.SD_write,"ax",%progbits
+ 200              		.align	2
+ 201              		.global	SD_write
+ 202              		.thumb
+ 203              		.thumb_func
+ 204              		.type	SD_write, %function
+ 205              	SD_write:
+ 206              	.LFB67:
+ 105:sd_card.c     **** 
+ 106:sd_card.c     **** 
+ 107:sd_card.c     **** 
+ 108:sd_card.c     **** /**
+ 109:sd_card.c     ****  * @brief Write data to the SD card
+ 110:sd_card.c     ****  *
+ 111:sd_card.c     ****  * @param fileName is the name of the file to write to
+ 112:sd_card.c     ****  * @param pMode is the write mode
+ 113:sd_card.c     ****  * @param pData is the data to be written
+ 114:sd_card.c     ****  *
+ 115:sd_card.c     ****  * @return 1u on success, 0u otherwise
+ 116:sd_card.c     ****  */
+ 117:sd_card.c     **** uint8 SD_write(const char * fileName, const char * pMode, const void * pData)
+ 118:sd_card.c     **** {
+ 207              		.loc 1 118 0
+ 208              		.cfi_startproc
+ 209              		@ args = 0, pretend = 0, frame = 24
+ 210              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 7
+
+
+ 211 0000 80B5     		push	{r7, lr}
+ 212              		.cfi_def_cfa_offset 8
+ 213              		.cfi_offset 7, -8
+ 214              		.cfi_offset 14, -4
+ 215 0002 86B0     		sub	sp, sp, #24
+ 216              		.cfi_def_cfa_offset 32
+ 217 0004 00AF     		add	r7, sp, #0
+ 218              		.cfi_def_cfa_register 7
+ 219 0006 F860     		str	r0, [r7, #12]
+ 220 0008 B960     		str	r1, [r7, #8]
+ 221 000a 7A60     		str	r2, [r7, #4]
+ 119:sd_card.c     ****     uint8 status = 9u; // initialize to a value not 0 or 1
+ 222              		.loc 1 119 0
+ 223 000c 0923     		movs	r3, #9
+ 224 000e FB75     		strb	r3, [r7, #23]
+ 120:sd_card.c     ****     FS_FILE *pFile;
+ 121:sd_card.c     **** 
+ 122:sd_card.c     ****     // Wakeup the SD Card component
+ 123:sd_card.c     ****     emFile_Wakeup();
+ 225              		.loc 1 123 0
+ 226 0010 FFF7FEFF 		bl	emFile_Wakeup
+ 124:sd_card.c     ****     
+ 125:sd_card.c     ****     // Turn on the SD Card
+ 126:sd_card.c     ****     SD_Card_Power_Write(ON);
+ 227              		.loc 1 126 0
+ 228 0014 0120     		movs	r0, #1
+ 229 0016 FFF7FEFF 		bl	SD_Card_Power_Write
+ 127:sd_card.c     ****     
+ 128:sd_card.c     ****     pFile = FS_FOpen(fileName, pMode);
+ 230              		.loc 1 128 0
+ 231 001a B968     		ldr	r1, [r7, #8]
+ 232 001c F868     		ldr	r0, [r7, #12]
+ 233 001e FFF7FEFF 		bl	FS_FOpen
+ 234 0022 3861     		str	r0, [r7, #16]
+ 129:sd_card.c     ****     
+ 130:sd_card.c     ****     // If the SD card doesn't open, try reinitializing the filesystem
+ 131:sd_card.c     ****     if (pFile == 0){
+ 235              		.loc 1 131 0
+ 236 0024 3B69     		ldr	r3, [r7, #16]
+ 237 0026 002B     		cmp	r3, #0
+ 238 0028 08D1     		bne	.L10
+ 132:sd_card.c     ****         FS_DeInit();
+ 239              		.loc 1 132 0
+ 240 002a FFF7FEFF 		bl	FS_DeInit
+ 133:sd_card.c     ****         FS_Init();
+ 241              		.loc 1 133 0
+ 242 002e FFF7FEFF 		bl	FS_Init
+ 134:sd_card.c     ****         pFile = FS_FOpen(fileName, pMode);
+ 243              		.loc 1 134 0
+ 244 0032 B968     		ldr	r1, [r7, #8]
+ 245 0034 F868     		ldr	r0, [r7, #12]
+ 246 0036 FFF7FEFF 		bl	FS_FOpen
+ 247 003a 3861     		str	r0, [r7, #16]
+ 248              	.L10:
+ 135:sd_card.c     ****     }
+ 136:sd_card.c     ****     
+ 137:sd_card.c     ****     // Note: We are using the "No Long File Name (LFN)" library,
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 8
+
+
+ 138:sd_card.c     ****     //  so names are limited to 8 characters and 3 bytes for extensions
+ 139:sd_card.c     ****     if (pFile != 0) {
+ 249              		.loc 1 139 0
+ 250 003c 3B69     		ldr	r3, [r7, #16]
+ 251 003e 002B     		cmp	r3, #0
+ 252 0040 10D0     		beq	.L11
+ 140:sd_card.c     ****         FS_Write(pFile, pData, strlen(pData));
+ 253              		.loc 1 140 0
+ 254 0042 7868     		ldr	r0, [r7, #4]
+ 255 0044 FFF7FEFF 		bl	strlen
+ 256 0048 0346     		mov	r3, r0
+ 257 004a 1A46     		mov	r2, r3
+ 258 004c 7968     		ldr	r1, [r7, #4]
+ 259 004e 3869     		ldr	r0, [r7, #16]
+ 260 0050 FFF7FEFF 		bl	FS_Write
+ 141:sd_card.c     ****         status = (uint8) ( -1*FS_FClose(pFile) )+1;
+ 261              		.loc 1 141 0
+ 262 0054 3869     		ldr	r0, [r7, #16]
+ 263 0056 FFF7FEFF 		bl	FS_FClose
+ 264 005a 0346     		mov	r3, r0
+ 265 005c DBB2     		uxtb	r3, r3
+ 266 005e C3F10103 		rsb	r3, r3, #1
+ 267 0062 FB75     		strb	r3, [r7, #23]
+ 268              	.L11:
+ 142:sd_card.c     ****         // FS_FClose returns 1 if there's a failure, 0 if successful
+ 143:sd_card.c     ****         // The arithmetic makes it 0 if a failure, 1 if successful
+ 144:sd_card.c     ****     }
+ 145:sd_card.c     ****     
+ 146:sd_card.c     ****     // Turn off the SD Card
+ 147:sd_card.c     ****     SD_Card_Power_Write(OFF);  
+ 269              		.loc 1 147 0
+ 270 0064 0020     		movs	r0, #0
+ 271 0066 FFF7FEFF 		bl	SD_Card_Power_Write
+ 148:sd_card.c     ****     
+ 149:sd_card.c     ****     // Sleep the SD Card component
+ 150:sd_card.c     ****     emFile_Sleep();
+ 272              		.loc 1 150 0
+ 273 006a FFF7FEFF 		bl	emFile_Sleep
+ 151:sd_card.c     ****     
+ 152:sd_card.c     ****     return status;
+ 274              		.loc 1 152 0
+ 275 006e FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 153:sd_card.c     **** }
+ 276              		.loc 1 153 0
+ 277 0070 1846     		mov	r0, r3
+ 278 0072 1837     		adds	r7, r7, #24
+ 279              		.cfi_def_cfa_offset 8
+ 280 0074 BD46     		mov	sp, r7
+ 281              		.cfi_def_cfa_register 13
+ 282              		@ sp needed
+ 283 0076 80BD     		pop	{r7, pc}
+ 284              		.cfi_endproc
+ 285              	.LFE67:
+ 286              		.size	SD_write, .-SD_write
+ 287              		.section	.rodata
+ 288 0005 000000   		.align	2
+ 289              	.LC1:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 9
+
+
+ 290 0008 7200     		.ascii	"r\000"
+ 291              		.section	.text.SD_read,"ax",%progbits
+ 292              		.align	2
+ 293              		.global	SD_read
+ 294              		.thumb
+ 295              		.thumb_func
+ 296              		.type	SD_read, %function
+ 297              	SD_read:
+ 298              	.LFB68:
+ 154:sd_card.c     **** 
+ 155:sd_card.c     **** /**
+ 156:sd_card.c     ****  * @brief Write data to the SD card
+ 157:sd_card.c     ****  *
+ 158:sd_card.c     ****  * @param fileName is the name of the file to write to
+ 159:sd_card.c     ****  * @param pMode is the write mode
+ 160:sd_card.c     ****  * @param pData is the data to be written
+ 161:sd_card.c     ****  *
+ 162:sd_card.c     ****  * @return 1u on success, 0u otherwise
+ 163:sd_card.c     ****  */
+ 164:sd_card.c     **** uint8 SD_read(const char * fileName,  void * pData, unsigned long NumBytes)
+ 165:sd_card.c     **** {
+ 299              		.loc 1 165 0
+ 300              		.cfi_startproc
+ 301              		@ args = 0, pretend = 0, frame = 24
+ 302              		@ frame_needed = 1, uses_anonymous_args = 0
+ 303 0000 80B5     		push	{r7, lr}
+ 304              		.cfi_def_cfa_offset 8
+ 305              		.cfi_offset 7, -8
+ 306              		.cfi_offset 14, -4
+ 307 0002 86B0     		sub	sp, sp, #24
+ 308              		.cfi_def_cfa_offset 32
+ 309 0004 00AF     		add	r7, sp, #0
+ 310              		.cfi_def_cfa_register 7
+ 311 0006 F860     		str	r0, [r7, #12]
+ 312 0008 B960     		str	r1, [r7, #8]
+ 313 000a 7A60     		str	r2, [r7, #4]
+ 166:sd_card.c     ****     uint8 status = 9u; // initialize to a value not 0 or 1
+ 314              		.loc 1 166 0
+ 315 000c 0923     		movs	r3, #9
+ 316 000e FB75     		strb	r3, [r7, #23]
+ 167:sd_card.c     ****     FS_FILE *pFile;
+ 168:sd_card.c     **** 
+ 169:sd_card.c     ****     // Wakeup the SD Card component
+ 170:sd_card.c     ****     emFile_Wakeup();
+ 317              		.loc 1 170 0
+ 318 0010 FFF7FEFF 		bl	emFile_Wakeup
+ 171:sd_card.c     ****     
+ 172:sd_card.c     ****     // Turn on the SD Card
+ 173:sd_card.c     ****     SD_Card_Power_Write(ON);
+ 319              		.loc 1 173 0
+ 320 0014 0120     		movs	r0, #1
+ 321 0016 FFF7FEFF 		bl	SD_Card_Power_Write
+ 174:sd_card.c     ****     
+ 175:sd_card.c     ****     pFile = FS_FOpen(fileName, "r");
+ 322              		.loc 1 175 0
+ 323 001a 1549     		ldr	r1, .L17
+ 324 001c F868     		ldr	r0, [r7, #12]
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 10
+
+
+ 325 001e FFF7FEFF 		bl	FS_FOpen
+ 326 0022 3861     		str	r0, [r7, #16]
+ 176:sd_card.c     ****     
+ 177:sd_card.c     ****     // If the SD card doesn't open, try reinitializing the filesystem
+ 178:sd_card.c     ****     if (pFile == 0){
+ 327              		.loc 1 178 0
+ 328 0024 3B69     		ldr	r3, [r7, #16]
+ 329 0026 002B     		cmp	r3, #0
+ 330 0028 08D1     		bne	.L14
+ 179:sd_card.c     ****         FS_DeInit();
+ 331              		.loc 1 179 0
+ 332 002a FFF7FEFF 		bl	FS_DeInit
+ 180:sd_card.c     ****         FS_Init();
+ 333              		.loc 1 180 0
+ 334 002e FFF7FEFF 		bl	FS_Init
+ 181:sd_card.c     ****         pFile = FS_FOpen(fileName, "r");
+ 335              		.loc 1 181 0
+ 336 0032 0F49     		ldr	r1, .L17
+ 337 0034 F868     		ldr	r0, [r7, #12]
+ 338 0036 FFF7FEFF 		bl	FS_FOpen
+ 339 003a 3861     		str	r0, [r7, #16]
+ 340              	.L14:
+ 182:sd_card.c     ****     }
+ 183:sd_card.c     ****     
+ 184:sd_card.c     ****     // Note: We are using the "No Long File Name (LFN)" library,
+ 185:sd_card.c     ****     //  so names are limited to 8 characters and 3 bytes for extensions
+ 186:sd_card.c     ****     if (pFile != 0) {
+ 341              		.loc 1 186 0
+ 342 003c 3B69     		ldr	r3, [r7, #16]
+ 343 003e 002B     		cmp	r3, #0
+ 344 0040 0CD0     		beq	.L15
+ 187:sd_card.c     ****         FS_Read(pFile,pData,NumBytes);
+ 345              		.loc 1 187 0
+ 346 0042 7A68     		ldr	r2, [r7, #4]
+ 347 0044 B968     		ldr	r1, [r7, #8]
+ 348 0046 3869     		ldr	r0, [r7, #16]
+ 349 0048 FFF7FEFF 		bl	FS_Read
+ 188:sd_card.c     ****         status = (uint8) ( -1*FS_FClose(pFile) )+1;
+ 350              		.loc 1 188 0
+ 351 004c 3869     		ldr	r0, [r7, #16]
+ 352 004e FFF7FEFF 		bl	FS_FClose
+ 353 0052 0346     		mov	r3, r0
+ 354 0054 DBB2     		uxtb	r3, r3
+ 355 0056 C3F10103 		rsb	r3, r3, #1
+ 356 005a FB75     		strb	r3, [r7, #23]
+ 357              	.L15:
+ 189:sd_card.c     ****         // FS_FClose returns 1 if there's a failure, 0 if successful
+ 190:sd_card.c     ****         // The arithmetic makes it 0 if a failure, 1 if successful
+ 191:sd_card.c     ****     }
+ 192:sd_card.c     ****     
+ 193:sd_card.c     ****     // Turn off the SD Card
+ 194:sd_card.c     ****     SD_Card_Power_Write(OFF);  
+ 358              		.loc 1 194 0
+ 359 005c 0020     		movs	r0, #0
+ 360 005e FFF7FEFF 		bl	SD_Card_Power_Write
+ 195:sd_card.c     ****     
+ 196:sd_card.c     ****     // Sleep the SD Card component
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 11
+
+
+ 197:sd_card.c     ****     emFile_Sleep();
+ 361              		.loc 1 197 0
+ 362 0062 FFF7FEFF 		bl	emFile_Sleep
+ 198:sd_card.c     ****     
+ 199:sd_card.c     ****     return status;
+ 363              		.loc 1 199 0
+ 364 0066 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 200:sd_card.c     **** }
+ 365              		.loc 1 200 0
+ 366 0068 1846     		mov	r0, r3
+ 367 006a 1837     		adds	r7, r7, #24
+ 368              		.cfi_def_cfa_offset 8
+ 369 006c BD46     		mov	sp, r7
+ 370              		.cfi_def_cfa_register 13
+ 371              		@ sp needed
+ 372 006e 80BD     		pop	{r7, pc}
+ 373              	.L18:
+ 374              		.align	2
+ 375              	.L17:
+ 376 0070 08000000 		.word	.LC1
+ 377              		.cfi_endproc
+ 378              	.LFE68:
+ 379              		.size	SD_read, .-SD_read
+ 380              		.section	.rodata
+ 381 000a 0000     		.align	2
+ 382              	.LC2:
+ 383 000c 54455354 		.ascii	"TEST_SD_CARD\015\000"
+ 383      5F53445F 
+ 383      43415244 
+ 383      0D00
+ 384 001a 0000     		.align	2
+ 385              	.LC5:
+ 386 001c 54455354 		.ascii	"TEST_PASS\000"
+ 386      5F504153 
+ 386      5300
+ 387 0026 0000     		.align	2
+ 388              	.LC6:
+ 389 0028 7700     		.ascii	"w\000"
+ 390 002a 0000     		.align	2
+ 391              	.LC7:
+ 392 002c 53554343 		.ascii	"SUCCESS WRITE READ DELETE FILE\015\000"
+ 392      45535320 
+ 392      57524954 
+ 392      45205245 
+ 392      41442044 
+ 393              		.align	2
+ 394              	.LC8:
+ 395 004c 4641494C 		.ascii	"FAILED TO WRITE READ DELETE FILE\015\000"
+ 395      45442054 
+ 395      4F205752 
+ 395      49544520 
+ 395      52454144 
+ 396 006e 0000     		.align	2
+ 397              	.LC3:
+ 398 0070 54455354 		.ascii	"TEST_FAIL\000"
+ 398      5F464149 
+ 398      4C00
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 12
+
+
+ 399 007a 0000     		.align	2
+ 400              	.LC4:
+ 401 007c 74657374 		.ascii	"test.txt\000"
+ 401      2E747874 
+ 401      00
+ 402              		.section	.text.SD_card_test,"ax",%progbits
+ 403              		.align	2
+ 404              		.global	SD_card_test
+ 405              		.thumb
+ 406              		.thumb_func
+ 407              		.type	SD_card_test, %function
+ 408              	SD_card_test:
+ 409              	.LFB69:
+ 201:sd_card.c     **** 
+ 202:sd_card.c     **** 
+ 203:sd_card.c     **** test_t SD_card_test(){
+ 410              		.loc 1 203 0
+ 411              		.cfi_startproc
+ 412              		@ args = 0, pretend = 0, frame = 424
+ 413              		@ frame_needed = 1, uses_anonymous_args = 0
+ 414 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 415              		.cfi_def_cfa_offset 20
+ 416              		.cfi_offset 4, -20
+ 417              		.cfi_offset 5, -16
+ 418              		.cfi_offset 6, -12
+ 419              		.cfi_offset 7, -8
+ 420              		.cfi_offset 14, -4
+ 421 0002 EBB0     		sub	sp, sp, #428
+ 422              		.cfi_def_cfa_offset 448
+ 423 0004 00AF     		add	r7, sp, #0
+ 424              		.cfi_def_cfa_register 7
+ 425 0006 3B1D     		adds	r3, r7, #4
+ 426 0008 1860     		str	r0, [r3]
+ 204:sd_card.c     ****     //create a  file, write random number, read number from file, delete directory from file
+ 205:sd_card.c     ****     test_t test;
+ 206:sd_card.c     ****     sprintf(test.test_name,"TEST_SD_CARD\r");
+ 427              		.loc 1 206 0
+ 428 000a 07F12403 		add	r3, r7, #36
+ 429 000e 3B4A     		ldr	r2, .L24
+ 430 0010 1C46     		mov	r4, r3
+ 431 0012 1346     		mov	r3, r2
+ 432 0014 0FCB     		ldmia	r3, {r0, r1, r2, r3}
+ 433 0016 07C4     		stmia	r4!, {r0, r1, r2}
+ 434 0018 2380     		strh	r3, [r4]	@ movhi
+ 207:sd_card.c     ****     test.status = 0;
+ 435              		.loc 1 207 0
+ 436 001a 07F12403 		add	r3, r7, #36
+ 437 001e 0022     		movs	r2, #0
+ 438 0020 83F88020 		strb	r2, [r3, #128]
+ 208:sd_card.c     ****     
+ 209:sd_card.c     ****     char data[] = "TEST_FAIL";
+ 439              		.loc 1 209 0
+ 440 0024 07F11803 		add	r3, r7, #24
+ 441 0028 354A     		ldr	r2, .L24+4
+ 442 002a 07CA     		ldmia	r2, {r0, r1, r2}
+ 443 002c 03C3     		stmia	r3!, {r0, r1}
+ 444 002e 1A80     		strh	r2, [r3]	@ movhi
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 13
+
+
+ 210:sd_card.c     ****     char fileName[] = "test.txt";
+ 445              		.loc 1 210 0
+ 446 0030 07F10C03 		add	r3, r7, #12
+ 447 0034 334A     		ldr	r2, .L24+8
+ 448 0036 07CA     		ldmia	r2, {r0, r1, r2}
+ 449 0038 03C3     		stmia	r3!, {r0, r1}
+ 450 003a 1A70     		strb	r2, [r3]
+ 211:sd_card.c     ****     
+ 212:sd_card.c     ****     SD_rmfile(fileName);
+ 451              		.loc 1 212 0
+ 452 003c 07F10C03 		add	r3, r7, #12
+ 453 0040 1846     		mov	r0, r3
+ 454 0042 FFF7FEFF 		bl	SD_rmfile
+ 213:sd_card.c     ****     SD_write(fileName,"w","TEST_PASS");
+ 455              		.loc 1 213 0
+ 456 0046 07F10C03 		add	r3, r7, #12
+ 457 004a 2F4A     		ldr	r2, .L24+12
+ 458 004c 2F49     		ldr	r1, .L24+16
+ 459 004e 1846     		mov	r0, r3
+ 460 0050 FFF7FEFF 		bl	SD_write
+ 214:sd_card.c     ****     SD_read(fileName,data,sizeof(data));
+ 461              		.loc 1 214 0
+ 462 0054 07F11801 		add	r1, r7, #24
+ 463 0058 07F10C03 		add	r3, r7, #12
+ 464 005c 0A22     		movs	r2, #10
+ 465 005e 1846     		mov	r0, r3
+ 466 0060 FFF7FEFF 		bl	SD_read
+ 215:sd_card.c     ****     test.status = SD_rmfile(fileName);
+ 467              		.loc 1 215 0
+ 468 0064 07F10C03 		add	r3, r7, #12
+ 469 0068 1846     		mov	r0, r3
+ 470 006a FFF7FEFF 		bl	SD_rmfile
+ 471 006e 0346     		mov	r3, r0
+ 472 0070 1A46     		mov	r2, r3
+ 473 0072 07F12403 		add	r3, r7, #36
+ 474 0076 83F88020 		strb	r2, [r3, #128]
+ 216:sd_card.c     ****     
+ 217:sd_card.c     ****     if(test.status == 1){
+ 475              		.loc 1 217 0
+ 476 007a 07F12403 		add	r3, r7, #36
+ 477 007e 93F88030 		ldrb	r3, [r3, #128]	@ zero_extendqisi2
+ 478 0082 012B     		cmp	r3, #1
+ 479 0084 10D1     		bne	.L20
+ 218:sd_card.c     ****         sprintf(test.reason,"SUCCESS WRITE READ DELETE FILE\r");
+ 480              		.loc 1 218 0
+ 481 0086 07F12403 		add	r3, r7, #36
+ 482 008a 8133     		adds	r3, r3, #129
+ 483 008c 204A     		ldr	r2, .L24+20
+ 484 008e 1C46     		mov	r4, r3
+ 485 0090 1546     		mov	r5, r2
+ 486 0092 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 487 0094 2060     		str	r0, [r4]	@ unaligned
+ 488 0096 6160     		str	r1, [r4, #4]	@ unaligned
+ 489 0098 A260     		str	r2, [r4, #8]	@ unaligned
+ 490 009a E360     		str	r3, [r4, #12]	@ unaligned
+ 491 009c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 492 009e 2061     		str	r0, [r4, #16]	@ unaligned
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 14
+
+
+ 493 00a0 6161     		str	r1, [r4, #20]	@ unaligned
+ 494 00a2 A261     		str	r2, [r4, #24]	@ unaligned
+ 495 00a4 E361     		str	r3, [r4, #28]	@ unaligned
+ 496 00a6 17E0     		b	.L21
+ 497              	.L20:
+ 219:sd_card.c     ****     }else{
+ 220:sd_card.c     ****        sprintf(test.reason,"FAILED TO WRITE READ DELETE FILE\r"); 
+ 498              		.loc 1 220 0
+ 499 00a8 07F12403 		add	r3, r7, #36
+ 500 00ac 8133     		adds	r3, r3, #129
+ 501 00ae 194A     		ldr	r2, .L24+24
+ 502 00b0 1446     		mov	r4, r2
+ 503 00b2 9E46     		mov	lr, r3
+ 504 00b4 04F1200C 		add	ip, r4, #32
+ 505              	.L22:
+ 506 00b8 7546     		mov	r5, lr
+ 507 00ba 2646     		mov	r6, r4
+ 508 00bc 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 509 00be 2860     		str	r0, [r5]	@ unaligned
+ 510 00c0 6960     		str	r1, [r5, #4]	@ unaligned
+ 511 00c2 AA60     		str	r2, [r5, #8]	@ unaligned
+ 512 00c4 EB60     		str	r3, [r5, #12]	@ unaligned
+ 513 00c6 1034     		adds	r4, r4, #16
+ 514 00c8 0EF1100E 		add	lr, lr, #16
+ 515 00cc 6445     		cmp	r4, ip
+ 516 00ce F3D1     		bne	.L22
+ 517 00d0 7246     		mov	r2, lr
+ 518 00d2 2346     		mov	r3, r4
+ 519 00d4 1B88     		ldrh	r3, [r3]	@ unaligned
+ 520 00d6 1380     		strh	r3, [r2]	@ unaligned
+ 521              	.L21:
+ 221:sd_card.c     ****     }
+ 222:sd_card.c     ****     
+ 223:sd_card.c     ****     return test;
+ 522              		.loc 1 223 0
+ 523 00d8 3B1D     		adds	r3, r7, #4
+ 524 00da 1A68     		ldr	r2, [r3]
+ 525 00dc 07F12403 		add	r3, r7, #36
+ 526 00e0 1046     		mov	r0, r2
+ 527 00e2 1946     		mov	r1, r3
+ 528 00e4 40F28113 		movw	r3, #385
+ 529 00e8 1A46     		mov	r2, r3
+ 530 00ea FFF7FEFF 		bl	memcpy
+ 224:sd_card.c     ****     
+ 225:sd_card.c     **** }
+ 531              		.loc 1 225 0
+ 532 00ee 3B1D     		adds	r3, r7, #4
+ 533 00f0 1868     		ldr	r0, [r3]
+ 534 00f2 07F5D677 		add	r7, r7, #428
+ 535              		.cfi_def_cfa_offset 20
+ 536 00f6 BD46     		mov	sp, r7
+ 537              		.cfi_def_cfa_register 13
+ 538              		@ sp needed
+ 539 00f8 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 540              	.L25:
+ 541 00fa 00BF     		.align	2
+ 542              	.L24:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 15
+
+
+ 543 00fc 0C000000 		.word	.LC2
+ 544 0100 70000000 		.word	.LC3
+ 545 0104 7C000000 		.word	.LC4
+ 546 0108 1C000000 		.word	.LC5
+ 547 010c 28000000 		.word	.LC6
+ 548 0110 2C000000 		.word	.LC7
+ 549 0114 4C000000 		.word	.LC8
+ 550              		.cfi_endproc
+ 551              	.LFE69:
+ 552              		.size	SD_card_test, .-SD_card_test
+ 553              		.text
+ 554              	.Letext0:
+ 555              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 556              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 557              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 558              		.file 5 "testing.h"
+ 559              		.file 6 "..\\emFile_V322c\\Code\\Include\\PSoC5/FS_Types.h"
+ 560              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 561              		.section	.debug_info,"",%progbits
+ 562              	.Ldebug_info0:
+ 563 0000 60030000 		.4byte	0x360
+ 564 0004 0400     		.2byte	0x4
+ 565 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 566 000a 04       		.byte	0x4
+ 567 000b 01       		.uleb128 0x1
+ 568 000c 22000000 		.4byte	.LASF39
+ 569 0010 0C       		.byte	0xc
+ 570 0011 DF010000 		.4byte	.LASF40
+ 571 0015 E6000000 		.4byte	.LASF41
+ 572 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 573 001d 00000000 		.4byte	0
+ 574 0021 00000000 		.4byte	.Ldebug_line0
+ 575 0025 02       		.uleb128 0x2
+ 576 0026 01       		.byte	0x1
+ 577 0027 06       		.byte	0x6
+ 578 0028 59020000 		.4byte	.LASF0
+ 579 002c 02       		.uleb128 0x2
+ 580 002d 01       		.byte	0x1
+ 581 002e 08       		.byte	0x8
+ 582 002f 37010000 		.4byte	.LASF1
+ 583 0033 02       		.uleb128 0x2
+ 584 0034 02       		.byte	0x2
+ 585 0035 05       		.byte	0x5
+ 586 0036 08020000 		.4byte	.LASF2
+ 587 003a 02       		.uleb128 0x2
+ 588 003b 02       		.byte	0x2
+ 589 003c 07       		.byte	0x7
+ 590 003d 60010000 		.4byte	.LASF3
+ 591 0041 03       		.uleb128 0x3
+ 592 0042 B7000000 		.4byte	.LASF12
+ 593 0046 02       		.byte	0x2
+ 594 0047 3F       		.byte	0x3f
+ 595 0048 4C000000 		.4byte	0x4c
+ 596 004c 02       		.uleb128 0x2
+ 597 004d 04       		.byte	0x4
+ 598 004e 05       		.byte	0x5
+ 599 004f 2B020000 		.4byte	.LASF4
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 16
+
+
+ 600 0053 02       		.uleb128 0x2
+ 601 0054 04       		.byte	0x4
+ 602 0055 07       		.byte	0x7
+ 603 0056 4E010000 		.4byte	.LASF5
+ 604 005a 02       		.uleb128 0x2
+ 605 005b 08       		.byte	0x8
+ 606 005c 05       		.byte	0x5
+ 607 005d 00000000 		.4byte	.LASF6
+ 608 0061 02       		.uleb128 0x2
+ 609 0062 08       		.byte	0x8
+ 610 0063 07       		.byte	0x7
+ 611 0064 B0010000 		.4byte	.LASF7
+ 612 0068 04       		.uleb128 0x4
+ 613 0069 04       		.byte	0x4
+ 614 006a 05       		.byte	0x5
+ 615 006b 696E7400 		.ascii	"int\000"
+ 616 006f 02       		.uleb128 0x2
+ 617 0070 04       		.byte	0x4
+ 618 0071 07       		.byte	0x7
+ 619 0072 9D010000 		.4byte	.LASF8
+ 620 0076 02       		.uleb128 0x2
+ 621 0077 08       		.byte	0x8
+ 622 0078 04       		.byte	0x4
+ 623 0079 41020000 		.4byte	.LASF9
+ 624 007d 05       		.uleb128 0x5
+ 625 007e 04       		.byte	0x4
+ 626 007f 02       		.uleb128 0x2
+ 627 0080 04       		.byte	0x4
+ 628 0081 07       		.byte	0x7
+ 629 0082 D6010000 		.4byte	.LASF10
+ 630 0086 06       		.uleb128 0x6
+ 631 0087 04       		.byte	0x4
+ 632 0088 8C000000 		.4byte	0x8c
+ 633 008c 02       		.uleb128 0x2
+ 634 008d 01       		.byte	0x1
+ 635 008e 08       		.byte	0x8
+ 636 008f F2010000 		.4byte	.LASF11
+ 637 0093 06       		.uleb128 0x6
+ 638 0094 04       		.byte	0x4
+ 639 0095 99000000 		.4byte	0x99
+ 640 0099 07       		.uleb128 0x7
+ 641 009a 8C000000 		.4byte	0x8c
+ 642 009e 03       		.uleb128 0x3
+ 643 009f 00020000 		.4byte	.LASF13
+ 644 00a3 03       		.byte	0x3
+ 645 00a4 2C       		.byte	0x2c
+ 646 00a5 41000000 		.4byte	0x41
+ 647 00a9 08       		.uleb128 0x8
+ 648 00aa 1B020000 		.4byte	.LASF14
+ 649 00ae 04       		.byte	0x4
+ 650 00af E401     		.2byte	0x1e4
+ 651 00b1 2C000000 		.4byte	0x2c
+ 652 00b5 02       		.uleb128 0x2
+ 653 00b6 04       		.byte	0x4
+ 654 00b7 04       		.byte	0x4
+ 655 00b8 DB000000 		.4byte	.LASF15
+ 656 00bc 02       		.uleb128 0x2
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 17
+
+
+ 657 00bd 08       		.byte	0x8
+ 658 00be 04       		.byte	0x4
+ 659 00bf 80010000 		.4byte	.LASF16
+ 660 00c3 06       		.uleb128 0x6
+ 661 00c4 04       		.byte	0x4
+ 662 00c5 C9000000 		.4byte	0xc9
+ 663 00c9 09       		.uleb128 0x9
+ 664 00ca 0A       		.uleb128 0xa
+ 665 00cb 8101     		.2byte	0x181
+ 666 00cd 05       		.byte	0x5
+ 667 00ce 0A       		.byte	0xa
+ 668 00cf F8000000 		.4byte	0xf8
+ 669 00d3 0B       		.uleb128 0xb
+ 670 00d4 21020000 		.4byte	.LASF17
+ 671 00d8 05       		.byte	0x5
+ 672 00d9 0B       		.byte	0xb
+ 673 00da F8000000 		.4byte	0xf8
+ 674 00de 00       		.byte	0
+ 675 00df 0B       		.uleb128 0xb
+ 676 00e0 C8000000 		.4byte	.LASF18
+ 677 00e4 05       		.byte	0x5
+ 678 00e5 0C       		.byte	0xc
+ 679 00e6 A9000000 		.4byte	0xa9
+ 680 00ea 80       		.byte	0x80
+ 681 00eb 0B       		.uleb128 0xb
+ 682 00ec C7010000 		.4byte	.LASF19
+ 683 00f0 05       		.byte	0x5
+ 684 00f1 0D       		.byte	0xd
+ 685 00f2 08010000 		.4byte	0x108
+ 686 00f6 81       		.byte	0x81
+ 687 00f7 00       		.byte	0
+ 688 00f8 0C       		.uleb128 0xc
+ 689 00f9 8C000000 		.4byte	0x8c
+ 690 00fd 08010000 		.4byte	0x108
+ 691 0101 0D       		.uleb128 0xd
+ 692 0102 7F000000 		.4byte	0x7f
+ 693 0106 7F       		.byte	0x7f
+ 694 0107 00       		.byte	0
+ 695 0108 0C       		.uleb128 0xc
+ 696 0109 8C000000 		.4byte	0x8c
+ 697 010d 18010000 		.4byte	0x118
+ 698 0111 0D       		.uleb128 0xd
+ 699 0112 7F000000 		.4byte	0x7f
+ 700 0116 FF       		.byte	0xff
+ 701 0117 00       		.byte	0
+ 702 0118 03       		.uleb128 0x3
+ 703 0119 C1000000 		.4byte	.LASF20
+ 704 011d 05       		.byte	0x5
+ 705 011e 0E       		.byte	0xe
+ 706 011f CA000000 		.4byte	0xca
+ 707 0123 03       		.uleb128 0x3
+ 708 0124 CE010000 		.4byte	.LASF21
+ 709 0128 06       		.byte	0x6
+ 710 0129 7E       		.byte	0x7e
+ 711 012a 2E010000 		.4byte	0x12e
+ 712 012e 0E       		.uleb128 0xe
+ 713 012f CE010000 		.4byte	.LASF21
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 18
+
+
+ 714 0133 06       		.uleb128 0x6
+ 715 0134 04       		.byte	0x4
+ 716 0135 23010000 		.4byte	0x123
+ 717 0139 0F       		.uleb128 0xf
+ 718 013a 1A000000 		.4byte	.LASF42
+ 719 013e 01       		.byte	0x1
+ 720 013f 1D       		.byte	0x1d
+ 721 0140 00000000 		.4byte	.LFB64
+ 722 0144 10000000 		.4byte	.LFE64-.LFB64
+ 723 0148 01       		.uleb128 0x1
+ 724 0149 9C       		.byte	0x9c
+ 725 014a 10       		.uleb128 0x10
+ 726 014b 12020000 		.4byte	.LASF22
+ 727 014f 01       		.byte	0x1
+ 728 0150 31       		.byte	0x31
+ 729 0151 A9000000 		.4byte	0xa9
+ 730 0155 00000000 		.4byte	.LFB65
+ 731 0159 4C000000 		.4byte	.LFE65-.LFB65
+ 732 015d 01       		.uleb128 0x1
+ 733 015e 9C       		.byte	0x9c
+ 734 015f 80010000 		.4byte	0x180
+ 735 0163 11       		.uleb128 0x11
+ 736 0164 45010000 		.4byte	.LASF24
+ 737 0168 01       		.byte	0x1
+ 738 0169 31       		.byte	0x31
+ 739 016a 86000000 		.4byte	0x86
+ 740 016e 02       		.uleb128 0x2
+ 741 016f 91       		.byte	0x91
+ 742 0170 6C       		.sleb128 -20
+ 743 0171 12       		.uleb128 0x12
+ 744 0172 C8000000 		.4byte	.LASF18
+ 745 0176 01       		.byte	0x1
+ 746 0177 33       		.byte	0x33
+ 747 0178 A9000000 		.4byte	0xa9
+ 748 017c 02       		.uleb128 0x2
+ 749 017d 91       		.byte	0x91
+ 750 017e 77       		.sleb128 -9
+ 751 017f 00       		.byte	0
+ 752 0180 10       		.uleb128 0x10
+ 753 0181 65020000 		.4byte	.LASF23
+ 754 0185 01       		.byte	0x1
+ 755 0186 51       		.byte	0x51
+ 756 0187 A9000000 		.4byte	0xa9
+ 757 018b 00000000 		.4byte	.LFB66
+ 758 018f 38000000 		.4byte	.LFE66-.LFB66
+ 759 0193 01       		.uleb128 0x1
+ 760 0194 9C       		.byte	0x9c
+ 761 0195 B6010000 		.4byte	0x1b6
+ 762 0199 11       		.uleb128 0x11
+ 763 019a F7010000 		.4byte	.LASF25
+ 764 019e 01       		.byte	0x1
+ 765 019f 51       		.byte	0x51
+ 766 01a0 93000000 		.4byte	0x93
+ 767 01a4 02       		.uleb128 0x2
+ 768 01a5 91       		.byte	0x91
+ 769 01a6 6C       		.sleb128 -20
+ 770 01a7 12       		.uleb128 0x12
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 19
+
+
+ 771 01a8 C8000000 		.4byte	.LASF18
+ 772 01ac 01       		.byte	0x1
+ 773 01ad 53       		.byte	0x53
+ 774 01ae A9000000 		.4byte	0xa9
+ 775 01b2 02       		.uleb128 0x2
+ 776 01b3 91       		.byte	0x91
+ 777 01b4 77       		.sleb128 -9
+ 778 01b5 00       		.byte	0
+ 779 01b6 10       		.uleb128 0x10
+ 780 01b7 87010000 		.4byte	.LASF26
+ 781 01bb 01       		.byte	0x1
+ 782 01bc 75       		.byte	0x75
+ 783 01bd A9000000 		.4byte	0xa9
+ 784 01c1 00000000 		.4byte	.LFB67
+ 785 01c5 78000000 		.4byte	.LFE67-.LFB67
+ 786 01c9 01       		.uleb128 0x1
+ 787 01ca 9C       		.byte	0x9c
+ 788 01cb 16020000 		.4byte	0x216
+ 789 01cf 11       		.uleb128 0x11
+ 790 01d0 F7010000 		.4byte	.LASF25
+ 791 01d4 01       		.byte	0x1
+ 792 01d5 75       		.byte	0x75
+ 793 01d6 93000000 		.4byte	0x93
+ 794 01da 02       		.uleb128 0x2
+ 795 01db 91       		.byte	0x91
+ 796 01dc 6C       		.sleb128 -20
+ 797 01dd 11       		.uleb128 0x11
+ 798 01de AA010000 		.4byte	.LASF27
+ 799 01e2 01       		.byte	0x1
+ 800 01e3 75       		.byte	0x75
+ 801 01e4 93000000 		.4byte	0x93
+ 802 01e8 02       		.uleb128 0x2
+ 803 01e9 91       		.byte	0x91
+ 804 01ea 68       		.sleb128 -24
+ 805 01eb 11       		.uleb128 0x11
+ 806 01ec CF000000 		.4byte	.LASF28
+ 807 01f0 01       		.byte	0x1
+ 808 01f1 75       		.byte	0x75
+ 809 01f2 C3000000 		.4byte	0xc3
+ 810 01f6 02       		.uleb128 0x2
+ 811 01f7 91       		.byte	0x91
+ 812 01f8 64       		.sleb128 -28
+ 813 01f9 12       		.uleb128 0x12
+ 814 01fa C8000000 		.4byte	.LASF18
+ 815 01fe 01       		.byte	0x1
+ 816 01ff 77       		.byte	0x77
+ 817 0200 A9000000 		.4byte	0xa9
+ 818 0204 02       		.uleb128 0x2
+ 819 0205 91       		.byte	0x91
+ 820 0206 77       		.sleb128 -9
+ 821 0207 12       		.uleb128 0x12
+ 822 0208 D5000000 		.4byte	.LASF29
+ 823 020c 01       		.byte	0x1
+ 824 020d 78       		.byte	0x78
+ 825 020e 33010000 		.4byte	0x133
+ 826 0212 02       		.uleb128 0x2
+ 827 0213 91       		.byte	0x91
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 20
+
+
+ 828 0214 70       		.sleb128 -16
+ 829 0215 00       		.byte	0
+ 830 0216 10       		.uleb128 0x10
+ 831 0217 90010000 		.4byte	.LASF30
+ 832 021b 01       		.byte	0x1
+ 833 021c A4       		.byte	0xa4
+ 834 021d A9000000 		.4byte	0xa9
+ 835 0221 00000000 		.4byte	.LFB68
+ 836 0225 74000000 		.4byte	.LFE68-.LFB68
+ 837 0229 01       		.uleb128 0x1
+ 838 022a 9C       		.byte	0x9c
+ 839 022b 76020000 		.4byte	0x276
+ 840 022f 11       		.uleb128 0x11
+ 841 0230 F7010000 		.4byte	.LASF25
+ 842 0234 01       		.byte	0x1
+ 843 0235 A4       		.byte	0xa4
+ 844 0236 93000000 		.4byte	0x93
+ 845 023a 02       		.uleb128 0x2
+ 846 023b 91       		.byte	0x91
+ 847 023c 6C       		.sleb128 -20
+ 848 023d 11       		.uleb128 0x11
+ 849 023e CF000000 		.4byte	.LASF28
+ 850 0242 01       		.byte	0x1
+ 851 0243 A4       		.byte	0xa4
+ 852 0244 7D000000 		.4byte	0x7d
+ 853 0248 02       		.uleb128 0x2
+ 854 0249 91       		.byte	0x91
+ 855 024a 68       		.sleb128 -24
+ 856 024b 11       		.uleb128 0x11
+ 857 024c E9010000 		.4byte	.LASF31
+ 858 0250 01       		.byte	0x1
+ 859 0251 A4       		.byte	0xa4
+ 860 0252 53000000 		.4byte	0x53
+ 861 0256 02       		.uleb128 0x2
+ 862 0257 91       		.byte	0x91
+ 863 0258 64       		.sleb128 -28
+ 864 0259 12       		.uleb128 0x12
+ 865 025a C8000000 		.4byte	.LASF18
+ 866 025e 01       		.byte	0x1
+ 867 025f A6       		.byte	0xa6
+ 868 0260 A9000000 		.4byte	0xa9
+ 869 0264 02       		.uleb128 0x2
+ 870 0265 91       		.byte	0x91
+ 871 0266 77       		.sleb128 -9
+ 872 0267 12       		.uleb128 0x12
+ 873 0268 D5000000 		.4byte	.LASF29
+ 874 026c 01       		.byte	0x1
+ 875 026d A7       		.byte	0xa7
+ 876 026e 33010000 		.4byte	0x133
+ 877 0272 02       		.uleb128 0x2
+ 878 0273 91       		.byte	0x91
+ 879 0274 70       		.sleb128 -16
+ 880 0275 00       		.byte	0
+ 881 0276 13       		.uleb128 0x13
+ 882 0277 34020000 		.4byte	.LASF43
+ 883 027b 01       		.byte	0x1
+ 884 027c CB       		.byte	0xcb
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 21
+
+
+ 885 027d 18010000 		.4byte	0x118
+ 886 0281 00000000 		.4byte	.LFB69
+ 887 0285 18010000 		.4byte	.LFE69-.LFB69
+ 888 0289 01       		.uleb128 0x1
+ 889 028a 9C       		.byte	0x9c
+ 890 028b BD020000 		.4byte	0x2bd
+ 891 028f 12       		.uleb128 0x12
+ 892 0290 98010000 		.4byte	.LASF32
+ 893 0294 01       		.byte	0x1
+ 894 0295 CD       		.byte	0xcd
+ 895 0296 18010000 		.4byte	0x118
+ 896 029a 03       		.uleb128 0x3
+ 897 029b 91       		.byte	0x91
+ 898 029c E47C     		.sleb128 -412
+ 899 029e 12       		.uleb128 0x12
+ 900 029f E1000000 		.4byte	.LASF33
+ 901 02a3 01       		.byte	0x1
+ 902 02a4 D1       		.byte	0xd1
+ 903 02a5 BD020000 		.4byte	0x2bd
+ 904 02a9 03       		.uleb128 0x3
+ 905 02aa 91       		.byte	0x91
+ 906 02ab D87C     		.sleb128 -424
+ 907 02ad 12       		.uleb128 0x12
+ 908 02ae F7010000 		.4byte	.LASF25
+ 909 02b2 01       		.byte	0x1
+ 910 02b3 D2       		.byte	0xd2
+ 911 02b4 CD020000 		.4byte	0x2cd
+ 912 02b8 03       		.uleb128 0x3
+ 913 02b9 91       		.byte	0x91
+ 914 02ba CC7C     		.sleb128 -436
+ 915 02bc 00       		.byte	0
+ 916 02bd 0C       		.uleb128 0xc
+ 917 02be 8C000000 		.4byte	0x8c
+ 918 02c2 CD020000 		.4byte	0x2cd
+ 919 02c6 0D       		.uleb128 0xd
+ 920 02c7 7F000000 		.4byte	0x7f
+ 921 02cb 09       		.byte	0x9
+ 922 02cc 00       		.byte	0
+ 923 02cd 0C       		.uleb128 0xc
+ 924 02ce 8C000000 		.4byte	0x8c
+ 925 02d2 DD020000 		.4byte	0x2dd
+ 926 02d6 0D       		.uleb128 0xd
+ 927 02d7 7F000000 		.4byte	0x7f
+ 928 02db 08       		.byte	0x8
+ 929 02dc 00       		.byte	0
+ 930 02dd 14       		.uleb128 0x14
+ 931 02de 73010000 		.4byte	.LASF34
+ 932 02e2 07       		.byte	0x7
+ 933 02e3 1207     		.2byte	0x712
+ 934 02e5 E9020000 		.4byte	0x2e9
+ 935 02e9 15       		.uleb128 0x15
+ 936 02ea 9E000000 		.4byte	0x9e
+ 937 02ee 16       		.uleb128 0x16
+ 938 02ef B0000000 		.4byte	.LASF35
+ 939 02f3 01       		.byte	0x1
+ 940 02f4 18       		.byte	0x18
+ 941 02f5 BD020000 		.4byte	0x2bd
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 22
+
+
+ 942 02f9 05       		.uleb128 0x5
+ 943 02fa 03       		.byte	0x3
+ 944 02fb 00000000 		.4byte	SD_dir
+ 945 02ff 0C       		.uleb128 0xc
+ 946 0300 8C000000 		.4byte	0x8c
+ 947 0304 10030000 		.4byte	0x310
+ 948 0308 17       		.uleb128 0x17
+ 949 0309 7F000000 		.4byte	0x7f
+ 950 030d B70B     		.2byte	0xbb7
+ 951 030f 00       		.byte	0
+ 952 0310 16       		.uleb128 0x16
+ 953 0311 2F010000 		.4byte	.LASF36
+ 954 0315 01       		.byte	0x1
+ 955 0316 19       		.byte	0x19
+ 956 0317 FF020000 		.4byte	0x2ff
+ 957 031b 05       		.uleb128 0x5
+ 958 031c 03       		.byte	0x3
+ 959 031d 00000000 		.4byte	SD_body
+ 960 0321 0C       		.uleb128 0xc
+ 961 0322 8C000000 		.4byte	0x8c
+ 962 0326 31030000 		.4byte	0x331
+ 963 032a 0D       		.uleb128 0xd
+ 964 032b 7F000000 		.4byte	0x7f
+ 965 032f 1D       		.byte	0x1d
+ 966 0330 00       		.byte	0
+ 967 0331 16       		.uleb128 0x16
+ 968 0332 0E000000 		.4byte	.LASF37
+ 969 0336 01       		.byte	0x1
+ 970 0337 1A       		.byte	0x1a
+ 971 0338 21030000 		.4byte	0x321
+ 972 033c 05       		.uleb128 0x5
+ 973 033d 03       		.byte	0x3
+ 974 033e 00000000 		.4byte	SD_filename
+ 975 0342 0C       		.uleb128 0xc
+ 976 0343 8C000000 		.4byte	0x8c
+ 977 0347 52030000 		.4byte	0x352
+ 978 034b 0D       		.uleb128 0xd
+ 979 034c 7F000000 		.4byte	0x7f
+ 980 0350 04       		.byte	0x4
+ 981 0351 00       		.byte	0
+ 982 0352 16       		.uleb128 0x16
+ 983 0353 4D020000 		.4byte	.LASF38
+ 984 0357 01       		.byte	0x1
+ 985 0358 1B       		.byte	0x1b
+ 986 0359 42030000 		.4byte	0x342
+ 987 035d 05       		.uleb128 0x5
+ 988 035e 03       		.byte	0x3
+ 989 035f 00000000 		.4byte	SD_filemode
+ 990 0363 00       		.byte	0
+ 991              		.section	.debug_abbrev,"",%progbits
+ 992              	.Ldebug_abbrev0:
+ 993 0000 01       		.uleb128 0x1
+ 994 0001 11       		.uleb128 0x11
+ 995 0002 01       		.byte	0x1
+ 996 0003 25       		.uleb128 0x25
+ 997 0004 0E       		.uleb128 0xe
+ 998 0005 13       		.uleb128 0x13
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 23
+
+
+ 999 0006 0B       		.uleb128 0xb
+ 1000 0007 03       		.uleb128 0x3
+ 1001 0008 0E       		.uleb128 0xe
+ 1002 0009 1B       		.uleb128 0x1b
+ 1003 000a 0E       		.uleb128 0xe
+ 1004 000b 55       		.uleb128 0x55
+ 1005 000c 17       		.uleb128 0x17
+ 1006 000d 11       		.uleb128 0x11
+ 1007 000e 01       		.uleb128 0x1
+ 1008 000f 10       		.uleb128 0x10
+ 1009 0010 17       		.uleb128 0x17
+ 1010 0011 00       		.byte	0
+ 1011 0012 00       		.byte	0
+ 1012 0013 02       		.uleb128 0x2
+ 1013 0014 24       		.uleb128 0x24
+ 1014 0015 00       		.byte	0
+ 1015 0016 0B       		.uleb128 0xb
+ 1016 0017 0B       		.uleb128 0xb
+ 1017 0018 3E       		.uleb128 0x3e
+ 1018 0019 0B       		.uleb128 0xb
+ 1019 001a 03       		.uleb128 0x3
+ 1020 001b 0E       		.uleb128 0xe
+ 1021 001c 00       		.byte	0
+ 1022 001d 00       		.byte	0
+ 1023 001e 03       		.uleb128 0x3
+ 1024 001f 16       		.uleb128 0x16
+ 1025 0020 00       		.byte	0
+ 1026 0021 03       		.uleb128 0x3
+ 1027 0022 0E       		.uleb128 0xe
+ 1028 0023 3A       		.uleb128 0x3a
+ 1029 0024 0B       		.uleb128 0xb
+ 1030 0025 3B       		.uleb128 0x3b
+ 1031 0026 0B       		.uleb128 0xb
+ 1032 0027 49       		.uleb128 0x49
+ 1033 0028 13       		.uleb128 0x13
+ 1034 0029 00       		.byte	0
+ 1035 002a 00       		.byte	0
+ 1036 002b 04       		.uleb128 0x4
+ 1037 002c 24       		.uleb128 0x24
+ 1038 002d 00       		.byte	0
+ 1039 002e 0B       		.uleb128 0xb
+ 1040 002f 0B       		.uleb128 0xb
+ 1041 0030 3E       		.uleb128 0x3e
+ 1042 0031 0B       		.uleb128 0xb
+ 1043 0032 03       		.uleb128 0x3
+ 1044 0033 08       		.uleb128 0x8
+ 1045 0034 00       		.byte	0
+ 1046 0035 00       		.byte	0
+ 1047 0036 05       		.uleb128 0x5
+ 1048 0037 0F       		.uleb128 0xf
+ 1049 0038 00       		.byte	0
+ 1050 0039 0B       		.uleb128 0xb
+ 1051 003a 0B       		.uleb128 0xb
+ 1052 003b 00       		.byte	0
+ 1053 003c 00       		.byte	0
+ 1054 003d 06       		.uleb128 0x6
+ 1055 003e 0F       		.uleb128 0xf
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 24
+
+
+ 1056 003f 00       		.byte	0
+ 1057 0040 0B       		.uleb128 0xb
+ 1058 0041 0B       		.uleb128 0xb
+ 1059 0042 49       		.uleb128 0x49
+ 1060 0043 13       		.uleb128 0x13
+ 1061 0044 00       		.byte	0
+ 1062 0045 00       		.byte	0
+ 1063 0046 07       		.uleb128 0x7
+ 1064 0047 26       		.uleb128 0x26
+ 1065 0048 00       		.byte	0
+ 1066 0049 49       		.uleb128 0x49
+ 1067 004a 13       		.uleb128 0x13
+ 1068 004b 00       		.byte	0
+ 1069 004c 00       		.byte	0
+ 1070 004d 08       		.uleb128 0x8
+ 1071 004e 16       		.uleb128 0x16
+ 1072 004f 00       		.byte	0
+ 1073 0050 03       		.uleb128 0x3
+ 1074 0051 0E       		.uleb128 0xe
+ 1075 0052 3A       		.uleb128 0x3a
+ 1076 0053 0B       		.uleb128 0xb
+ 1077 0054 3B       		.uleb128 0x3b
+ 1078 0055 05       		.uleb128 0x5
+ 1079 0056 49       		.uleb128 0x49
+ 1080 0057 13       		.uleb128 0x13
+ 1081 0058 00       		.byte	0
+ 1082 0059 00       		.byte	0
+ 1083 005a 09       		.uleb128 0x9
+ 1084 005b 26       		.uleb128 0x26
+ 1085 005c 00       		.byte	0
+ 1086 005d 00       		.byte	0
+ 1087 005e 00       		.byte	0
+ 1088 005f 0A       		.uleb128 0xa
+ 1089 0060 13       		.uleb128 0x13
+ 1090 0061 01       		.byte	0x1
+ 1091 0062 0B       		.uleb128 0xb
+ 1092 0063 05       		.uleb128 0x5
+ 1093 0064 3A       		.uleb128 0x3a
+ 1094 0065 0B       		.uleb128 0xb
+ 1095 0066 3B       		.uleb128 0x3b
+ 1096 0067 0B       		.uleb128 0xb
+ 1097 0068 01       		.uleb128 0x1
+ 1098 0069 13       		.uleb128 0x13
+ 1099 006a 00       		.byte	0
+ 1100 006b 00       		.byte	0
+ 1101 006c 0B       		.uleb128 0xb
+ 1102 006d 0D       		.uleb128 0xd
+ 1103 006e 00       		.byte	0
+ 1104 006f 03       		.uleb128 0x3
+ 1105 0070 0E       		.uleb128 0xe
+ 1106 0071 3A       		.uleb128 0x3a
+ 1107 0072 0B       		.uleb128 0xb
+ 1108 0073 3B       		.uleb128 0x3b
+ 1109 0074 0B       		.uleb128 0xb
+ 1110 0075 49       		.uleb128 0x49
+ 1111 0076 13       		.uleb128 0x13
+ 1112 0077 38       		.uleb128 0x38
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 25
+
+
+ 1113 0078 0B       		.uleb128 0xb
+ 1114 0079 00       		.byte	0
+ 1115 007a 00       		.byte	0
+ 1116 007b 0C       		.uleb128 0xc
+ 1117 007c 01       		.uleb128 0x1
+ 1118 007d 01       		.byte	0x1
+ 1119 007e 49       		.uleb128 0x49
+ 1120 007f 13       		.uleb128 0x13
+ 1121 0080 01       		.uleb128 0x1
+ 1122 0081 13       		.uleb128 0x13
+ 1123 0082 00       		.byte	0
+ 1124 0083 00       		.byte	0
+ 1125 0084 0D       		.uleb128 0xd
+ 1126 0085 21       		.uleb128 0x21
+ 1127 0086 00       		.byte	0
+ 1128 0087 49       		.uleb128 0x49
+ 1129 0088 13       		.uleb128 0x13
+ 1130 0089 2F       		.uleb128 0x2f
+ 1131 008a 0B       		.uleb128 0xb
+ 1132 008b 00       		.byte	0
+ 1133 008c 00       		.byte	0
+ 1134 008d 0E       		.uleb128 0xe
+ 1135 008e 13       		.uleb128 0x13
+ 1136 008f 00       		.byte	0
+ 1137 0090 03       		.uleb128 0x3
+ 1138 0091 0E       		.uleb128 0xe
+ 1139 0092 3C       		.uleb128 0x3c
+ 1140 0093 19       		.uleb128 0x19
+ 1141 0094 00       		.byte	0
+ 1142 0095 00       		.byte	0
+ 1143 0096 0F       		.uleb128 0xf
+ 1144 0097 2E       		.uleb128 0x2e
+ 1145 0098 00       		.byte	0
+ 1146 0099 3F       		.uleb128 0x3f
+ 1147 009a 19       		.uleb128 0x19
+ 1148 009b 03       		.uleb128 0x3
+ 1149 009c 0E       		.uleb128 0xe
+ 1150 009d 3A       		.uleb128 0x3a
+ 1151 009e 0B       		.uleb128 0xb
+ 1152 009f 3B       		.uleb128 0x3b
+ 1153 00a0 0B       		.uleb128 0xb
+ 1154 00a1 11       		.uleb128 0x11
+ 1155 00a2 01       		.uleb128 0x1
+ 1156 00a3 12       		.uleb128 0x12
+ 1157 00a4 06       		.uleb128 0x6
+ 1158 00a5 40       		.uleb128 0x40
+ 1159 00a6 18       		.uleb128 0x18
+ 1160 00a7 9642     		.uleb128 0x2116
+ 1161 00a9 19       		.uleb128 0x19
+ 1162 00aa 00       		.byte	0
+ 1163 00ab 00       		.byte	0
+ 1164 00ac 10       		.uleb128 0x10
+ 1165 00ad 2E       		.uleb128 0x2e
+ 1166 00ae 01       		.byte	0x1
+ 1167 00af 3F       		.uleb128 0x3f
+ 1168 00b0 19       		.uleb128 0x19
+ 1169 00b1 03       		.uleb128 0x3
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 26
+
+
+ 1170 00b2 0E       		.uleb128 0xe
+ 1171 00b3 3A       		.uleb128 0x3a
+ 1172 00b4 0B       		.uleb128 0xb
+ 1173 00b5 3B       		.uleb128 0x3b
+ 1174 00b6 0B       		.uleb128 0xb
+ 1175 00b7 27       		.uleb128 0x27
+ 1176 00b8 19       		.uleb128 0x19
+ 1177 00b9 49       		.uleb128 0x49
+ 1178 00ba 13       		.uleb128 0x13
+ 1179 00bb 11       		.uleb128 0x11
+ 1180 00bc 01       		.uleb128 0x1
+ 1181 00bd 12       		.uleb128 0x12
+ 1182 00be 06       		.uleb128 0x6
+ 1183 00bf 40       		.uleb128 0x40
+ 1184 00c0 18       		.uleb128 0x18
+ 1185 00c1 9642     		.uleb128 0x2116
+ 1186 00c3 19       		.uleb128 0x19
+ 1187 00c4 01       		.uleb128 0x1
+ 1188 00c5 13       		.uleb128 0x13
+ 1189 00c6 00       		.byte	0
+ 1190 00c7 00       		.byte	0
+ 1191 00c8 11       		.uleb128 0x11
+ 1192 00c9 05       		.uleb128 0x5
+ 1193 00ca 00       		.byte	0
+ 1194 00cb 03       		.uleb128 0x3
+ 1195 00cc 0E       		.uleb128 0xe
+ 1196 00cd 3A       		.uleb128 0x3a
+ 1197 00ce 0B       		.uleb128 0xb
+ 1198 00cf 3B       		.uleb128 0x3b
+ 1199 00d0 0B       		.uleb128 0xb
+ 1200 00d1 49       		.uleb128 0x49
+ 1201 00d2 13       		.uleb128 0x13
+ 1202 00d3 02       		.uleb128 0x2
+ 1203 00d4 18       		.uleb128 0x18
+ 1204 00d5 00       		.byte	0
+ 1205 00d6 00       		.byte	0
+ 1206 00d7 12       		.uleb128 0x12
+ 1207 00d8 34       		.uleb128 0x34
+ 1208 00d9 00       		.byte	0
+ 1209 00da 03       		.uleb128 0x3
+ 1210 00db 0E       		.uleb128 0xe
+ 1211 00dc 3A       		.uleb128 0x3a
+ 1212 00dd 0B       		.uleb128 0xb
+ 1213 00de 3B       		.uleb128 0x3b
+ 1214 00df 0B       		.uleb128 0xb
+ 1215 00e0 49       		.uleb128 0x49
+ 1216 00e1 13       		.uleb128 0x13
+ 1217 00e2 02       		.uleb128 0x2
+ 1218 00e3 18       		.uleb128 0x18
+ 1219 00e4 00       		.byte	0
+ 1220 00e5 00       		.byte	0
+ 1221 00e6 13       		.uleb128 0x13
+ 1222 00e7 2E       		.uleb128 0x2e
+ 1223 00e8 01       		.byte	0x1
+ 1224 00e9 3F       		.uleb128 0x3f
+ 1225 00ea 19       		.uleb128 0x19
+ 1226 00eb 03       		.uleb128 0x3
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 27
+
+
+ 1227 00ec 0E       		.uleb128 0xe
+ 1228 00ed 3A       		.uleb128 0x3a
+ 1229 00ee 0B       		.uleb128 0xb
+ 1230 00ef 3B       		.uleb128 0x3b
+ 1231 00f0 0B       		.uleb128 0xb
+ 1232 00f1 49       		.uleb128 0x49
+ 1233 00f2 13       		.uleb128 0x13
+ 1234 00f3 11       		.uleb128 0x11
+ 1235 00f4 01       		.uleb128 0x1
+ 1236 00f5 12       		.uleb128 0x12
+ 1237 00f6 06       		.uleb128 0x6
+ 1238 00f7 40       		.uleb128 0x40
+ 1239 00f8 18       		.uleb128 0x18
+ 1240 00f9 9642     		.uleb128 0x2116
+ 1241 00fb 19       		.uleb128 0x19
+ 1242 00fc 01       		.uleb128 0x1
+ 1243 00fd 13       		.uleb128 0x13
+ 1244 00fe 00       		.byte	0
+ 1245 00ff 00       		.byte	0
+ 1246 0100 14       		.uleb128 0x14
+ 1247 0101 34       		.uleb128 0x34
+ 1248 0102 00       		.byte	0
+ 1249 0103 03       		.uleb128 0x3
+ 1250 0104 0E       		.uleb128 0xe
+ 1251 0105 3A       		.uleb128 0x3a
+ 1252 0106 0B       		.uleb128 0xb
+ 1253 0107 3B       		.uleb128 0x3b
+ 1254 0108 05       		.uleb128 0x5
+ 1255 0109 49       		.uleb128 0x49
+ 1256 010a 13       		.uleb128 0x13
+ 1257 010b 3F       		.uleb128 0x3f
+ 1258 010c 19       		.uleb128 0x19
+ 1259 010d 3C       		.uleb128 0x3c
+ 1260 010e 19       		.uleb128 0x19
+ 1261 010f 00       		.byte	0
+ 1262 0110 00       		.byte	0
+ 1263 0111 15       		.uleb128 0x15
+ 1264 0112 35       		.uleb128 0x35
+ 1265 0113 00       		.byte	0
+ 1266 0114 49       		.uleb128 0x49
+ 1267 0115 13       		.uleb128 0x13
+ 1268 0116 00       		.byte	0
+ 1269 0117 00       		.byte	0
+ 1270 0118 16       		.uleb128 0x16
+ 1271 0119 34       		.uleb128 0x34
+ 1272 011a 00       		.byte	0
+ 1273 011b 03       		.uleb128 0x3
+ 1274 011c 0E       		.uleb128 0xe
+ 1275 011d 3A       		.uleb128 0x3a
+ 1276 011e 0B       		.uleb128 0xb
+ 1277 011f 3B       		.uleb128 0x3b
+ 1278 0120 0B       		.uleb128 0xb
+ 1279 0121 49       		.uleb128 0x49
+ 1280 0122 13       		.uleb128 0x13
+ 1281 0123 3F       		.uleb128 0x3f
+ 1282 0124 19       		.uleb128 0x19
+ 1283 0125 02       		.uleb128 0x2
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 28
+
+
+ 1284 0126 18       		.uleb128 0x18
+ 1285 0127 00       		.byte	0
+ 1286 0128 00       		.byte	0
+ 1287 0129 17       		.uleb128 0x17
+ 1288 012a 21       		.uleb128 0x21
+ 1289 012b 00       		.byte	0
+ 1290 012c 49       		.uleb128 0x49
+ 1291 012d 13       		.uleb128 0x13
+ 1292 012e 2F       		.uleb128 0x2f
+ 1293 012f 05       		.uleb128 0x5
+ 1294 0130 00       		.byte	0
+ 1295 0131 00       		.byte	0
+ 1296 0132 00       		.byte	0
+ 1297              		.section	.debug_aranges,"",%progbits
+ 1298 0000 44000000 		.4byte	0x44
+ 1299 0004 0200     		.2byte	0x2
+ 1300 0006 00000000 		.4byte	.Ldebug_info0
+ 1301 000a 04       		.byte	0x4
+ 1302 000b 00       		.byte	0
+ 1303 000c 0000     		.2byte	0
+ 1304 000e 0000     		.2byte	0
+ 1305 0010 00000000 		.4byte	.LFB64
+ 1306 0014 10000000 		.4byte	.LFE64-.LFB64
+ 1307 0018 00000000 		.4byte	.LFB65
+ 1308 001c 4C000000 		.4byte	.LFE65-.LFB65
+ 1309 0020 00000000 		.4byte	.LFB66
+ 1310 0024 38000000 		.4byte	.LFE66-.LFB66
+ 1311 0028 00000000 		.4byte	.LFB67
+ 1312 002c 78000000 		.4byte	.LFE67-.LFB67
+ 1313 0030 00000000 		.4byte	.LFB68
+ 1314 0034 74000000 		.4byte	.LFE68-.LFB68
+ 1315 0038 00000000 		.4byte	.LFB69
+ 1316 003c 18010000 		.4byte	.LFE69-.LFB69
+ 1317 0040 00000000 		.4byte	0
+ 1318 0044 00000000 		.4byte	0
+ 1319              		.section	.debug_ranges,"",%progbits
+ 1320              	.Ldebug_ranges0:
+ 1321 0000 00000000 		.4byte	.LFB64
+ 1322 0004 10000000 		.4byte	.LFE64
+ 1323 0008 00000000 		.4byte	.LFB65
+ 1324 000c 4C000000 		.4byte	.LFE65
+ 1325 0010 00000000 		.4byte	.LFB66
+ 1326 0014 38000000 		.4byte	.LFE66
+ 1327 0018 00000000 		.4byte	.LFB67
+ 1328 001c 78000000 		.4byte	.LFE67
+ 1329 0020 00000000 		.4byte	.LFB68
+ 1330 0024 74000000 		.4byte	.LFE68
+ 1331 0028 00000000 		.4byte	.LFB69
+ 1332 002c 18010000 		.4byte	.LFE69
+ 1333 0030 00000000 		.4byte	0
+ 1334 0034 00000000 		.4byte	0
+ 1335              		.section	.debug_line,"",%progbits
+ 1336              	.Ldebug_line0:
+ 1337 0000 33020000 		.section	.debug_str,"MS",%progbits,1
+ 1337      02008D01 
+ 1337      00000201 
+ 1337      FB0E0D00 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 29
+
+
+ 1337      01010101 
+ 1338              	.LASF6:
+ 1339 0000 6C6F6E67 		.ascii	"long long int\000"
+ 1339      206C6F6E 
+ 1339      6720696E 
+ 1339      7400
+ 1340              	.LASF37:
+ 1341 000e 53445F66 		.ascii	"SD_filename\000"
+ 1341      696C656E 
+ 1341      616D6500 
+ 1342              	.LASF42:
+ 1343 001a 53445F69 		.ascii	"SD_init\000"
+ 1343      6E697400 
+ 1344              	.LASF39:
+ 1345 0022 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1345      43313120 
+ 1345      352E342E 
+ 1345      31203230 
+ 1345      31363036 
+ 1346 0055 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1346      20726576 
+ 1346      6973696F 
+ 1346      6E203233 
+ 1346      37373135 
+ 1347 0088 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1347      66756E63 
+ 1347      74696F6E 
+ 1347      2D736563 
+ 1347      74696F6E 
+ 1348              	.LASF35:
+ 1349 00b0 53445F64 		.ascii	"SD_dir\000"
+ 1349      697200
+ 1350              	.LASF12:
+ 1351 00b7 5F5F696E 		.ascii	"__int32_t\000"
+ 1351      7433325F 
+ 1351      7400
+ 1352              	.LASF20:
+ 1353 00c1 74657374 		.ascii	"test_t\000"
+ 1353      5F7400
+ 1354              	.LASF18:
+ 1355 00c8 73746174 		.ascii	"status\000"
+ 1355      757300
+ 1356              	.LASF28:
+ 1357 00cf 70446174 		.ascii	"pData\000"
+ 1357      6100
+ 1358              	.LASF29:
+ 1359 00d5 7046696C 		.ascii	"pFile\000"
+ 1359      6500
+ 1360              	.LASF15:
+ 1361 00db 666C6F61 		.ascii	"float\000"
+ 1361      7400
+ 1362              	.LASF33:
+ 1363 00e1 64617461 		.ascii	"data\000"
+ 1363      00
+ 1364              	.LASF41:
+ 1365 00e6 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
+ 1365      73657273 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 30
+
+
+ 1365      5C626B5C 
+ 1365      446F6375 
+ 1365      6D656E74 
+ 1366 0113 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
+ 1366      6E6F746F 
+ 1366      72694F53 
+ 1366      5C6E6F74 
+ 1366      6F72694F 
+ 1367              	.LASF36:
+ 1368 012f 53445F62 		.ascii	"SD_body\000"
+ 1368      6F647900 
+ 1369              	.LASF1:
+ 1370 0137 756E7369 		.ascii	"unsigned char\000"
+ 1370      676E6564 
+ 1370      20636861 
+ 1370      7200
+ 1371              	.LASF24:
+ 1372 0145 6469725F 		.ascii	"dir_name\000"
+ 1372      6E616D65 
+ 1372      00
+ 1373              	.LASF5:
+ 1374 014e 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1374      20756E73 
+ 1374      69676E65 
+ 1374      6420696E 
+ 1374      7400
+ 1375              	.LASF3:
+ 1376 0160 73686F72 		.ascii	"short unsigned int\000"
+ 1376      7420756E 
+ 1376      7369676E 
+ 1376      65642069 
+ 1376      6E7400
+ 1377              	.LASF34:
+ 1378 0173 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1378      52784275 
+ 1378      66666572 
+ 1378      00
+ 1379              	.LASF16:
+ 1380 0180 646F7562 		.ascii	"double\000"
+ 1380      6C6500
+ 1381              	.LASF26:
+ 1382 0187 53445F77 		.ascii	"SD_write\000"
+ 1382      72697465 
+ 1382      00
+ 1383              	.LASF30:
+ 1384 0190 53445F72 		.ascii	"SD_read\000"
+ 1384      65616400 
+ 1385              	.LASF32:
+ 1386 0198 74657374 		.ascii	"test\000"
+ 1386      00
+ 1387              	.LASF8:
+ 1388 019d 756E7369 		.ascii	"unsigned int\000"
+ 1388      676E6564 
+ 1388      20696E74 
+ 1388      00
+ 1389              	.LASF27:
+ 1390 01aa 704D6F64 		.ascii	"pMode\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 31
+
+
+ 1390      6500
+ 1391              	.LASF7:
+ 1392 01b0 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1392      206C6F6E 
+ 1392      6720756E 
+ 1392      7369676E 
+ 1392      65642069 
+ 1393              	.LASF19:
+ 1394 01c7 72656173 		.ascii	"reason\000"
+ 1394      6F6E00
+ 1395              	.LASF21:
+ 1396 01ce 46535F46 		.ascii	"FS_FILE\000"
+ 1396      494C4500 
+ 1397              	.LASF10:
+ 1398 01d6 73697A65 		.ascii	"sizetype\000"
+ 1398      74797065 
+ 1398      00
+ 1399              	.LASF40:
+ 1400 01df 73645F63 		.ascii	"sd_card.c\000"
+ 1400      6172642E 
+ 1400      6300
+ 1401              	.LASF31:
+ 1402 01e9 4E756D42 		.ascii	"NumBytes\000"
+ 1402      79746573 
+ 1402      00
+ 1403              	.LASF11:
+ 1404 01f2 63686172 		.ascii	"char\000"
+ 1404      00
+ 1405              	.LASF25:
+ 1406 01f7 66696C65 		.ascii	"fileName\000"
+ 1406      4E616D65 
+ 1406      00
+ 1407              	.LASF13:
+ 1408 0200 696E7433 		.ascii	"int32_t\000"
+ 1408      325F7400 
+ 1409              	.LASF2:
+ 1410 0208 73686F72 		.ascii	"short int\000"
+ 1410      7420696E 
+ 1410      7400
+ 1411              	.LASF22:
+ 1412 0212 53445F6D 		.ascii	"SD_mkdir\000"
+ 1412      6B646972 
+ 1412      00
+ 1413              	.LASF14:
+ 1414 021b 75696E74 		.ascii	"uint8\000"
+ 1414      3800
+ 1415              	.LASF17:
+ 1416 0221 74657374 		.ascii	"test_name\000"
+ 1416      5F6E616D 
+ 1416      6500
+ 1417              	.LASF4:
+ 1418 022b 6C6F6E67 		.ascii	"long int\000"
+ 1418      20696E74 
+ 1418      00
+ 1419              	.LASF43:
+ 1420 0234 53445F63 		.ascii	"SD_card_test\000"
+ 1420      6172645F 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccDTYU20.s 			page 32
+
+
+ 1420      74657374 
+ 1420      00
+ 1421              	.LASF9:
+ 1422 0241 6C6F6E67 		.ascii	"long double\000"
+ 1422      20646F75 
+ 1422      626C6500 
+ 1423              	.LASF38:
+ 1424 024d 53445F66 		.ascii	"SD_filemode\000"
+ 1424      696C656D 
+ 1424      6F646500 
+ 1425              	.LASF0:
+ 1426 0259 7369676E 		.ascii	"signed char\000"
+ 1426      65642063 
+ 1426      68617200 
+ 1427              	.LASF23:
+ 1428 0265 53445F72 		.ascii	"SD_rmfile\000"
+ 1428      6D66696C 
+ 1428      6500
+ 1429              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

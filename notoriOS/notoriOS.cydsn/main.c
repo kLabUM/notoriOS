@@ -12,6 +12,7 @@
 #include "project.h"
 #include "notoriOS.h"
 #include "level_sensor.h"
+#include "sd_card.h"
 
 
 //global variables
@@ -50,6 +51,10 @@ void ReadyOrNot()
     timeToMeasure = 0;
     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     //timeToMeasure = 0;
+    
+    //initilized SD card
+    SD_init();
+    
     
 }
 
@@ -170,7 +175,13 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 
 void test_components(){
 
-    test_t t_level_sensor = level_sensor_test();     
+    test_t t_level_sensor = level_sensor_test();//test level sensor  
+    test_t t_sd_card = SD_card_test();
+  
+    //test modem
+    //test SD card
+    //analog: test battery voltage, solar voltage, and solar current
+      
   
 }
 

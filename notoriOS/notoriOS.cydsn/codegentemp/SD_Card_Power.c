@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Power_SD_Card.c  
+* File Name: SD_Card_Power.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Power_SD_Card.h"
+#include "SD_Card_Power.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Power_SD_Card__PORT == 15 && ((Power_SD_Card__MASK & 0xC0) != 0))
+	 SD_Card_Power__PORT == 15 && ((SD_Card_Power__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Power_SD_Card_Write
+* Function Name: SD_Card_Power_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Power_SD_Card_SUT.c usage_Power_SD_Card_Write
+*  \snippet SD_Card_Power_SUT.c usage_SD_Card_Power_Write
 *******************************************************************************/
-void Power_SD_Card_Write(uint8 value)
+void SD_Card_Power_Write(uint8 value)
 {
-    uint8 staticBits = (Power_SD_Card_DR & (uint8)(~Power_SD_Card_MASK));
-    Power_SD_Card_DR = staticBits | ((uint8)(value << Power_SD_Card_SHIFT) & Power_SD_Card_MASK);
+    uint8 staticBits = (SD_Card_Power_DR & (uint8)(~SD_Card_Power_MASK));
+    SD_Card_Power_DR = staticBits | ((uint8)(value << SD_Card_Power_SHIFT) & SD_Card_Power_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Power_SD_Card_SetDriveMode
+* Function Name: SD_Card_Power_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Power_SD_Card_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Power_SD_Card_SUT.c usage_Power_SD_Card_SetDriveMode
+*  \snippet SD_Card_Power_SUT.c usage_SD_Card_Power_SetDriveMode
 *******************************************************************************/
-void Power_SD_Card_SetDriveMode(uint8 mode)
+void SD_Card_Power_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Power_SD_Card_0, mode);
+	CyPins_SetPinDriveMode(SD_Card_Power_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Power_SD_Card_Read
+* Function Name: SD_Card_Power_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Power_SD_Card_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Power_SD_Card_SUT.c usage_Power_SD_Card_Read  
+*  \snippet SD_Card_Power_SUT.c usage_SD_Card_Power_Read  
 *******************************************************************************/
-uint8 Power_SD_Card_Read(void)
+uint8 SD_Card_Power_Read(void)
 {
-    return (Power_SD_Card_PS & Power_SD_Card_MASK) >> Power_SD_Card_SHIFT;
+    return (SD_Card_Power_PS & SD_Card_Power_MASK) >> SD_Card_Power_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Power_SD_Card_ReadDataReg
+* Function Name: SD_Card_Power_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Power_SD_Card_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Power_SD_Card_Read() API because the 
-* Power_SD_Card_ReadDataReg() reads the data register instead of the status 
+* preferred SD_Card_Power_Read() API because the 
+* SD_Card_Power_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Power_SD_Card_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Power_SD_Card_SUT.c usage_Power_SD_Card_ReadDataReg 
+*  \snippet SD_Card_Power_SUT.c usage_SD_Card_Power_ReadDataReg 
 *******************************************************************************/
-uint8 Power_SD_Card_ReadDataReg(void)
+uint8 SD_Card_Power_ReadDataReg(void)
 {
-    return (Power_SD_Card_DR & Power_SD_Card_MASK) >> Power_SD_Card_SHIFT;
+    return (SD_Card_Power_DR & SD_Card_Power_MASK) >> SD_Card_Power_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Power_SD_Card_INTSTAT) 
+#if defined(SD_Card_Power_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Power_SD_Card_SetInterruptMode
+    * Function Name: SD_Card_Power_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Power_SD_Card_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Power_SD_Card_INTR_ALL to configure the
+    *  component. Or you may use SD_Card_Power_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Power_SD_Card_0_INTR       (First pin in the list)
-    *  - Power_SD_Card_1_INTR       (Second pin in the list)
+    *  - SD_Card_Power_0_INTR       (First pin in the list)
+    *  - SD_Card_Power_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Power_SD_Card_INTR_ALL     (All pins in Pins component)
+    *  - SD_Card_Power_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Power_SD_Card_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Power_SD_Card_SUT.c usage_Power_SD_Card_SetInterruptMode
+    *  \snippet SD_Card_Power_SUT.c usage_SD_Card_Power_SetInterruptMode
     *******************************************************************************/
-    void Power_SD_Card_SetInterruptMode(uint16 position, uint16 mode)
+    void SD_Card_Power_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Power_SD_Card_0_INTR) != 0u) 
+		if((position & SD_Card_Power_0_INTR) != 0u) 
 		{ 
-			 Power_SD_Card_0_INTTYPE_REG = (uint8)mode; 
+			 SD_Card_Power_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Power_SD_Card_ClearInterrupt
+    * Function Name: SD_Card_Power_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Power_SD_Card_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Power_SD_Card_SUT.c usage_Power_SD_Card_ClearInterrupt
+    *  \snippet SD_Card_Power_SUT.c usage_SD_Card_Power_ClearInterrupt
     *******************************************************************************/
-    uint8 Power_SD_Card_ClearInterrupt(void)
+    uint8 SD_Card_Power_ClearInterrupt(void)
     {
-        return (Power_SD_Card_INTSTAT & Power_SD_Card_MASK) >> Power_SD_Card_SHIFT;
+        return (SD_Card_Power_INTSTAT & SD_Card_Power_MASK) >> SD_Card_Power_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

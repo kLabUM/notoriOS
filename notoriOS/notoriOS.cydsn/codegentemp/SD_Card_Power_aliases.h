@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Power_SD_Card.h  
+* File Name: SD_Card_Power.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Power_SD_Card_ALIASES_H) /* Pins Power_SD_Card_ALIASES_H */
-#define CY_PINS_Power_SD_Card_ALIASES_H
+#if !defined(CY_PINS_SD_Card_Power_ALIASES_H) /* Pins SD_Card_Power_ALIASES_H */
+#define CY_PINS_SD_Card_Power_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Power_SD_Card_0			(Power_SD_Card__0__PC)
-#define Power_SD_Card_0_INTR	((uint16)((uint16)0x0001u << Power_SD_Card__0__SHIFT))
+#define SD_Card_Power_0			(SD_Card_Power__0__PC)
+#define SD_Card_Power_0_INTR	((uint16)((uint16)0x0001u << SD_Card_Power__0__SHIFT))
 
-#define Power_SD_Card_INTR_ALL	 ((uint16)(Power_SD_Card_0_INTR))
+#define SD_Card_Power_INTR_ALL	 ((uint16)(SD_Card_Power_0_INTR))
 
-#endif /* End Pins Power_SD_Card_ALIASES_H */
+#endif /* End Pins SD_Card_Power_ALIASES_H */
 
 
 /* [] END OF FILE */
