@@ -25,6 +25,14 @@ extern void cyfitter_cfg(void);
 extern void SetAnalogRoutingPumps(uint8 enabled);
 extern void AMux_Set(uint8 channel);
 extern void AMux_Unset(uint8 channel);
+/* AMux__addrTable is an implementation detail of the AMux.
+   Code that depends on it may be incompatible with other versions
+   of PSoC Creator. */
+extern uint8 CYXDATA * const CYCODE AMux__addrTable[6];
+/* AMux__maskTable is an implementation detail of the AMux.
+   Code that depends on it may be incompatible with other versions
+   of PSoC Creator. */
+extern const uint8 CYCODE AMux__maskTable[6];
 extern void ADC_AMux_Set(uint8 channel);
 extern void ADC_AMux_Unset(uint8 channel);
 /* ADC_AMux__addrTable is an implementation detail of the AMux.

@@ -35,8 +35,6 @@
 #include "Clock_IMO.h"
 #include "Power_VDD4_aliases.h"
 #include "Power_VDD4.h"
-#include "Power_VBAT_Read_aliases.h"
-#include "Power_VBAT_Read.h"
 #include "AN_VBAT_aliases.h"
 #include "AN_VBAT.h"
 #include "Power_Modem_aliases.h"

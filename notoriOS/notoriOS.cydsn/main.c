@@ -180,6 +180,7 @@ void test_components(){
     test_t t_sd_card = SD_card_test();
     test_t t_voltages = voltages_test();
   
+    
     //test modem
     //test SD card
     //analog: test battery voltage, solar voltage, and solar current

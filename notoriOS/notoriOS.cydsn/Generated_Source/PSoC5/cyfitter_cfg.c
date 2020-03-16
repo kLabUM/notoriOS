@@ -148,7 +148,7 @@ static void CyClockStartupError(uint8 errorCode)
 }
 #endif
 
-#define CY_CFG_BASE_ADDR_COUNT 27u
+#define CY_CFG_BASE_ADDR_COUNT 26u
 CYPACKED typedef struct
 {
 	uint8 offset;
@@ -156,34 +156,31 @@ CYPACKED typedef struct
 } CYPACKED_ATTR cy_cfg_addrvalue_t;
 
 #define cy_cfg_addr_table ((const uint32 CYFAR *)0x48000000u)
-#define cy_cfg_data_table ((const cy_cfg_addrvalue_t CYFAR *)0x4800006Cu)
-
-/* UDB_1_2_1_CONFIG Address: CYDEV_UCFG_B0_P3_U0_BASE Size (bytes): 128 */
-#define BS_UDB_1_2_1_CONFIG_VAL ((const uint8 CYFAR *)0x4800039Cu)
+#define cy_cfg_data_table ((const cy_cfg_addrvalue_t CYFAR *)0x48000068u)
 
 /* UDB_1_1_0_CONFIG Address: CYDEV_UCFG_B1_P3_U1_BASE Size (bytes): 128 */
-#define BS_UDB_1_1_0_CONFIG_VAL ((const uint8 CYFAR *)0x4800041Cu)
+#define BS_UDB_1_1_0_CONFIG_VAL ((const uint8 CYFAR *)0x4800042Cu)
 
 /* IOPINS0_0 Address: CYREG_PRT0_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_0_VAL ((const uint8 CYFAR *)0x4800049Cu)
+#define BS_IOPINS0_0_VAL ((const uint8 CYFAR *)0x480004ACu)
 
 /* IOPINS0_7 Address: CYREG_PRT12_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_7_VAL ((const uint8 CYFAR *)0x480004A4u)
+#define BS_IOPINS0_7_VAL ((const uint8 CYFAR *)0x480004B4u)
 
 /* IOPINS0_8 Address: CYREG_PRT15_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_8_VAL ((const uint8 CYFAR *)0x480004ACu)
+#define BS_IOPINS0_8_VAL ((const uint8 CYFAR *)0x480004BCu)
 
 /* IOPINS0_1 Address: CYREG_PRT1_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_1_VAL ((const uint8 CYFAR *)0x480004B4u)
+#define BS_IOPINS0_1_VAL ((const uint8 CYFAR *)0x480004C4u)
 
 /* IOPINS0_2 Address: CYREG_PRT2_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_2_VAL ((const uint8 CYFAR *)0x480004BCu)
+#define BS_IOPINS0_2_VAL ((const uint8 CYFAR *)0x480004CCu)
 
 /* IOPINS0_3 Address: CYREG_PRT3_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_3_VAL ((const uint8 CYFAR *)0x480004C4u)
+#define BS_IOPINS0_3_VAL ((const uint8 CYFAR *)0x480004D4u)
 
 /* CYDEV_CLKDIST_ACFG0_CFG0 Address: CYREG_CLKDIST_ACFG0_CFG0 Size (bytes): 4 */
-#define BS_CYDEV_CLKDIST_ACFG0_CFG0_VAL ((const uint8 CYFAR *)0x480004CCu)
+#define BS_CYDEV_CLKDIST_ACFG0_CFG0_VAL ((const uint8 CYFAR *)0x480004DCu)
 
 
 /*******************************************************************************
@@ -331,7 +328,6 @@ static void AnalogSetDefault(void)
 	uint8 bg_xover_inl_trim = CY_GET_XTND_REG8((void CYFAR *)(CYREG_FLSHID_MFG_CFG_BG_XOVER_INL_TRIM + 1u));
 	CY_SET_XTND_REG8((void CYFAR *)(CYREG_BG_DFT0), (bg_xover_inl_trim & 0x07u));
 	CY_SET_XTND_REG8((void CYFAR *)(CYREG_BG_DFT1), ((bg_xover_inl_trim >> 4) & 0x0Fu));
-	CY_SET_XTND_REG8((void CYFAR *)CYREG_BUS_SW0, 0x20u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_PUMP_CR0, 0x44u);
 }
 
@@ -369,34 +365,21 @@ void SetAnalogRoutingPumps(uint8 enabled)
 
 
 #define CY_AMUX_UNUSED CYREG_BOOST_SR
-static uint8 CYXDATA * const CYCODE AMux__outerAddr[3] = {
-	(uint8 CYXDATA *)CYREG_PRT3_AG, 
-	(uint8 CYXDATA *)CYREG_PRT0_AG, 
-	(uint8 CYXDATA *)CYREG_PRT15_AG, 
+/* This is an implementation detail of the AMux. Code that depends on it may be
+   incompatible with other versions of PSoC Creator. */
+uint8 CYXDATA * const CYCODE AMux__addrTable[6] = {
+	(uint8 CYXDATA *)CYREG_PRT0_AG, (uint8 CYXDATA *)CYREG_DSM0_SW0, 
+	(uint8 CYXDATA *)CYREG_PRT2_AG, (uint8 CYXDATA *)CYREG_DSM0_SW0, 
+	(uint8 CYXDATA *)CYREG_PRT0_AG, (uint8 CYXDATA *)CYREG_DSM0_SW0, 
 };
 
-static const uint8 CYCODE AMux__outerMask[3] = {
-	0x02u, 
-	0x20u, 
-	0x02u, 
+/* This is an implementation detail of the AMux. Code that depends on it may be
+   incompatible with other versions of PSoC Creator. */
+const uint8 CYCODE AMux__maskTable[6] = {
+	0x01u, 0x10u, 
+	0x02u, 0x02u, 
+	0x20u, 0x20u, 
 };
-
-static uint8 CYXDATA * const CYCODE AMux__innerAddr[1] = {
-	(uint8 CYXDATA *)CYREG_DSM0_SW0, 
-};
-
-static const uint8 CYCODE AMux__innerMask[1] = {
-	0x20u, 
-};
-
-static const uint8 CYCODE AMux__innerMap[3] = {
-	0u, 
-	0u, 
-	0u, 
-};
-
-static uint8 AMux__armsEnabled = 0u;
-static uint8 AMux__refCnt[] = {0u};
 
 /*******************************************************************************
 * Function Name: AMux_Set
@@ -413,18 +396,12 @@ static uint8 AMux__refCnt[] = {0u};
 *******************************************************************************/
 void AMux_Set(uint8 channel)
 {
-	uint8 i;
-	uint8 channelMask = (1UL << channel);
-	if ((channel < 3u) && ((AMux__armsEnabled & channelMask) == ((uint32)0u)))
+	if (channel < 3)
 	{
-		AMux__armsEnabled |= channelMask;
-		*AMux__outerAddr[channel] |= AMux__outerMask[channel];
-		i = AMux__innerMap[channel];
-		if (AMux__refCnt[i] == 0u)
-		{
-			*AMux__innerAddr[i] |= AMux__innerMask[i];
-		}
-		AMux__refCnt[i]++;
+		channel += channel;
+		*AMux__addrTable[channel] |= AMux__maskTable[channel];
+		channel++;
+		*AMux__addrTable[channel] |= AMux__maskTable[channel];
 	}
 }
 
@@ -444,18 +421,12 @@ void AMux_Set(uint8 channel)
 *******************************************************************************/
 void AMux_Unset(uint8 channel)
 {
-	uint8 i;
-	uint8 channelMask = (1UL << channel);
-	if ((channel < 3u) && ((AMux__armsEnabled & channelMask) != ((uint32)0u)))
+	if (channel < 3)
 	{
-		AMux__armsEnabled &= (uint8)~channelMask;
-		*AMux__outerAddr[channel] &= (uint8)~AMux__outerMask[channel];
-		i = AMux__innerMap[channel];
-		AMux__refCnt[i]--;
-		if (AMux__refCnt[i] == 0)
-		{
-			*AMux__innerAddr[i] &= (uint8)~AMux__innerMask[i];
-		}
+		channel += channel;
+		*AMux__addrTable[channel] &= (uint8)~AMux__maskTable[channel];
+		channel++;
+		*AMux__addrTable[channel] &= (uint8)~AMux__maskTable[channel];
 	}
 }
 
@@ -559,8 +530,7 @@ void cyfitter_cfg(void)
 		static const cfg_memset_t CYCODE cfg_memset_list[] = {
 			/* address, size */
 			{(void CYFAR *)(CYREG_PRT4_DR), 48u},
-			{(void CYFAR *)(CYDEV_UCFG_B0_P0_U0_BASE), 1536u},
-			{(void CYFAR *)(CYDEV_UCFG_B0_P3_U1_BASE), 2432u},
+			{(void CYFAR *)(CYDEV_UCFG_B0_P0_U0_BASE), 4096u},
 			{(void CYFAR *)(CYDEV_UCFG_B1_P2_U0_BASE), 640u},
 			{(void CYFAR *)(CYDEV_UCFG_B1_P3_ROUTE_BASE), 1280u},
 			{(void CYFAR *)(CYDEV_UCFG_DSI0_BASE), 2560u},
@@ -570,7 +540,6 @@ void cyfitter_cfg(void)
 
 		static const cfg_memcpy_t CYCODE cfg_memcpy_list [] = {
 			/* dest, src, size */
-			{(void CYFAR *)(CYDEV_UCFG_B0_P3_U0_BASE), BS_UDB_1_2_1_CONFIG_VAL, 128u},
 			{(void CYFAR *)(CYDEV_UCFG_B1_P3_U1_BASE), BS_UDB_1_1_0_CONFIG_VAL, 128u},
 		};
 
