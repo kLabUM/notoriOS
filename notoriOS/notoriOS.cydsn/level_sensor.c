@@ -105,7 +105,7 @@ level_sensor_t level_sensor_take_reading(){
       token = strtok(NULL, "R");
    }
     //calculate median
-    level_sensor_output.level_reading = find_median(level_sensor_output.all_level_readings,level_sensor_output.num_valid_readings);
+    level_sensor_output.level_reading = find_median16(level_sensor_output.all_level_readings,level_sensor_output.num_valid_readings);
  
     return level_sensor_output;
 }
@@ -137,10 +137,10 @@ test_t level_sensor_test(){
 
 
 // function to calculate the median of the array, after array is sorted
-uint16 find_median(int16 array[] , uint8 n)
+uint16 find_median16(int16 array[] , uint8 n)
 {
     int16 median=0;
-    sort(array,n);
+    sort16(array,n);
     
     // if number of elements are even
     if(n%2 == 0)
@@ -153,18 +153,18 @@ uint16 find_median(int16 array[] , uint8 n)
 }
 
 
-void sort(int16 a[],int16 n) { 
+void sort16(int16 a[],int16 n) { 
    int16 i,j;
 
    for(i = 0;i < n-1;i++) {
       for(j = 0;j < n-i-1;j++) {
          if(a[j] > a[j+1])
-            swap(&a[j],&a[j+1]);
+            swap16(&a[j],&a[j+1]);
       }
    }
 }
 
-void swap(int16 *p,int16 *q) {
+void swap16(int16 *p,int16 *q) {
    int16 t;
    
    t=*p; 

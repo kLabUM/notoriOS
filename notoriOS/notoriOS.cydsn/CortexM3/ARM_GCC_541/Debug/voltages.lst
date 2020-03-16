@@ -1,0 +1,1704 @@
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"voltages.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	__aeabi_fmul
+  20              		.global	__aeabi_fsub
+  21              		.global	__aeabi_f2d
+  22              		.global	__aeabi_dmul
+  23              		.global	__aeabi_d2f
+  24              		.section	.text.voltage_take_readings,"ax",%progbits
+  25              		.align	2
+  26              		.global	voltage_take_readings
+  27              		.thumb
+  28              		.thumb_func
+  29              		.type	voltage_take_readings, %function
+  30              	voltage_take_readings:
+  31              	.LFB64:
+  32              		.file 1 "voltages.c"
+   1:voltages.c    **** #include "voltages.h"
+   2:voltages.c    **** #include "notoriOS.h"
+   3:voltages.c    **** #include <stdio.h>
+   4:voltages.c    **** #include <string.h>
+   5:voltages.c    **** 
+   6:voltages.c    **** 
+   7:voltages.c    **** 
+   8:voltages.c    **** voltage_t voltage_take_readings(){
+  33              		.loc 1 8 0
+  34              		.cfi_startproc
+  35              		@ args = 0, pretend = 0, frame = 88
+  36              		@ frame_needed = 1, uses_anonymous_args = 0
+  37 0000 90B5     		push	{r4, r7, lr}
+  38              		.cfi_def_cfa_offset 12
+  39              		.cfi_offset 4, -12
+  40              		.cfi_offset 7, -8
+  41              		.cfi_offset 14, -4
+  42 0002 97B0     		sub	sp, sp, #92
+  43              		.cfi_def_cfa_offset 104
+  44 0004 00AF     		add	r7, sp, #0
+  45              		.cfi_def_cfa_register 7
+  46 0006 7860     		str	r0, [r7, #4]
+   9:voltages.c    ****     
+  10:voltages.c    ****     voltage_t voltage;
+  11:voltages.c    ****     /* flip on the ADC pin */
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 2
+
+
+  12:voltages.c    **** 	Battery_Voltage_Enable_Write(ON);
+  47              		.loc 1 12 0
+  48 0008 0120     		movs	r0, #1
+  49 000a FFF7FEFF 		bl	Battery_Voltage_Enable_Write
+  13:voltages.c    **** 	CyDelay(10u);	
+  50              		.loc 1 13 0
+  51 000e 0A20     		movs	r0, #10
+  52 0010 FFF7FEFF 		bl	CyDelay
+  14:voltages.c    ****     
+  15:voltages.c    **** 	/* Start the ADC */
+  16:voltages.c    **** 	ADC_Start(); 
+  53              		.loc 1 16 0
+  54 0014 FFF7FEFF 		bl	ADC_Start
+  17:voltages.c    ****     AMux_Start();
+  55              		.loc 1 17 0
+  56 0018 FFF7FEFF 		bl	AMux_Start
+  57              	.LBB2:
+  18:voltages.c    ****     
+  19:voltages.c    ****     
+  20:voltages.c    ****     float channels[AMux_CHANNELS];
+  21:voltages.c    ****     //sweep the MUX Channels
+  22:voltages.c    ****     for(uint8 c = 0; c< AMux_CHANNELS; c++)
+  58              		.loc 1 22 0
+  59 001c 0023     		movs	r3, #0
+  60 001e 87F85730 		strb	r3, [r7, #87]
+  61 0022 34E0     		b	.L2
+  62              	.L5:
+  63              	.LBB3:
+  23:voltages.c    ****     {
+  24:voltages.c    ****         int32 readings[N_SAMPLES];
+  25:voltages.c    ****         AMux_Select(c);
+  64              		.loc 1 25 0
+  65 0024 97F85730 		ldrb	r3, [r7, #87]	@ zero_extendqisi2
+  66 0028 1846     		mov	r0, r3
+  67 002a FFF7FEFF 		bl	AMux_Select
+  68              	.LBB4:
+  26:voltages.c    ****         for(uint8 i=0; i< N_SAMPLES; i++){
+  69              		.loc 1 26 0
+  70 002e 0023     		movs	r3, #0
+  71 0030 87F85630 		strb	r3, [r7, #86]
+  72 0034 0FE0     		b	.L3
+  73              	.L4:
+  27:voltages.c    ****             readings[i] = ADC_Read32();
+  74              		.loc 1 27 0 discriminator 3
+  75 0036 97F85640 		ldrb	r4, [r7, #86]	@ zero_extendqisi2
+  76 003a FFF7FEFF 		bl	ADC_Read32
+  77 003e 0246     		mov	r2, r0
+  78 0040 A300     		lsls	r3, r4, #2
+  79 0042 07F15801 		add	r1, r7, #88
+  80 0046 0B44     		add	r3, r3, r1
+  81 0048 43F84C2C 		str	r2, [r3, #-76]
+  26:voltages.c    ****         for(uint8 i=0; i< N_SAMPLES; i++){
+  82              		.loc 1 26 0 discriminator 3
+  83 004c 97F85630 		ldrb	r3, [r7, #86]	@ zero_extendqisi2
+  84 0050 0133     		adds	r3, r3, #1
+  85 0052 87F85630 		strb	r3, [r7, #86]
+  86              	.L3:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 3
+
+
+  26:voltages.c    ****         for(uint8 i=0; i< N_SAMPLES; i++){
+  87              		.loc 1 26 0 is_stmt 0 discriminator 1
+  88 0056 97F85630 		ldrb	r3, [r7, #86]	@ zero_extendqisi2
+  89 005a 0A2B     		cmp	r3, #10
+  90 005c EBD9     		bls	.L4
+  91              	.LBE4:
+  28:voltages.c    ****         }
+  29:voltages.c    ****         channels[c] = ADC_CountsTo_Volts(find_median32(readings,N_SAMPLES));//get median of reading
+  92              		.loc 1 29 0 is_stmt 1 discriminator 2
+  93 005e 97F85740 		ldrb	r4, [r7, #87]	@ zero_extendqisi2
+  94 0062 07F10C03 		add	r3, r7, #12
+  95 0066 0B21     		movs	r1, #11
+  96 0068 1846     		mov	r0, r3
+  97 006a FFF7FEFF 		bl	find_median32
+  98 006e 0346     		mov	r3, r0
+  99 0070 1846     		mov	r0, r3
+ 100 0072 FFF7FEFF 		bl	ADC_CountsTo_Volts
+ 101 0076 0246     		mov	r2, r0
+ 102 0078 A300     		lsls	r3, r4, #2
+ 103 007a 07F15801 		add	r1, r7, #88
+ 104 007e 0B44     		add	r3, r3, r1
+ 105 0080 43F8202C 		str	r2, [r3, #-32]	@ float
+ 106              	.LBE3:
+  22:voltages.c    ****     {
+ 107              		.loc 1 22 0 discriminator 2
+ 108 0084 97F85730 		ldrb	r3, [r7, #87]	@ zero_extendqisi2
+ 109 0088 0133     		adds	r3, r3, #1
+ 110 008a 87F85730 		strb	r3, [r7, #87]
+ 111              	.L2:
+  22:voltages.c    ****     {
+ 112              		.loc 1 22 0 is_stmt 0 discriminator 1
+ 113 008e 97F85730 		ldrb	r3, [r7, #87]	@ zero_extendqisi2
+ 114 0092 022B     		cmp	r3, #2
+ 115 0094 C6D9     		bls	.L5
+ 116              	.LBE2:
+  30:voltages.c    ****         
+  31:voltages.c    ****     }
+  32:voltages.c    ****     
+  33:voltages.c    ****     AMux_Stop();
+ 117              		.loc 1 33 0 is_stmt 1
+ 118 0096 FFF7FEFF 		bl	AMux_Start
+  34:voltages.c    ****     ADC_Stop();
+ 119              		.loc 1 34 0
+ 120 009a FFF7FEFF 		bl	ADC_Stop
+  35:voltages.c    ****     
+  36:voltages.c    ****     Battery_Voltage_Enable_Write(OFF);
+ 121              		.loc 1 36 0
+ 122 009e 0020     		movs	r0, #0
+ 123 00a0 FFF7FEFF 		bl	Battery_Voltage_Enable_Write
+  37:voltages.c    ****     
+  38:voltages.c    ****     voltage.voltage_battery = channels[ADC_MUX_VBAT] * 11; //voltage divider is (1/10) ratio, so mu
+ 124              		.loc 1 38 0
+ 125 00a4 BB6B     		ldr	r3, [r7, #56]	@ float
+ 126 00a6 1849     		ldr	r1, .L7+8
+ 127 00a8 1846     		mov	r0, r3
+ 128 00aa FFF7FEFF 		bl	__aeabi_fmul
+ 129 00ae 0346     		mov	r3, r0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 4
+
+
+ 130 00b0 7B64     		str	r3, [r7, #68]	@ float
+  39:voltages.c    ****     voltage.voltage_solar = channels[ADC_MUX_VSOL]; //just want voltage here
+ 131              		.loc 1 39 0
+ 132 00b2 FB6B     		ldr	r3, [r7, #60]	@ float
+ 133 00b4 BB64     		str	r3, [r7, #72]	@ float
+  40:voltages.c    ****     //votage across sense resistor gives 100mV drop for max current, which is 800mA
+  41:voltages.c    ****     voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
+ 134              		.loc 1 41 0
+ 135 00b6 3B6C     		ldr	r3, [r7, #64]	@ float
+ 136 00b8 7A6C     		ldr	r2, [r7, #68]	@ float
+ 137 00ba 1146     		mov	r1, r2
+ 138 00bc 1846     		mov	r0, r3
+ 139 00be FFF7FEFF 		bl	__aeabi_fsub
+ 140 00c2 0346     		mov	r3, r0
+ 141 00c4 1846     		mov	r0, r3
+ 142 00c6 FFF7FEFF 		bl	__aeabi_f2d
+ 143 00ca 0DA3     		adr	r3, .L7
+ 144 00cc D3E90023 		ldrd	r2, [r3]
+ 145 00d0 FFF7FEFF 		bl	__aeabi_dmul
+ 146 00d4 0346     		mov	r3, r0
+ 147 00d6 0C46     		mov	r4, r1
+ 148 00d8 1846     		mov	r0, r3
+ 149 00da 2146     		mov	r1, r4
+ 150 00dc FFF7FEFF 		bl	__aeabi_d2f
+ 151 00e0 0346     		mov	r3, r0
+ 152 00e2 FB64     		str	r3, [r7, #76]	@ float
+  42:voltages.c    ****     
+  43:voltages.c    ****     voltage.valid = 1;
+ 153              		.loc 1 43 0
+ 154 00e4 0123     		movs	r3, #1
+ 155 00e6 87F85030 		strb	r3, [r7, #80]
+  44:voltages.c    ****     
+  45:voltages.c    ****     
+  46:voltages.c    ****     return voltage;
+ 156              		.loc 1 46 0
+ 157 00ea 7B68     		ldr	r3, [r7, #4]
+ 158 00ec 1C46     		mov	r4, r3
+ 159 00ee 07F14403 		add	r3, r7, #68
+ 160 00f2 0FCB     		ldmia	r3, {r0, r1, r2, r3}
+ 161 00f4 84E80F00 		stmia	r4, {r0, r1, r2, r3}
+  47:voltages.c    **** }
+ 162              		.loc 1 47 0
+ 163 00f8 7868     		ldr	r0, [r7, #4]
+ 164 00fa 5C37     		adds	r7, r7, #92
+ 165              		.cfi_def_cfa_offset 12
+ 166 00fc BD46     		mov	sp, r7
+ 167              		.cfi_def_cfa_register 13
+ 168              		@ sp needed
+ 169 00fe 90BD     		pop	{r4, r7, pc}
+ 170              	.L8:
+ 171              		.align	3
+ 172              	.L7:
+ 173 0100 9A999999 		.word	-1717986918
+ 174 0104 9999B93F 		.word	1069128089
+ 175 0108 00003041 		.word	1093664768
+ 176              		.cfi_endproc
+ 177              	.LFE64:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 5
+
+
+ 178              		.size	voltage_take_readings, .-voltage_take_readings
+ 179              		.section	.text.sort32,"ax",%progbits
+ 180              		.align	2
+ 181              		.global	sort32
+ 182              		.thumb
+ 183              		.thumb_func
+ 184              		.type	sort32, %function
+ 185              	sort32:
+ 186              	.LFB65:
+  48:voltages.c    **** 
+  49:voltages.c    **** 
+  50:voltages.c    **** void sort32(int32 a[],int32 n) { 
+ 187              		.loc 1 50 0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 16
+ 190              		@ frame_needed = 1, uses_anonymous_args = 0
+ 191 0000 80B5     		push	{r7, lr}
+ 192              		.cfi_def_cfa_offset 8
+ 193              		.cfi_offset 7, -8
+ 194              		.cfi_offset 14, -4
+ 195 0002 84B0     		sub	sp, sp, #16
+ 196              		.cfi_def_cfa_offset 24
+ 197 0004 00AF     		add	r7, sp, #0
+ 198              		.cfi_def_cfa_register 7
+ 199 0006 7860     		str	r0, [r7, #4]
+ 200 0008 3960     		str	r1, [r7]
+  51:voltages.c    ****    int32 i,j;
+  52:voltages.c    **** 
+  53:voltages.c    ****    for(i = 0;i < n-1;i++) {
+ 201              		.loc 1 53 0
+ 202 000a 0023     		movs	r3, #0
+ 203 000c FB60     		str	r3, [r7, #12]
+ 204 000e 28E0     		b	.L10
+ 205              	.L14:
+  54:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 206              		.loc 1 54 0
+ 207 0010 0023     		movs	r3, #0
+ 208 0012 BB60     		str	r3, [r7, #8]
+ 209 0014 1BE0     		b	.L11
+ 210              	.L13:
+  55:voltages.c    ****          if(a[j] > a[j+1])
+ 211              		.loc 1 55 0
+ 212 0016 BB68     		ldr	r3, [r7, #8]
+ 213 0018 9B00     		lsls	r3, r3, #2
+ 214 001a 7A68     		ldr	r2, [r7, #4]
+ 215 001c 1344     		add	r3, r3, r2
+ 216 001e 1A68     		ldr	r2, [r3]
+ 217 0020 BB68     		ldr	r3, [r7, #8]
+ 218 0022 0133     		adds	r3, r3, #1
+ 219 0024 9B00     		lsls	r3, r3, #2
+ 220 0026 7968     		ldr	r1, [r7, #4]
+ 221 0028 0B44     		add	r3, r3, r1
+ 222 002a 1B68     		ldr	r3, [r3]
+ 223 002c 9A42     		cmp	r2, r3
+ 224 002e 0BDD     		ble	.L12
+  56:voltages.c    ****             swap32(&a[j],&a[j+1]);
+ 225              		.loc 1 56 0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 6
+
+
+ 226 0030 BB68     		ldr	r3, [r7, #8]
+ 227 0032 9B00     		lsls	r3, r3, #2
+ 228 0034 7A68     		ldr	r2, [r7, #4]
+ 229 0036 D018     		adds	r0, r2, r3
+ 230 0038 BB68     		ldr	r3, [r7, #8]
+ 231 003a 0133     		adds	r3, r3, #1
+ 232 003c 9B00     		lsls	r3, r3, #2
+ 233 003e 7A68     		ldr	r2, [r7, #4]
+ 234 0040 1344     		add	r3, r3, r2
+ 235 0042 1946     		mov	r1, r3
+ 236 0044 FFF7FEFF 		bl	swap32
+ 237              	.L12:
+  54:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 238              		.loc 1 54 0 discriminator 2
+ 239 0048 BB68     		ldr	r3, [r7, #8]
+ 240 004a 0133     		adds	r3, r3, #1
+ 241 004c BB60     		str	r3, [r7, #8]
+ 242              	.L11:
+  54:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 243              		.loc 1 54 0 is_stmt 0 discriminator 1
+ 244 004e 3A68     		ldr	r2, [r7]
+ 245 0050 FB68     		ldr	r3, [r7, #12]
+ 246 0052 D31A     		subs	r3, r2, r3
+ 247 0054 5A1E     		subs	r2, r3, #1
+ 248 0056 BB68     		ldr	r3, [r7, #8]
+ 249 0058 9A42     		cmp	r2, r3
+ 250 005a DCDC     		bgt	.L13
+  53:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 251              		.loc 1 53 0 is_stmt 1 discriminator 2
+ 252 005c FB68     		ldr	r3, [r7, #12]
+ 253 005e 0133     		adds	r3, r3, #1
+ 254 0060 FB60     		str	r3, [r7, #12]
+ 255              	.L10:
+  53:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 256              		.loc 1 53 0 is_stmt 0 discriminator 1
+ 257 0062 3B68     		ldr	r3, [r7]
+ 258 0064 5A1E     		subs	r2, r3, #1
+ 259 0066 FB68     		ldr	r3, [r7, #12]
+ 260 0068 9A42     		cmp	r2, r3
+ 261 006a D1DC     		bgt	.L14
+  57:voltages.c    ****       }
+  58:voltages.c    ****    }
+  59:voltages.c    **** }
+ 262              		.loc 1 59 0 is_stmt 1
+ 263 006c 00BF     		nop
+ 264 006e 1037     		adds	r7, r7, #16
+ 265              		.cfi_def_cfa_offset 8
+ 266 0070 BD46     		mov	sp, r7
+ 267              		.cfi_def_cfa_register 13
+ 268              		@ sp needed
+ 269 0072 80BD     		pop	{r7, pc}
+ 270              		.cfi_endproc
+ 271              	.LFE65:
+ 272              		.size	sort32, .-sort32
+ 273              		.section	.text.swap32,"ax",%progbits
+ 274              		.align	2
+ 275              		.global	swap32
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 7
+
+
+ 276              		.thumb
+ 277              		.thumb_func
+ 278              		.type	swap32, %function
+ 279              	swap32:
+ 280              	.LFB66:
+  60:voltages.c    **** 
+  61:voltages.c    **** void swap32(int32 *p,int32 *q){
+ 281              		.loc 1 61 0
+ 282              		.cfi_startproc
+ 283              		@ args = 0, pretend = 0, frame = 16
+ 284              		@ frame_needed = 1, uses_anonymous_args = 0
+ 285              		@ link register save eliminated.
+ 286 0000 80B4     		push	{r7}
+ 287              		.cfi_def_cfa_offset 4
+ 288              		.cfi_offset 7, -4
+ 289 0002 85B0     		sub	sp, sp, #20
+ 290              		.cfi_def_cfa_offset 24
+ 291 0004 00AF     		add	r7, sp, #0
+ 292              		.cfi_def_cfa_register 7
+ 293 0006 7860     		str	r0, [r7, #4]
+ 294 0008 3960     		str	r1, [r7]
+  62:voltages.c    ****    int32 t;
+  63:voltages.c    ****    
+  64:voltages.c    ****    t=*p; 
+ 295              		.loc 1 64 0
+ 296 000a 7B68     		ldr	r3, [r7, #4]
+ 297 000c 1B68     		ldr	r3, [r3]
+ 298 000e FB60     		str	r3, [r7, #12]
+  65:voltages.c    ****    *p=*q; 
+ 299              		.loc 1 65 0
+ 300 0010 3B68     		ldr	r3, [r7]
+ 301 0012 1A68     		ldr	r2, [r3]
+ 302 0014 7B68     		ldr	r3, [r7, #4]
+ 303 0016 1A60     		str	r2, [r3]
+  66:voltages.c    ****    *q=t;
+ 304              		.loc 1 66 0
+ 305 0018 3B68     		ldr	r3, [r7]
+ 306 001a FA68     		ldr	r2, [r7, #12]
+ 307 001c 1A60     		str	r2, [r3]
+  67:voltages.c    **** }
+ 308              		.loc 1 67 0
+ 309 001e 00BF     		nop
+ 310 0020 1437     		adds	r7, r7, #20
+ 311              		.cfi_def_cfa_offset 4
+ 312 0022 BD46     		mov	sp, r7
+ 313              		.cfi_def_cfa_register 13
+ 314              		@ sp needed
+ 315 0024 80BC     		pop	{r7}
+ 316              		.cfi_restore 7
+ 317              		.cfi_def_cfa_offset 0
+ 318 0026 7047     		bx	lr
+ 319              		.cfi_endproc
+ 320              	.LFE66:
+ 321              		.size	swap32, .-swap32
+ 322              		.global	__aeabi_i2d
+ 323              		.global	__aeabi_ddiv
+ 324              		.global	__aeabi_d2iz
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 8
+
+
+ 325              		.section	.text.find_median32,"ax",%progbits
+ 326              		.align	2
+ 327              		.global	find_median32
+ 328              		.thumb
+ 329              		.thumb_func
+ 330              		.type	find_median32, %function
+ 331              	find_median32:
+ 332              	.LFB67:
+  68:voltages.c    **** 
+  69:voltages.c    **** // function to calculate the median of the array, after array is sorted
+  70:voltages.c    **** int32 find_median32(int32 array[] , int32 n)
+  71:voltages.c    **** {
+ 333              		.loc 1 71 0
+ 334              		.cfi_startproc
+ 335              		@ args = 0, pretend = 0, frame = 16
+ 336              		@ frame_needed = 1, uses_anonymous_args = 0
+ 337 0000 90B5     		push	{r4, r7, lr}
+ 338              		.cfi_def_cfa_offset 12
+ 339              		.cfi_offset 4, -12
+ 340              		.cfi_offset 7, -8
+ 341              		.cfi_offset 14, -4
+ 342 0002 85B0     		sub	sp, sp, #20
+ 343              		.cfi_def_cfa_offset 32
+ 344 0004 00AF     		add	r7, sp, #0
+ 345              		.cfi_def_cfa_register 7
+ 346 0006 7860     		str	r0, [r7, #4]
+ 347 0008 3960     		str	r1, [r7]
+  72:voltages.c    ****     int32 median=0;
+ 348              		.loc 1 72 0
+ 349 000a 0023     		movs	r3, #0
+ 350 000c FB60     		str	r3, [r7, #12]
+  73:voltages.c    ****     sort32(array,n);
+ 351              		.loc 1 73 0
+ 352 000e 3968     		ldr	r1, [r7]
+ 353 0010 7868     		ldr	r0, [r7, #4]
+ 354 0012 FFF7FEFF 		bl	sort32
+  74:voltages.c    ****     
+  75:voltages.c    ****     // if number of elements are even
+  76:voltages.c    ****     if(n%2 == 0)
+ 355              		.loc 1 76 0
+ 356 0016 3B68     		ldr	r3, [r7]
+ 357 0018 03F00103 		and	r3, r3, #1
+ 358 001c 002B     		cmp	r3, #0
+ 359 001e 23D1     		bne	.L17
+  77:voltages.c    ****         median = (array[(n-1)/2] + array[n/2])/2.0;
+ 360              		.loc 1 77 0
+ 361 0020 3B68     		ldr	r3, [r7]
+ 362 0022 013B     		subs	r3, r3, #1
+ 363 0024 DA0F     		lsrs	r2, r3, #31
+ 364 0026 1344     		add	r3, r3, r2
+ 365 0028 5B10     		asrs	r3, r3, #1
+ 366 002a 9B00     		lsls	r3, r3, #2
+ 367 002c 7A68     		ldr	r2, [r7, #4]
+ 368 002e 1344     		add	r3, r3, r2
+ 369 0030 1A68     		ldr	r2, [r3]
+ 370 0032 3B68     		ldr	r3, [r7]
+ 371 0034 D90F     		lsrs	r1, r3, #31
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 9
+
+
+ 372 0036 0B44     		add	r3, r3, r1
+ 373 0038 5B10     		asrs	r3, r3, #1
+ 374 003a 9B00     		lsls	r3, r3, #2
+ 375 003c 7968     		ldr	r1, [r7, #4]
+ 376 003e 0B44     		add	r3, r3, r1
+ 377 0040 1B68     		ldr	r3, [r3]
+ 378 0042 1344     		add	r3, r3, r2
+ 379 0044 1846     		mov	r0, r3
+ 380 0046 FFF7FEFF 		bl	__aeabi_i2d
+ 381 004a 4FF00002 		mov	r2, #0
+ 382 004e 4FF08043 		mov	r3, #1073741824
+ 383 0052 FFF7FEFF 		bl	__aeabi_ddiv
+ 384 0056 0346     		mov	r3, r0
+ 385 0058 0C46     		mov	r4, r1
+ 386 005a 1846     		mov	r0, r3
+ 387 005c 2146     		mov	r1, r4
+ 388 005e FFF7FEFF 		bl	__aeabi_d2iz
+ 389 0062 0346     		mov	r3, r0
+ 390 0064 FB60     		str	r3, [r7, #12]
+ 391 0066 08E0     		b	.L18
+ 392              	.L17:
+  78:voltages.c    ****     // if number of elements are odd
+  79:voltages.c    ****     else
+  80:voltages.c    ****         median = array[n/2];
+ 393              		.loc 1 80 0
+ 394 0068 3B68     		ldr	r3, [r7]
+ 395 006a DA0F     		lsrs	r2, r3, #31
+ 396 006c 1344     		add	r3, r3, r2
+ 397 006e 5B10     		asrs	r3, r3, #1
+ 398 0070 9B00     		lsls	r3, r3, #2
+ 399 0072 7A68     		ldr	r2, [r7, #4]
+ 400 0074 1344     		add	r3, r3, r2
+ 401 0076 1B68     		ldr	r3, [r3]
+ 402 0078 FB60     		str	r3, [r7, #12]
+ 403              	.L18:
+  81:voltages.c    ****     
+  82:voltages.c    ****     return median;
+ 404              		.loc 1 82 0
+ 405 007a FB68     		ldr	r3, [r7, #12]
+  83:voltages.c    **** }
+ 406              		.loc 1 83 0
+ 407 007c 1846     		mov	r0, r3
+ 408 007e 1437     		adds	r7, r7, #20
+ 409              		.cfi_def_cfa_offset 12
+ 410 0080 BD46     		mov	sp, r7
+ 411              		.cfi_def_cfa_register 13
+ 412              		@ sp needed
+ 413 0082 90BD     		pop	{r4, r7, pc}
+ 414              		.cfi_endproc
+ 415              	.LFE67:
+ 416              		.size	find_median32, .-find_median32
+ 417              		.section	.rodata
+ 418              		.align	2
+ 419              	.LC0:
+ 420 0000 54455354 		.ascii	"TEST_ANALOG_VOLTAGES\015\000"
+ 420      5F414E41 
+ 420      4C4F475F 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 10
+
+
+ 420      564F4C54 
+ 420      41474553 
+ 421 0016 0000     		.align	2
+ 422              	.LC1:
+ 423 0018 56424154 		.ascii	"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f,\015\000"
+ 423      3D252E33 
+ 423      662C5653 
+ 423      4F4C3D25 
+ 423      2E33662C 
+ 424              		.section	.text.voltages_test,"ax",%progbits
+ 425              		.align	2
+ 426              		.global	voltages_test
+ 427              		.thumb
+ 428              		.thumb_func
+ 429              		.type	voltages_test, %function
+ 430              	voltages_test:
+ 431              	.LFB68:
+  84:voltages.c    **** 
+  85:voltages.c    **** test_t voltages_test(){
+ 432              		.loc 1 85 0
+ 433              		.cfi_startproc
+ 434              		@ args = 0, pretend = 0, frame = 416
+ 435              		@ frame_needed = 1, uses_anonymous_args = 0
+ 436 0000 2DE9B043 		push	{r4, r5, r7, r8, r9, lr}
+ 437              		.cfi_def_cfa_offset 24
+ 438              		.cfi_offset 4, -24
+ 439              		.cfi_offset 5, -20
+ 440              		.cfi_offset 7, -16
+ 441              		.cfi_offset 8, -12
+ 442              		.cfi_offset 9, -8
+ 443              		.cfi_offset 14, -4
+ 444 0004 ECB0     		sub	sp, sp, #432
+ 445              		.cfi_def_cfa_offset 456
+ 446 0006 04AF     		add	r7, sp, #16
+ 447              		.cfi_def_cfa 7, 440
+ 448 0008 3B1D     		adds	r3, r7, #4
+ 449 000a 1860     		str	r0, [r3]
+  86:voltages.c    ****     
+  87:voltages.c    ****     test_t test;
+  88:voltages.c    ****     test.status = 0;
+ 450              		.loc 1 88 0
+ 451 000c 07F11C03 		add	r3, r7, #28
+ 452 0010 0022     		movs	r2, #0
+ 453 0012 83F88020 		strb	r2, [r3, #128]
+  89:voltages.c    ****     sprintf(test.test_name,"TEST_ANALOG_VOLTAGES\r");
+ 454              		.loc 1 89 0
+ 455 0016 07F11C03 		add	r3, r7, #28
+ 456 001a 234A     		ldr	r2, .L22
+ 457 001c 1C46     		mov	r4, r3
+ 458 001e 1546     		mov	r5, r2
+ 459 0020 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 460 0022 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 461 0024 95E80300 		ldmia	r5, {r0, r1}
+ 462 0028 2060     		str	r0, [r4]
+ 463 002a 0434     		adds	r4, r4, #4
+ 464 002c 2180     		strh	r1, [r4]	@ movhi
+  90:voltages.c    ****     
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 11
+
+
+  91:voltages.c    ****     voltage_t voltage = voltage_take_readings();
+ 465              		.loc 1 91 0
+ 466 002e 07F10C03 		add	r3, r7, #12
+ 467 0032 1846     		mov	r0, r3
+ 468 0034 FFF7FEFF 		bl	voltage_take_readings
+  92:voltages.c    ****     
+  93:voltages.c    ****     //do some checks here if you want the test to meet some voltage requrement
+  94:voltages.c    ****     //poipoi
+  95:voltages.c    ****     
+  96:voltages.c    ****     sprintf(test.reason,"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f,\r",
+  97:voltages.c    ****             voltage.voltage_battery,
+ 469              		.loc 1 97 0
+ 470 0038 07F10C03 		add	r3, r7, #12
+ 471 003c 1B68     		ldr	r3, [r3]	@ float
+  96:voltages.c    ****             voltage.voltage_battery,
+ 472              		.loc 1 96 0
+ 473 003e 1846     		mov	r0, r3
+ 474 0040 FFF7FEFF 		bl	__aeabi_f2d
+ 475 0044 8046     		mov	r8, r0
+ 476 0046 8946     		mov	r9, r1
+  98:voltages.c    ****             voltage.voltage_solar,
+ 477              		.loc 1 98 0
+ 478 0048 07F10C03 		add	r3, r7, #12
+ 479 004c 5B68     		ldr	r3, [r3, #4]	@ float
+  96:voltages.c    ****             voltage.voltage_battery,
+ 480              		.loc 1 96 0
+ 481 004e 1846     		mov	r0, r3
+ 482 0050 FFF7FEFF 		bl	__aeabi_f2d
+ 483 0054 0446     		mov	r4, r0
+ 484 0056 0D46     		mov	r5, r1
+  99:voltages.c    ****             voltage.voltage_charge_current);
+ 485              		.loc 1 99 0
+ 486 0058 07F10C03 		add	r3, r7, #12
+ 487 005c 9B68     		ldr	r3, [r3, #8]	@ float
+  96:voltages.c    ****             voltage.voltage_battery,
+ 488              		.loc 1 96 0
+ 489 005e 1846     		mov	r0, r3
+ 490 0060 FFF7FEFF 		bl	__aeabi_f2d
+ 491 0064 0246     		mov	r2, r0
+ 492 0066 0B46     		mov	r3, r1
+ 493 0068 07F11C01 		add	r1, r7, #28
+ 494 006c 01F18100 		add	r0, r1, #129
+ 495 0070 CDE90223 		strd	r2, [sp, #8]
+ 496 0074 CDE90045 		strd	r4, [sp]
+ 497 0078 4246     		mov	r2, r8
+ 498 007a 4B46     		mov	r3, r9
+ 499 007c 0B49     		ldr	r1, .L22+4
+ 500 007e FFF7FEFF 		bl	sprintf
+ 100:voltages.c    ****         
+ 101:voltages.c    ****     return test;
+ 501              		.loc 1 101 0
+ 502 0082 3B1D     		adds	r3, r7, #4
+ 503 0084 1A68     		ldr	r2, [r3]
+ 504 0086 07F11C03 		add	r3, r7, #28
+ 505 008a 1046     		mov	r0, r2
+ 506 008c 1946     		mov	r1, r3
+ 507 008e 40F28113 		movw	r3, #385
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 12
+
+
+ 508 0092 1A46     		mov	r2, r3
+ 509 0094 FFF7FEFF 		bl	memcpy
+ 102:voltages.c    **** }
+ 510              		.loc 1 102 0
+ 511 0098 3B1D     		adds	r3, r7, #4
+ 512 009a 1868     		ldr	r0, [r3]
+ 513 009c 07F5D077 		add	r7, r7, #416
+ 514              		.cfi_def_cfa_offset 24
+ 515 00a0 BD46     		mov	sp, r7
+ 516              		.cfi_def_cfa_register 13
+ 517              		@ sp needed
+ 518 00a2 BDE8B083 		pop	{r4, r5, r7, r8, r9, pc}
+ 519              	.L23:
+ 520 00a6 00BF     		.align	2
+ 521              	.L22:
+ 522 00a8 00000000 		.word	.LC0
+ 523 00ac 18000000 		.word	.LC1
+ 524              		.cfi_endproc
+ 525              	.LFE68:
+ 526              		.size	voltages_test, .-voltages_test
+ 527              		.text
+ 528              	.Letext0:
+ 529              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 530              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 531              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 532              		.file 5 "testing.h"
+ 533              		.file 6 "voltages.h"
+ 534              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 535              		.section	.debug_info,"",%progbits
+ 536              	.Ldebug_info0:
+ 537 0000 02030000 		.4byte	0x302
+ 538 0004 0400     		.2byte	0x4
+ 539 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 540 000a 04       		.byte	0x4
+ 541 000b 01       		.uleb128 0x1
+ 542 000c 00000000 		.4byte	.LASF37
+ 543 0010 0C       		.byte	0xc
+ 544 0011 7D020000 		.4byte	.LASF38
+ 545 0015 FB000000 		.4byte	.LASF39
+ 546 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 547 001d 00000000 		.4byte	0
+ 548 0021 00000000 		.4byte	.Ldebug_line0
+ 549 0025 02       		.uleb128 0x2
+ 550 0026 01       		.byte	0x1
+ 551 0027 06       		.byte	0x6
+ 552 0028 71020000 		.4byte	.LASF0
+ 553 002c 02       		.uleb128 0x2
+ 554 002d 01       		.byte	0x1
+ 555 002e 08       		.byte	0x8
+ 556 002f 44010000 		.4byte	.LASF1
+ 557 0033 02       		.uleb128 0x2
+ 558 0034 02       		.byte	0x2
+ 559 0035 05       		.byte	0x5
+ 560 0036 17020000 		.4byte	.LASF2
+ 561 003a 02       		.uleb128 0x2
+ 562 003b 02       		.byte	0x2
+ 563 003c 07       		.byte	0x7
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 13
+
+
+ 564 003d BD000000 		.4byte	.LASF3
+ 565 0041 03       		.uleb128 0x3
+ 566 0042 9C000000 		.4byte	.LASF9
+ 567 0046 02       		.byte	0x2
+ 568 0047 3F       		.byte	0x3f
+ 569 0048 4C000000 		.4byte	0x4c
+ 570 004c 02       		.uleb128 0x2
+ 571 004d 04       		.byte	0x4
+ 572 004e 05       		.byte	0x5
+ 573 004f AD000000 		.4byte	.LASF4
+ 574 0053 02       		.uleb128 0x2
+ 575 0054 04       		.byte	0x4
+ 576 0055 07       		.byte	0x7
+ 577 0056 52010000 		.4byte	.LASF5
+ 578 005a 02       		.uleb128 0x2
+ 579 005b 08       		.byte	0x8
+ 580 005c 05       		.byte	0x5
+ 581 005d F4010000 		.4byte	.LASF6
+ 582 0061 02       		.uleb128 0x2
+ 583 0062 08       		.byte	0x8
+ 584 0063 07       		.byte	0x7
+ 585 0064 AE010000 		.4byte	.LASF7
+ 586 0068 04       		.uleb128 0x4
+ 587 0069 04       		.byte	0x4
+ 588 006a 05       		.byte	0x5
+ 589 006b 696E7400 		.ascii	"int\000"
+ 590 006f 02       		.uleb128 0x2
+ 591 0070 04       		.byte	0x4
+ 592 0071 07       		.byte	0x7
+ 593 0072 A1010000 		.4byte	.LASF8
+ 594 0076 03       		.uleb128 0x3
+ 595 0077 E3010000 		.4byte	.LASF10
+ 596 007b 03       		.byte	0x3
+ 597 007c 2C       		.byte	0x2c
+ 598 007d 41000000 		.4byte	0x41
+ 599 0081 05       		.uleb128 0x5
+ 600 0082 21020000 		.4byte	.LASF11
+ 601 0086 04       		.byte	0x4
+ 602 0087 E401     		.2byte	0x1e4
+ 603 0089 2C000000 		.4byte	0x2c
+ 604 008d 05       		.uleb128 0x5
+ 605 008e 64010000 		.4byte	.LASF12
+ 606 0092 04       		.byte	0x4
+ 607 0093 E901     		.2byte	0x1e9
+ 608 0095 4C000000 		.4byte	0x4c
+ 609 0099 02       		.uleb128 0x2
+ 610 009a 04       		.byte	0x4
+ 611 009b 04       		.byte	0x4
+ 612 009c F5000000 		.4byte	.LASF13
+ 613 00a0 02       		.uleb128 0x2
+ 614 00a1 08       		.byte	0x8
+ 615 00a2 04       		.byte	0x4
+ 616 00a3 85010000 		.4byte	.LASF14
+ 617 00a7 02       		.uleb128 0x2
+ 618 00a8 01       		.byte	0x1
+ 619 00a9 08       		.byte	0x8
+ 620 00aa 0C020000 		.4byte	.LASF15
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 14
+
+
+ 621 00ae 02       		.uleb128 0x2
+ 622 00af 08       		.byte	0x8
+ 623 00b0 04       		.byte	0x4
+ 624 00b1 5E020000 		.4byte	.LASF16
+ 625 00b5 02       		.uleb128 0x2
+ 626 00b6 04       		.byte	0x4
+ 627 00b7 07       		.byte	0x7
+ 628 00b8 EB010000 		.4byte	.LASF17
+ 629 00bc 06       		.uleb128 0x6
+ 630 00bd 8101     		.2byte	0x181
+ 631 00bf 05       		.byte	0x5
+ 632 00c0 0A       		.byte	0xa
+ 633 00c1 EA000000 		.4byte	0xea
+ 634 00c5 07       		.uleb128 0x7
+ 635 00c6 27020000 		.4byte	.LASF18
+ 636 00ca 05       		.byte	0x5
+ 637 00cb 0B       		.byte	0xb
+ 638 00cc EA000000 		.4byte	0xea
+ 639 00d0 00       		.byte	0
+ 640 00d1 07       		.uleb128 0x7
+ 641 00d2 E7000000 		.4byte	.LASF19
+ 642 00d6 05       		.byte	0x5
+ 643 00d7 0C       		.byte	0xc
+ 644 00d8 81000000 		.4byte	0x81
+ 645 00dc 80       		.byte	0x80
+ 646 00dd 07       		.uleb128 0x7
+ 647 00de DC010000 		.4byte	.LASF20
+ 648 00e2 05       		.byte	0x5
+ 649 00e3 0D       		.byte	0xd
+ 650 00e4 FA000000 		.4byte	0xfa
+ 651 00e8 81       		.byte	0x81
+ 652 00e9 00       		.byte	0
+ 653 00ea 08       		.uleb128 0x8
+ 654 00eb A7000000 		.4byte	0xa7
+ 655 00ef FA000000 		.4byte	0xfa
+ 656 00f3 09       		.uleb128 0x9
+ 657 00f4 B5000000 		.4byte	0xb5
+ 658 00f8 7F       		.byte	0x7f
+ 659 00f9 00       		.byte	0
+ 660 00fa 08       		.uleb128 0x8
+ 661 00fb A7000000 		.4byte	0xa7
+ 662 00ff 0A010000 		.4byte	0x10a
+ 663 0103 09       		.uleb128 0x9
+ 664 0104 B5000000 		.4byte	0xb5
+ 665 0108 FF       		.byte	0xff
+ 666 0109 00       		.byte	0
+ 667 010a 03       		.uleb128 0x3
+ 668 010b A6000000 		.4byte	.LASF21
+ 669 010f 05       		.byte	0x5
+ 670 0110 0E       		.byte	0xe
+ 671 0111 BC000000 		.4byte	0xbc
+ 672 0115 0A       		.uleb128 0xa
+ 673 0116 10       		.byte	0x10
+ 674 0117 06       		.byte	0x6
+ 675 0118 0E       		.byte	0xe
+ 676 0119 4E010000 		.4byte	0x14e
+ 677 011d 07       		.uleb128 0x7
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 15
+
+
+ 678 011e 8C010000 		.4byte	.LASF22
+ 679 0122 06       		.byte	0x6
+ 680 0123 0F       		.byte	0xf
+ 681 0124 99000000 		.4byte	0x99
+ 682 0128 00       		.byte	0
+ 683 0129 07       		.uleb128 0x7
+ 684 012a CE010000 		.4byte	.LASF23
+ 685 012e 06       		.byte	0x6
+ 686 012f 10       		.byte	0x10
+ 687 0130 99000000 		.4byte	0x99
+ 688 0134 04       		.byte	0x4
+ 689 0135 07       		.uleb128 0x7
+ 690 0136 D0000000 		.4byte	.LASF24
+ 691 013a 06       		.byte	0x6
+ 692 013b 11       		.byte	0x11
+ 693 013c 99000000 		.4byte	0x99
+ 694 0140 08       		.byte	0x8
+ 695 0141 07       		.uleb128 0x7
+ 696 0142 11020000 		.4byte	.LASF25
+ 697 0146 06       		.byte	0x6
+ 698 0147 12       		.byte	0x12
+ 699 0148 81000000 		.4byte	0x81
+ 700 014c 0C       		.byte	0xc
+ 701 014d 00       		.byte	0
+ 702 014e 03       		.uleb128 0x3
+ 703 014f 02020000 		.4byte	.LASF26
+ 704 0153 06       		.byte	0x6
+ 705 0154 13       		.byte	0x13
+ 706 0155 15010000 		.4byte	0x115
+ 707 0159 0B       		.uleb128 0xb
+ 708 015a 31020000 		.4byte	.LASF30
+ 709 015e 01       		.byte	0x1
+ 710 015f 08       		.byte	0x8
+ 711 0160 4E010000 		.4byte	0x14e
+ 712 0164 00000000 		.4byte	.LFB64
+ 713 0168 0C010000 		.4byte	.LFE64-.LFB64
+ 714 016c 01       		.uleb128 0x1
+ 715 016d 9C       		.byte	0x9c
+ 716 016e D4010000 		.4byte	0x1d4
+ 717 0172 0C       		.uleb128 0xc
+ 718 0173 6A010000 		.4byte	.LASF27
+ 719 0177 01       		.byte	0x1
+ 720 0178 0A       		.byte	0xa
+ 721 0179 4E010000 		.4byte	0x14e
+ 722 017d 02       		.uleb128 0x2
+ 723 017e 91       		.byte	0x91
+ 724 017f 5C       		.sleb128 -36
+ 725 0180 0C       		.uleb128 0xc
+ 726 0181 55020000 		.4byte	.LASF28
+ 727 0185 01       		.byte	0x1
+ 728 0186 14       		.byte	0x14
+ 729 0187 D4010000 		.4byte	0x1d4
+ 730 018b 02       		.uleb128 0x2
+ 731 018c 91       		.byte	0x91
+ 732 018d 50       		.sleb128 -48
+ 733 018e 0D       		.uleb128 0xd
+ 734 018f 1C000000 		.4byte	.LBB2
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 16
+
+
+ 735 0193 7A000000 		.4byte	.LBE2-.LBB2
+ 736 0197 0E       		.uleb128 0xe
+ 737 0198 6300     		.ascii	"c\000"
+ 738 019a 01       		.byte	0x1
+ 739 019b 16       		.byte	0x16
+ 740 019c 81000000 		.4byte	0x81
+ 741 01a0 02       		.uleb128 0x2
+ 742 01a1 91       		.byte	0x91
+ 743 01a2 6F       		.sleb128 -17
+ 744 01a3 0D       		.uleb128 0xd
+ 745 01a4 24000000 		.4byte	.LBB3
+ 746 01a8 60000000 		.4byte	.LBE3-.LBB3
+ 747 01ac 0C       		.uleb128 0xc
+ 748 01ad C5010000 		.4byte	.LASF29
+ 749 01b1 01       		.byte	0x1
+ 750 01b2 18       		.byte	0x18
+ 751 01b3 E4010000 		.4byte	0x1e4
+ 752 01b7 03       		.uleb128 0x3
+ 753 01b8 91       		.byte	0x91
+ 754 01b9 A47F     		.sleb128 -92
+ 755 01bb 0D       		.uleb128 0xd
+ 756 01bc 2E000000 		.4byte	.LBB4
+ 757 01c0 30000000 		.4byte	.LBE4-.LBB4
+ 758 01c4 0E       		.uleb128 0xe
+ 759 01c5 6900     		.ascii	"i\000"
+ 760 01c7 01       		.byte	0x1
+ 761 01c8 1A       		.byte	0x1a
+ 762 01c9 81000000 		.4byte	0x81
+ 763 01cd 02       		.uleb128 0x2
+ 764 01ce 91       		.byte	0x91
+ 765 01cf 6E       		.sleb128 -18
+ 766 01d0 00       		.byte	0
+ 767 01d1 00       		.byte	0
+ 768 01d2 00       		.byte	0
+ 769 01d3 00       		.byte	0
+ 770 01d4 08       		.uleb128 0x8
+ 771 01d5 99000000 		.4byte	0x99
+ 772 01d9 E4010000 		.4byte	0x1e4
+ 773 01dd 09       		.uleb128 0x9
+ 774 01de B5000000 		.4byte	0xb5
+ 775 01e2 02       		.byte	0x2
+ 776 01e3 00       		.byte	0
+ 777 01e4 08       		.uleb128 0x8
+ 778 01e5 8D000000 		.4byte	0x8d
+ 779 01e9 F4010000 		.4byte	0x1f4
+ 780 01ed 09       		.uleb128 0x9
+ 781 01ee B5000000 		.4byte	0xb5
+ 782 01f2 0A       		.byte	0xa
+ 783 01f3 00       		.byte	0
+ 784 01f4 0F       		.uleb128 0xf
+ 785 01f5 B6000000 		.4byte	.LASF31
+ 786 01f9 01       		.byte	0x1
+ 787 01fa 32       		.byte	0x32
+ 788 01fb 00000000 		.4byte	.LFB65
+ 789 01ff 74000000 		.4byte	.LFE65-.LFB65
+ 790 0203 01       		.uleb128 0x1
+ 791 0204 9C       		.byte	0x9c
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 17
+
+
+ 792 0205 3A020000 		.4byte	0x23a
+ 793 0209 10       		.uleb128 0x10
+ 794 020a 6100     		.ascii	"a\000"
+ 795 020c 01       		.byte	0x1
+ 796 020d 32       		.byte	0x32
+ 797 020e 3A020000 		.4byte	0x23a
+ 798 0212 02       		.uleb128 0x2
+ 799 0213 91       		.byte	0x91
+ 800 0214 6C       		.sleb128 -20
+ 801 0215 10       		.uleb128 0x10
+ 802 0216 6E00     		.ascii	"n\000"
+ 803 0218 01       		.byte	0x1
+ 804 0219 32       		.byte	0x32
+ 805 021a 8D000000 		.4byte	0x8d
+ 806 021e 02       		.uleb128 0x2
+ 807 021f 91       		.byte	0x91
+ 808 0220 68       		.sleb128 -24
+ 809 0221 0E       		.uleb128 0xe
+ 810 0222 6900     		.ascii	"i\000"
+ 811 0224 01       		.byte	0x1
+ 812 0225 33       		.byte	0x33
+ 813 0226 8D000000 		.4byte	0x8d
+ 814 022a 02       		.uleb128 0x2
+ 815 022b 91       		.byte	0x91
+ 816 022c 74       		.sleb128 -12
+ 817 022d 0E       		.uleb128 0xe
+ 818 022e 6A00     		.ascii	"j\000"
+ 819 0230 01       		.byte	0x1
+ 820 0231 33       		.byte	0x33
+ 821 0232 8D000000 		.4byte	0x8d
+ 822 0236 02       		.uleb128 0x2
+ 823 0237 91       		.byte	0x91
+ 824 0238 70       		.sleb128 -16
+ 825 0239 00       		.byte	0
+ 826 023a 11       		.uleb128 0x11
+ 827 023b 04       		.byte	0x4
+ 828 023c 8D000000 		.4byte	0x8d
+ 829 0240 12       		.uleb128 0x12
+ 830 0241 EE000000 		.4byte	.LASF32
+ 831 0245 01       		.byte	0x1
+ 832 0246 3D       		.byte	0x3d
+ 833 0247 00000000 		.4byte	.LFB66
+ 834 024b 28000000 		.4byte	.LFE66-.LFB66
+ 835 024f 01       		.uleb128 0x1
+ 836 0250 9C       		.byte	0x9c
+ 837 0251 7A020000 		.4byte	0x27a
+ 838 0255 10       		.uleb128 0x10
+ 839 0256 7000     		.ascii	"p\000"
+ 840 0258 01       		.byte	0x1
+ 841 0259 3D       		.byte	0x3d
+ 842 025a 3A020000 		.4byte	0x23a
+ 843 025e 02       		.uleb128 0x2
+ 844 025f 91       		.byte	0x91
+ 845 0260 6C       		.sleb128 -20
+ 846 0261 10       		.uleb128 0x10
+ 847 0262 7100     		.ascii	"q\000"
+ 848 0264 01       		.byte	0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 18
+
+
+ 849 0265 3D       		.byte	0x3d
+ 850 0266 3A020000 		.4byte	0x23a
+ 851 026a 02       		.uleb128 0x2
+ 852 026b 91       		.byte	0x91
+ 853 026c 68       		.sleb128 -24
+ 854 026d 0E       		.uleb128 0xe
+ 855 026e 7400     		.ascii	"t\000"
+ 856 0270 01       		.byte	0x1
+ 857 0271 3E       		.byte	0x3e
+ 858 0272 8D000000 		.4byte	0x8d
+ 859 0276 02       		.uleb128 0x2
+ 860 0277 91       		.byte	0x91
+ 861 0278 74       		.sleb128 -12
+ 862 0279 00       		.byte	0
+ 863 027a 13       		.uleb128 0x13
+ 864 027b 47020000 		.4byte	.LASF40
+ 865 027f 01       		.byte	0x1
+ 866 0280 46       		.byte	0x46
+ 867 0281 8D000000 		.4byte	0x8d
+ 868 0285 00000000 		.4byte	.LFB67
+ 869 0289 84000000 		.4byte	.LFE67-.LFB67
+ 870 028d 01       		.uleb128 0x1
+ 871 028e 9C       		.byte	0x9c
+ 872 028f BC020000 		.4byte	0x2bc
+ 873 0293 14       		.uleb128 0x14
+ 874 0294 72010000 		.4byte	.LASF33
+ 875 0298 01       		.byte	0x1
+ 876 0299 46       		.byte	0x46
+ 877 029a 3A020000 		.4byte	0x23a
+ 878 029e 02       		.uleb128 0x2
+ 879 029f 91       		.byte	0x91
+ 880 02a0 64       		.sleb128 -28
+ 881 02a1 10       		.uleb128 0x10
+ 882 02a2 6E00     		.ascii	"n\000"
+ 883 02a4 01       		.byte	0x1
+ 884 02a5 46       		.byte	0x46
+ 885 02a6 8D000000 		.4byte	0x8d
+ 886 02aa 02       		.uleb128 0x2
+ 887 02ab 91       		.byte	0x91
+ 888 02ac 60       		.sleb128 -32
+ 889 02ad 0C       		.uleb128 0xc
+ 890 02ae 6A020000 		.4byte	.LASF34
+ 891 02b2 01       		.byte	0x1
+ 892 02b3 48       		.byte	0x48
+ 893 02b4 8D000000 		.4byte	0x8d
+ 894 02b8 02       		.uleb128 0x2
+ 895 02b9 91       		.byte	0x91
+ 896 02ba 6C       		.sleb128 -20
+ 897 02bb 00       		.byte	0
+ 898 02bc 0B       		.uleb128 0xb
+ 899 02bd 8E000000 		.4byte	.LASF35
+ 900 02c1 01       		.byte	0x1
+ 901 02c2 55       		.byte	0x55
+ 902 02c3 0A010000 		.4byte	0x10a
+ 903 02c7 00000000 		.4byte	.LFB68
+ 904 02cb B0000000 		.4byte	.LFE68-.LFB68
+ 905 02cf 01       		.uleb128 0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 19
+
+
+ 906 02d0 9C       		.byte	0x9c
+ 907 02d1 F4020000 		.4byte	0x2f4
+ 908 02d5 0C       		.uleb128 0xc
+ 909 02d6 9C010000 		.4byte	.LASF36
+ 910 02da 01       		.byte	0x1
+ 911 02db 57       		.byte	0x57
+ 912 02dc 0A010000 		.4byte	0x10a
+ 913 02e0 03       		.uleb128 0x3
+ 914 02e1 91       		.byte	0x91
+ 915 02e2 E47C     		.sleb128 -412
+ 916 02e4 0C       		.uleb128 0xc
+ 917 02e5 6A010000 		.4byte	.LASF27
+ 918 02e9 01       		.byte	0x1
+ 919 02ea 5B       		.byte	0x5b
+ 920 02eb 4E010000 		.4byte	0x14e
+ 921 02ef 03       		.uleb128 0x3
+ 922 02f0 91       		.byte	0x91
+ 923 02f1 D47C     		.sleb128 -428
+ 924 02f3 00       		.byte	0
+ 925 02f4 15       		.uleb128 0x15
+ 926 02f5 78010000 		.4byte	.LASF41
+ 927 02f9 07       		.byte	0x7
+ 928 02fa 1207     		.2byte	0x712
+ 929 02fc 00030000 		.4byte	0x300
+ 930 0300 16       		.uleb128 0x16
+ 931 0301 76000000 		.4byte	0x76
+ 932 0305 00       		.byte	0
+ 933              		.section	.debug_abbrev,"",%progbits
+ 934              	.Ldebug_abbrev0:
+ 935 0000 01       		.uleb128 0x1
+ 936 0001 11       		.uleb128 0x11
+ 937 0002 01       		.byte	0x1
+ 938 0003 25       		.uleb128 0x25
+ 939 0004 0E       		.uleb128 0xe
+ 940 0005 13       		.uleb128 0x13
+ 941 0006 0B       		.uleb128 0xb
+ 942 0007 03       		.uleb128 0x3
+ 943 0008 0E       		.uleb128 0xe
+ 944 0009 1B       		.uleb128 0x1b
+ 945 000a 0E       		.uleb128 0xe
+ 946 000b 55       		.uleb128 0x55
+ 947 000c 17       		.uleb128 0x17
+ 948 000d 11       		.uleb128 0x11
+ 949 000e 01       		.uleb128 0x1
+ 950 000f 10       		.uleb128 0x10
+ 951 0010 17       		.uleb128 0x17
+ 952 0011 00       		.byte	0
+ 953 0012 00       		.byte	0
+ 954 0013 02       		.uleb128 0x2
+ 955 0014 24       		.uleb128 0x24
+ 956 0015 00       		.byte	0
+ 957 0016 0B       		.uleb128 0xb
+ 958 0017 0B       		.uleb128 0xb
+ 959 0018 3E       		.uleb128 0x3e
+ 960 0019 0B       		.uleb128 0xb
+ 961 001a 03       		.uleb128 0x3
+ 962 001b 0E       		.uleb128 0xe
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 20
+
+
+ 963 001c 00       		.byte	0
+ 964 001d 00       		.byte	0
+ 965 001e 03       		.uleb128 0x3
+ 966 001f 16       		.uleb128 0x16
+ 967 0020 00       		.byte	0
+ 968 0021 03       		.uleb128 0x3
+ 969 0022 0E       		.uleb128 0xe
+ 970 0023 3A       		.uleb128 0x3a
+ 971 0024 0B       		.uleb128 0xb
+ 972 0025 3B       		.uleb128 0x3b
+ 973 0026 0B       		.uleb128 0xb
+ 974 0027 49       		.uleb128 0x49
+ 975 0028 13       		.uleb128 0x13
+ 976 0029 00       		.byte	0
+ 977 002a 00       		.byte	0
+ 978 002b 04       		.uleb128 0x4
+ 979 002c 24       		.uleb128 0x24
+ 980 002d 00       		.byte	0
+ 981 002e 0B       		.uleb128 0xb
+ 982 002f 0B       		.uleb128 0xb
+ 983 0030 3E       		.uleb128 0x3e
+ 984 0031 0B       		.uleb128 0xb
+ 985 0032 03       		.uleb128 0x3
+ 986 0033 08       		.uleb128 0x8
+ 987 0034 00       		.byte	0
+ 988 0035 00       		.byte	0
+ 989 0036 05       		.uleb128 0x5
+ 990 0037 16       		.uleb128 0x16
+ 991 0038 00       		.byte	0
+ 992 0039 03       		.uleb128 0x3
+ 993 003a 0E       		.uleb128 0xe
+ 994 003b 3A       		.uleb128 0x3a
+ 995 003c 0B       		.uleb128 0xb
+ 996 003d 3B       		.uleb128 0x3b
+ 997 003e 05       		.uleb128 0x5
+ 998 003f 49       		.uleb128 0x49
+ 999 0040 13       		.uleb128 0x13
+ 1000 0041 00       		.byte	0
+ 1001 0042 00       		.byte	0
+ 1002 0043 06       		.uleb128 0x6
+ 1003 0044 13       		.uleb128 0x13
+ 1004 0045 01       		.byte	0x1
+ 1005 0046 0B       		.uleb128 0xb
+ 1006 0047 05       		.uleb128 0x5
+ 1007 0048 3A       		.uleb128 0x3a
+ 1008 0049 0B       		.uleb128 0xb
+ 1009 004a 3B       		.uleb128 0x3b
+ 1010 004b 0B       		.uleb128 0xb
+ 1011 004c 01       		.uleb128 0x1
+ 1012 004d 13       		.uleb128 0x13
+ 1013 004e 00       		.byte	0
+ 1014 004f 00       		.byte	0
+ 1015 0050 07       		.uleb128 0x7
+ 1016 0051 0D       		.uleb128 0xd
+ 1017 0052 00       		.byte	0
+ 1018 0053 03       		.uleb128 0x3
+ 1019 0054 0E       		.uleb128 0xe
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 21
+
+
+ 1020 0055 3A       		.uleb128 0x3a
+ 1021 0056 0B       		.uleb128 0xb
+ 1022 0057 3B       		.uleb128 0x3b
+ 1023 0058 0B       		.uleb128 0xb
+ 1024 0059 49       		.uleb128 0x49
+ 1025 005a 13       		.uleb128 0x13
+ 1026 005b 38       		.uleb128 0x38
+ 1027 005c 0B       		.uleb128 0xb
+ 1028 005d 00       		.byte	0
+ 1029 005e 00       		.byte	0
+ 1030 005f 08       		.uleb128 0x8
+ 1031 0060 01       		.uleb128 0x1
+ 1032 0061 01       		.byte	0x1
+ 1033 0062 49       		.uleb128 0x49
+ 1034 0063 13       		.uleb128 0x13
+ 1035 0064 01       		.uleb128 0x1
+ 1036 0065 13       		.uleb128 0x13
+ 1037 0066 00       		.byte	0
+ 1038 0067 00       		.byte	0
+ 1039 0068 09       		.uleb128 0x9
+ 1040 0069 21       		.uleb128 0x21
+ 1041 006a 00       		.byte	0
+ 1042 006b 49       		.uleb128 0x49
+ 1043 006c 13       		.uleb128 0x13
+ 1044 006d 2F       		.uleb128 0x2f
+ 1045 006e 0B       		.uleb128 0xb
+ 1046 006f 00       		.byte	0
+ 1047 0070 00       		.byte	0
+ 1048 0071 0A       		.uleb128 0xa
+ 1049 0072 13       		.uleb128 0x13
+ 1050 0073 01       		.byte	0x1
+ 1051 0074 0B       		.uleb128 0xb
+ 1052 0075 0B       		.uleb128 0xb
+ 1053 0076 3A       		.uleb128 0x3a
+ 1054 0077 0B       		.uleb128 0xb
+ 1055 0078 3B       		.uleb128 0x3b
+ 1056 0079 0B       		.uleb128 0xb
+ 1057 007a 01       		.uleb128 0x1
+ 1058 007b 13       		.uleb128 0x13
+ 1059 007c 00       		.byte	0
+ 1060 007d 00       		.byte	0
+ 1061 007e 0B       		.uleb128 0xb
+ 1062 007f 2E       		.uleb128 0x2e
+ 1063 0080 01       		.byte	0x1
+ 1064 0081 3F       		.uleb128 0x3f
+ 1065 0082 19       		.uleb128 0x19
+ 1066 0083 03       		.uleb128 0x3
+ 1067 0084 0E       		.uleb128 0xe
+ 1068 0085 3A       		.uleb128 0x3a
+ 1069 0086 0B       		.uleb128 0xb
+ 1070 0087 3B       		.uleb128 0x3b
+ 1071 0088 0B       		.uleb128 0xb
+ 1072 0089 49       		.uleb128 0x49
+ 1073 008a 13       		.uleb128 0x13
+ 1074 008b 11       		.uleb128 0x11
+ 1075 008c 01       		.uleb128 0x1
+ 1076 008d 12       		.uleb128 0x12
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 22
+
+
+ 1077 008e 06       		.uleb128 0x6
+ 1078 008f 40       		.uleb128 0x40
+ 1079 0090 18       		.uleb128 0x18
+ 1080 0091 9642     		.uleb128 0x2116
+ 1081 0093 19       		.uleb128 0x19
+ 1082 0094 01       		.uleb128 0x1
+ 1083 0095 13       		.uleb128 0x13
+ 1084 0096 00       		.byte	0
+ 1085 0097 00       		.byte	0
+ 1086 0098 0C       		.uleb128 0xc
+ 1087 0099 34       		.uleb128 0x34
+ 1088 009a 00       		.byte	0
+ 1089 009b 03       		.uleb128 0x3
+ 1090 009c 0E       		.uleb128 0xe
+ 1091 009d 3A       		.uleb128 0x3a
+ 1092 009e 0B       		.uleb128 0xb
+ 1093 009f 3B       		.uleb128 0x3b
+ 1094 00a0 0B       		.uleb128 0xb
+ 1095 00a1 49       		.uleb128 0x49
+ 1096 00a2 13       		.uleb128 0x13
+ 1097 00a3 02       		.uleb128 0x2
+ 1098 00a4 18       		.uleb128 0x18
+ 1099 00a5 00       		.byte	0
+ 1100 00a6 00       		.byte	0
+ 1101 00a7 0D       		.uleb128 0xd
+ 1102 00a8 0B       		.uleb128 0xb
+ 1103 00a9 01       		.byte	0x1
+ 1104 00aa 11       		.uleb128 0x11
+ 1105 00ab 01       		.uleb128 0x1
+ 1106 00ac 12       		.uleb128 0x12
+ 1107 00ad 06       		.uleb128 0x6
+ 1108 00ae 00       		.byte	0
+ 1109 00af 00       		.byte	0
+ 1110 00b0 0E       		.uleb128 0xe
+ 1111 00b1 34       		.uleb128 0x34
+ 1112 00b2 00       		.byte	0
+ 1113 00b3 03       		.uleb128 0x3
+ 1114 00b4 08       		.uleb128 0x8
+ 1115 00b5 3A       		.uleb128 0x3a
+ 1116 00b6 0B       		.uleb128 0xb
+ 1117 00b7 3B       		.uleb128 0x3b
+ 1118 00b8 0B       		.uleb128 0xb
+ 1119 00b9 49       		.uleb128 0x49
+ 1120 00ba 13       		.uleb128 0x13
+ 1121 00bb 02       		.uleb128 0x2
+ 1122 00bc 18       		.uleb128 0x18
+ 1123 00bd 00       		.byte	0
+ 1124 00be 00       		.byte	0
+ 1125 00bf 0F       		.uleb128 0xf
+ 1126 00c0 2E       		.uleb128 0x2e
+ 1127 00c1 01       		.byte	0x1
+ 1128 00c2 3F       		.uleb128 0x3f
+ 1129 00c3 19       		.uleb128 0x19
+ 1130 00c4 03       		.uleb128 0x3
+ 1131 00c5 0E       		.uleb128 0xe
+ 1132 00c6 3A       		.uleb128 0x3a
+ 1133 00c7 0B       		.uleb128 0xb
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 23
+
+
+ 1134 00c8 3B       		.uleb128 0x3b
+ 1135 00c9 0B       		.uleb128 0xb
+ 1136 00ca 27       		.uleb128 0x27
+ 1137 00cb 19       		.uleb128 0x19
+ 1138 00cc 11       		.uleb128 0x11
+ 1139 00cd 01       		.uleb128 0x1
+ 1140 00ce 12       		.uleb128 0x12
+ 1141 00cf 06       		.uleb128 0x6
+ 1142 00d0 40       		.uleb128 0x40
+ 1143 00d1 18       		.uleb128 0x18
+ 1144 00d2 9642     		.uleb128 0x2116
+ 1145 00d4 19       		.uleb128 0x19
+ 1146 00d5 01       		.uleb128 0x1
+ 1147 00d6 13       		.uleb128 0x13
+ 1148 00d7 00       		.byte	0
+ 1149 00d8 00       		.byte	0
+ 1150 00d9 10       		.uleb128 0x10
+ 1151 00da 05       		.uleb128 0x5
+ 1152 00db 00       		.byte	0
+ 1153 00dc 03       		.uleb128 0x3
+ 1154 00dd 08       		.uleb128 0x8
+ 1155 00de 3A       		.uleb128 0x3a
+ 1156 00df 0B       		.uleb128 0xb
+ 1157 00e0 3B       		.uleb128 0x3b
+ 1158 00e1 0B       		.uleb128 0xb
+ 1159 00e2 49       		.uleb128 0x49
+ 1160 00e3 13       		.uleb128 0x13
+ 1161 00e4 02       		.uleb128 0x2
+ 1162 00e5 18       		.uleb128 0x18
+ 1163 00e6 00       		.byte	0
+ 1164 00e7 00       		.byte	0
+ 1165 00e8 11       		.uleb128 0x11
+ 1166 00e9 0F       		.uleb128 0xf
+ 1167 00ea 00       		.byte	0
+ 1168 00eb 0B       		.uleb128 0xb
+ 1169 00ec 0B       		.uleb128 0xb
+ 1170 00ed 49       		.uleb128 0x49
+ 1171 00ee 13       		.uleb128 0x13
+ 1172 00ef 00       		.byte	0
+ 1173 00f0 00       		.byte	0
+ 1174 00f1 12       		.uleb128 0x12
+ 1175 00f2 2E       		.uleb128 0x2e
+ 1176 00f3 01       		.byte	0x1
+ 1177 00f4 3F       		.uleb128 0x3f
+ 1178 00f5 19       		.uleb128 0x19
+ 1179 00f6 03       		.uleb128 0x3
+ 1180 00f7 0E       		.uleb128 0xe
+ 1181 00f8 3A       		.uleb128 0x3a
+ 1182 00f9 0B       		.uleb128 0xb
+ 1183 00fa 3B       		.uleb128 0x3b
+ 1184 00fb 0B       		.uleb128 0xb
+ 1185 00fc 27       		.uleb128 0x27
+ 1186 00fd 19       		.uleb128 0x19
+ 1187 00fe 11       		.uleb128 0x11
+ 1188 00ff 01       		.uleb128 0x1
+ 1189 0100 12       		.uleb128 0x12
+ 1190 0101 06       		.uleb128 0x6
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 24
+
+
+ 1191 0102 40       		.uleb128 0x40
+ 1192 0103 18       		.uleb128 0x18
+ 1193 0104 9742     		.uleb128 0x2117
+ 1194 0106 19       		.uleb128 0x19
+ 1195 0107 01       		.uleb128 0x1
+ 1196 0108 13       		.uleb128 0x13
+ 1197 0109 00       		.byte	0
+ 1198 010a 00       		.byte	0
+ 1199 010b 13       		.uleb128 0x13
+ 1200 010c 2E       		.uleb128 0x2e
+ 1201 010d 01       		.byte	0x1
+ 1202 010e 3F       		.uleb128 0x3f
+ 1203 010f 19       		.uleb128 0x19
+ 1204 0110 03       		.uleb128 0x3
+ 1205 0111 0E       		.uleb128 0xe
+ 1206 0112 3A       		.uleb128 0x3a
+ 1207 0113 0B       		.uleb128 0xb
+ 1208 0114 3B       		.uleb128 0x3b
+ 1209 0115 0B       		.uleb128 0xb
+ 1210 0116 27       		.uleb128 0x27
+ 1211 0117 19       		.uleb128 0x19
+ 1212 0118 49       		.uleb128 0x49
+ 1213 0119 13       		.uleb128 0x13
+ 1214 011a 11       		.uleb128 0x11
+ 1215 011b 01       		.uleb128 0x1
+ 1216 011c 12       		.uleb128 0x12
+ 1217 011d 06       		.uleb128 0x6
+ 1218 011e 40       		.uleb128 0x40
+ 1219 011f 18       		.uleb128 0x18
+ 1220 0120 9642     		.uleb128 0x2116
+ 1221 0122 19       		.uleb128 0x19
+ 1222 0123 01       		.uleb128 0x1
+ 1223 0124 13       		.uleb128 0x13
+ 1224 0125 00       		.byte	0
+ 1225 0126 00       		.byte	0
+ 1226 0127 14       		.uleb128 0x14
+ 1227 0128 05       		.uleb128 0x5
+ 1228 0129 00       		.byte	0
+ 1229 012a 03       		.uleb128 0x3
+ 1230 012b 0E       		.uleb128 0xe
+ 1231 012c 3A       		.uleb128 0x3a
+ 1232 012d 0B       		.uleb128 0xb
+ 1233 012e 3B       		.uleb128 0x3b
+ 1234 012f 0B       		.uleb128 0xb
+ 1235 0130 49       		.uleb128 0x49
+ 1236 0131 13       		.uleb128 0x13
+ 1237 0132 02       		.uleb128 0x2
+ 1238 0133 18       		.uleb128 0x18
+ 1239 0134 00       		.byte	0
+ 1240 0135 00       		.byte	0
+ 1241 0136 15       		.uleb128 0x15
+ 1242 0137 34       		.uleb128 0x34
+ 1243 0138 00       		.byte	0
+ 1244 0139 03       		.uleb128 0x3
+ 1245 013a 0E       		.uleb128 0xe
+ 1246 013b 3A       		.uleb128 0x3a
+ 1247 013c 0B       		.uleb128 0xb
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 25
+
+
+ 1248 013d 3B       		.uleb128 0x3b
+ 1249 013e 05       		.uleb128 0x5
+ 1250 013f 49       		.uleb128 0x49
+ 1251 0140 13       		.uleb128 0x13
+ 1252 0141 3F       		.uleb128 0x3f
+ 1253 0142 19       		.uleb128 0x19
+ 1254 0143 3C       		.uleb128 0x3c
+ 1255 0144 19       		.uleb128 0x19
+ 1256 0145 00       		.byte	0
+ 1257 0146 00       		.byte	0
+ 1258 0147 16       		.uleb128 0x16
+ 1259 0148 35       		.uleb128 0x35
+ 1260 0149 00       		.byte	0
+ 1261 014a 49       		.uleb128 0x49
+ 1262 014b 13       		.uleb128 0x13
+ 1263 014c 00       		.byte	0
+ 1264 014d 00       		.byte	0
+ 1265 014e 00       		.byte	0
+ 1266              		.section	.debug_aranges,"",%progbits
+ 1267 0000 3C000000 		.4byte	0x3c
+ 1268 0004 0200     		.2byte	0x2
+ 1269 0006 00000000 		.4byte	.Ldebug_info0
+ 1270 000a 04       		.byte	0x4
+ 1271 000b 00       		.byte	0
+ 1272 000c 0000     		.2byte	0
+ 1273 000e 0000     		.2byte	0
+ 1274 0010 00000000 		.4byte	.LFB64
+ 1275 0014 0C010000 		.4byte	.LFE64-.LFB64
+ 1276 0018 00000000 		.4byte	.LFB65
+ 1277 001c 74000000 		.4byte	.LFE65-.LFB65
+ 1278 0020 00000000 		.4byte	.LFB66
+ 1279 0024 28000000 		.4byte	.LFE66-.LFB66
+ 1280 0028 00000000 		.4byte	.LFB67
+ 1281 002c 84000000 		.4byte	.LFE67-.LFB67
+ 1282 0030 00000000 		.4byte	.LFB68
+ 1283 0034 B0000000 		.4byte	.LFE68-.LFB68
+ 1284 0038 00000000 		.4byte	0
+ 1285 003c 00000000 		.4byte	0
+ 1286              		.section	.debug_ranges,"",%progbits
+ 1287              	.Ldebug_ranges0:
+ 1288 0000 00000000 		.4byte	.LFB64
+ 1289 0004 0C010000 		.4byte	.LFE64
+ 1290 0008 00000000 		.4byte	.LFB65
+ 1291 000c 74000000 		.4byte	.LFE65
+ 1292 0010 00000000 		.4byte	.LFB66
+ 1293 0014 28000000 		.4byte	.LFE66
+ 1294 0018 00000000 		.4byte	.LFB67
+ 1295 001c 84000000 		.4byte	.LFE67
+ 1296 0020 00000000 		.4byte	.LFB68
+ 1297 0024 B0000000 		.4byte	.LFE68
+ 1298 0028 00000000 		.4byte	0
+ 1299 002c 00000000 		.4byte	0
+ 1300              		.section	.debug_line,"",%progbits
+ 1301              	.Ldebug_line0:
+ 1302 0000 2A020000 		.section	.debug_str,"MS",%progbits,1
+ 1302      02006B01 
+ 1302      00000201 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 26
+
+
+ 1302      FB0E0D00 
+ 1302      01010101 
+ 1303              	.LASF37:
+ 1304 0000 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1304      43313120 
+ 1304      352E342E 
+ 1304      31203230 
+ 1304      31363036 
+ 1305 0033 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1305      20726576 
+ 1305      6973696F 
+ 1305      6E203233 
+ 1305      37373135 
+ 1306 0066 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1306      66756E63 
+ 1306      74696F6E 
+ 1306      2D736563 
+ 1306      74696F6E 
+ 1307              	.LASF35:
+ 1308 008e 766F6C74 		.ascii	"voltages_test\000"
+ 1308      61676573 
+ 1308      5F746573 
+ 1308      7400
+ 1309              	.LASF9:
+ 1310 009c 5F5F696E 		.ascii	"__int32_t\000"
+ 1310      7433325F 
+ 1310      7400
+ 1311              	.LASF21:
+ 1312 00a6 74657374 		.ascii	"test_t\000"
+ 1312      5F7400
+ 1313              	.LASF4:
+ 1314 00ad 6C6F6E67 		.ascii	"long int\000"
+ 1314      20696E74 
+ 1314      00
+ 1315              	.LASF31:
+ 1316 00b6 736F7274 		.ascii	"sort32\000"
+ 1316      333200
+ 1317              	.LASF3:
+ 1318 00bd 73686F72 		.ascii	"short unsigned int\000"
+ 1318      7420756E 
+ 1318      7369676E 
+ 1318      65642069 
+ 1318      6E7400
+ 1319              	.LASF24:
+ 1320 00d0 766F6C74 		.ascii	"voltage_charge_current\000"
+ 1320      6167655F 
+ 1320      63686172 
+ 1320      67655F63 
+ 1320      75727265 
+ 1321              	.LASF19:
+ 1322 00e7 73746174 		.ascii	"status\000"
+ 1322      757300
+ 1323              	.LASF32:
+ 1324 00ee 73776170 		.ascii	"swap32\000"
+ 1324      333200
+ 1325              	.LASF13:
+ 1326 00f5 666C6F61 		.ascii	"float\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 27
+
+
+ 1326      7400
+ 1327              	.LASF39:
+ 1328 00fb 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
+ 1328      73657273 
+ 1328      5C626B5C 
+ 1328      446F6375 
+ 1328      6D656E74 
+ 1329 0128 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
+ 1329      6E6F746F 
+ 1329      72694F53 
+ 1329      5C6E6F74 
+ 1329      6F72694F 
+ 1330              	.LASF1:
+ 1331 0144 756E7369 		.ascii	"unsigned char\000"
+ 1331      676E6564 
+ 1331      20636861 
+ 1331      7200
+ 1332              	.LASF5:
+ 1333 0152 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1333      20756E73 
+ 1333      69676E65 
+ 1333      6420696E 
+ 1333      7400
+ 1334              	.LASF12:
+ 1335 0164 696E7433 		.ascii	"int32\000"
+ 1335      3200
+ 1336              	.LASF27:
+ 1337 016a 766F6C74 		.ascii	"voltage\000"
+ 1337      61676500 
+ 1338              	.LASF33:
+ 1339 0172 61727261 		.ascii	"array\000"
+ 1339      7900
+ 1340              	.LASF41:
+ 1341 0178 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1341      52784275 
+ 1341      66666572 
+ 1341      00
+ 1342              	.LASF14:
+ 1343 0185 646F7562 		.ascii	"double\000"
+ 1343      6C6500
+ 1344              	.LASF22:
+ 1345 018c 766F6C74 		.ascii	"voltage_battery\000"
+ 1345      6167655F 
+ 1345      62617474 
+ 1345      65727900 
+ 1346              	.LASF36:
+ 1347 019c 74657374 		.ascii	"test\000"
+ 1347      00
+ 1348              	.LASF8:
+ 1349 01a1 756E7369 		.ascii	"unsigned int\000"
+ 1349      676E6564 
+ 1349      20696E74 
+ 1349      00
+ 1350              	.LASF7:
+ 1351 01ae 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1351      206C6F6E 
+ 1351      6720756E 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 28
+
+
+ 1351      7369676E 
+ 1351      65642069 
+ 1352              	.LASF29:
+ 1353 01c5 72656164 		.ascii	"readings\000"
+ 1353      696E6773 
+ 1353      00
+ 1354              	.LASF23:
+ 1355 01ce 766F6C74 		.ascii	"voltage_solar\000"
+ 1355      6167655F 
+ 1355      736F6C61 
+ 1355      7200
+ 1356              	.LASF20:
+ 1357 01dc 72656173 		.ascii	"reason\000"
+ 1357      6F6E00
+ 1358              	.LASF10:
+ 1359 01e3 696E7433 		.ascii	"int32_t\000"
+ 1359      325F7400 
+ 1360              	.LASF17:
+ 1361 01eb 73697A65 		.ascii	"sizetype\000"
+ 1361      74797065 
+ 1361      00
+ 1362              	.LASF6:
+ 1363 01f4 6C6F6E67 		.ascii	"long long int\000"
+ 1363      206C6F6E 
+ 1363      6720696E 
+ 1363      7400
+ 1364              	.LASF26:
+ 1365 0202 766F6C74 		.ascii	"voltage_t\000"
+ 1365      6167655F 
+ 1365      7400
+ 1366              	.LASF15:
+ 1367 020c 63686172 		.ascii	"char\000"
+ 1367      00
+ 1368              	.LASF25:
+ 1369 0211 76616C69 		.ascii	"valid\000"
+ 1369      6400
+ 1370              	.LASF2:
+ 1371 0217 73686F72 		.ascii	"short int\000"
+ 1371      7420696E 
+ 1371      7400
+ 1372              	.LASF11:
+ 1373 0221 75696E74 		.ascii	"uint8\000"
+ 1373      3800
+ 1374              	.LASF18:
+ 1375 0227 74657374 		.ascii	"test_name\000"
+ 1375      5F6E616D 
+ 1375      6500
+ 1376              	.LASF30:
+ 1377 0231 766F6C74 		.ascii	"voltage_take_readings\000"
+ 1377      6167655F 
+ 1377      74616B65 
+ 1377      5F726561 
+ 1377      64696E67 
+ 1378              	.LASF40:
+ 1379 0247 66696E64 		.ascii	"find_median32\000"
+ 1379      5F6D6564 
+ 1379      69616E33 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccvSVf2E.s 			page 29
+
+
+ 1379      3200
+ 1380              	.LASF28:
+ 1381 0255 6368616E 		.ascii	"channels\000"
+ 1381      6E656C73 
+ 1381      00
+ 1382              	.LASF16:
+ 1383 025e 6C6F6E67 		.ascii	"long double\000"
+ 1383      20646F75 
+ 1383      626C6500 
+ 1384              	.LASF34:
+ 1385 026a 6D656469 		.ascii	"median\000"
+ 1385      616E00
+ 1386              	.LASF0:
+ 1387 0271 7369676E 		.ascii	"signed char\000"
+ 1387      65642063 
+ 1387      68617200 
+ 1388              	.LASF38:
+ 1389 027d 766F6C74 		.ascii	"voltages.c\000"
+ 1389      61676573 
+ 1389      2E6300
+ 1390              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

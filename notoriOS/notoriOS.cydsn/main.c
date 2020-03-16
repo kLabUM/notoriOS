@@ -13,6 +13,7 @@
 #include "notoriOS.h"
 #include "level_sensor.h"
 #include "sd_card.h"
+#include "voltages.h"
 
 
 //global variables
@@ -177,6 +178,7 @@ void test_components(){
 
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     test_t t_sd_card = SD_card_test();
+    test_t t_voltages = voltages_test();
   
     //test modem
     //test SD card
