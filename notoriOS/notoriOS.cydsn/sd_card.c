@@ -191,11 +191,7 @@ void SD_power_down(){
     SD_Card_Power_Write(OFF);   
     emFile_Sleep();
     FS_DeInit(); 
-    emFile_miso0_SetDriveMode(PIN_DM_DIG_HIZ);
-    emFile_mosi0_SetDriveMode(PIN_DM_DIG_HIZ);
-    emFile_sclk0_SetDriveMode(PIN_DM_DIG_HIZ);
-    emFile_SPI0_CS_SetDriveMode(PIN_DM_DIG_HIZ);
-
+    
     emFile_miso0_Write(OFF);
     emFile_mosi0_Write(OFF);
     emFile_sclk0_Write(OFF);
