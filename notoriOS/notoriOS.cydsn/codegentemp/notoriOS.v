@@ -1,6 +1,10 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
+<<<<<<< HEAD
 // 03/16/2020 at 14:57
+=======
+// 07/01/2019 at 23:58
+>>>>>>> parent of bb45d96... Sleep power downt to 20uA
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -2159,6 +2163,7 @@ module top ;
 
 	assign tmpOE__AN_VSOL_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
+<<<<<<< HEAD
 	wire [0:0] tmpOE__AN_CHRG_net;
 	wire [0:0] tmpFB_0__AN_CHRG_net;
 	wire [0:0] tmpIO_0__AN_CHRG_net;
@@ -2310,6 +2315,8 @@ module top ;
 
 	assign tmpOE__Battery_Voltage_Enable_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
+=======
+>>>>>>> parent of bb45d96... Sleep power downt to 20uA
 
 
 endmodule

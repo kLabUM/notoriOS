@@ -39,6 +39,7 @@
 #include "AN_VBAT.h"
 #include "Power_Modem_aliases.h"
 #include "Power_Modem.h"
+<<<<<<< HEAD
 #include "Modem_RX_aliases.h"
 #include "Modem_RX.h"
 #include "Modem_TX_aliases.h"
@@ -74,6 +75,8 @@
 #include "ADC_IRQ.h"
 #include "ADC_theACLK.h"
 #include "cy_em_eeprom.h"
+=======
+>>>>>>> parent of bb45d96... Sleep power downt to 20uA
 #include "core_cm3_psoc5.h"
 #include "CyDmac.h"
 #include "CyFlash.h"
