@@ -26,12 +26,17 @@ char    SD_body[3000]   = {'\0'};
 char    SD_filename[30] = "Filename.txt";
 char    SD_filemode[5]  = "a+";
 
+void SD_power_up();
+void SD_power_down();
+
+///NOTE -- IF SD CARD is not plugged it, the board will drawe more power.
+
+
+
 void SD_init()
 {
-    FS_Init();  
-    emFile_Sleep();
-    return;
-    
+
+
     /* Uncomment to enable support for long file names
      * Note: To use long file names (LFN) support on PSoC 5LP devices, you must call
      * FS_FAT_SupportLFN(). For PSoC 3 devices, this feature is enabled by default.
@@ -51,22 +56,14 @@ uint8 SD_mkdir(char* dir_name)
     uint8 status = 9; // initialize to a value not 0 or -1
     
     // Wakeup the SD Card component
-    emFile_Wakeup();
-    
-    // We are using the "No Long File Name (LFN)" library,
-    //  so names are limited to 8 characters and 3 bytes for extensions
-    // Turn on the SD Card
-    SD_Card_Power_Write(ON);
+    SD_power_up();
     
     sprintf(SD_dir,"%.8s",dir_name); 
     status = (uint8) ( 1+FS_MkDir(SD_dir) );
     // The arithmetic makes it 0 if a failure, 1 if successful
     
     // Turn off the SD Card
-    SD_Card_Power_Write(OFF);   
-    
-    // Sleep the SD Card component
-    emFile_Sleep();
+    SD_power_down();
     
     return status;
 }
@@ -83,22 +80,14 @@ uint8 SD_rmfile(const char * fileName)
     uint8 status = 9; // initialize to a value not 0 or -1
     
     // Wakeup the SD Card component
-    emFile_Wakeup();
-    
-    // We are using the "No Long File Name (LFN)" library,
-    //  so names are limited to 8 characters and 3 bytes for extensions
-    // Turn on the SD Card
-    SD_Card_Power_Write(ON);
+    SD_power_up();
     
    
     status = (uint8) ( 1+FS_Remove(fileName));
     // The arithmetic makes it 0 if a failure, 1 if successful
     
     // Turn off the SD Card
-    SD_Card_Power_Write(OFF);   
-    
-    // Sleep the SD Card component
-    emFile_Sleep();
+    SD_power_down();
     
     return status;
 }
@@ -120,10 +109,7 @@ uint8 SD_write(const char * fileName, const char * pMode, const void * pData)
     FS_FILE *pFile;
 
     // Wakeup the SD Card component
-    emFile_Wakeup();
-    
-    // Turn on the SD Card
-    SD_Card_Power_Write(ON);
+    SD_power_up();
     
     pFile = FS_FOpen(fileName, pMode);
     
@@ -144,10 +130,8 @@ uint8 SD_write(const char * fileName, const char * pMode, const void * pData)
     }
     
     // Turn off the SD Card
-    SD_Card_Power_Write(OFF);  
-    
-    // Sleep the SD Card component
-    emFile_Sleep();
+    SD_power_down();
+
     
     return status;
 }
@@ -166,11 +150,8 @@ uint8 SD_read(const char * fileName,  void * pData, unsigned long NumBytes)
     uint8 status = 9u; // initialize to a value not 0 or 1
     FS_FILE *pFile;
 
-    // Wakeup the SD Card component
-    emFile_Wakeup();
-    
-    // Turn on the SD Card
-    SD_Card_Power_Write(ON);
+    // Powerup the SD Card component
+    SD_power_up();
     
     pFile = FS_FOpen(fileName, "r");
     
@@ -190,13 +171,36 @@ uint8 SD_read(const char * fileName,  void * pData, unsigned long NumBytes)
         // The arithmetic makes it 0 if a failure, 1 if successful
     }
     
-    // Turn off the SD Card
-    SD_Card_Power_Write(OFF);  
-    
-    // Sleep the SD Card component
-    emFile_Sleep();
+    // power down the SD card
+    SD_power_down();
     
     return status;
+}
+
+void SD_power_up(){
+
+    emFile_Wakeup();
+    
+    // Turn on the SD Card
+    SD_Card_Power_Write(ON);
+    FS_Init();  
+}
+
+void SD_power_down(){
+    // Turn off the SD Card
+    SD_Card_Power_Write(OFF);   
+    emFile_Sleep();
+    FS_DeInit(); 
+    emFile_miso0_SetDriveMode(PIN_DM_DIG_HIZ);
+    emFile_mosi0_SetDriveMode(PIN_DM_DIG_HIZ);
+    emFile_sclk0_SetDriveMode(PIN_DM_DIG_HIZ);
+    emFile_SPI0_CS_SetDriveMode(PIN_DM_DIG_HIZ);
+
+    emFile_miso0_Write(OFF);
+    emFile_mosi0_Write(OFF);
+    emFile_sclk0_Write(OFF);
+    emFile_SPI0_CS_Write(OFF);
+//    SD_Chip_Detect_Write(OFF);
 }
 
 

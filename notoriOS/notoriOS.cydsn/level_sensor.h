@@ -24,9 +24,9 @@ void uart_clear(void);
 void wait_for(const char *regex, uint32_t timeout);
 level_sensor_t level_sensor_take_reading();
 test_t level_sensor_test();
-void sort16(int16 a[],int16 n);
-void swap16(int16 *p,int16 *q);
-uint16 find_median16(int16 array[] , uint8 n);
+void sort(int16 a[],int16 n);
+void swap(int16 *p,int16 *q);
+uint16 find_median(int16 array[] , uint8 n);
 
 
 #endif

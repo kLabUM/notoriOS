@@ -53,9 +53,6 @@ void ReadyOrNot()
     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     //timeToMeasure = 0;
     
-    //initilized SD card
-    SD_init();
-    
     
 }
 
@@ -91,6 +88,8 @@ int WorkWorkWorkWorkWorkWork()
 // ==============================================
 void LayBack()
 {
+    
+    
     // Prepares system clocks for the Sleep mode
     CyPmSaveClocks();
     
@@ -98,6 +97,7 @@ void LayBack()
     //  - PM_SLEEP_TIME_NONE: wakeup time is defined by Sleep Timer
     //  - PM_SLEEP_SRC_CTW :  wakeup on CTW sources is allowed
      //  - If real-time clock is used, it will also wake the device
+    //CyPmHibernate();
     CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW);
   
     // Restore clock configuration
@@ -179,7 +179,8 @@ void test_components(){
     test_t t_sd_card = SD_card_test();
     test_t t_voltages = voltages_test();
   
-    
+    int c = 0;
+    c++;
     //test modem
     //test SD card
     //analog: test battery voltage, solar voltage, and solar current
@@ -192,13 +193,9 @@ int main(void)
     CyGlobalIntEnable; /* Enable global interrupts. */
 
     ReadyOrNot();
-<<<<<<< HEAD
     
     test_components();
    
-=======
-
->>>>>>> parent of bb45d96... Sleep power downt to 20uA
     for(;;)
     {
        if( ! WorkWorkWorkWorkWorkWork() )

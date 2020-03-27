@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: AN_CHRG.c  
+* File Name: Modem_TX.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "AN_CHRG.h"
+#include "Modem_TX.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 AN_CHRG__PORT == 15 && ((AN_CHRG__MASK & 0xC0) != 0))
+	 Modem_TX__PORT == 15 && ((Modem_TX__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: AN_CHRG_Write
+* Function Name: Modem_TX_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet AN_CHRG_SUT.c usage_AN_CHRG_Write
+*  \snippet Modem_TX_SUT.c usage_Modem_TX_Write
 *******************************************************************************/
-void AN_CHRG_Write(uint8 value)
+void Modem_TX_Write(uint8 value)
 {
-    uint8 staticBits = (AN_CHRG_DR & (uint8)(~AN_CHRG_MASK));
-    AN_CHRG_DR = staticBits | ((uint8)(value << AN_CHRG_SHIFT) & AN_CHRG_MASK);
+    uint8 staticBits = (Modem_TX_DR & (uint8)(~Modem_TX_MASK));
+    Modem_TX_DR = staticBits | ((uint8)(value << Modem_TX_SHIFT) & Modem_TX_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: AN_CHRG_SetDriveMode
+* Function Name: Modem_TX_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void AN_CHRG_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet AN_CHRG_SUT.c usage_AN_CHRG_SetDriveMode
+*  \snippet Modem_TX_SUT.c usage_Modem_TX_SetDriveMode
 *******************************************************************************/
-void AN_CHRG_SetDriveMode(uint8 mode)
+void Modem_TX_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(AN_CHRG_0, mode);
+	CyPins_SetPinDriveMode(Modem_TX_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: AN_CHRG_Read
+* Function Name: Modem_TX_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void AN_CHRG_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet AN_CHRG_SUT.c usage_AN_CHRG_Read  
+*  \snippet Modem_TX_SUT.c usage_Modem_TX_Read  
 *******************************************************************************/
-uint8 AN_CHRG_Read(void)
+uint8 Modem_TX_Read(void)
 {
-    return (AN_CHRG_PS & AN_CHRG_MASK) >> AN_CHRG_SHIFT;
+    return (Modem_TX_PS & Modem_TX_MASK) >> Modem_TX_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: AN_CHRG_ReadDataReg
+* Function Name: Modem_TX_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 AN_CHRG_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred AN_CHRG_Read() API because the 
-* AN_CHRG_ReadDataReg() reads the data register instead of the status 
+* preferred Modem_TX_Read() API because the 
+* Modem_TX_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 AN_CHRG_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet AN_CHRG_SUT.c usage_AN_CHRG_ReadDataReg 
+*  \snippet Modem_TX_SUT.c usage_Modem_TX_ReadDataReg 
 *******************************************************************************/
-uint8 AN_CHRG_ReadDataReg(void)
+uint8 Modem_TX_ReadDataReg(void)
 {
-    return (AN_CHRG_DR & AN_CHRG_MASK) >> AN_CHRG_SHIFT;
+    return (Modem_TX_DR & Modem_TX_MASK) >> Modem_TX_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(AN_CHRG_INTSTAT) 
+#if defined(Modem_TX_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: AN_CHRG_SetInterruptMode
+    * Function Name: Modem_TX_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 AN_CHRG_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use AN_CHRG_INTR_ALL to configure the
+    *  component. Or you may use Modem_TX_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - AN_CHRG_0_INTR       (First pin in the list)
-    *  - AN_CHRG_1_INTR       (Second pin in the list)
+    *  - Modem_TX_0_INTR       (First pin in the list)
+    *  - Modem_TX_1_INTR       (Second pin in the list)
     *  - ...
-    *  - AN_CHRG_INTR_ALL     (All pins in Pins component)
+    *  - Modem_TX_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 AN_CHRG_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet AN_CHRG_SUT.c usage_AN_CHRG_SetInterruptMode
+    *  \snippet Modem_TX_SUT.c usage_Modem_TX_SetInterruptMode
     *******************************************************************************/
-    void AN_CHRG_SetInterruptMode(uint16 position, uint16 mode)
+    void Modem_TX_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & AN_CHRG_0_INTR) != 0u) 
+		if((position & Modem_TX_0_INTR) != 0u) 
 		{ 
-			 AN_CHRG_0_INTTYPE_REG = (uint8)mode; 
+			 Modem_TX_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: AN_CHRG_ClearInterrupt
+    * Function Name: Modem_TX_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 AN_CHRG_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet AN_CHRG_SUT.c usage_AN_CHRG_ClearInterrupt
+    *  \snippet Modem_TX_SUT.c usage_Modem_TX_ClearInterrupt
     *******************************************************************************/
-    uint8 AN_CHRG_ClearInterrupt(void)
+    uint8 Modem_TX_ClearInterrupt(void)
     {
-        return (AN_CHRG_INTSTAT & AN_CHRG_MASK) >> AN_CHRG_SHIFT;
+        return (Modem_TX_INTSTAT & Modem_TX_MASK) >> Modem_TX_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

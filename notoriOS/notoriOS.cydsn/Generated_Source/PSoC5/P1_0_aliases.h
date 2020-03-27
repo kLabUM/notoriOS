@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: AN_CHRG.h  
+* File Name: P1_0.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_AN_CHRG_ALIASES_H) /* Pins AN_CHRG_ALIASES_H */
-#define CY_PINS_AN_CHRG_ALIASES_H
+#if !defined(CY_PINS_P1_0_ALIASES_H) /* Pins P1_0_ALIASES_H */
+#define CY_PINS_P1_0_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define AN_CHRG_0			(AN_CHRG__0__PC)
-#define AN_CHRG_0_INTR	((uint16)((uint16)0x0001u << AN_CHRG__0__SHIFT))
+#define P1_0_0			(P1_0__0__PC)
+#define P1_0_0_INTR	((uint16)((uint16)0x0001u << P1_0__0__SHIFT))
 
-#define AN_CHRG_INTR_ALL	 ((uint16)(AN_CHRG_0_INTR))
+#define P1_0_INTR_ALL	 ((uint16)(P1_0_0_INTR))
 
-#endif /* End Pins AN_CHRG_ALIASES_H */
+#endif /* End Pins P1_0_ALIASES_H */
 
 
 /* [] END OF FILE */

@@ -28,11 +28,11 @@ extern void AMux_Unset(uint8 channel);
 /* AMux__addrTable is an implementation detail of the AMux.
    Code that depends on it may be incompatible with other versions
    of PSoC Creator. */
-extern uint8 CYXDATA * const CYCODE AMux__addrTable[6];
+extern uint8 CYXDATA * const CYCODE AMux__addrTable[4];
 /* AMux__maskTable is an implementation detail of the AMux.
    Code that depends on it may be incompatible with other versions
    of PSoC Creator. */
-extern const uint8 CYCODE AMux__maskTable[6];
+extern const uint8 CYCODE AMux__maskTable[4];
 extern void ADC_AMux_Set(uint8 channel);
 extern void ADC_AMux_Unset(uint8 channel);
 /* ADC_AMux__addrTable is an implementation detail of the AMux.
