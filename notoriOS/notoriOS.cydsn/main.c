@@ -14,6 +14,11 @@
 #include "level_sensor.h"
 #include "sd_card.h"
 #include "voltages.h"
+#include "debug.h"
+
+
+
+
 
 
 //global variables
@@ -47,6 +52,7 @@ void ReadyOrNot()
     
     RTC_WriteIntervalMask(0b11111111);
     RTC_Start();
+    debug_start();
     
     alarmMeasure = CreateAlarm(2,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 0;
@@ -66,11 +72,20 @@ int WorkWorkWorkWorkWorkWork()
 {
    
     if(timeToMeasure){
-        //CyDelay(1000u);
+       
+       printf("OMG-----");
+       printf("IT\r\n");
+       printf("WORKED\r\n");
+       
        LED_Write(1u);
-        CyDelay(100u);
-        LED_Write(0u);
-        timeToMeasure = 0u;
+       //CyDelay(100u);
+       LED_Write(0u);
+       timeToMeasure = 0u;
+       printf("RLLYqwertyuiopasdfghjklzxcvbnm\r\n");
+       
+      //printf("OFF\r\n");
+       
+       
     }
     //if(timeToMeasure2){
         //dosomething
@@ -89,7 +104,7 @@ int WorkWorkWorkWorkWorkWork()
 void LayBack()
 {
     
-    
+    debug_sleep();
     // Prepares system clocks for the Sleep mode
     CyPmSaveClocks();
     
@@ -102,6 +117,7 @@ void LayBack()
   
     // Restore clock configuration
     CyPmRestoreClocks();
+    debug_wakeup();
     
 }
 

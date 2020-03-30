@@ -1,0 +1,867 @@
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"debug.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	debug_string,100,4
+  20              		.syntax unified
+  21              		.global _printf_float
+  22              		.thumb
+  23              		.syntax unified
+  24              		.section	.text.debug_start,"ax",%progbits
+  25              		.align	2
+  26              		.global	debug_start
+  27              		.thumb
+  28              		.thumb_func
+  29              		.type	debug_start, %function
+  30              	debug_start:
+  31              	.LFB64:
+  32              		.file 1 "debug.c"
+   1:debug.c       **** //drivers for UART debug 
+   2:debug.c       **** 
+   3:debug.c       **** #include "debug.h"
+   4:debug.c       **** 
+   5:debug.c       **** void debug_start(){
+  33              		.loc 1 5 0
+  34              		.cfi_startproc
+  35              		@ args = 0, pretend = 0, frame = 0
+  36              		@ frame_needed = 1, uses_anonymous_args = 0
+  37 0000 80B5     		push	{r7, lr}
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 7, -8
+  40              		.cfi_offset 14, -4
+  41 0002 00AF     		add	r7, sp, #0
+  42              		.cfi_def_cfa_register 7
+   6:debug.c       ****     #if USE_DEBUG
+   7:debug.c       ****        Debug_UART_Start();
+  43              		.loc 1 7 0
+  44 0004 FFF7FEFF 		bl	Debug_UART_Start
+   8:debug.c       ****        //setvbuf(stdout, NULL, _IOFBF, 0);//this sets the printf() bufefr to zero, so there are not
+   9:debug.c       ****        //setbuf(stdout, NULL);
+  10:debug.c       ****     #endif
+  11:debug.c       **** }
+  45              		.loc 1 11 0
+  46 0008 00BF     		nop
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 2
+
+
+  47 000a 80BD     		pop	{r7, pc}
+  48              		.cfi_endproc
+  49              	.LFE64:
+  50              		.size	debug_start, .-debug_start
+  51              		.section	.text.debug_stop,"ax",%progbits
+  52              		.align	2
+  53              		.global	debug_stop
+  54              		.thumb
+  55              		.thumb_func
+  56              		.type	debug_stop, %function
+  57              	debug_stop:
+  58              	.LFB65:
+  12:debug.c       **** 
+  13:debug.c       **** void debug_stop(){
+  59              		.loc 1 13 0
+  60              		.cfi_startproc
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 1, uses_anonymous_args = 0
+  63 0000 80B5     		push	{r7, lr}
+  64              		.cfi_def_cfa_offset 8
+  65              		.cfi_offset 7, -8
+  66              		.cfi_offset 14, -4
+  67 0002 00AF     		add	r7, sp, #0
+  68              		.cfi_def_cfa_register 7
+  14:debug.c       ****     #if USE_DEBUG
+  15:debug.c       ****         Debug_UART_Stop();
+  69              		.loc 1 15 0
+  70 0004 FFF7FEFF 		bl	Debug_UART_Stop
+  16:debug.c       ****     #endif
+  17:debug.c       **** }
+  71              		.loc 1 17 0
+  72 0008 00BF     		nop
+  73 000a 80BD     		pop	{r7, pc}
+  74              		.cfi_endproc
+  75              	.LFE65:
+  76              		.size	debug_stop, .-debug_stop
+  77              		.section	.text.debug_sleep,"ax",%progbits
+  78              		.align	2
+  79              		.global	debug_sleep
+  80              		.thumb
+  81              		.thumb_func
+  82              		.type	debug_sleep, %function
+  83              	debug_sleep:
+  84              	.LFB66:
+  18:debug.c       **** 
+  19:debug.c       **** void debug_sleep(){
+  85              		.loc 1 19 0
+  86              		.cfi_startproc
+  87              		@ args = 0, pretend = 0, frame = 0
+  88              		@ frame_needed = 1, uses_anonymous_args = 0
+  89 0000 80B5     		push	{r7, lr}
+  90              		.cfi_def_cfa_offset 8
+  91              		.cfi_offset 7, -8
+  92              		.cfi_offset 14, -4
+  93 0002 00AF     		add	r7, sp, #0
+  94              		.cfi_def_cfa_register 7
+  20:debug.c       ****    #if USE_DEBUG
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 3
+
+
+  21:debug.c       ****     CyDelay(1u);//need to delay for 1ms to allow printf to flush (it's non blocking)
+  95              		.loc 1 21 0
+  96 0004 0120     		movs	r0, #1
+  97 0006 FFF7FEFF 		bl	CyDelay
+  22:debug.c       ****     Debug_UART_Sleep(); 
+  98              		.loc 1 22 0
+  99 000a FFF7FEFF 		bl	Debug_UART_Sleep
+  23:debug.c       ****    #endif
+  24:debug.c       ****    
+  25:debug.c       **** }
+ 100              		.loc 1 25 0
+ 101 000e 00BF     		nop
+ 102 0010 80BD     		pop	{r7, pc}
+ 103              		.cfi_endproc
+ 104              	.LFE66:
+ 105              		.size	debug_sleep, .-debug_sleep
+ 106 0012 00BF     		.section	.text.debug_wakeup,"ax",%progbits
+ 107              		.align	2
+ 108              		.global	debug_wakeup
+ 109              		.thumb
+ 110              		.thumb_func
+ 111              		.type	debug_wakeup, %function
+ 112              	debug_wakeup:
+ 113              	.LFB67:
+  26:debug.c       **** 
+  27:debug.c       **** void debug_wakeup(){
+ 114              		.loc 1 27 0
+ 115              		.cfi_startproc
+ 116              		@ args = 0, pretend = 0, frame = 0
+ 117              		@ frame_needed = 1, uses_anonymous_args = 0
+ 118 0000 80B5     		push	{r7, lr}
+ 119              		.cfi_def_cfa_offset 8
+ 120              		.cfi_offset 7, -8
+ 121              		.cfi_offset 14, -4
+ 122 0002 00AF     		add	r7, sp, #0
+ 123              		.cfi_def_cfa_register 7
+  28:debug.c       ****     #if USE_DEBUG
+  29:debug.c       ****         Debug_UART_Wakeup();
+ 124              		.loc 1 29 0
+ 125 0004 FFF7FEFF 		bl	Debug_UART_Wakeup
+  30:debug.c       ****     #endif
+  31:debug.c       **** }
+ 126              		.loc 1 31 0
+ 127 0008 00BF     		nop
+ 128 000a 80BD     		pop	{r7, pc}
+ 129              		.cfi_endproc
+ 130              	.LFE67:
+ 131              		.size	debug_wakeup, .-debug_wakeup
+ 132              		.section	.text._write,"ax",%progbits
+ 133              		.align	2
+ 134              		.global	_write
+ 135              		.thumb
+ 136              		.thumb_func
+ 137              		.type	_write, %function
+ 138              	_write:
+ 139              	.LFB68:
+  32:debug.c       **** 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 4
+
+
+  33:debug.c       **** /* For GCC compiler revise _write() function for printf functionality */
+  34:debug.c       **** //this makes it so that when we call printf() it will write to UART
+  35:debug.c       **** //NOTE: For this to work HEAP size in "System" must be set to 0x300 or more
+  36:debug.c       **** #if USE_DEBUG
+  37:debug.c       ****     
+  38:debug.c       **** int _write(int file, char *ptr, int len)
+  39:debug.c       **** {
+ 140              		.loc 1 39 0
+ 141              		.cfi_startproc
+ 142              		@ args = 0, pretend = 0, frame = 24
+ 143              		@ frame_needed = 1, uses_anonymous_args = 0
+ 144 0000 80B5     		push	{r7, lr}
+ 145              		.cfi_def_cfa_offset 8
+ 146              		.cfi_offset 7, -8
+ 147              		.cfi_offset 14, -4
+ 148 0002 86B0     		sub	sp, sp, #24
+ 149              		.cfi_def_cfa_offset 32
+ 150 0004 00AF     		add	r7, sp, #0
+ 151              		.cfi_def_cfa_register 7
+ 152 0006 F860     		str	r0, [r7, #12]
+ 153 0008 B960     		str	r1, [r7, #8]
+ 154 000a 7A60     		str	r2, [r7, #4]
+  40:debug.c       ****     int i;
+  41:debug.c       ****     file = file;
+  42:debug.c       ****     for (i = 0; i < len; i++)
+ 155              		.loc 1 42 0
+ 156 000c 0023     		movs	r3, #0
+ 157 000e 7B61     		str	r3, [r7, #20]
+ 158 0010 09E0     		b	.L6
+ 159              	.L7:
+  43:debug.c       ****     {
+  44:debug.c       ****         Debug_UART_PutChar(*ptr++);
+ 160              		.loc 1 44 0 discriminator 3
+ 161 0012 BB68     		ldr	r3, [r7, #8]
+ 162 0014 5A1C     		adds	r2, r3, #1
+ 163 0016 BA60     		str	r2, [r7, #8]
+ 164 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 165 001a 1846     		mov	r0, r3
+ 166 001c FFF7FEFF 		bl	Debug_UART_PutChar
+  42:debug.c       ****     {
+ 167              		.loc 1 42 0 discriminator 3
+ 168 0020 7B69     		ldr	r3, [r7, #20]
+ 169 0022 0133     		adds	r3, r3, #1
+ 170 0024 7B61     		str	r3, [r7, #20]
+ 171              	.L6:
+  42:debug.c       ****     {
+ 172              		.loc 1 42 0 is_stmt 0 discriminator 1
+ 173 0026 7A69     		ldr	r2, [r7, #20]
+ 174 0028 7B68     		ldr	r3, [r7, #4]
+ 175 002a 9A42     		cmp	r2, r3
+ 176 002c F1DB     		blt	.L7
+  45:debug.c       ****     }
+  46:debug.c       **** 
+  47:debug.c       ****     return (len);
+ 177              		.loc 1 47 0 is_stmt 1
+ 178 002e 7B68     		ldr	r3, [r7, #4]
+  48:debug.c       **** }
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 5
+
+
+ 179              		.loc 1 48 0
+ 180 0030 1846     		mov	r0, r3
+ 181 0032 1837     		adds	r7, r7, #24
+ 182              		.cfi_def_cfa_offset 8
+ 183 0034 BD46     		mov	sp, r7
+ 184              		.cfi_def_cfa_register 13
+ 185              		@ sp needed
+ 186 0036 80BD     		pop	{r7, pc}
+ 187              		.cfi_endproc
+ 188              	.LFE68:
+ 189              		.size	_write, .-_write
+ 190              		.text
+ 191              	.Letext0:
+ 192              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 193              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 194              		.file 4 "Generated_Source\\PSoC5/core_cm3.h"
+ 195              		.file 5 "debug.h"
+ 196              		.section	.debug_info,"",%progbits
+ 197              	.Ldebug_info0:
+ 198 0000 6D010000 		.4byte	0x16d
+ 199 0004 0400     		.2byte	0x4
+ 200 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 201 000a 04       		.byte	0x4
+ 202 000b 01       		.uleb128 0x1
+ 203 000c 00000000 		.4byte	.LASF23
+ 204 0010 0C       		.byte	0xc
+ 205 0011 07010000 		.4byte	.LASF24
+ 206 0015 53010000 		.4byte	.LASF25
+ 207 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 208 001d 00000000 		.4byte	0
+ 209 0021 00000000 		.4byte	.Ldebug_line0
+ 210 0025 02       		.uleb128 0x2
+ 211 0026 01       		.byte	0x1
+ 212 0027 06       		.byte	0x6
+ 213 0028 E6010000 		.4byte	.LASF0
+ 214 002c 02       		.uleb128 0x2
+ 215 002d 01       		.byte	0x1
+ 216 002e 08       		.byte	0x8
+ 217 002f DA000000 		.4byte	.LASF1
+ 218 0033 02       		.uleb128 0x2
+ 219 0034 02       		.byte	0x2
+ 220 0035 05       		.byte	0x5
+ 221 0036 C7010000 		.4byte	.LASF2
+ 222 003a 02       		.uleb128 0x2
+ 223 003b 02       		.byte	0x2
+ 224 003c 07       		.byte	0x7
+ 225 003d A5000000 		.4byte	.LASF3
+ 226 0041 03       		.uleb128 0x3
+ 227 0042 9B000000 		.4byte	.LASF9
+ 228 0046 02       		.byte	0x2
+ 229 0047 3F       		.byte	0x3f
+ 230 0048 4C000000 		.4byte	0x4c
+ 231 004c 02       		.uleb128 0x2
+ 232 004d 04       		.byte	0x4
+ 233 004e 05       		.byte	0x5
+ 234 004f D1010000 		.4byte	.LASF4
+ 235 0053 02       		.uleb128 0x2
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 6
+
+
+ 236 0054 04       		.byte	0x4
+ 237 0055 07       		.byte	0x7
+ 238 0056 E8000000 		.4byte	.LASF5
+ 239 005a 02       		.uleb128 0x2
+ 240 005b 08       		.byte	0x8
+ 241 005c 05       		.byte	0x5
+ 242 005d AD010000 		.4byte	.LASF6
+ 243 0061 02       		.uleb128 0x2
+ 244 0062 08       		.byte	0x8
+ 245 0063 07       		.byte	0x7
+ 246 0064 2F010000 		.4byte	.LASF7
+ 247 0068 04       		.uleb128 0x4
+ 248 0069 04       		.byte	0x4
+ 249 006a 05       		.byte	0x5
+ 250 006b 696E7400 		.ascii	"int\000"
+ 251 006f 02       		.uleb128 0x2
+ 252 0070 04       		.byte	0x4
+ 253 0071 07       		.byte	0x7
+ 254 0072 22010000 		.4byte	.LASF8
+ 255 0076 03       		.uleb128 0x3
+ 256 0077 9C010000 		.4byte	.LASF10
+ 257 007b 03       		.byte	0x3
+ 258 007c 2C       		.byte	0x2c
+ 259 007d 41000000 		.4byte	0x41
+ 260 0081 02       		.uleb128 0x2
+ 261 0082 04       		.byte	0x4
+ 262 0083 04       		.byte	0x4
+ 263 0084 C3000000 		.4byte	.LASF11
+ 264 0088 02       		.uleb128 0x2
+ 265 0089 08       		.byte	0x8
+ 266 008a 04       		.byte	0x4
+ 267 008b 0F010000 		.4byte	.LASF12
+ 268 008f 02       		.uleb128 0x2
+ 269 0090 01       		.byte	0x1
+ 270 0091 08       		.byte	0x8
+ 271 0092 BB010000 		.4byte	.LASF13
+ 272 0096 02       		.uleb128 0x2
+ 273 0097 08       		.byte	0x8
+ 274 0098 04       		.byte	0x4
+ 275 0099 DA010000 		.4byte	.LASF14
+ 276 009d 02       		.uleb128 0x2
+ 277 009e 04       		.byte	0x4
+ 278 009f 07       		.byte	0x7
+ 279 00a0 A4010000 		.4byte	.LASF15
+ 280 00a4 05       		.uleb128 0x5
+ 281 00a5 04       		.byte	0x4
+ 282 00a6 8F000000 		.4byte	0x8f
+ 283 00aa 06       		.uleb128 0x6
+ 284 00ab CE000000 		.4byte	.LASF16
+ 285 00af 01       		.byte	0x1
+ 286 00b0 05       		.byte	0x5
+ 287 00b1 00000000 		.4byte	.LFB64
+ 288 00b5 0C000000 		.4byte	.LFE64-.LFB64
+ 289 00b9 01       		.uleb128 0x1
+ 290 00ba 9C       		.byte	0x9c
+ 291 00bb 06       		.uleb128 0x6
+ 292 00bc B8000000 		.4byte	.LASF17
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 7
+
+
+ 293 00c0 01       		.byte	0x1
+ 294 00c1 0D       		.byte	0xd
+ 295 00c2 00000000 		.4byte	.LFB65
+ 296 00c6 0C000000 		.4byte	.LFE65-.LFB65
+ 297 00ca 01       		.uleb128 0x1
+ 298 00cb 9C       		.byte	0x9c
+ 299 00cc 06       		.uleb128 0x6
+ 300 00cd 16010000 		.4byte	.LASF18
+ 301 00d1 01       		.byte	0x1
+ 302 00d2 13       		.byte	0x13
+ 303 00d3 00000000 		.4byte	.LFB66
+ 304 00d7 12000000 		.4byte	.LFE66-.LFB66
+ 305 00db 01       		.uleb128 0x1
+ 306 00dc 9C       		.byte	0x9c
+ 307 00dd 06       		.uleb128 0x6
+ 308 00de 46010000 		.4byte	.LASF19
+ 309 00e2 01       		.byte	0x1
+ 310 00e3 1B       		.byte	0x1b
+ 311 00e4 00000000 		.4byte	.LFB67
+ 312 00e8 0C000000 		.4byte	.LFE67-.LFB67
+ 313 00ec 01       		.uleb128 0x1
+ 314 00ed 9C       		.byte	0x9c
+ 315 00ee 07       		.uleb128 0x7
+ 316 00ef C0010000 		.4byte	.LASF26
+ 317 00f3 01       		.byte	0x1
+ 318 00f4 26       		.byte	0x26
+ 319 00f5 68000000 		.4byte	0x68
+ 320 00f9 00000000 		.4byte	.LFB68
+ 321 00fd 38000000 		.4byte	.LFE68-.LFB68
+ 322 0101 01       		.uleb128 0x1
+ 323 0102 9C       		.byte	0x9c
+ 324 0103 3E010000 		.4byte	0x13e
+ 325 0107 08       		.uleb128 0x8
+ 326 0108 C9000000 		.4byte	.LASF20
+ 327 010c 01       		.byte	0x1
+ 328 010d 26       		.byte	0x26
+ 329 010e 68000000 		.4byte	0x68
+ 330 0112 02       		.uleb128 0x2
+ 331 0113 91       		.byte	0x91
+ 332 0114 6C       		.sleb128 -20
+ 333 0115 09       		.uleb128 0x9
+ 334 0116 70747200 		.ascii	"ptr\000"
+ 335 011a 01       		.byte	0x1
+ 336 011b 26       		.byte	0x26
+ 337 011c A4000000 		.4byte	0xa4
+ 338 0120 02       		.uleb128 0x2
+ 339 0121 91       		.byte	0x91
+ 340 0122 68       		.sleb128 -24
+ 341 0123 09       		.uleb128 0x9
+ 342 0124 6C656E00 		.ascii	"len\000"
+ 343 0128 01       		.byte	0x1
+ 344 0129 26       		.byte	0x26
+ 345 012a 68000000 		.4byte	0x68
+ 346 012e 02       		.uleb128 0x2
+ 347 012f 91       		.byte	0x91
+ 348 0130 64       		.sleb128 -28
+ 349 0131 0A       		.uleb128 0xa
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 8
+
+
+ 350 0132 6900     		.ascii	"i\000"
+ 351 0134 01       		.byte	0x1
+ 352 0135 28       		.byte	0x28
+ 353 0136 68000000 		.4byte	0x68
+ 354 013a 02       		.uleb128 0x2
+ 355 013b 91       		.byte	0x91
+ 356 013c 74       		.sleb128 -12
+ 357 013d 00       		.byte	0
+ 358 013e 0B       		.uleb128 0xb
+ 359 013f FA000000 		.4byte	.LASF21
+ 360 0143 04       		.byte	0x4
+ 361 0144 1207     		.2byte	0x712
+ 362 0146 4A010000 		.4byte	0x14a
+ 363 014a 0C       		.uleb128 0xc
+ 364 014b 76000000 		.4byte	0x76
+ 365 014f 0D       		.uleb128 0xd
+ 366 0150 8F000000 		.4byte	0x8f
+ 367 0154 5F010000 		.4byte	0x15f
+ 368 0158 0E       		.uleb128 0xe
+ 369 0159 9D000000 		.4byte	0x9d
+ 370 015d 63       		.byte	0x63
+ 371 015e 00       		.byte	0
+ 372 015f 0F       		.uleb128 0xf
+ 373 0160 8E000000 		.4byte	.LASF22
+ 374 0164 05       		.byte	0x5
+ 375 0165 0E       		.byte	0xe
+ 376 0166 4F010000 		.4byte	0x14f
+ 377 016a 05       		.uleb128 0x5
+ 378 016b 03       		.byte	0x3
+ 379 016c 00000000 		.4byte	debug_string
+ 380 0170 00       		.byte	0
+ 381              		.section	.debug_abbrev,"",%progbits
+ 382              	.Ldebug_abbrev0:
+ 383 0000 01       		.uleb128 0x1
+ 384 0001 11       		.uleb128 0x11
+ 385 0002 01       		.byte	0x1
+ 386 0003 25       		.uleb128 0x25
+ 387 0004 0E       		.uleb128 0xe
+ 388 0005 13       		.uleb128 0x13
+ 389 0006 0B       		.uleb128 0xb
+ 390 0007 03       		.uleb128 0x3
+ 391 0008 0E       		.uleb128 0xe
+ 392 0009 1B       		.uleb128 0x1b
+ 393 000a 0E       		.uleb128 0xe
+ 394 000b 55       		.uleb128 0x55
+ 395 000c 17       		.uleb128 0x17
+ 396 000d 11       		.uleb128 0x11
+ 397 000e 01       		.uleb128 0x1
+ 398 000f 10       		.uleb128 0x10
+ 399 0010 17       		.uleb128 0x17
+ 400 0011 00       		.byte	0
+ 401 0012 00       		.byte	0
+ 402 0013 02       		.uleb128 0x2
+ 403 0014 24       		.uleb128 0x24
+ 404 0015 00       		.byte	0
+ 405 0016 0B       		.uleb128 0xb
+ 406 0017 0B       		.uleb128 0xb
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 9
+
+
+ 407 0018 3E       		.uleb128 0x3e
+ 408 0019 0B       		.uleb128 0xb
+ 409 001a 03       		.uleb128 0x3
+ 410 001b 0E       		.uleb128 0xe
+ 411 001c 00       		.byte	0
+ 412 001d 00       		.byte	0
+ 413 001e 03       		.uleb128 0x3
+ 414 001f 16       		.uleb128 0x16
+ 415 0020 00       		.byte	0
+ 416 0021 03       		.uleb128 0x3
+ 417 0022 0E       		.uleb128 0xe
+ 418 0023 3A       		.uleb128 0x3a
+ 419 0024 0B       		.uleb128 0xb
+ 420 0025 3B       		.uleb128 0x3b
+ 421 0026 0B       		.uleb128 0xb
+ 422 0027 49       		.uleb128 0x49
+ 423 0028 13       		.uleb128 0x13
+ 424 0029 00       		.byte	0
+ 425 002a 00       		.byte	0
+ 426 002b 04       		.uleb128 0x4
+ 427 002c 24       		.uleb128 0x24
+ 428 002d 00       		.byte	0
+ 429 002e 0B       		.uleb128 0xb
+ 430 002f 0B       		.uleb128 0xb
+ 431 0030 3E       		.uleb128 0x3e
+ 432 0031 0B       		.uleb128 0xb
+ 433 0032 03       		.uleb128 0x3
+ 434 0033 08       		.uleb128 0x8
+ 435 0034 00       		.byte	0
+ 436 0035 00       		.byte	0
+ 437 0036 05       		.uleb128 0x5
+ 438 0037 0F       		.uleb128 0xf
+ 439 0038 00       		.byte	0
+ 440 0039 0B       		.uleb128 0xb
+ 441 003a 0B       		.uleb128 0xb
+ 442 003b 49       		.uleb128 0x49
+ 443 003c 13       		.uleb128 0x13
+ 444 003d 00       		.byte	0
+ 445 003e 00       		.byte	0
+ 446 003f 06       		.uleb128 0x6
+ 447 0040 2E       		.uleb128 0x2e
+ 448 0041 00       		.byte	0
+ 449 0042 3F       		.uleb128 0x3f
+ 450 0043 19       		.uleb128 0x19
+ 451 0044 03       		.uleb128 0x3
+ 452 0045 0E       		.uleb128 0xe
+ 453 0046 3A       		.uleb128 0x3a
+ 454 0047 0B       		.uleb128 0xb
+ 455 0048 3B       		.uleb128 0x3b
+ 456 0049 0B       		.uleb128 0xb
+ 457 004a 11       		.uleb128 0x11
+ 458 004b 01       		.uleb128 0x1
+ 459 004c 12       		.uleb128 0x12
+ 460 004d 06       		.uleb128 0x6
+ 461 004e 40       		.uleb128 0x40
+ 462 004f 18       		.uleb128 0x18
+ 463 0050 9642     		.uleb128 0x2116
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 10
+
+
+ 464 0052 19       		.uleb128 0x19
+ 465 0053 00       		.byte	0
+ 466 0054 00       		.byte	0
+ 467 0055 07       		.uleb128 0x7
+ 468 0056 2E       		.uleb128 0x2e
+ 469 0057 01       		.byte	0x1
+ 470 0058 3F       		.uleb128 0x3f
+ 471 0059 19       		.uleb128 0x19
+ 472 005a 03       		.uleb128 0x3
+ 473 005b 0E       		.uleb128 0xe
+ 474 005c 3A       		.uleb128 0x3a
+ 475 005d 0B       		.uleb128 0xb
+ 476 005e 3B       		.uleb128 0x3b
+ 477 005f 0B       		.uleb128 0xb
+ 478 0060 27       		.uleb128 0x27
+ 479 0061 19       		.uleb128 0x19
+ 480 0062 49       		.uleb128 0x49
+ 481 0063 13       		.uleb128 0x13
+ 482 0064 11       		.uleb128 0x11
+ 483 0065 01       		.uleb128 0x1
+ 484 0066 12       		.uleb128 0x12
+ 485 0067 06       		.uleb128 0x6
+ 486 0068 40       		.uleb128 0x40
+ 487 0069 18       		.uleb128 0x18
+ 488 006a 9642     		.uleb128 0x2116
+ 489 006c 19       		.uleb128 0x19
+ 490 006d 01       		.uleb128 0x1
+ 491 006e 13       		.uleb128 0x13
+ 492 006f 00       		.byte	0
+ 493 0070 00       		.byte	0
+ 494 0071 08       		.uleb128 0x8
+ 495 0072 05       		.uleb128 0x5
+ 496 0073 00       		.byte	0
+ 497 0074 03       		.uleb128 0x3
+ 498 0075 0E       		.uleb128 0xe
+ 499 0076 3A       		.uleb128 0x3a
+ 500 0077 0B       		.uleb128 0xb
+ 501 0078 3B       		.uleb128 0x3b
+ 502 0079 0B       		.uleb128 0xb
+ 503 007a 49       		.uleb128 0x49
+ 504 007b 13       		.uleb128 0x13
+ 505 007c 02       		.uleb128 0x2
+ 506 007d 18       		.uleb128 0x18
+ 507 007e 00       		.byte	0
+ 508 007f 00       		.byte	0
+ 509 0080 09       		.uleb128 0x9
+ 510 0081 05       		.uleb128 0x5
+ 511 0082 00       		.byte	0
+ 512 0083 03       		.uleb128 0x3
+ 513 0084 08       		.uleb128 0x8
+ 514 0085 3A       		.uleb128 0x3a
+ 515 0086 0B       		.uleb128 0xb
+ 516 0087 3B       		.uleb128 0x3b
+ 517 0088 0B       		.uleb128 0xb
+ 518 0089 49       		.uleb128 0x49
+ 519 008a 13       		.uleb128 0x13
+ 520 008b 02       		.uleb128 0x2
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 11
+
+
+ 521 008c 18       		.uleb128 0x18
+ 522 008d 00       		.byte	0
+ 523 008e 00       		.byte	0
+ 524 008f 0A       		.uleb128 0xa
+ 525 0090 34       		.uleb128 0x34
+ 526 0091 00       		.byte	0
+ 527 0092 03       		.uleb128 0x3
+ 528 0093 08       		.uleb128 0x8
+ 529 0094 3A       		.uleb128 0x3a
+ 530 0095 0B       		.uleb128 0xb
+ 531 0096 3B       		.uleb128 0x3b
+ 532 0097 0B       		.uleb128 0xb
+ 533 0098 49       		.uleb128 0x49
+ 534 0099 13       		.uleb128 0x13
+ 535 009a 02       		.uleb128 0x2
+ 536 009b 18       		.uleb128 0x18
+ 537 009c 00       		.byte	0
+ 538 009d 00       		.byte	0
+ 539 009e 0B       		.uleb128 0xb
+ 540 009f 34       		.uleb128 0x34
+ 541 00a0 00       		.byte	0
+ 542 00a1 03       		.uleb128 0x3
+ 543 00a2 0E       		.uleb128 0xe
+ 544 00a3 3A       		.uleb128 0x3a
+ 545 00a4 0B       		.uleb128 0xb
+ 546 00a5 3B       		.uleb128 0x3b
+ 547 00a6 05       		.uleb128 0x5
+ 548 00a7 49       		.uleb128 0x49
+ 549 00a8 13       		.uleb128 0x13
+ 550 00a9 3F       		.uleb128 0x3f
+ 551 00aa 19       		.uleb128 0x19
+ 552 00ab 3C       		.uleb128 0x3c
+ 553 00ac 19       		.uleb128 0x19
+ 554 00ad 00       		.byte	0
+ 555 00ae 00       		.byte	0
+ 556 00af 0C       		.uleb128 0xc
+ 557 00b0 35       		.uleb128 0x35
+ 558 00b1 00       		.byte	0
+ 559 00b2 49       		.uleb128 0x49
+ 560 00b3 13       		.uleb128 0x13
+ 561 00b4 00       		.byte	0
+ 562 00b5 00       		.byte	0
+ 563 00b6 0D       		.uleb128 0xd
+ 564 00b7 01       		.uleb128 0x1
+ 565 00b8 01       		.byte	0x1
+ 566 00b9 49       		.uleb128 0x49
+ 567 00ba 13       		.uleb128 0x13
+ 568 00bb 01       		.uleb128 0x1
+ 569 00bc 13       		.uleb128 0x13
+ 570 00bd 00       		.byte	0
+ 571 00be 00       		.byte	0
+ 572 00bf 0E       		.uleb128 0xe
+ 573 00c0 21       		.uleb128 0x21
+ 574 00c1 00       		.byte	0
+ 575 00c2 49       		.uleb128 0x49
+ 576 00c3 13       		.uleb128 0x13
+ 577 00c4 2F       		.uleb128 0x2f
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 12
+
+
+ 578 00c5 0B       		.uleb128 0xb
+ 579 00c6 00       		.byte	0
+ 580 00c7 00       		.byte	0
+ 581 00c8 0F       		.uleb128 0xf
+ 582 00c9 34       		.uleb128 0x34
+ 583 00ca 00       		.byte	0
+ 584 00cb 03       		.uleb128 0x3
+ 585 00cc 0E       		.uleb128 0xe
+ 586 00cd 3A       		.uleb128 0x3a
+ 587 00ce 0B       		.uleb128 0xb
+ 588 00cf 3B       		.uleb128 0x3b
+ 589 00d0 0B       		.uleb128 0xb
+ 590 00d1 49       		.uleb128 0x49
+ 591 00d2 13       		.uleb128 0x13
+ 592 00d3 3F       		.uleb128 0x3f
+ 593 00d4 19       		.uleb128 0x19
+ 594 00d5 02       		.uleb128 0x2
+ 595 00d6 18       		.uleb128 0x18
+ 596 00d7 00       		.byte	0
+ 597 00d8 00       		.byte	0
+ 598 00d9 00       		.byte	0
+ 599              		.section	.debug_aranges,"",%progbits
+ 600 0000 3C000000 		.4byte	0x3c
+ 601 0004 0200     		.2byte	0x2
+ 602 0006 00000000 		.4byte	.Ldebug_info0
+ 603 000a 04       		.byte	0x4
+ 604 000b 00       		.byte	0
+ 605 000c 0000     		.2byte	0
+ 606 000e 0000     		.2byte	0
+ 607 0010 00000000 		.4byte	.LFB64
+ 608 0014 0C000000 		.4byte	.LFE64-.LFB64
+ 609 0018 00000000 		.4byte	.LFB65
+ 610 001c 0C000000 		.4byte	.LFE65-.LFB65
+ 611 0020 00000000 		.4byte	.LFB66
+ 612 0024 12000000 		.4byte	.LFE66-.LFB66
+ 613 0028 00000000 		.4byte	.LFB67
+ 614 002c 0C000000 		.4byte	.LFE67-.LFB67
+ 615 0030 00000000 		.4byte	.LFB68
+ 616 0034 38000000 		.4byte	.LFE68-.LFB68
+ 617 0038 00000000 		.4byte	0
+ 618 003c 00000000 		.4byte	0
+ 619              		.section	.debug_ranges,"",%progbits
+ 620              	.Ldebug_ranges0:
+ 621 0000 00000000 		.4byte	.LFB64
+ 622 0004 0C000000 		.4byte	.LFE64
+ 623 0008 00000000 		.4byte	.LFB65
+ 624 000c 0C000000 		.4byte	.LFE65
+ 625 0010 00000000 		.4byte	.LFB66
+ 626 0014 12000000 		.4byte	.LFE66
+ 627 0018 00000000 		.4byte	.LFB67
+ 628 001c 0C000000 		.4byte	.LFE67
+ 629 0020 00000000 		.4byte	.LFB68
+ 630 0024 38000000 		.4byte	.LFE68
+ 631 0028 00000000 		.4byte	0
+ 632 002c 00000000 		.4byte	0
+ 633              		.section	.debug_line,"",%progbits
+ 634              	.Ldebug_line0:
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 13
+
+
+ 635 0000 B7010000 		.section	.debug_str,"MS",%progbits,1
+ 635      02004B01 
+ 635      00000201 
+ 635      FB0E0D00 
+ 635      01010101 
+ 636              	.LASF23:
+ 637 0000 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 637      43313120 
+ 637      352E342E 
+ 637      31203230 
+ 637      31363036 
+ 638 0033 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 638      20726576 
+ 638      6973696F 
+ 638      6E203233 
+ 638      37373135 
+ 639 0066 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 639      66756E63 
+ 639      74696F6E 
+ 639      2D736563 
+ 639      74696F6E 
+ 640              	.LASF22:
+ 641 008e 64656275 		.ascii	"debug_string\000"
+ 641      675F7374 
+ 641      72696E67 
+ 641      00
+ 642              	.LASF9:
+ 643 009b 5F5F696E 		.ascii	"__int32_t\000"
+ 643      7433325F 
+ 643      7400
+ 644              	.LASF3:
+ 645 00a5 73686F72 		.ascii	"short unsigned int\000"
+ 645      7420756E 
+ 645      7369676E 
+ 645      65642069 
+ 645      6E7400
+ 646              	.LASF17:
+ 647 00b8 64656275 		.ascii	"debug_stop\000"
+ 647      675F7374 
+ 647      6F7000
+ 648              	.LASF11:
+ 649 00c3 666C6F61 		.ascii	"float\000"
+ 649      7400
+ 650              	.LASF20:
+ 651 00c9 66696C65 		.ascii	"file\000"
+ 651      00
+ 652              	.LASF16:
+ 653 00ce 64656275 		.ascii	"debug_start\000"
+ 653      675F7374 
+ 653      61727400 
+ 654              	.LASF1:
+ 655 00da 756E7369 		.ascii	"unsigned char\000"
+ 655      676E6564 
+ 655      20636861 
+ 655      7200
+ 656              	.LASF5:
+ 657 00e8 6C6F6E67 		.ascii	"long unsigned int\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 14
+
+
+ 657      20756E73 
+ 657      69676E65 
+ 657      6420696E 
+ 657      7400
+ 658              	.LASF21:
+ 659 00fa 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 659      52784275 
+ 659      66666572 
+ 659      00
+ 660              	.LASF24:
+ 661 0107 64656275 		.ascii	"debug.c\000"
+ 661      672E6300 
+ 662              	.LASF12:
+ 663 010f 646F7562 		.ascii	"double\000"
+ 663      6C6500
+ 664              	.LASF18:
+ 665 0116 64656275 		.ascii	"debug_sleep\000"
+ 665      675F736C 
+ 665      65657000 
+ 666              	.LASF8:
+ 667 0122 756E7369 		.ascii	"unsigned int\000"
+ 667      676E6564 
+ 667      20696E74 
+ 667      00
+ 668              	.LASF7:
+ 669 012f 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 669      206C6F6E 
+ 669      6720756E 
+ 669      7369676E 
+ 669      65642069 
+ 670              	.LASF19:
+ 671 0146 64656275 		.ascii	"debug_wakeup\000"
+ 671      675F7761 
+ 671      6B657570 
+ 671      00
+ 672              	.LASF25:
+ 673 0153 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
+ 673      73657273 
+ 673      5C626B5C 
+ 673      446F6375 
+ 673      6D656E74 
+ 674 0180 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
+ 674      6E6F746F 
+ 674      72694F53 
+ 674      5C6E6F74 
+ 674      6F72694F 
+ 675              	.LASF10:
+ 676 019c 696E7433 		.ascii	"int32_t\000"
+ 676      325F7400 
+ 677              	.LASF15:
+ 678 01a4 73697A65 		.ascii	"sizetype\000"
+ 678      74797065 
+ 678      00
+ 679              	.LASF6:
+ 680 01ad 6C6F6E67 		.ascii	"long long int\000"
+ 680      206C6F6E 
+ 680      6720696E 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\cctAvpcf.s 			page 15
+
+
+ 680      7400
+ 681              	.LASF13:
+ 682 01bb 63686172 		.ascii	"char\000"
+ 682      00
+ 683              	.LASF26:
+ 684 01c0 5F777269 		.ascii	"_write\000"
+ 684      746500
+ 685              	.LASF2:
+ 686 01c7 73686F72 		.ascii	"short int\000"
+ 686      7420696E 
+ 686      7400
+ 687              	.LASF4:
+ 688 01d1 6C6F6E67 		.ascii	"long int\000"
+ 688      20696E74 
+ 688      00
+ 689              	.LASF14:
+ 690 01da 6C6F6E67 		.ascii	"long double\000"
+ 690      20646F75 
+ 690      626C6500 
+ 691              	.LASF0:
+ 692 01e6 7369676E 		.ascii	"signed char\000"
+ 692      65642063 
+ 692      68617200 
+ 693              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
