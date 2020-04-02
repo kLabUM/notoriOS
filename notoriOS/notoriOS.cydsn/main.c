@@ -73,17 +73,15 @@ int WorkWorkWorkWorkWorkWork()
    
     if(timeToMeasure){
        
-       printf("OMG-----");
-       printf("IT\r\n");
-       printf("WORKED\r\n");
+
+       printEvent("IT\r\n");
+       printEvent("WORKED\r\n");
        
        LED_Write(1u);
-       //CyDelay(100u);
+       CyDelay(100u);
        LED_Write(0u);
        timeToMeasure = 0u;
-       printf("RLLYqwertyuiopasdfghjklzxcvbnm\r\n");
-       
-      //printf("OFF\r\n");
+       printEvent("RLLYqwertyuiopasdfghjklzxcvbnm\r\n");
        
        
     }

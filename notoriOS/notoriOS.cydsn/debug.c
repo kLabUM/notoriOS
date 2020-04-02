@@ -1,6 +1,8 @@
 //drivers for UART debug 
 
 #include "debug.h"
+uint8 stillWriting;
+#include <stdarg.h>
 
 void debug_start(){
     #if USE_DEBUG
@@ -18,7 +20,8 @@ void debug_stop(){
 
 void debug_sleep(){
    #if USE_DEBUG
-    CyDelay(1u);//need to delay for 1ms to allow printf to finish writing (it's non blocking)
+    if (stillWriting)
+        CyDelay(1u);//need to delay for 1ms to allow printf to finish writing (it's non blocking)
     Debug_UART_Sleep(); 
    #endif
    
@@ -27,6 +30,7 @@ void debug_sleep(){
 void debug_wakeup(){
     #if USE_DEBUG
         Debug_UART_Wakeup();
+        stillWriting = 0;
     #endif
 }
 
@@ -43,10 +47,42 @@ int _write(int file, char *ptr, int len)
     {
         Debug_UART_PutChar(*ptr++);
     }
-
+    
+    stillWriting = 1;//flag ongoing write
     return (len);
+}
+
+//use like printf, but this will add an depoch timestamp to the printput
+void printEvent(const char* format, ...){
+    va_list argptr;
+    va_start(argptr, format);
+    //basically, just hijack printf and inject the timestamp infront
+    printf("%ld, ", getTimeStamp());
+    printf(format, argptr);
 }
 
 #endif
 
+
+//returns local times in epoch seconds (seconds since Jan 1, 1970)
+//can also cast this to a t_of_day struct
+long getTimeStamp(){
+    
+    RTC_TIME_DATE *localTime = RTC_ReadTime();
+   
+    struct tm t;
+    time_t t_of_day;
+
+    t.tm_sec = localTime->Sec;
+    t.tm_min = localTime->Min;
+    t.tm_hour = localTime->Hour;
+    t.tm_year = localTime->Year - 1900;  // Year - 1900
+    t.tm_mon = localTime->Month;           // Month, where 0 = jan
+    t.tm_mday = localTime->DayOfMonth;          // Day of the month
+    t.tm_isdst = 0;        // Is Daylight Savings on? 1 = yes, 0 = no, -1 = unknown
+    
+    t_of_day = mktime(&t);
+
+    return (long) t_of_day;
+}
 

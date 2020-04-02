@@ -6,6 +6,10 @@
 #include "project.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+    
+    
+long getTimeStamp();
 
 //set to 1 if debug data will be written to UART
 #define USE_DEBUG 1
@@ -13,13 +17,6 @@
     
 char debug_string[DEBUG_STRING_LENGTH];
 
-/*
-#if USE_DEBUG
-    #define PRINT_SERIAL(str) sprintf(debug_string,str);Debug_UART_PutString(debug_string);
-#else
-    #define DEBUG_WRITE(STR)  
-#endif
-*/
 
 /* Add an explicit reference to the floating point printf library to allow
 the usage of floating point conversion specifier */
@@ -31,6 +28,7 @@ void debug_start();
 void debug_stop();
 void debug_sleep();
 void debug_wakeup();
+void printEvent(const char* format, ...);
 
     
     
