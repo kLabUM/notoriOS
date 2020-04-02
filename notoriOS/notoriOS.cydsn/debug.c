@@ -53,13 +53,34 @@ int _write(int file, char *ptr, int len)
 }
 
 //use like printf, but this will add an depoch timestamp to the printput
-void printEvent(const char* format, ...){
+void printNotif(const char* format, ...){
     va_list argptr;
     va_start(argptr, format);
     //basically, just hijack printf and inject the timestamp infront
-    printf("%ld, ", getTimeStamp());
+    printf("{ ");
+    printf("\"time\":\"%ld\" " , getTimeStamp());
+    
+    printf("\"event\":\"notif\" \"value\":\"");
     printf(format, argptr);
+    
+    printf("\"}\r\n");
 }
+
+void printTestStatus(test_t test){
+
+    printf("{ ");
+    printf("\"time\":\"%ld\" " , getTimeStamp());
+    
+    printf("\"event\":\"test\" ");
+    printf("\"name\":\"%s\" ", test.test_name);
+    printf("\"status\":\"%d\" ", test.status);
+    printf("\"reason\":\"%s\" ", test.reason);
+
+    printf("}\r\n");
+   
+}
+    
+
 
 #endif
 

@@ -203,7 +203,7 @@ void SD_power_down(){
 test_t SD_card_test(){
     //create a  file, write random number, read number from file, delete directory from file
     test_t test;
-    sprintf(test.test_name,"TEST_SD_CARD\r");
+    sprintf(test.test_name,"TEST_SD_CARD");
     test.status = 0;
     
     char data[] = "TEST_FAIL";
@@ -215,9 +215,9 @@ test_t SD_card_test(){
     test.status = SD_rmfile(fileName);
     
     if(test.status == 1){
-        sprintf(test.reason,"SUCCESS WRITE READ DELETE FILE\r");
+        sprintf(test.reason,"SUCCESS WRITE READ DELETE FILE");
     }else{
-       sprintf(test.reason,"FAILED TO WRITE READ DELETE FILE\r"); 
+       sprintf(test.reason,"FAILED TO WRITE READ DELETE FILE"); 
     }
     
     return test;

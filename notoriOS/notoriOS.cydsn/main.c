@@ -74,14 +74,14 @@ int WorkWorkWorkWorkWorkWork()
     if(timeToMeasure){
        
 
-       printEvent("IT\r\n");
-       printEvent("WORKED\r\n");
+       printNotif("Light ON");
        
        LED_Write(1u);
        CyDelay(100u);
        LED_Write(0u);
        timeToMeasure = 0u;
-       printEvent("RLLYqwertyuiopasdfghjklzxcvbnm\r\n");
+    
+       printNotif("Light Off");
        
        
     }
@@ -190,8 +190,11 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 void test_components(){
 
     test_t t_level_sensor = level_sensor_test();//test level sensor  
+    printTestStatus(t_level_sensor);
     test_t t_sd_card = SD_card_test();
+    printTestStatus(t_sd_card);
     test_t t_voltages = voltages_test();
+    printTestStatus(t_voltages);
   
     int c = 0;
     c++;

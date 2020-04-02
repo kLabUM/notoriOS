@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "testing.h"
     
     
 long getTimeStamp();
@@ -28,7 +29,8 @@ void debug_start();
 void debug_stop();
 void debug_sleep();
 void debug_wakeup();
-void printEvent(const char* format, ...);
+void printNotif(const char* format, ...);
+void printTestStatus(test_t test);
 
     
     
