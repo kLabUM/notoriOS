@@ -29,9 +29,9 @@ void debug_start();
 void debug_stop();
 void debug_sleep();
 void debug_wakeup();
-void printNotif(const char* format, ...);
+void printNotif(char* format, ...);
 void printTestStatus(test_t test);
-
+void stripEscapeCharacters(char *string);
     
     
 #endif

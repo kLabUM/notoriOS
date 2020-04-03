@@ -32,16 +32,14 @@ typedef struct
 } volatile alarm;
 
 
-/* === Driver Interface === */
-
-#define ULTRASONIC_MB7384 0
-#define ULTRASONIC_MB7383 1
 
 
 void ReadyOrNot();
-int WorkWorkWorkWorkWorkWork();
+int  WorkWorkWorkWorkWorkWork();
 void LayBack();
 void AyoItsTime(uint8 alarmType);
+void ChickityCheckYourselfBeforeYouWreckYourself();
+
 alarm CreateAlarm(uint16 countDownValue,uint8 countDownType,uint8 countDownResetCondition);
 uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType);
 void ResetAlarm(alarm * alarmToBeReset);

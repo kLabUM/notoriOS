@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Modem_RX.h  
+* File Name: Pin_Telit_pwr.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Modem_RX_ALIASES_H) /* Pins Modem_RX_ALIASES_H */
-#define CY_PINS_Modem_RX_ALIASES_H
+#if !defined(CY_PINS_Pin_Telit_pwr_ALIASES_H) /* Pins Pin_Telit_pwr_ALIASES_H */
+#define CY_PINS_Pin_Telit_pwr_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Modem_RX_0			(Modem_RX__0__PC)
-#define Modem_RX_0_INTR	((uint16)((uint16)0x0001u << Modem_RX__0__SHIFT))
+#define Pin_Telit_pwr_0			(Pin_Telit_pwr__0__PC)
+#define Pin_Telit_pwr_0_INTR	((uint16)((uint16)0x0001u << Pin_Telit_pwr__0__SHIFT))
 
-#define Modem_RX_INTR_ALL	 ((uint16)(Modem_RX_0_INTR))
+#define Pin_Telit_pwr_INTR_ALL	 ((uint16)(Pin_Telit_pwr_0_INTR))
 
-#endif /* End Pins Modem_RX_ALIASES_H */
+#endif /* End Pins Pin_Telit_pwr_ALIASES_H */
 
 
 /* [] END OF FILE */

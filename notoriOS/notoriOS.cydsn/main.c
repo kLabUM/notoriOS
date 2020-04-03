@@ -15,6 +15,7 @@
 #include "sd_card.h"
 #include "voltages.h"
 #include "debug.h"
+#include "telit.h"
 
 
 
@@ -74,14 +75,14 @@ int WorkWorkWorkWorkWorkWork()
     if(timeToMeasure){
        
 
-       printNotif("Light ON");
+       //printNotif("Light ON");
        
        LED_Write(1u);
        CyDelay(100u);
        LED_Write(0u);
        timeToMeasure = 0u;
     
-       printNotif("Light Off");
+       //printNotif("Light Off");
        
        
     }
@@ -186,9 +187,17 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
     
 }
 
+// ==============================================
+// Dropping bombs on your moms
+//      - Ice Cube (1992)
+//
+// This is the global testing function, which runs all relevant tests
+// If you make a new components, it could be good to call its tester function here 
+// ==============================================
+void ChickityCheckYourselfBeforeYouWreckYourself(){
 
-void test_components(){
-
+    modem_startup();
+    
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     printTestStatus(t_level_sensor);
     test_t t_sd_card = SD_card_test();
@@ -211,7 +220,8 @@ int main(void)
 
     ReadyOrNot();
     
-    test_components();
+    //run tests for all components on bootup
+    ChickityCheckYourselfBeforeYouWreckYourself();
    
     for(;;)
     {

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Modem_RX.c  
+* File Name: Pin_Telit_pwr.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Modem_RX.h"
+#include "Pin_Telit_pwr.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Modem_RX__PORT == 15 && ((Modem_RX__MASK & 0xC0) != 0))
+	 Pin_Telit_pwr__PORT == 15 && ((Pin_Telit_pwr__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Modem_RX_Write
+* Function Name: Pin_Telit_pwr_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Modem_RX_SUT.c usage_Modem_RX_Write
+*  \snippet Pin_Telit_pwr_SUT.c usage_Pin_Telit_pwr_Write
 *******************************************************************************/
-void Modem_RX_Write(uint8 value)
+void Pin_Telit_pwr_Write(uint8 value)
 {
-    uint8 staticBits = (Modem_RX_DR & (uint8)(~Modem_RX_MASK));
-    Modem_RX_DR = staticBits | ((uint8)(value << Modem_RX_SHIFT) & Modem_RX_MASK);
+    uint8 staticBits = (Pin_Telit_pwr_DR & (uint8)(~Pin_Telit_pwr_MASK));
+    Pin_Telit_pwr_DR = staticBits | ((uint8)(value << Pin_Telit_pwr_SHIFT) & Pin_Telit_pwr_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Modem_RX_SetDriveMode
+* Function Name: Pin_Telit_pwr_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Modem_RX_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Modem_RX_SUT.c usage_Modem_RX_SetDriveMode
+*  \snippet Pin_Telit_pwr_SUT.c usage_Pin_Telit_pwr_SetDriveMode
 *******************************************************************************/
-void Modem_RX_SetDriveMode(uint8 mode)
+void Pin_Telit_pwr_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Modem_RX_0, mode);
+	CyPins_SetPinDriveMode(Pin_Telit_pwr_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Modem_RX_Read
+* Function Name: Pin_Telit_pwr_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Modem_RX_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Modem_RX_SUT.c usage_Modem_RX_Read  
+*  \snippet Pin_Telit_pwr_SUT.c usage_Pin_Telit_pwr_Read  
 *******************************************************************************/
-uint8 Modem_RX_Read(void)
+uint8 Pin_Telit_pwr_Read(void)
 {
-    return (Modem_RX_PS & Modem_RX_MASK) >> Modem_RX_SHIFT;
+    return (Pin_Telit_pwr_PS & Pin_Telit_pwr_MASK) >> Pin_Telit_pwr_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Modem_RX_ReadDataReg
+* Function Name: Pin_Telit_pwr_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Modem_RX_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Modem_RX_Read() API because the 
-* Modem_RX_ReadDataReg() reads the data register instead of the status 
+* preferred Pin_Telit_pwr_Read() API because the 
+* Pin_Telit_pwr_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Modem_RX_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Modem_RX_SUT.c usage_Modem_RX_ReadDataReg 
+*  \snippet Pin_Telit_pwr_SUT.c usage_Pin_Telit_pwr_ReadDataReg 
 *******************************************************************************/
-uint8 Modem_RX_ReadDataReg(void)
+uint8 Pin_Telit_pwr_ReadDataReg(void)
 {
-    return (Modem_RX_DR & Modem_RX_MASK) >> Modem_RX_SHIFT;
+    return (Pin_Telit_pwr_DR & Pin_Telit_pwr_MASK) >> Pin_Telit_pwr_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Modem_RX_INTSTAT) 
+#if defined(Pin_Telit_pwr_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Modem_RX_SetInterruptMode
+    * Function Name: Pin_Telit_pwr_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Modem_RX_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Modem_RX_INTR_ALL to configure the
+    *  component. Or you may use Pin_Telit_pwr_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Modem_RX_0_INTR       (First pin in the list)
-    *  - Modem_RX_1_INTR       (Second pin in the list)
+    *  - Pin_Telit_pwr_0_INTR       (First pin in the list)
+    *  - Pin_Telit_pwr_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Modem_RX_INTR_ALL     (All pins in Pins component)
+    *  - Pin_Telit_pwr_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Modem_RX_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Modem_RX_SUT.c usage_Modem_RX_SetInterruptMode
+    *  \snippet Pin_Telit_pwr_SUT.c usage_Pin_Telit_pwr_SetInterruptMode
     *******************************************************************************/
-    void Modem_RX_SetInterruptMode(uint16 position, uint16 mode)
+    void Pin_Telit_pwr_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Modem_RX_0_INTR) != 0u) 
+		if((position & Pin_Telit_pwr_0_INTR) != 0u) 
 		{ 
-			 Modem_RX_0_INTTYPE_REG = (uint8)mode; 
+			 Pin_Telit_pwr_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Modem_RX_ClearInterrupt
+    * Function Name: Pin_Telit_pwr_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Modem_RX_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Modem_RX_SUT.c usage_Modem_RX_ClearInterrupt
+    *  \snippet Pin_Telit_pwr_SUT.c usage_Pin_Telit_pwr_ClearInterrupt
     *******************************************************************************/
-    uint8 Modem_RX_ClearInterrupt(void)
+    uint8 Pin_Telit_pwr_ClearInterrupt(void)
     {
-        return (Modem_RX_INTSTAT & Modem_RX_MASK) >> Modem_RX_SHIFT;
+        return (Pin_Telit_pwr_INTSTAT & Pin_Telit_pwr_MASK) >> Pin_Telit_pwr_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Modem_TX.c  
+* File Name: Pin_Telit_ONOFF.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Modem_TX.h"
+#include "Pin_Telit_ONOFF.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Modem_TX__PORT == 15 && ((Modem_TX__MASK & 0xC0) != 0))
+	 Pin_Telit_ONOFF__PORT == 15 && ((Pin_Telit_ONOFF__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Modem_TX_Write
+* Function Name: Pin_Telit_ONOFF_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Modem_TX_SUT.c usage_Modem_TX_Write
+*  \snippet Pin_Telit_ONOFF_SUT.c usage_Pin_Telit_ONOFF_Write
 *******************************************************************************/
-void Modem_TX_Write(uint8 value)
+void Pin_Telit_ONOFF_Write(uint8 value)
 {
-    uint8 staticBits = (Modem_TX_DR & (uint8)(~Modem_TX_MASK));
-    Modem_TX_DR = staticBits | ((uint8)(value << Modem_TX_SHIFT) & Modem_TX_MASK);
+    uint8 staticBits = (Pin_Telit_ONOFF_DR & (uint8)(~Pin_Telit_ONOFF_MASK));
+    Pin_Telit_ONOFF_DR = staticBits | ((uint8)(value << Pin_Telit_ONOFF_SHIFT) & Pin_Telit_ONOFF_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Modem_TX_SetDriveMode
+* Function Name: Pin_Telit_ONOFF_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Modem_TX_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Modem_TX_SUT.c usage_Modem_TX_SetDriveMode
+*  \snippet Pin_Telit_ONOFF_SUT.c usage_Pin_Telit_ONOFF_SetDriveMode
 *******************************************************************************/
-void Modem_TX_SetDriveMode(uint8 mode)
+void Pin_Telit_ONOFF_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Modem_TX_0, mode);
+	CyPins_SetPinDriveMode(Pin_Telit_ONOFF_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Modem_TX_Read
+* Function Name: Pin_Telit_ONOFF_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Modem_TX_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Modem_TX_SUT.c usage_Modem_TX_Read  
+*  \snippet Pin_Telit_ONOFF_SUT.c usage_Pin_Telit_ONOFF_Read  
 *******************************************************************************/
-uint8 Modem_TX_Read(void)
+uint8 Pin_Telit_ONOFF_Read(void)
 {
-    return (Modem_TX_PS & Modem_TX_MASK) >> Modem_TX_SHIFT;
+    return (Pin_Telit_ONOFF_PS & Pin_Telit_ONOFF_MASK) >> Pin_Telit_ONOFF_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Modem_TX_ReadDataReg
+* Function Name: Pin_Telit_ONOFF_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Modem_TX_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Modem_TX_Read() API because the 
-* Modem_TX_ReadDataReg() reads the data register instead of the status 
+* preferred Pin_Telit_ONOFF_Read() API because the 
+* Pin_Telit_ONOFF_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Modem_TX_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Modem_TX_SUT.c usage_Modem_TX_ReadDataReg 
+*  \snippet Pin_Telit_ONOFF_SUT.c usage_Pin_Telit_ONOFF_ReadDataReg 
 *******************************************************************************/
-uint8 Modem_TX_ReadDataReg(void)
+uint8 Pin_Telit_ONOFF_ReadDataReg(void)
 {
-    return (Modem_TX_DR & Modem_TX_MASK) >> Modem_TX_SHIFT;
+    return (Pin_Telit_ONOFF_DR & Pin_Telit_ONOFF_MASK) >> Pin_Telit_ONOFF_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Modem_TX_INTSTAT) 
+#if defined(Pin_Telit_ONOFF_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Modem_TX_SetInterruptMode
+    * Function Name: Pin_Telit_ONOFF_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Modem_TX_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Modem_TX_INTR_ALL to configure the
+    *  component. Or you may use Pin_Telit_ONOFF_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Modem_TX_0_INTR       (First pin in the list)
-    *  - Modem_TX_1_INTR       (Second pin in the list)
+    *  - Pin_Telit_ONOFF_0_INTR       (First pin in the list)
+    *  - Pin_Telit_ONOFF_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Modem_TX_INTR_ALL     (All pins in Pins component)
+    *  - Pin_Telit_ONOFF_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Modem_TX_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Modem_TX_SUT.c usage_Modem_TX_SetInterruptMode
+    *  \snippet Pin_Telit_ONOFF_SUT.c usage_Pin_Telit_ONOFF_SetInterruptMode
     *******************************************************************************/
-    void Modem_TX_SetInterruptMode(uint16 position, uint16 mode)
+    void Pin_Telit_ONOFF_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Modem_TX_0_INTR) != 0u) 
+		if((position & Pin_Telit_ONOFF_0_INTR) != 0u) 
 		{ 
-			 Modem_TX_0_INTTYPE_REG = (uint8)mode; 
+			 Pin_Telit_ONOFF_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Modem_TX_ClearInterrupt
+    * Function Name: Pin_Telit_ONOFF_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Modem_TX_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Modem_TX_SUT.c usage_Modem_TX_ClearInterrupt
+    *  \snippet Pin_Telit_ONOFF_SUT.c usage_Pin_Telit_ONOFF_ClearInterrupt
     *******************************************************************************/
-    uint8 Modem_TX_ClearInterrupt(void)
+    uint8 Pin_Telit_ONOFF_ClearInterrupt(void)
     {
-        return (Modem_TX_INTSTAT & Modem_TX_MASK) >> Modem_TX_SHIFT;
+        return (Pin_Telit_ONOFF_INTSTAT & Pin_Telit_ONOFF_MASK) >> Pin_Telit_ONOFF_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

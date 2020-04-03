@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Power_Modem.h  
+* File Name: Pin_Telit_SWRDY.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Power_Modem_ALIASES_H) /* Pins Power_Modem_ALIASES_H */
-#define CY_PINS_Power_Modem_ALIASES_H
+#if !defined(CY_PINS_Pin_Telit_SWRDY_ALIASES_H) /* Pins Pin_Telit_SWRDY_ALIASES_H */
+#define CY_PINS_Pin_Telit_SWRDY_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Power_Modem_0			(Power_Modem__0__PC)
-#define Power_Modem_0_INTR	((uint16)((uint16)0x0001u << Power_Modem__0__SHIFT))
+#define Pin_Telit_SWRDY_0			(Pin_Telit_SWRDY__0__PC)
+#define Pin_Telit_SWRDY_0_INTR	((uint16)((uint16)0x0001u << Pin_Telit_SWRDY__0__SHIFT))
 
-#define Power_Modem_INTR_ALL	 ((uint16)(Power_Modem_0_INTR))
+#define Pin_Telit_SWRDY_INTR_ALL	 ((uint16)(Pin_Telit_SWRDY_0_INTR))
 
-#endif /* End Pins Power_Modem_ALIASES_H */
+#endif /* End Pins Pin_Telit_SWRDY_ALIASES_H */
 
 
 /* [] END OF FILE */
