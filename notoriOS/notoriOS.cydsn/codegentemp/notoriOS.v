@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 04/08/2020 at 17:07
+// 04/08/2020 at 18:35
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -2695,7 +2695,7 @@ module top ;
         .rts_n(Net_182),
         .tx_en(Net_183),
         .clock(1'b0),
-        .reset(1'b0),
+        .reset(Net_185),
         .rx(Net_177),
         .tx_interrupt(Net_186),
         .rx_interrupt(Net_165),
@@ -2912,6 +2912,8 @@ module top ;
     // -- Mux end --
 
     assign Net_222 = 1'h0;
+
+    assign Net_185 = 1'h0;
 
 
 

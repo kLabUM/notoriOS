@@ -202,8 +202,7 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 // ==============================================
 void ChickityCheckYourselfBeforeYouWreckYourself(){
 
-    //modem_startup();
-    //modem_stop();
+    test_t t_modem = modem_test();
     
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     printTestStatus(t_level_sensor);
