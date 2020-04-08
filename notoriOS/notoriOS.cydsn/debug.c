@@ -53,15 +53,23 @@ int _write(int file, char *ptr, int len)
 }
 
 //use like printf, but this will add an depoch timestamp to the printput
-void printNotif(char* format, ...){
+void printNotif(uint8 type, char* format, ...){
     va_list argptr;
     va_start(argptr, format);
     char dest[DEBUG_STRING_LENGTH];
     //basically, just hijack printf and inject the timestamp infront
     printf("{ ");
     printf("\"time\":\"%ld\" " , getTimeStamp());
+    if(type == NOTIF_TYPE_EVENT){
+        printf("\"event\":\"notif\" \"value\":\"");
+    }else if(type == NOTIF_TYPE_WARNING){
+        printf("\"event\":\"warning\" \"value\":\"");
+    }else if(type == NOTIF_TYPE_ERROR){
+        printf("\"event\":\"error\" \"value\":\"");
+    }else{
+       printf("\"event\":\"undefined\" \"value\":\""); 
+    }
     
-    printf("\"event\":\"notif\" \"value\":\"");
     vsprintf(dest, format, argptr);
     printf("%s",dest);
     
@@ -85,6 +93,11 @@ void printTestStatus(test_t test){
     printf("}\r\n");
    
 }
+
+
+
+
+
     
 
 
@@ -122,5 +135,21 @@ void stripEscapeCharacters(char *string){
     string[pch-string+1] = 0;
     pch=strchr(pch+1,'s');
   }
+}
+
+char *strextract(const char input_str[], char output_str[],
+                 const char search_start[], const char search_end[]) {
+    if (input_str == NULL) return NULL;
+    char *begin, *end = NULL;
+
+    if ((begin = strstr(input_str, search_start))) {
+        begin += strlen(search_start);
+        if ((end = strstr(begin, search_end))) {
+            strncpy(output_str, begin, end - begin);
+            output_str[end - begin] = '\0';
+        }
+    }
+
+    return end;
 }
 

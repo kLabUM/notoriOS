@@ -79,6 +79,7 @@ void modem_message();
 char *url_encode(char *str);
 uint8 parse_http_status(char* http_status, char* version, char* status_code, char* phrase);
 uint8_t modem_startup();  
+uint8_t modem_stop(); 
 uint8_t modem_power_on();
 void modem_scheduler_socket_dial();
 uint8_t modem_check_signal_quality(int *rssi, int *fer);
@@ -90,6 +91,9 @@ uint8_t modem_report_product_identification();
 void construct_generic_request(char* send_str, char* body, char* host, char* route,
                                int port, char* method, char* connection_type,
 	                           char *extra_headers, int extra_len, char* http_protocol);
+//remove later
+uint8 modem_post_to_influxdb(char *body);
+uint8 modem_get_ccid(char *ccid);
 
 #endif
 

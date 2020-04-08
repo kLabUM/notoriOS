@@ -65,6 +65,7 @@ level_sensor_t level_sensor_take_reading(){
     //start sensor power, uart, and isr
     Level_Sensor_Power_Write(ON);
     CyDelay(200u);//sensor bootup sequence ~200ms -- senosor will spit out ID info, but we don't need that
+    Level_Sensor_RX_SetDriveMode(PIN_DM_DIG_HIZ);
     Level_Sensor_UART_Start();
     Level_Sensor_ISR_StartEx(Level_Sensor_ISR);
     
@@ -76,6 +77,8 @@ level_sensor_t level_sensor_take_reading(){
     Level_Sensor_UART_Stop();
     Level_Sensor_ISR_Stop();
     Level_Sensor_Power_Write(OFF);
+    Level_Sensor_RX_SetDriveMode(PIN_DM_STRONG);
+    Level_Sensor_RX_Write(OFF);
 
     /* Return parsed reading */
     //parse string and put all values into array

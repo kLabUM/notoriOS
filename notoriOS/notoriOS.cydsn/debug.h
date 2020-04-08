@@ -15,6 +15,10 @@ long getTimeStamp();
 //set to 1 if debug data will be written to UART
 #define USE_DEBUG 1
 #define DEBUG_STRING_LENGTH 100
+
+#define NOTIF_TYPE_EVENT 0u
+#define NOTIF_TYPE_WARNING 1u
+#define NOTIF_TYPE_ERROR 2u
     
 char debug_string[DEBUG_STRING_LENGTH];
 
@@ -29,9 +33,12 @@ void debug_start();
 void debug_stop();
 void debug_sleep();
 void debug_wakeup();
-void printNotif(char* format, ...);
+void printNotif(uint8 type, char* format, ...);
 void printTestStatus(test_t test);
 void stripEscapeCharacters(char *string);
+char *strextract(const char input_str[], char output_str[],
+                 const char search_start[], const char search_end[]);
+
     
     
 #endif

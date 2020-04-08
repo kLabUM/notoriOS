@@ -15,7 +15,7 @@
 #include "sd_card.h"
 #include "voltages.h"
 #include "debug.h"
-#include "telit.h"
+#include "modem.h"
 
 
 
@@ -55,6 +55,10 @@ void ReadyOrNot()
     RTC_Start();
     debug_start();
     
+    modem_intilize();
+    
+
+    
     alarmMeasure = CreateAlarm(2,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 0;
     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
@@ -71,7 +75,7 @@ void ReadyOrNot()
 // ==============================================
 int WorkWorkWorkWorkWorkWork()
 {
-   
+    
     if(timeToMeasure){
        
 
@@ -92,6 +96,8 @@ int WorkWorkWorkWorkWorkWork()
     
     return 0;   
 }
+
+
 
 
 // ==============================================
@@ -196,7 +202,8 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 // ==============================================
 void ChickityCheckYourselfBeforeYouWreckYourself(){
 
-    modem_startup();
+    //modem_startup();
+    //modem_stop();
     
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     printTestStatus(t_level_sensor);
@@ -213,6 +220,7 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
       
   
 }
+
 
 int main(void)
 {

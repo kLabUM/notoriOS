@@ -431,20 +431,30 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
         
         uart_string_reset();
         UART_Telit_PutString(commands);
+      
+       
         for(i=0;i<interval;i++){        
             compare_location=strstr(uart_received_string,expected_response);        
             if(compare_location!=NULL) {
                 //sprintf(SD_Buffer,"%s%s",SD_Buffer,uart_received_string); 
                 //strip newline characters and other stuff
                 //stripEscapeCharacters(uart_received_string);
-                //printNotif("Modem Received: %s\r\n", uart_received_string);
-                return(1);
+                //printNotif("Modem Sent %d/3: %s\r\n", (at_attempt+1), commands);
+                if (at_attempt == 0){
+                    printNotif(NOTIF_TYPE_EVENT,"Modem Received expected AT Response on first Try: %s\r\n", uart_received_string);
+                }else{
+                   printNotif(NOTIF_TYPE_WARNING,"Modem required %d tries to receive AT Response: %s\r\n", (at_attempt+1), uart_received_string);
+                 
+                }
+                 return(1);
             }
             CyDelay((uint32) delay);
         }   
         CyDelay((uint32) delay);
         //sprintf(SD_Buffer,"%s%s",SD_Buffer,uart_received_string);
     }
+    printNotif(NOTIF_TYPE_ERROR,"Modem AT response timeout: %s\r\n", commands);
+          
     return(0);    
 }
 
@@ -619,7 +629,7 @@ Example conversation:
 }
 
 uint8_t modem_define_PDP(){
-    return(at_write_command("AT+CGDCONT=3,\"IP\",\"n.ispsn\"\r","OK",1000)); // BPW
+    return(at_write_command("AT+CGDCONT=3,\"IP\",\"n.ispsn\"\r","OK",2000)); // BPW
     //return(at_write_command("AT+CGDCONT=1,\"IPV4V6\",\"wholesale\"\r","OK",60000));
 }
 
@@ -753,55 +763,68 @@ void construct_generic_request(char* send_str, char* body, char* host, char* rou
 void modem_start(){    
     /*enable UART and interrupts to receive data from the cell module*/ 
     UART_Telit_Start();
-    
     isr_telit_rx_StartEx(isr_telit_rx);
    
     
 }
 
 // deinitialize modem
-void modem_stop(){
-    UART_Telit_Stop();
+uint8 modem_stop(){
+    
+    uint8 status = 0;
+    if(at_write_command("AT#SHDN\r","OK",1000u) != 1){
+        Pin_Telit_ONOFF_Write(1u); /*power off telit cell module*/
+        CyDelay(2500); 
+        status = 1;
+    }  
+    
+    /* it takes >=15s for the unit to shut down completely*/
+    CyDelay(15000);
 	Pin_Telit_ONOFF_Write(0u);			// Save energy by pulling down "push button"
     Pin_Telit_pwr_Write(0u);
 	//Pin_Telit_SHDN_Write(0u);		// Save energy by pulling down "push button"
+    UART_Telit_Stop();
     isr_telit_rx_Stop();
-    
-    
+
+    return status;
 
 }
 
 uint8_t modem_power_on(){
        
     uint8_t counter=0;
-    Pin_Telit_ONOFF_Write(1u);
+    Pin_Telit_ONOFF_Write(0u);
     Pin_Telit_pwr_Write(1u);
-    CyDelay(2000u);
+    CyDelay(1000u);
+    Pin_Telit_ONOFF_Write(1u);
+    CyDelay(2500u);
+    Pin_Telit_ONOFF_Write(0u);
+ 
     
     
     //ideally, PIN18 on the module is configured a a GPIO
     //This GPIO should pull low when the modem is pwoered up and ready
     //This will save time, otherwise, we need to wait for two full seconds
-    if(Pin_Telit_SWRDY_Read()){
+    /*if(Pin_Telit_SWRDY_Read()){
         
         Pin_Telit_ONOFF_Write(0u);
                     
-        /* wait till Telit RDY pin goes high, and PSOC SWRDY pin goes low*/
+      
         do{
             CyDelay(200);
             counter++;       
             if(counter>=255)return 0;                
         }while(Pin_Telit_SWRDY_Read());
         
-        Pin_Telit_ONOFF_Write(1u); /*power on telit cell module*/
+        Pin_Telit_ONOFF_Write(1u); 
             
     }else{
          //if the GPIO feature was not configured, wait for 2 full secs and try to enable it for next time
-         Pin_Telit_ONOFF_Write(0u); /*power on telit cell module*/
-         CyDelay(2000); /*ON must be tied low for >= 1 second*/
+         Pin_Telit_ONOFF_Write(0u); 
+         CyDelay(2000); 
          Pin_Telit_ONOFF_Write(1u);
          at_write_command("AT#GPIO=2,1,1,1\r","OK",1000u);
-    }
+    }*/
     
     
    
@@ -829,6 +852,7 @@ void modem_power_off(){
     
     /* it takes >=15s for the unit to shut down completely*/
     CyDelay(15000);
+    Pin_Telit_pwr_Write(0u);
 
 }
 
@@ -847,12 +871,12 @@ uint8_t modem_report_IMSI(){
 
 uint8_t modem_startup(){
     
-    printNotif("Start Modem Test");
+    printNotif(NOTIF_TYPE_EVENT,"==========================Start Modem Test======================");
     int rssi = 0, fer = 0;
     uint8_t ready=0, iter=0;
     
     /*enable UART communication with Telit module*/
-    printNotif("Turn Modem On");
+    printNotif(NOTIF_TYPE_EVENT,"Turn Modem On");
     modem_start();
     
     while(iter<3){
@@ -862,29 +886,101 @@ uint8_t modem_startup(){
         iter++;
     }
     
+    if (iter > 0){
+        printNotif(NOTIF_TYPE_WARNING,"Modem turned on after %d tries", iter);
+    }else{
+        printNotif(NOTIF_TYPE_EVENT,"Modem turned on as expected.");
+    }
+    
     if(!ready) return 0;
     
-    printNotif("Modem is On");
+    modem_set_flow_control(0);
+   
+    at_write_command("AT#CGMM\r","OK",1000u); //modem model
+    at_write_command("AT+CGSN\r","OK",1000u); //IMEI
+    char SIM[200];
+    modem_get_ccid(SIM);
+    printNotif(NOTIF_TYPE_EVENT,"SIM_ID=%s",SIM);
     
-    uint8_t i=0;
-    for(i=0;i<3;i++){
-        if(at_write_command("AT#SIMDET=0\r","OK",1000))break;
-    }
-    CyDelay(5000);
     
-    /* the SIM card connector doesn't have the SIMIN pin.
+    // Enable verbose error reporting by the cell module
+    // Fully write out the errors as opposed to sending an error code
+    at_write_command("AT+CMEE=2\r\n", "OK", 1000u);
+    
+    at_write_command("AT+CMEE=2\r\n", "OK", 1000u);
+    
+
+    
+    
+    
+    
+    
+        // Configure the APN settings
+    at_write_command("AT+CGDCONT=1,\"IP\",\"wireless.twilio.com\"\r\n", "OK", 1000u); 
+        //at_write_command(usr_command, "OK", 1000u);
+        //at_write_command( pw_command, "OK", 1000u);
+        //at_write_command(bnd_command, "OK", 1000u);
+        
+        // Get CCID of SIM
+        //modem_get_ccid(CCID);
+               
+        // Get the current time from the modem
+        //gettime
+         // Check for valid response from cellular module
+        if (at_write_command("AT+CCLK?\r", "OK", 1000u) == 1u) {
+        // Expect the UART to contain something like
+        // "#CCLK: "00/01/01,00:00:55+00"\r\n\r\nOK"
+            char time[100];
+                char *terminator =
+            strextract(uart_received_string, time, "+CCLK: ", "\r\n");
+            printNotif(NOTIF_TYPE_EVENT,"Modem Time Recevied: %s", time);
+        }
+
+        
+
+        // Get the signal strength from the modem
+        for (int n_csq = 0; n_csq < 3; n_csq++) {
+             // Check for valid response from cellular module
+            if (at_write_command("AT+CSQ\r", "OK", 1000u) == 1u) {
+                // Expect the UART to contain something like
+                // "\r\n+CSQ: 8,4\r\n\r\nOK"
+                char strength[100];
+                char *terminator =
+                    strextract(uart_received_string, strength, "+CSQ: ", ",");
+                     printNotif(NOTIF_TYPE_EVENT,"Signal Strength Recevied on %d/3 tries: %s",(n_csq+1), strength);
+                    break;
+            }
+            CyDelay(1000u);
+        }
+        
+            // Send the data to InfluxDB\// Get CCID of SIM
+
+        
+        //modem_post_to_influxdb("TEST");
+        
+
+
+    //  END  configure the modem APN
+    
+    
+    
+    
+
+     /*at_write_command("AT#SIMDET=0\r","OK",1000);
+
+    
+     the SIM card connector doesn't have the SIMIN pin.
      * hence, the SIM card presence status is manually set to ignore
-     * SIMIN pin, and act as "SIM inserted"*/    
-    for(i=0;i<3;i++){
-        if(at_write_command("AT#SIMDET=1\r","OK",1000))break;
-    }   
+     * SIMIN pin, and act as "SIM inserted"    
+  
+     at_write_command("AT#SIMDET=1\r","OK",1000);
+   
     
-    modem_define_PDP();                       //modem_define_PDP();/* set this parameter for first-time usage*/   
+    modem_define_PDP();                       //modem_define_PDP(); 
     
     at_write_command("AT#SCFG=1,3,300,90,600,50\r","OK",1000);
          
     modem_check_network();
-    printNotif("Modem CREG STatus: %s", uart_received_string);
                                 // BPW: Appears the modem either doesn't receive or respond every other time
                                 //      First I tried repeating each command,
                                 //      then I edited at_write_command and added an outer loop.
@@ -908,15 +1004,14 @@ uint8_t modem_startup(){
     modem_report_product_identification(); //modem_report_product_identification();
     
     parse_meid(MEID);
-    printNotif("Modem MEID received: %s", MEID);
-    printf("%s\n\n",MEID);
+  
     //modem_report_software_version();
        
-    /* it usually takes two queries to the SIM card before
-     * its existence is acknowledged*/
-    for(i=0;i<3;i++){
-        if(modem_report_IMSI())break;
-    }     
+     it usually takes two queries to the SIM card before
+     * its existence is acknowledged
+    //for(i=0;i<3;i++){
+       modem_report_IMSI();
+    //}     
     
     at_write_command("AT#AUTOATT=0\r","OK",1000);
     at_write_command("AT+CGATT=1\r","",1000); // doesn't respond
@@ -924,12 +1019,12 @@ uint8_t modem_startup(){
     rssi = 0;
     fer = 0;
     modem_check_signal_quality(&rssi,&fer);
-    printNotif("Modem RSSI %d, FER %d: %s", rssi, fer);
+   // printNotif("Modem RSSI %d, FER %d: %s", rssi, fer);
     
     
     uint8 status = 0;
     status = modem_check_network();                    //modem_check_network(); 
-    printNotif("Network Check: Status=%d", status);
+    //printNotif("Network Check: Status=%d", status);
     
     at_write_command("AT#CCLK?\r","OK",1000); //at_write_command("AT#CCLK?\r","OK",1000);
     //at_write_command("AT#GPRS=1\r","OK",1000);
@@ -941,18 +1036,97 @@ uint8_t modem_startup(){
     
     
     status = at_write_command("AT#SD=3,0,8086,\"data.open-storm.org\",0,0,1\r","OK",5000);
-    printNotif("Connect to Open Storm: Status=%d", status);
+    //printNotif("Connect to Open Storm: Status=%d", status);
     
     status = at_write_command("AT#SSEND=3\r\n",   ">", 1000);
     
     status = at_write_command("POST /write?db=ARB&u=generic_node&p=MakeFloodsCurrents HTTP/1.1\r\nHost: data.open-storm.org:8086\r\nConnection: close\r\nContent-Length: 30\r\n\r\nv_bat,node_id=GGB003 value=8.5\r\n\r\n\032", "HTTP/1.1 204", 1000u);
     
-    printNotif("End Modem Test: Status=%d", status);
+    //printNotif("End Modem Test: Status=%d", status);
     //at_write_command("AT#SRECV=3,1000","OK",1000);
 
 
     
-    adjust_time();
+    adjust_time();*/
     
     return 1;           
 }
+
+
+uint8 modem_post_to_influxdb(char *body) {
+    
+    uint8 status = 100;
+    
+    // Construct the HTTP request:
+    // POST /write?db=<db>&u=<user>&p<pass> HTTP/1.1
+    // Host: <host>:<port>
+    // Connection: Keep-Alive
+    // Content-Length: <strlen(body)>
+    // 
+    // <body>
+    
+    // InfluxDB values
+   char  request[3000]; 
+char  at_command[3000]; 
+char node_id[20]    = "GGB004";
+char db[20]         = "ARB"; 
+char user[20]       = "generic_node";
+char pass[20]       = "MakeFloodsCurrents";
+char host[20]       = "data.open-storm.org";
+char port[20]       = "8086";   
+
+    
+    //sprintf(request,"POST /write?db=%s&u=%s&p=%s HTTP/1.1\r\nHost: %s:%s\r\nConnection: Keep-Alive\r\nContent-Length: %d\r\n\r\n%s\r\n\r\n\032",
+    //    db,user,pass,host,port,strlen(body),body);
+    sprintf(request,"POST /write?db=%s&u=%s&p=%s HTTP/1.1\r\nHost: %s:%s\r\nConnection: close\r\nContent-Length: %d\r\n\r\n%s\r\n\r\n\032",
+        db,user,pass,host,port,strlen(body),body);
+    // /!\ may need to replace spaces with %20 -- import url_encode from perfect-cell
+    
+    // Construct the Socket Dial AT command: 
+    // AT#SD=1,0,<port>,"<host>",0,0,1
+
+     // Construct the Socket Dial AT command: 
+    // AT#SD=1,0,<port>,"<host>",0,0,1
+    
+    for (int i = 0; i<10; i++){
+        printNotif(NOTIF_TYPE_EVENT,"MODEM Register try %d/10",i);
+        if(at_write_command("AT+CREG?\r",",1",1000u)){
+            break; 
+        }
+    }
+    
+    at_write_command("AT#SGACT=1,1\r\n","OK",10000u);
+    sprintf(at_command,"AT#SD=1,0,%s,\"%s\",0,0,1\r\n",port,host);
+    at_write_command( at_command,   "OK",10000u);
+    at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
+    
+    status = at_write_command(request, "HTTP/1.1 204", 1000u);
+    at_write_command("AT#SH=1\r\n", "OK", 1000u);
+    return status;
+}
+
+uint8 modem_get_ccid(char *ccid) {
+    /*
+    int modem_get_meid(char* ccid)
+
+    Return the CCID of the cell module
+
+    Example HE910/NL-SW-HSPA Conversation:
+    [Board] AT+CCID
+    [Modem] AT+CCID\r\n+CCID: 89014103279069593771\r\n\r\nOK
+    */
+
+    // Check for valid response from cellular module
+    if (at_write_command("AT#CCID\r", "OK", 1000u) == 1u) {
+        // Expect the UART to contain something like
+        // "\r\n+CCID: 89014103279069593771\r\n\r\nOK"
+        char *terminator =
+            strextract(uart_received_string, ccid, "#CCID: ", "\r\n");
+
+        return terminator != NULL;
+    }
+
+    return 0u;
+}
+
+
