@@ -86,6 +86,9 @@ int WorkWorkWorkWorkWorkWork()
        LED_Write(0u);
        timeToMeasure = 0u;
     
+       test_t t_voltages = voltages_test();
+       printTestStatus(t_voltages);
+    
        //printNotif("Light Off");
        
        
@@ -202,7 +205,7 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 // ==============================================
 void ChickityCheckYourselfBeforeYouWreckYourself(){
 
-    test_t t_modem = modem_test();
+   // test_t t_modem = modem_test();
     
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     printTestStatus(t_level_sensor);
