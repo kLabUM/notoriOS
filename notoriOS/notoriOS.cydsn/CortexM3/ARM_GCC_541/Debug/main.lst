@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 1
 
 
    1              		.syntax unified
@@ -25,7 +25,7 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
   22              		.thumb
   23              		.syntax unified
   24              		.comm	modem_state,1,1
-  25              		.comm	modem_time_stamp,4,4
+  25              		.comm	modem_start_time_stamp,4,4
   26              		.comm	modem_info,60,4
   27              		.comm	modem_stats,12,4
   28              		.comm	alarmMeasure,6,4
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
   15:main.c        **** #include "sd_card.h"
   16:main.c        **** #include "voltages.h"
   17:main.c        **** #include "debug.h"
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 2
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 2
 
 
   18:main.c        **** #include "modem.h"
@@ -74,13 +74,16 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
   28:main.c        **** alarm alarmMeasure2;
   29:main.c        **** uint8 timeToMeasure2;
   30:main.c        **** 
-  31:main.c        **** 
-  32:main.c        **** // This function must always be called (when the Sleep Timer's interrupt
-  33:main.c        **** // is disabled or enabled) after wake up to clear the ctw_int status bit.
-  34:main.c        **** // It is required to call SleepTimer_GetStatus() within 1 ms (1 clock cycle
-  35:main.c        **** // of the ILO) after CTW event occurred.
-  36:main.c        **** CY_ISR(Wakeup_ISR) {
-  41              		.loc 1 36 0
+  31:main.c        **** //callback functions
+  32:main.c        **** void syncData();
+  33:main.c        **** 
+  34:main.c        **** 
+  35:main.c        **** // This function must always be called (when the Sleep Timer's interrupt
+  36:main.c        **** // is disabled or enabled) after wake up to clear the ctw_int status bit.
+  37:main.c        **** // It is required to call SleepTimer_GetStatus() within 1 ms (1 clock cycle
+  38:main.c        **** // of the ILO) after CTW event occurred.
+  39:main.c        **** CY_ISR(Wakeup_ISR) {
+  41              		.loc 1 39 0
   42              		.cfi_startproc
   43              		@ args = 0, pretend = 0, frame = 0
   44              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -90,11 +93,11 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
   48              		.cfi_offset 14, -4
   49 0002 00AF     		add	r7, sp, #0
   50              		.cfi_def_cfa_register 7
-  37:main.c        ****     SleepTimer_GetStatus();
-  51              		.loc 1 37 0
+  40:main.c        ****     SleepTimer_GetStatus();
+  51              		.loc 1 40 0
   52 0004 FFF7FEFF 		bl	SleepTimer_GetStatus
-  38:main.c        **** }
-  53              		.loc 1 38 0
+  41:main.c        **** }
+  53              		.loc 1 41 0
   54 0008 00BF     		nop
   55 000a 80BD     		pop	{r7, pc}
   56              		.cfi_endproc
@@ -108,21 +111,21 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
   64              		.type	ReadyOrNot, %function
   65              	ReadyOrNot:
   66              	.LFB65:
-  39:main.c        **** 
-  40:main.c        **** 
-  41:main.c        **** // ==============================================
-  42:main.c        **** // Ready or not, here I come, you can't hide
-  43:main.c        **** // Gonna find you and take it slowly
-  44:main.c        **** //      - The Fugees (1996)
-  45:main.c        **** //
-  46:main.c        **** // Initialize and critical hardware or routines 
-  47:main.c        **** // ==============================================
-  48:main.c        **** void ReadyOrNot()
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 3
+  42:main.c        **** 
+  43:main.c        **** 
+  44:main.c        **** // ==============================================
+  45:main.c        **** // Ready or not, here I come, you can't hide
+  46:main.c        **** // Gonna find you and take it slowly
+  47:main.c        **** //      - The Fugees (1996)
+  48:main.c        **** //
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 3
 
 
-  49:main.c        **** {
-  67              		.loc 1 49 0
+  49:main.c        **** // Initialize and critical hardware or routines 
+  50:main.c        **** // ==============================================
+  51:main.c        **** void ReadyOrNot()
+  52:main.c        **** {
+  67              		.loc 1 52 0
   68              		.cfi_startproc
   69              		@ args = 0, pretend = 0, frame = 8
   70              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -135,39 +138,39 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
   77              		.cfi_def_cfa_offset 24
   78 0004 00AF     		add	r7, sp, #0
   79              		.cfi_def_cfa_register 7
-  50:main.c        ****     
-  51:main.c        ****     isr_SleepTimer_StartEx(Wakeup_ISR);// Start Sleep ISR
-  80              		.loc 1 51 0
+  53:main.c        ****     
+  54:main.c        ****     isr_SleepTimer_StartEx(Wakeup_ISR);// Start Sleep ISR
+  80              		.loc 1 54 0
   81 0006 1148     		ldr	r0, .L3
   82 0008 FFF7FEFF 		bl	isr_SleepTimer_StartEx
-  52:main.c        ****     SleepTimer_Start();             // Start SleepTimer Component
-  83              		.loc 1 52 0
+  55:main.c        ****     SleepTimer_Start();             // Start SleepTimer Component
+  83              		.loc 1 55 0
   84 000c FFF7FEFF 		bl	SleepTimer_Start
-  53:main.c        ****     
-  54:main.c        ****     RTC_WriteIntervalMask(0b11111111);
-  85              		.loc 1 54 0
+  56:main.c        ****     
+  57:main.c        ****     RTC_WriteIntervalMask(0b11111111);
+  85              		.loc 1 57 0
   86 0010 FF20     		movs	r0, #255
   87 0012 FFF7FEFF 		bl	RTC_WriteIntervalMask
-  55:main.c        ****     RTC_Start();
-  88              		.loc 1 55 0
+  58:main.c        ****     RTC_Start();
+  88              		.loc 1 58 0
   89 0016 FFF7FEFF 		bl	RTC_Start
-  56:main.c        ****     debug_start();
-  90              		.loc 1 56 0
+  59:main.c        ****     debug_start();
+  90              		.loc 1 59 0
   91 001a FFF7FEFF 		bl	debug_start
-  57:main.c        ****     
-  58:main.c        ****     modem_intilize();
-  92              		.loc 1 58 0
+  60:main.c        ****     
+  61:main.c        ****     modem_intilize();
+  92              		.loc 1 61 0
   93 001e FFF7FEFF 		bl	modem_intilize
-  59:main.c        ****     
-  60:main.c        **** 
-  61:main.c        ****     
-  62:main.c        ****     alarmMeasure = CreateAlarm(2,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
-  94              		.loc 1 62 0
+  62:main.c        ****     
+  63:main.c        **** 
+  64:main.c        ****     
+  65:main.c        ****     alarmMeasure = CreateAlarm(120u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+  94              		.loc 1 65 0
   95 0022 0B4C     		ldr	r4, .L3+4
   96 0024 3846     		mov	r0, r7
   97 0026 0723     		movs	r3, #7
   98 0028 0022     		movs	r2, #0
-  99 002a 0221     		movs	r1, #2
+  99 002a 7821     		movs	r1, #120
  100 002c FFF7FEFF 		bl	CreateAlarm
  101 0030 2246     		mov	r2, r4
  102 0032 3B46     		mov	r3, r7
@@ -175,20 +178,20 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
  104 0036 1160     		str	r1, [r2]	@ unaligned
  105 0038 9B88     		ldrh	r3, [r3, #4]	@ unaligned
  106 003a 9380     		strh	r3, [r2, #4]	@ unaligned
-  63:main.c        ****     timeToMeasure = 0;
- 107              		.loc 1 63 0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 4
+
+
+  66:main.c        ****     timeToMeasure = 1;
+ 107              		.loc 1 66 0
  108 003c 054B     		ldr	r3, .L3+8
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 4
-
-
- 109 003e 0022     		movs	r2, #0
+ 109 003e 0122     		movs	r2, #1
  110 0040 1A70     		strb	r2, [r3]
-  64:main.c        ****     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
-  65:main.c        ****     //timeToMeasure = 0;
-  66:main.c        ****     
-  67:main.c        ****     
-  68:main.c        **** }
- 111              		.loc 1 68 0
+  67:main.c        ****     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+  68:main.c        ****     //timeToMeasure = 0;
+  69:main.c        ****     
+  70:main.c        ****     
+  71:main.c        **** }
+ 111              		.loc 1 71 0
  112 0042 00BF     		nop
  113 0044 0C37     		adds	r7, r7, #12
  114              		.cfi_def_cfa_offset 12
@@ -205,2141 +208,2354 @@ ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 1
  125              		.cfi_endproc
  126              	.LFE65:
  127              		.size	ReadyOrNot, .-ReadyOrNot
- 128              		.section	.text.WorkWorkWorkWorkWorkWork,"ax",%progbits
+ 128              		.section	.rodata
  129              		.align	2
- 130              		.global	WorkWorkWorkWorkWorkWork
- 131              		.thumb
- 132              		.thumb_func
- 133              		.type	WorkWorkWorkWorkWorkWork, %function
- 134              	WorkWorkWorkWorkWorkWork:
- 135              	.LFB66:
-  69:main.c        **** 
-  70:main.c        **** // ==============================================
-  71:main.c        **** // You see me I be work, work, work, work, work, work 
-  72:main.c        **** //      - Rhiana, feat Drake (2016)
-  73:main.c        **** //
-  74:main.c        **** // Prorcesses core tasks
-  75:main.c        **** // ==============================================
-  76:main.c        **** int WorkWorkWorkWorkWorkWork()
-  77:main.c        **** {
- 136              		.loc 1 77 0
- 137              		.cfi_startproc
- 138              		@ args = 0, pretend = 0, frame = 392
- 139              		@ frame_needed = 1, uses_anonymous_args = 0
- 140 0000 90B5     		push	{r4, r7, lr}
- 141              		.cfi_def_cfa_offset 12
- 142              		.cfi_offset 4, -12
- 143              		.cfi_offset 7, -8
- 144              		.cfi_offset 14, -4
- 145 0002 ADF5417D 		sub	sp, sp, #772
- 146              		.cfi_def_cfa_offset 784
- 147 0006 5EAF     		add	r7, sp, #376
- 148              		.cfi_def_cfa 7, 408
-  78:main.c        ****     
-  79:main.c        ****     if(timeToMeasure){
- 149              		.loc 1 79 0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 5
+ 130              	.LC0:
+ 131 0000 4D6F6465 		.ascii	"Modem is ready.\000"
+ 131      6D206973 
+ 131      20726561 
+ 131      64792E00 
+ 132              		.section	.text.WorkWorkWorkWorkWorkWork,"ax",%progbits
+ 133              		.align	2
+ 134              		.global	WorkWorkWorkWorkWorkWork
+ 135              		.thumb
+ 136              		.thumb_func
+ 137              		.type	WorkWorkWorkWorkWorkWork, %function
+ 138              	WorkWorkWorkWorkWorkWork:
+ 139              	.LFB66:
+  72:main.c        **** 
+  73:main.c        **** // ==============================================
+  74:main.c        **** // You see me I be work, work, work, work, work, work 
+  75:main.c        **** //      - Rhiana, feat Drake (2016)
+  76:main.c        **** //
+  77:main.c        **** // Prorcesses core tasks
+  78:main.c        **** // ==============================================
+  79:main.c        **** int WorkWorkWorkWorkWorkWork()
+  80:main.c        **** {
+ 140              		.loc 1 80 0
+ 141              		.cfi_startproc
+ 142              		@ args = 0, pretend = 0, frame = 8
+ 143              		@ frame_needed = 1, uses_anonymous_args = 0
+ 144 0000 80B5     		push	{r7, lr}
+ 145              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 5
 
 
- 150 0008 134B     		ldr	r3, .L8
- 151 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 152 000c 002B     		cmp	r3, #0
- 153 000e 1CD0     		beq	.L6
- 154              	.LBB2:
-  80:main.c        ****        
-  81:main.c        **** 
-  82:main.c        ****        //printNotif("Light ON");
+ 146              		.cfi_offset 7, -8
+ 147              		.cfi_offset 14, -4
+ 148 0002 82B0     		sub	sp, sp, #8
+ 149              		.cfi_def_cfa_offset 16
+ 150 0004 00AF     		add	r7, sp, #0
+ 151              		.cfi_def_cfa_register 7
+  81:main.c        ****     
+  82:main.c        ****     if(timeToMeasure){
+ 152              		.loc 1 82 0
+ 153 0006 174B     		ldr	r3, .L9
+ 154 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 155 000a 002B     		cmp	r3, #0
+ 156 000c 20D0     		beq	.L6
   83:main.c        ****        
-  84:main.c        ****        LED_Write(1u);
- 155              		.loc 1 84 0
- 156 0010 0120     		movs	r0, #1
- 157 0012 FFF7FEFF 		bl	LED_Write
-  85:main.c        ****        CyDelay(100u);
- 158              		.loc 1 85 0
- 159 0016 6420     		movs	r0, #100
- 160 0018 FFF7FEFF 		bl	CyDelay
-  86:main.c        ****        LED_Write(0u);
- 161              		.loc 1 86 0
- 162 001c 0020     		movs	r0, #0
- 163 001e FFF7FEFF 		bl	LED_Write
-  87:main.c        ****        timeToMeasure = 0u;
- 164              		.loc 1 87 0
- 165 0022 0D4B     		ldr	r3, .L8
- 166 0024 0022     		movs	r2, #0
- 167 0026 1A70     		strb	r2, [r3]
-  88:main.c        ****     
-  89:main.c        ****        test_t t_voltages = voltages_test();
- 168              		.loc 1 89 0
- 169 0028 3B1D     		adds	r3, r7, #4
- 170 002a 1846     		mov	r0, r3
- 171 002c FFF7FEFF 		bl	voltages_test
-  90:main.c        ****        printTestStatus(t_voltages);
- 172              		.loc 1 90 0
- 173 0030 3C1D     		adds	r4, r7, #4
- 174 0032 6846     		mov	r0, sp
- 175 0034 04F11003 		add	r3, r4, #16
- 176 0038 40F27112 		movw	r2, #369
- 177 003c 1946     		mov	r1, r3
- 178 003e FFF7FEFF 		bl	memcpy
- 179 0042 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
- 180 0046 FFF7FEFF 		bl	printTestStatus
- 181              	.L6:
- 182              	.LBE2:
-  91:main.c        ****     
-  92:main.c        ****        //printNotif("Light Off");
-  93:main.c        ****        
-  94:main.c        ****        
-  95:main.c        ****     }
-  96:main.c        ****     //if(timeToMeasure2){
-  97:main.c        ****         //dosomething
-  98:main.c        ****     //}
-  99:main.c        ****     
- 100:main.c        ****     return 0;   
- 183              		.loc 1 100 0
- 184 004a 0023     		movs	r3, #0
- 101:main.c        **** }
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 6
+  84:main.c        **** 
+  85:main.c        ****  
+  86:main.c        ****        
+  87:main.c        ****     
+  88:main.c        ****         if(modem_get_state() == MODEM_STATE_OFF){
+ 157              		.loc 1 88 0
+ 158 000e FFF7FEFF 		bl	modem_get_state
+ 159 0012 0346     		mov	r3, r0
+ 160 0014 002B     		cmp	r3, #0
+ 161 0016 0BD1     		bne	.L7
+  89:main.c        ****             
+  90:main.c        ****             //printNotif("Light ON");
+  91:main.c        ****              LED_Write(1u);
+ 162              		.loc 1 91 0
+ 163 0018 0120     		movs	r0, #1
+ 164 001a FFF7FEFF 		bl	LED_Write
+  92:main.c        ****             CyDelay(100u);
+ 165              		.loc 1 92 0
+ 166 001e 6420     		movs	r0, #100
+ 167 0020 FFF7FEFF 		bl	CyDelay
+  93:main.c        ****             LED_Write(0u);
+ 168              		.loc 1 93 0
+ 169 0024 0020     		movs	r0, #0
+ 170 0026 FFF7FEFF 		bl	LED_Write
+  94:main.c        ****             modem_power_up();
+ 171              		.loc 1 94 0
+ 172 002a FFF7FEFF 		bl	modem_power_up
+ 173 002e 0FE0     		b	.L6
+ 174              	.L7:
+  95:main.c        ****         }else if(modem_get_state() == MODEM_STATE_READY){
+ 175              		.loc 1 95 0
+ 176 0030 FFF7FEFF 		bl	modem_get_state
+ 177 0034 0346     		mov	r3, r0
+ 178 0036 042B     		cmp	r3, #4
+ 179 0038 0AD1     		bne	.L6
+  96:main.c        ****             printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
+ 180              		.loc 1 96 0
+ 181 003a 0B49     		ldr	r1, .L9+4
+ 182 003c 0020     		movs	r0, #0
+ 183 003e FFF7FEFF 		bl	printNotif
+  97:main.c        ****             syncData();
+ 184              		.loc 1 97 0
+ 185 0042 FFF7FEFF 		bl	syncData
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 6
 
 
- 185              		.loc 1 101 0
- 186 004c 1846     		mov	r0, r3
- 187 004e 07F5C677 		add	r7, r7, #396
- 188              		.cfi_def_cfa_offset 12
- 189 0052 BD46     		mov	sp, r7
- 190              		.cfi_def_cfa_register 13
- 191              		@ sp needed
- 192 0054 90BD     		pop	{r4, r7, pc}
- 193              	.L9:
- 194 0056 00BF     		.align	2
- 195              	.L8:
- 196 0058 00000000 		.word	timeToMeasure
- 197              		.cfi_endproc
- 198              	.LFE66:
- 199              		.size	WorkWorkWorkWorkWorkWork, .-WorkWorkWorkWorkWorkWork
- 200              		.section	.text.LayBack,"ax",%progbits
- 201              		.align	2
- 202              		.global	LayBack
- 203              		.thumb
- 204              		.thumb_func
- 205              		.type	LayBack, %function
- 206              	LayBack:
- 207              	.LFB67:
- 102:main.c        **** 
- 103:main.c        **** 
- 104:main.c        **** 
- 105:main.c        **** 
- 106:main.c        **** // ==============================================
- 107:main.c        **** // sippin on gin and juice, Laid back (with my mind on my money and my money on my mind)
- 108:main.c        **** //      - Snoop Dogg (1993)
- 109:main.c        **** //
- 110:main.c        **** // Put all hardware to sleep and go into low power mode to conserve Amps
- 111:main.c        **** // ==============================================
- 112:main.c        **** void LayBack()
- 113:main.c        **** {
- 208              		.loc 1 113 0
- 209              		.cfi_startproc
- 210              		@ args = 0, pretend = 0, frame = 0
- 211              		@ frame_needed = 1, uses_anonymous_args = 0
- 212 0000 80B5     		push	{r7, lr}
- 213              		.cfi_def_cfa_offset 8
- 214              		.cfi_offset 7, -8
- 215              		.cfi_offset 14, -4
- 216 0002 00AF     		add	r7, sp, #0
- 217              		.cfi_def_cfa_register 7
- 114:main.c        ****     
- 115:main.c        ****     debug_sleep();
- 218              		.loc 1 115 0
- 219 0004 FFF7FEFF 		bl	debug_sleep
- 116:main.c        ****     // Prepares system clocks for the Sleep mode
- 117:main.c        ****     CyPmSaveClocks();
- 220              		.loc 1 117 0
- 221 0008 FFF7FEFF 		bl	CyPmSaveClocks
- 118:main.c        ****     
- 119:main.c        ****     // Switch to the Sleep Mode for the other devices:
- 120:main.c        ****     //  - PM_SLEEP_TIME_NONE: wakeup time is defined by Sleep Timer
- 121:main.c        ****     //  - PM_SLEEP_SRC_CTW :  wakeup on CTW sources is allowed
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 7
+  98:main.c        ****             modem_power_down();
+ 186              		.loc 1 98 0
+ 187 0046 FFF7FEFF 		bl	modem_power_down
+  99:main.c        ****             timeToMeasure = 0u;
+ 188              		.loc 1 99 0
+ 189 004a 064B     		ldr	r3, .L9
+ 190 004c 0022     		movs	r2, #0
+ 191 004e 1A70     		strb	r2, [r3]
+ 192              	.L6:
+ 100:main.c        ****         }
+ 101:main.c        ****         
+ 102:main.c        ****         
+ 103:main.c        ****    
+ 104:main.c        ****        
+ 105:main.c        ****     }
+ 106:main.c        ****     //if(timeToMeasure2){
+ 107:main.c        ****         //dosomething
+ 108:main.c        ****     //}
+ 109:main.c        ****     
+ 110:main.c        ****     //check modem state machine 
+ 111:main.c        ****     uint8 modem_status = modem_process_tasks();
+ 193              		.loc 1 111 0
+ 194 0050 FFF7FEFF 		bl	modem_process_tasks
+ 195 0054 0346     		mov	r3, r0
+ 196 0056 FB71     		strb	r3, [r7, #7]
+ 112:main.c        ****     
+ 113:main.c        ****    
+ 114:main.c        ****     return 0u +  modem_status;  
+ 197              		.loc 1 114 0
+ 198 0058 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 115:main.c        **** }
+ 199              		.loc 1 115 0
+ 200 005a 1846     		mov	r0, r3
+ 201 005c 0837     		adds	r7, r7, #8
+ 202              		.cfi_def_cfa_offset 8
+ 203 005e BD46     		mov	sp, r7
+ 204              		.cfi_def_cfa_register 13
+ 205              		@ sp needed
+ 206 0060 80BD     		pop	{r7, pc}
+ 207              	.L10:
+ 208 0062 00BF     		.align	2
+ 209              	.L9:
+ 210 0064 00000000 		.word	timeToMeasure
+ 211 0068 00000000 		.word	.LC0
+ 212              		.cfi_endproc
+ 213              	.LFE66:
+ 214              		.size	WorkWorkWorkWorkWorkWork, .-WorkWorkWorkWorkWorkWork
+ 215              		.section	.rodata
+ 216              		.align	2
+ 217              	.LC1:
+ 218 0010 4F4B00   		.ascii	"OK\000"
+ 219 0013 00       		.align	2
+ 220              	.LC2:
+ 221 0014 41542353 		.ascii	"AT#SD=3,0,8086,\"data.open-storm.org\",0,0,1\015\000"
+ 221      443D332C 
+ 221      302C3830 
+ 221      38362C22 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 7
 
 
- 122:main.c        ****      //  - If real-time clock is used, it will also wake the device
- 123:main.c        ****     //CyPmHibernate();
- 124:main.c        ****     CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW);
- 222              		.loc 1 124 0
- 223 000c 4FF40061 		mov	r1, #2048
- 224 0010 0020     		movs	r0, #0
- 225 0012 FFF7FEFF 		bl	CyPmSleep
- 125:main.c        ****   
- 126:main.c        ****     // Restore clock configuration
- 127:main.c        ****     CyPmRestoreClocks();
- 226              		.loc 1 127 0
- 227 0016 FFF7FEFF 		bl	CyPmRestoreClocks
- 128:main.c        ****     debug_wakeup();
- 228              		.loc 1 128 0
- 229 001a FFF7FEFF 		bl	debug_wakeup
- 129:main.c        ****     
- 130:main.c        **** }
- 230              		.loc 1 130 0
- 231 001e 00BF     		nop
- 232 0020 80BD     		pop	{r7, pc}
- 233              		.cfi_endproc
- 234              	.LFE67:
- 235              		.size	LayBack, .-LayBack
- 236 0022 00BF     		.section	.text.AyoItsTime,"ax",%progbits
- 237              		.align	2
- 238              		.global	AyoItsTime
- 239              		.thumb
- 240              		.thumb_func
- 241              		.type	AyoItsTime, %function
- 242              	AyoItsTime:
- 243              	.LFB68:
+ 221      64617461 
+ 222              		.align	2
+ 223              	.LC3:
+ 224 0040 3E00     		.ascii	">\000"
+ 225 0042 0000     		.align	2
+ 226              	.LC4:
+ 227 0044 41542353 		.ascii	"AT#SSEND=3\015\012\000"
+ 227      53454E44 
+ 227      3D330D0A 
+ 227      00
+ 228 0051 000000   		.align	2
+ 229              	.LC5:
+ 230 0054 48545450 		.ascii	"HTTP/1.1 204\000"
+ 230      2F312E31 
+ 230      20323034 
+ 230      00
+ 231 0061 000000   		.align	2
+ 232              	.LC6:
+ 233 0064 47455420 		.ascii	"GET /query?db=ARB&u=open_storm_user&p=AllocationLis"
+ 233      2F717565 
+ 233      72793F64 
+ 233      623D4152 
+ 233      4226753D 
+ 234 0097 74696E67 		.ascii	"tingsLoan&q=SELECT%20value%20from%20v_bat,sleeptime"
+ 234      734C6F61 
+ 234      6E26713D 
+ 234      53454C45 
+ 234      43542532 
+ 235 00ca 722C6D61 		.ascii	"r,maxbotix_depth,meta_trigger%20where%20node_id='AR"
+ 235      78626F74 
+ 235      69785F64 
+ 235      65707468 
+ 235      2C6D6574 
+ 236 00fd 42303036 		.ascii	"B006'%20limit%201&pretty=true HTTP/1.1\015\012Host:"
+ 236      27253230 
+ 236      6C696D69 
+ 236      74253230 
+ 236      31267072 
+ 237 012a 20646174 		.ascii	" data.open-storm.org:8086\015\012Connection: Close\015"
+ 237      612E6F70 
+ 237      656E2D73 
+ 237      746F726D 
+ 237      2E6F7267 
+ 238 0157 0A0D0A1A 		.ascii	"\012\015\012\032\000"
+ 238      00
+ 239              		.align	2
+ 240              	.LC7:
+ 241 015c 1A00     		.ascii	"\032\000"
+ 242              		.section	.text.syncData,"ax",%progbits
+ 243              		.align	2
+ 244              		.global	syncData
+ 245              		.thumb
+ 246              		.thumb_func
+ 247              		.type	syncData, %function
+ 248              	syncData:
+ 249              	.LFB67:
+ 116:main.c        **** 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 8
+
+
+ 117:main.c        **** 
+ 118:main.c        **** void syncData(){
+ 250              		.loc 1 118 0
+ 251              		.cfi_startproc
+ 252              		@ args = 0, pretend = 0, frame = 8
+ 253              		@ frame_needed = 1, uses_anonymous_args = 0
+ 254 0000 80B5     		push	{r7, lr}
+ 255              		.cfi_def_cfa_offset 8
+ 256              		.cfi_offset 7, -8
+ 257              		.cfi_offset 14, -4
+ 258 0002 82B0     		sub	sp, sp, #8
+ 259              		.cfi_def_cfa_offset 16
+ 260 0004 00AF     		add	r7, sp, #0
+ 261              		.cfi_def_cfa_register 7
+ 119:main.c        ****     
+ 120:main.c        ****     //at_write_command("AT#SCFG?\r","OK",1000);
+ 121:main.c        ****     uint8 check = 0;
+ 262              		.loc 1 121 0
+ 263 0006 0023     		movs	r3, #0
+ 264 0008 FB71     		strb	r3, [r7, #7]
+ 122:main.c        ****     check = at_write_command("AT#SD=3,0,8086,\"data.open-storm.org\",0,0,1\r","OK",5000u);
+ 265              		.loc 1 122 0
+ 266 000a 41F28832 		movw	r2, #5000
+ 267 000e 1149     		ldr	r1, .L14
+ 268 0010 1148     		ldr	r0, .L14+4
+ 269 0012 FFF7FEFF 		bl	at_write_command
+ 270 0016 0346     		mov	r3, r0
+ 271 0018 FB71     		strb	r3, [r7, #7]
+ 123:main.c        ****     check = at_write_command("AT#SSEND=3\r\n",   ">", 1000u);
+ 272              		.loc 1 123 0
+ 273 001a 4FF47A72 		mov	r2, #1000
+ 274 001e 0F49     		ldr	r1, .L14+8
+ 275 0020 0F48     		ldr	r0, .L14+12
+ 276 0022 FFF7FEFF 		bl	at_write_command
+ 277 0026 0346     		mov	r3, r0
+ 278 0028 FB71     		strb	r3, [r7, #7]
+ 124:main.c        ****     check = at_write_command("GET /query?db=ARB&u=open_storm_user&p=AllocationListingsLoan&q=SELECT
+ 279              		.loc 1 124 0
+ 280 002a 41F28832 		movw	r2, #5000
+ 281 002e 0D49     		ldr	r1, .L14+16
+ 282 0030 0D48     		ldr	r0, .L14+20
+ 283 0032 FFF7FEFF 		bl	at_write_command
+ 284 0036 0346     		mov	r3, r0
+ 285 0038 FB71     		strb	r3, [r7, #7]
+ 125:main.c        ****     if(!check){
+ 286              		.loc 1 125 0
+ 287 003a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 288 003c 002B     		cmp	r3, #0
+ 289 003e 05D1     		bne	.L13
+ 126:main.c        ****         at_write_command("\032","OK", 1000u);
+ 290              		.loc 1 126 0
+ 291 0040 4FF47A72 		mov	r2, #1000
+ 292 0044 0349     		ldr	r1, .L14
+ 293 0046 0948     		ldr	r0, .L14+24
+ 294 0048 FFF7FEFF 		bl	at_write_command
+ 295              	.L13:
+ 127:main.c        ****     }
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 9
+
+
+ 128:main.c        **** }
+ 296              		.loc 1 128 0
+ 297 004c 00BF     		nop
+ 298 004e 0837     		adds	r7, r7, #8
+ 299              		.cfi_def_cfa_offset 8
+ 300 0050 BD46     		mov	sp, r7
+ 301              		.cfi_def_cfa_register 13
+ 302              		@ sp needed
+ 303 0052 80BD     		pop	{r7, pc}
+ 304              	.L15:
+ 305              		.align	2
+ 306              	.L14:
+ 307 0054 10000000 		.word	.LC1
+ 308 0058 14000000 		.word	.LC2
+ 309 005c 40000000 		.word	.LC3
+ 310 0060 44000000 		.word	.LC4
+ 311 0064 54000000 		.word	.LC5
+ 312 0068 64000000 		.word	.LC6
+ 313 006c 5C010000 		.word	.LC7
+ 314              		.cfi_endproc
+ 315              	.LFE67:
+ 316              		.size	syncData, .-syncData
+ 317              		.section	.text.LayBack,"ax",%progbits
+ 318              		.align	2
+ 319              		.global	LayBack
+ 320              		.thumb
+ 321              		.thumb_func
+ 322              		.type	LayBack, %function
+ 323              	LayBack:
+ 324              	.LFB68:
+ 129:main.c        **** 
+ 130:main.c        **** 
  131:main.c        **** 
  132:main.c        **** 
  133:main.c        **** // ==============================================
- 134:main.c        **** // I never sleep, 'cause sleep is the cousin of death
- 135:main.c        **** //      - NAS (1994)
+ 134:main.c        **** // sippin on gin and juice, Laid back (with my mind on my money and my money on my mind)
+ 135:main.c        **** //      - Snoop Dogg (1993)
  136:main.c        **** //
- 137:main.c        **** // This is the scheduler. It's called from various interrupts and timers,
- 138:main.c        **** // ...in particular from fuctions with in the real-tiem clock interrupts (RTC_INT.c)
- 139:main.c        **** // It will add tasks to the work queue,
- 140:main.c        **** // which will be executed eventually by WorkWorkWorkWorkWorkWork()
- 141:main.c        **** // ==============================================
- 142:main.c        **** void AyoItsTime(uint8 alarmType)
- 143:main.c        **** {
- 244              		.loc 1 143 0
- 245              		.cfi_startproc
- 246              		@ args = 0, pretend = 0, frame = 8
- 247              		@ frame_needed = 1, uses_anonymous_args = 0
- 248 0000 80B5     		push	{r7, lr}
- 249              		.cfi_def_cfa_offset 8
- 250              		.cfi_offset 7, -8
- 251              		.cfi_offset 14, -4
- 252 0002 82B0     		sub	sp, sp, #8
- 253              		.cfi_def_cfa_offset 16
- 254 0004 00AF     		add	r7, sp, #0
- 255              		.cfi_def_cfa_register 7
- 256 0006 0346     		mov	r3, r0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 8
-
-
- 257 0008 FB71     		strb	r3, [r7, #7]
- 144:main.c        **** 
- 145:main.c        ****     if(AlarmReady(&alarmMeasure,alarmType))
- 258              		.loc 1 145 0
- 259 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
- 260 000c 1946     		mov	r1, r3
- 261 000e 0C48     		ldr	r0, .L15
- 262 0010 FFF7FEFF 		bl	AlarmReady
- 263 0014 0346     		mov	r3, r0
- 264 0016 002B     		cmp	r3, #0
- 265 0018 02D0     		beq	.L12
- 146:main.c        ****     {
- 147:main.c        ****          //create new task and pass off to workworkworkworkwork()
- 148:main.c        ****         //pass off to work work
- 149:main.c        ****         timeToMeasure = 1u;
- 266              		.loc 1 149 0
- 267 001a 0A4B     		ldr	r3, .L15+4
- 268 001c 0122     		movs	r2, #1
- 269 001e 1A70     		strb	r2, [r3]
- 270              	.L12:
- 150:main.c        ****     }
- 151:main.c        ****     if(AlarmReady(&alarmMeasure2,alarmType))
- 271              		.loc 1 151 0
- 272 0020 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
- 273 0022 1946     		mov	r1, r3
- 274 0024 0848     		ldr	r0, .L15+8
- 275 0026 FFF7FEFF 		bl	AlarmReady
- 276 002a 0346     		mov	r3, r0
- 277 002c 002B     		cmp	r3, #0
- 278 002e 02D0     		beq	.L14
- 152:main.c        ****     {
- 153:main.c        ****          //create new task and pass off to workworkworkworkwork()
- 154:main.c        ****         //pass off to work work
- 155:main.c        ****         timeToMeasure2 = 1u;
- 279              		.loc 1 155 0
- 280 0030 064B     		ldr	r3, .L15+12
- 281 0032 0122     		movs	r2, #1
- 282 0034 1A70     		strb	r2, [r3]
- 283              	.L14:
- 156:main.c        ****     }
- 157:main.c        ****     
- 158:main.c        **** }
- 284              		.loc 1 158 0
- 285 0036 00BF     		nop
- 286 0038 0837     		adds	r7, r7, #8
- 287              		.cfi_def_cfa_offset 8
- 288 003a BD46     		mov	sp, r7
- 289              		.cfi_def_cfa_register 13
- 290              		@ sp needed
- 291 003c 80BD     		pop	{r7, pc}
- 292              	.L16:
- 293 003e 00BF     		.align	2
- 294              	.L15:
- 295 0040 00000000 		.word	alarmMeasure
- 296 0044 00000000 		.word	timeToMeasure
- 297 0048 00000000 		.word	alarmMeasure2
- 298 004c 00000000 		.word	timeToMeasure2
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 9
-
-
- 299              		.cfi_endproc
- 300              	.LFE68:
- 301              		.size	AyoItsTime, .-AyoItsTime
- 302              		.section	.text.AlarmReady,"ax",%progbits
- 303              		.align	2
- 304              		.global	AlarmReady
- 305              		.thumb
- 306              		.thumb_func
- 307              		.type	AlarmReady, %function
- 308              	AlarmReady:
- 309              	.LFB69:
- 159:main.c        ****         
- 160:main.c        **** uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType)
- 161:main.c        **** {
- 310              		.loc 1 161 0
- 311              		.cfi_startproc
- 312              		@ args = 0, pretend = 0, frame = 8
- 313              		@ frame_needed = 1, uses_anonymous_args = 0
- 314 0000 80B5     		push	{r7, lr}
- 315              		.cfi_def_cfa_offset 8
- 316              		.cfi_offset 7, -8
- 317              		.cfi_offset 14, -4
- 318 0002 82B0     		sub	sp, sp, #8
- 319              		.cfi_def_cfa_offset 16
- 320 0004 00AF     		add	r7, sp, #0
- 321              		.cfi_def_cfa_register 7
- 322 0006 7860     		str	r0, [r7, #4]
- 323 0008 0B46     		mov	r3, r1
- 324 000a FB70     		strb	r3, [r7, #3]
- 162:main.c        ****     alarmToBeUpdated->currentCountDownValue--;
- 325              		.loc 1 162 0
- 326 000c 7B68     		ldr	r3, [r7, #4]
- 327 000e 5B88     		ldrh	r3, [r3, #2]	@ movhi
- 328 0010 9BB2     		uxth	r3, r3
- 329 0012 013B     		subs	r3, r3, #1
- 330 0014 9AB2     		uxth	r2, r3
- 331 0016 7B68     		ldr	r3, [r7, #4]
- 332 0018 5A80     		strh	r2, [r3, #2]	@ movhi
- 163:main.c        ****     if(alarmToBeUpdated->currentCountDownValue == 0){
- 333              		.loc 1 163 0
- 334 001a 7B68     		ldr	r3, [r7, #4]
- 335 001c 5B88     		ldrh	r3, [r3, #2]	@ movhi
- 336 001e 9BB2     		uxth	r3, r3
- 337 0020 002B     		cmp	r3, #0
- 338 0022 04D1     		bne	.L18
- 164:main.c        ****         ResetAlarm(alarmToBeUpdated);
- 339              		.loc 1 164 0
- 340 0024 7868     		ldr	r0, [r7, #4]
- 341 0026 FFF7FEFF 		bl	ResetAlarm
- 165:main.c        ****         return 1u;
- 342              		.loc 1 165 0
- 343 002a 0123     		movs	r3, #1
- 344 002c 09E0     		b	.L19
- 345              	.L18:
- 166:main.c        ****     } 
- 167:main.c        ****     else if(alarmToBeUpdated->countDownResetCondition == alarmType){
- 346              		.loc 1 167 0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 10
-
-
- 347 002e 7B68     		ldr	r3, [r7, #4]
- 348 0030 5B79     		ldrb	r3, [r3, #5]
- 349 0032 DBB2     		uxtb	r3, r3
- 350 0034 FA78     		ldrb	r2, [r7, #3]	@ zero_extendqisi2
- 351 0036 9A42     		cmp	r2, r3
- 352 0038 02D1     		bne	.L20
- 168:main.c        ****         ResetAlarm(alarmToBeUpdated);
- 353              		.loc 1 168 0
- 354 003a 7868     		ldr	r0, [r7, #4]
- 355 003c FFF7FEFF 		bl	ResetAlarm
- 356              	.L20:
- 169:main.c        ****     }
- 170:main.c        ****     
- 171:main.c        ****     return 0u;
- 357              		.loc 1 171 0
- 358 0040 0023     		movs	r3, #0
- 359              	.L19:
- 172:main.c        **** }
- 360              		.loc 1 172 0
- 361 0042 1846     		mov	r0, r3
- 362 0044 0837     		adds	r7, r7, #8
- 363              		.cfi_def_cfa_offset 8
- 364 0046 BD46     		mov	sp, r7
- 365              		.cfi_def_cfa_register 13
- 366              		@ sp needed
- 367 0048 80BD     		pop	{r7, pc}
- 368              		.cfi_endproc
- 369              	.LFE69:
- 370              		.size	AlarmReady, .-AlarmReady
- 371 004a 00BF     		.section	.text.ResetAlarm,"ax",%progbits
- 372              		.align	2
- 373              		.global	ResetAlarm
- 374              		.thumb
- 375              		.thumb_func
- 376              		.type	ResetAlarm, %function
- 377              	ResetAlarm:
- 378              	.LFB70:
- 173:main.c        **** 
- 174:main.c        **** void ResetAlarm(alarm * alarmToBeReset)
- 175:main.c        **** {
- 379              		.loc 1 175 0
- 380              		.cfi_startproc
- 381              		@ args = 0, pretend = 0, frame = 8
- 382              		@ frame_needed = 1, uses_anonymous_args = 0
- 383              		@ link register save eliminated.
- 384 0000 80B4     		push	{r7}
- 385              		.cfi_def_cfa_offset 4
- 386              		.cfi_offset 7, -4
- 387 0002 83B0     		sub	sp, sp, #12
- 388              		.cfi_def_cfa_offset 16
- 389 0004 00AF     		add	r7, sp, #0
- 390              		.cfi_def_cfa_register 7
- 391 0006 7860     		str	r0, [r7, #4]
- 176:main.c        ****     alarmToBeReset->currentCountDownValue = alarmToBeReset->countDownValue;
- 392              		.loc 1 176 0
- 393 0008 7B68     		ldr	r3, [r7, #4]
- 394 000a 1B88     		ldrh	r3, [r3]	@ movhi
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 11
-
-
- 395 000c 9AB2     		uxth	r2, r3
- 396 000e 7B68     		ldr	r3, [r7, #4]
- 397 0010 5A80     		strh	r2, [r3, #2]	@ movhi
- 177:main.c        **** }
- 398              		.loc 1 177 0
- 399 0012 00BF     		nop
- 400 0014 0C37     		adds	r7, r7, #12
- 401              		.cfi_def_cfa_offset 4
- 402 0016 BD46     		mov	sp, r7
- 403              		.cfi_def_cfa_register 13
- 404              		@ sp needed
- 405 0018 80BC     		pop	{r7}
- 406              		.cfi_restore 7
- 407              		.cfi_def_cfa_offset 0
- 408 001a 7047     		bx	lr
- 409              		.cfi_endproc
- 410              	.LFE70:
- 411              		.size	ResetAlarm, .-ResetAlarm
- 412              		.section	.text.CreateAlarm,"ax",%progbits
- 413              		.align	2
- 414              		.global	CreateAlarm
- 415              		.thumb
- 416              		.thumb_func
- 417              		.type	CreateAlarm, %function
- 418              	CreateAlarm:
- 419              	.LFB71:
- 178:main.c        **** 
- 179:main.c        **** // ==============================================
- 180:main.c        **** // Creates a new alarm, which will be handeled by another cutions
- 181:main.c        **** // ==============================================
- 182:main.c        **** 
- 183:main.c        **** alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownResetCondition)
- 184:main.c        **** {
- 420              		.loc 1 184 0
- 421              		.cfi_startproc
- 422              		@ args = 0, pretend = 0, frame = 16
- 423              		@ frame_needed = 1, uses_anonymous_args = 0
- 424              		@ link register save eliminated.
- 425 0000 80B4     		push	{r7}
- 426              		.cfi_def_cfa_offset 4
- 427              		.cfi_offset 7, -4
- 428 0002 85B0     		sub	sp, sp, #20
- 429              		.cfi_def_cfa_offset 24
- 430 0004 00AF     		add	r7, sp, #0
- 431              		.cfi_def_cfa_register 7
- 432 0006 7860     		str	r0, [r7, #4]
- 433 0008 0846     		mov	r0, r1
- 434 000a 1146     		mov	r1, r2
- 435 000c 1A46     		mov	r2, r3
- 436 000e 0346     		mov	r3, r0	@ movhi
- 437 0010 7B80     		strh	r3, [r7, #2]	@ movhi
- 438 0012 0B46     		mov	r3, r1
- 439 0014 7B70     		strb	r3, [r7, #1]
- 440 0016 1346     		mov	r3, r2
- 441 0018 3B70     		strb	r3, [r7]
- 185:main.c        ****     alarm newAlarm;
- 186:main.c        ****     
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 12
-
-
- 187:main.c        ****     newAlarm.countDownValue = countDownValue;
- 442              		.loc 1 187 0
- 443 001a 7B88     		ldrh	r3, [r7, #2]	@ movhi
- 444 001c 3B81     		strh	r3, [r7, #8]	@ movhi
- 188:main.c        ****     newAlarm.countDownType = countDownType;
- 445              		.loc 1 188 0
- 446 001e 7B78     		ldrb	r3, [r7, #1]
- 447 0020 3B73     		strb	r3, [r7, #12]
- 189:main.c        ****     newAlarm.countDownResetCondition = countDownResetCondition;
- 448              		.loc 1 189 0
- 449 0022 3B78     		ldrb	r3, [r7]
- 450 0024 7B73     		strb	r3, [r7, #13]
- 190:main.c        ****     
- 191:main.c        ****     //if you want a reccuring alarm (e.g. resets freshly each hour), then add
- 192:main.c        ****     //account for already exprired time using the RTC. Otherwise, set to the countDownValue
- 193:main.c        ****     newAlarm.currentCountDownValue = countDownValue;
- 451              		.loc 1 193 0
- 452 0026 7B88     		ldrh	r3, [r7, #2]	@ movhi
- 453 0028 7B81     		strh	r3, [r7, #10]	@ movhi
- 194:main.c        ****     
- 195:main.c        ****     return newAlarm;
- 454              		.loc 1 195 0
- 455 002a 7B68     		ldr	r3, [r7, #4]
- 456 002c 1A46     		mov	r2, r3
- 457 002e 07F10803 		add	r3, r7, #8
- 458 0032 1868     		ldr	r0, [r3]	@ unaligned
- 459 0034 1060     		str	r0, [r2]	@ unaligned
- 460 0036 9B88     		ldrh	r3, [r3, #4]	@ unaligned
- 461 0038 9380     		strh	r3, [r2, #4]	@ unaligned
- 196:main.c        ****     
- 197:main.c        **** }
- 462              		.loc 1 197 0
- 463 003a 7868     		ldr	r0, [r7, #4]
- 464 003c 1437     		adds	r7, r7, #20
- 465              		.cfi_def_cfa_offset 4
- 466 003e BD46     		mov	sp, r7
- 467              		.cfi_def_cfa_register 13
- 468              		@ sp needed
- 469 0040 80BC     		pop	{r7}
- 470              		.cfi_restore 7
- 471              		.cfi_def_cfa_offset 0
- 472 0042 7047     		bx	lr
- 473              		.cfi_endproc
- 474              	.LFE71:
- 475              		.size	CreateAlarm, .-CreateAlarm
- 476              		.section	.text.ChickityCheckYourselfBeforeYouWreckYourself,"ax",%progbits
- 477              		.align	2
- 478              		.global	ChickityCheckYourselfBeforeYouWreckYourself
- 479              		.thumb
- 480              		.thumb_func
- 481              		.type	ChickityCheckYourselfBeforeYouWreckYourself, %function
- 482              	ChickityCheckYourselfBeforeYouWreckYourself:
- 483              	.LFB72:
- 198:main.c        **** 
- 199:main.c        **** // ==============================================
- 200:main.c        **** // Dropping bombs on your moms
- 201:main.c        **** //      - Ice Cube (1992)
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 13
-
-
- 202:main.c        **** //
- 203:main.c        **** // This is the global testing function, which runs all relevant tests
- 204:main.c        **** // If you make a new components, it could be good to call its tester function here 
- 205:main.c        **** // ==============================================
- 206:main.c        **** void ChickityCheckYourselfBeforeYouWreckYourself(){
- 484              		.loc 1 206 0
- 485              		.cfi_startproc
- 486              		@ args = 0, pretend = 0, frame = 1168
- 487              		@ frame_needed = 1, uses_anonymous_args = 0
- 488 0000 90B5     		push	{r4, r7, lr}
- 489              		.cfi_def_cfa_offset 12
- 490              		.cfi_offset 4, -12
- 491              		.cfi_offset 7, -8
- 492              		.cfi_offset 14, -4
- 493 0002 ADF20C6D 		subw	sp, sp, #1548
- 494              		.cfi_def_cfa_offset 1560
- 495 0006 5EAF     		add	r7, sp, #376
- 496              		.cfi_def_cfa 7, 1184
- 207:main.c        **** 
- 208:main.c        ****    // test_t t_modem = modem_test();
- 209:main.c        ****     
- 210:main.c        ****     test_t t_level_sensor = level_sensor_test();//test level sensor  
- 497              		.loc 1 210 0
- 498 0008 07F54273 		add	r3, r7, #776
- 499 000c 1846     		mov	r0, r3
- 500 000e FFF7FEFF 		bl	level_sensor_test
- 211:main.c        ****     printTestStatus(t_level_sensor);
- 501              		.loc 1 211 0
- 502 0012 07F54274 		add	r4, r7, #776
- 503 0016 6846     		mov	r0, sp
- 504 0018 04F11003 		add	r3, r4, #16
- 505 001c 40F27112 		movw	r2, #369
- 506 0020 1946     		mov	r1, r3
- 507 0022 FFF7FEFF 		bl	memcpy
- 508 0026 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
- 509 002a FFF7FEFF 		bl	printTestStatus
- 212:main.c        ****     test_t t_sd_card = SD_card_test();
- 510              		.loc 1 212 0
- 511 002e 07F5C273 		add	r3, r7, #388
- 512 0032 1846     		mov	r0, r3
- 513 0034 FFF7FEFF 		bl	SD_card_test
- 213:main.c        ****     printTestStatus(t_sd_card);
- 514              		.loc 1 213 0
- 515 0038 07F5C274 		add	r4, r7, #388
- 516 003c 6846     		mov	r0, sp
- 517 003e 04F11003 		add	r3, r4, #16
- 518 0042 40F27112 		movw	r2, #369
- 519 0046 1946     		mov	r1, r3
- 520 0048 FFF7FEFF 		bl	memcpy
- 521 004c 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
- 522 0050 FFF7FEFF 		bl	printTestStatus
- 214:main.c        ****     test_t t_voltages = voltages_test();
- 523              		.loc 1 214 0
- 524 0054 3B46     		mov	r3, r7
- 525 0056 1846     		mov	r0, r3
- 526 0058 FFF7FEFF 		bl	voltages_test
- 215:main.c        ****     printTestStatus(t_voltages);
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 14
-
-
- 527              		.loc 1 215 0
- 528 005c 3C46     		mov	r4, r7
- 529 005e 6846     		mov	r0, sp
- 530 0060 04F11003 		add	r3, r4, #16
- 531 0064 40F27112 		movw	r2, #369
- 532 0068 1946     		mov	r1, r3
- 533 006a FFF7FEFF 		bl	memcpy
- 534 006e 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
- 535 0072 FFF7FEFF 		bl	printTestStatus
- 216:main.c        ****   
- 217:main.c        ****     int c = 0;
- 536              		.loc 1 217 0
- 537 0076 0023     		movs	r3, #0
- 538 0078 C7F88C34 		str	r3, [r7, #1164]
- 218:main.c        ****     c++;
- 539              		.loc 1 218 0
- 540 007c D7F88C34 		ldr	r3, [r7, #1164]
- 541 0080 0133     		adds	r3, r3, #1
- 542 0082 C7F88C34 		str	r3, [r7, #1164]
- 219:main.c        ****     //test modem
- 220:main.c        ****     //test SD card
- 221:main.c        ****     //analog: test battery voltage, solar voltage, and solar current
- 222:main.c        ****       
- 223:main.c        ****   
- 224:main.c        **** }
- 543              		.loc 1 224 0
- 544 0086 00BF     		nop
- 545 0088 07F29447 		addw	r7, r7, #1172
- 546              		.cfi_def_cfa_offset 12
- 547 008c BD46     		mov	sp, r7
- 548              		.cfi_def_cfa_register 13
- 549              		@ sp needed
- 550 008e 90BD     		pop	{r4, r7, pc}
- 551              		.cfi_endproc
- 552              	.LFE72:
- 553              		.size	ChickityCheckYourselfBeforeYouWreckYourself, .-ChickityCheckYourselfBeforeYouWreckYourself
- 554              		.section	.text.main,"ax",%progbits
- 555              		.align	2
- 556              		.global	main
- 557              		.thumb
- 558              		.thumb_func
- 559              		.type	main, %function
- 560              	main:
- 561              	.LFB73:
- 225:main.c        **** 
- 226:main.c        **** 
- 227:main.c        **** int main(void)
- 228:main.c        **** {
- 562              		.loc 1 228 0
- 563              		.cfi_startproc
- 564              		@ args = 0, pretend = 0, frame = 0
- 565              		@ frame_needed = 1, uses_anonymous_args = 0
- 566 0000 80B5     		push	{r7, lr}
- 567              		.cfi_def_cfa_offset 8
- 568              		.cfi_offset 7, -8
- 569              		.cfi_offset 14, -4
- 570 0002 00AF     		add	r7, sp, #0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 15
-
-
- 571              		.cfi_def_cfa_register 7
- 229:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
- 572              		.loc 1 229 0
- 573              		.syntax unified
- 574              	@ 229 "main.c" 1
- 575 0004 62B6     		CPSIE   i
- 576              	@ 0 "" 2
- 230:main.c        **** 
- 231:main.c        ****     ReadyOrNot();
- 577              		.loc 1 231 0
- 578              		.thumb
- 579              		.syntax unified
- 580 0006 FFF7FEFF 		bl	ReadyOrNot
- 232:main.c        ****     
- 233:main.c        ****     //run tests for all components on bootup
- 234:main.c        ****     ChickityCheckYourselfBeforeYouWreckYourself();
- 581              		.loc 1 234 0
- 582 000a FFF7FEFF 		bl	ChickityCheckYourselfBeforeYouWreckYourself
- 583              	.L27:
- 235:main.c        ****    
- 236:main.c        ****     for(;;)
- 237:main.c        ****     {
- 238:main.c        ****        if( ! WorkWorkWorkWorkWorkWork() )
- 584              		.loc 1 238 0
- 585 000e FFF7FEFF 		bl	WorkWorkWorkWorkWorkWork
- 586 0012 0346     		mov	r3, r0
- 587 0014 002B     		cmp	r3, #0
- 588 0016 FAD1     		bne	.L27
- 239:main.c        ****        {
- 240:main.c        ****             LayBack();
- 589              		.loc 1 240 0
- 590 0018 FFF7FEFF 		bl	LayBack
- 241:main.c        ****        }
- 242:main.c        ****     }
- 591              		.loc 1 242 0
- 592 001c F7E7     		b	.L27
- 593              		.cfi_endproc
- 594              	.LFE73:
- 595              		.size	main, .-main
- 596 001e 00BF     		.text
- 597              	.Letext0:
- 598              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 599              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 600              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 601              		.file 5 "notoriOS.h"
- 602              		.file 6 "testing.h"
- 603              		.file 7 "modem.h"
- 604              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
- 605              		.file 9 "debug.h"
- 606              		.section	.debug_info,"",%progbits
- 607              	.Ldebug_info0:
- 608 0000 4C040000 		.4byte	0x44c
- 609 0004 0400     		.2byte	0x4
- 610 0006 00000000 		.4byte	.Ldebug_abbrev0
- 611 000a 04       		.byte	0x4
- 612 000b 01       		.uleb128 0x1
- 613 000c 89000000 		.4byte	.LASF60
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 16
-
-
- 614 0010 0C       		.byte	0xc
- 615 0011 5E030000 		.4byte	.LASF61
- 616 0015 D0020000 		.4byte	.LASF62
- 617 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 618 001d 00000000 		.4byte	0
- 619 0021 00000000 		.4byte	.Ldebug_line0
- 620 0025 02       		.uleb128 0x2
- 621 0026 01       		.byte	0x1
- 622 0027 06       		.byte	0x6
- 623 0028 2B020000 		.4byte	.LASF0
- 624 002c 02       		.uleb128 0x2
- 625 002d 01       		.byte	0x1
- 626 002e 08       		.byte	0x8
- 627 002f 11020000 		.4byte	.LASF1
- 628 0033 02       		.uleb128 0x2
- 629 0034 02       		.byte	0x2
- 630 0035 05       		.byte	0x5
- 631 0036 5C000000 		.4byte	.LASF2
- 632 003a 02       		.uleb128 0x2
- 633 003b 02       		.byte	0x2
- 634 003c 07       		.byte	0x7
- 635 003d 9E020000 		.4byte	.LASF3
- 636 0041 03       		.uleb128 0x3
- 637 0042 96030000 		.4byte	.LASF9
- 638 0046 02       		.byte	0x2
- 639 0047 3F       		.byte	0x3f
- 640 0048 4C000000 		.4byte	0x4c
- 641 004c 02       		.uleb128 0x2
- 642 004d 04       		.byte	0x4
- 643 004e 05       		.byte	0x5
- 644 004f 99010000 		.4byte	.LASF4
- 645 0053 02       		.uleb128 0x2
- 646 0054 04       		.byte	0x4
- 647 0055 07       		.byte	0x7
- 648 0056 67020000 		.4byte	.LASF5
- 649 005a 02       		.uleb128 0x2
- 650 005b 08       		.byte	0x8
- 651 005c 05       		.byte	0x5
- 652 005d 72010000 		.4byte	.LASF6
- 653 0061 02       		.uleb128 0x2
- 654 0062 08       		.byte	0x8
- 655 0063 07       		.byte	0x7
- 656 0064 37020000 		.4byte	.LASF7
- 657 0068 04       		.uleb128 0x4
- 658 0069 04       		.byte	0x4
- 659 006a 05       		.byte	0x5
- 660 006b 696E7400 		.ascii	"int\000"
- 661 006f 02       		.uleb128 0x2
- 662 0070 04       		.byte	0x4
- 663 0071 07       		.byte	0x7
- 664 0072 5A020000 		.4byte	.LASF8
- 665 0076 03       		.uleb128 0x3
- 666 0077 38030000 		.4byte	.LASF10
- 667 007b 03       		.byte	0x3
- 668 007c 2C       		.byte	0x2c
- 669 007d 41000000 		.4byte	0x41
- 670 0081 05       		.uleb128 0x5
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 17
-
-
- 671 0082 55010000 		.4byte	.LASF11
- 672 0086 04       		.byte	0x4
- 673 0087 E401     		.2byte	0x1e4
- 674 0089 2C000000 		.4byte	0x2c
- 675 008d 05       		.uleb128 0x5
- 676 008e 4E010000 		.4byte	.LASF12
- 677 0092 04       		.byte	0x4
- 678 0093 E501     		.2byte	0x1e5
- 679 0095 3A000000 		.4byte	0x3a
- 680 0099 05       		.uleb128 0x5
- 681 009a 7B030000 		.4byte	.LASF13
- 682 009e 04       		.byte	0x4
- 683 009f E901     		.2byte	0x1e9
- 684 00a1 4C000000 		.4byte	0x4c
- 685 00a5 02       		.uleb128 0x2
- 686 00a6 04       		.byte	0x4
- 687 00a7 04       		.byte	0x4
- 688 00a8 5B010000 		.4byte	.LASF14
- 689 00ac 02       		.uleb128 0x2
- 690 00ad 08       		.byte	0x8
- 691 00ae 04       		.byte	0x4
- 692 00af 81030000 		.4byte	.LASF15
- 693 00b3 02       		.uleb128 0x2
- 694 00b4 01       		.byte	0x1
- 695 00b5 08       		.byte	0x8
- 696 00b6 80010000 		.4byte	.LASF16
- 697 00ba 02       		.uleb128 0x2
- 698 00bb 08       		.byte	0x8
- 699 00bc 04       		.byte	0x4
- 700 00bd 05020000 		.4byte	.LASF17
- 701 00c1 02       		.uleb128 0x2
- 702 00c2 04       		.byte	0x4
- 703 00c3 07       		.byte	0x7
- 704 00c4 71000000 		.4byte	.LASF18
- 705 00c8 06       		.uleb128 0x6
- 706 00c9 06       		.byte	0x6
- 707 00ca 05       		.byte	0x5
- 708 00cb 1A       		.byte	0x1a
- 709 00cc 01010000 		.4byte	0x101
- 710 00d0 07       		.uleb128 0x7
- 711 00d1 4D000000 		.4byte	.LASF19
- 712 00d5 05       		.byte	0x5
- 713 00d6 1C       		.byte	0x1c
- 714 00d7 8D000000 		.4byte	0x8d
- 715 00db 00       		.byte	0
- 716 00dc 07       		.uleb128 0x7
- 717 00dd 28000000 		.4byte	.LASF20
- 718 00e1 05       		.byte	0x5
- 719 00e2 1D       		.byte	0x1d
- 720 00e3 8D000000 		.4byte	0x8d
- 721 00e7 02       		.byte	0x2
- 722 00e8 07       		.uleb128 0x7
- 723 00e9 88030000 		.4byte	.LASF21
- 724 00ed 05       		.byte	0x5
- 725 00ee 1E       		.byte	0x1e
- 726 00ef 81000000 		.4byte	0x81
- 727 00f3 04       		.byte	0x4
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 18
-
-
- 728 00f4 07       		.uleb128 0x7
- 729 00f5 A0030000 		.4byte	.LASF22
- 730 00f9 05       		.byte	0x5
- 731 00fa 1F       		.byte	0x1f
- 732 00fb 81000000 		.4byte	0x81
- 733 00ff 05       		.byte	0x5
- 734 0100 00       		.byte	0
- 735 0101 03       		.uleb128 0x3
- 736 0102 4E030000 		.4byte	.LASF23
- 737 0106 05       		.byte	0x5
- 738 0107 22       		.byte	0x22
- 739 0108 0C010000 		.4byte	0x10c
- 740 010c 08       		.uleb128 0x8
- 741 010d C8000000 		.4byte	0xc8
- 742 0111 09       		.uleb128 0x9
- 743 0112 8101     		.2byte	0x181
- 744 0114 06       		.byte	0x6
- 745 0115 0A       		.byte	0xa
- 746 0116 3F010000 		.4byte	0x13f
- 747 011a 07       		.uleb128 0x7
- 748 011b C3030000 		.4byte	.LASF24
- 749 011f 06       		.byte	0x6
- 750 0120 0B       		.byte	0xb
- 751 0121 3F010000 		.4byte	0x13f
- 752 0125 00       		.byte	0
- 753 0126 07       		.uleb128 0x7
- 754 0127 C9020000 		.4byte	.LASF25
- 755 012b 06       		.byte	0x6
- 756 012c 0C       		.byte	0xc
- 757 012d 81000000 		.4byte	0x81
- 758 0131 80       		.byte	0x80
- 759 0132 07       		.uleb128 0x7
- 760 0133 92010000 		.4byte	.LASF26
- 761 0137 06       		.byte	0x6
- 762 0138 0D       		.byte	0xd
- 763 0139 4F010000 		.4byte	0x14f
- 764 013d 81       		.byte	0x81
- 765 013e 00       		.byte	0
- 766 013f 0A       		.uleb128 0xa
- 767 0140 B3000000 		.4byte	0xb3
- 768 0144 4F010000 		.4byte	0x14f
- 769 0148 0B       		.uleb128 0xb
- 770 0149 C1000000 		.4byte	0xc1
- 771 014d 7F       		.byte	0x7f
- 772 014e 00       		.byte	0
- 773 014f 0A       		.uleb128 0xa
- 774 0150 B3000000 		.4byte	0xb3
- 775 0154 5F010000 		.4byte	0x15f
- 776 0158 0B       		.uleb128 0xb
- 777 0159 C1000000 		.4byte	0xc1
- 778 015d FF       		.byte	0xff
- 779 015e 00       		.byte	0
- 780 015f 03       		.uleb128 0x3
- 781 0160 2C030000 		.4byte	.LASF27
- 782 0164 06       		.byte	0x6
- 783 0165 0E       		.byte	0xe
- 784 0166 11010000 		.4byte	0x111
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 19
-
-
- 785 016a 06       		.uleb128 0x6
- 786 016b 3C       		.byte	0x3c
- 787 016c 07       		.byte	0x7
- 788 016d 20       		.byte	0x20
- 789 016e 97010000 		.4byte	0x197
- 790 0172 07       		.uleb128 0x7
- 791 0173 16000000 		.4byte	.LASF28
- 792 0177 07       		.byte	0x7
- 793 0178 21       		.byte	0x21
- 794 0179 97010000 		.4byte	0x197
- 795 017d 00       		.byte	0
- 796 017e 07       		.uleb128 0x7
- 797 017f 0D000000 		.4byte	.LASF29
- 798 0183 07       		.byte	0x7
- 799 0184 22       		.byte	0x22
- 800 0185 97010000 		.4byte	0x197
- 801 0189 14       		.byte	0x14
- 802 018a 07       		.uleb128 0x7
- 803 018b 33030000 		.4byte	.LASF30
- 804 018f 07       		.byte	0x7
- 805 0190 23       		.byte	0x23
- 806 0191 97010000 		.4byte	0x197
- 807 0195 28       		.byte	0x28
- 808 0196 00       		.byte	0
- 809 0197 0A       		.uleb128 0xa
- 810 0198 B3000000 		.4byte	0xb3
- 811 019c A7010000 		.4byte	0x1a7
- 812 01a0 0B       		.uleb128 0xb
- 813 01a1 C1000000 		.4byte	0xc1
- 814 01a5 13       		.byte	0x13
- 815 01a6 00       		.byte	0
- 816 01a7 03       		.uleb128 0x3
- 817 01a8 85010000 		.4byte	.LASF31
- 818 01ac 07       		.byte	0x7
- 819 01ad 24       		.byte	0x24
- 820 01ae 6A010000 		.4byte	0x16a
- 821 01b2 06       		.uleb128 0x6
- 822 01b3 0C       		.byte	0xc
- 823 01b4 07       		.byte	0x7
- 824 01b5 26       		.byte	0x26
- 825 01b6 EA010000 		.4byte	0x1ea
- 826 01ba 07       		.uleb128 0x7
- 827 01bb EB030000 		.4byte	.LASF32
- 828 01bf 07       		.byte	0x7
- 829 01c0 27       		.byte	0x27
- 830 01c1 81000000 		.4byte	0x81
- 831 01c5 00       		.byte	0
- 832 01c6 0C       		.uleb128 0xc
- 833 01c7 737100   		.ascii	"sq\000"
- 834 01ca 07       		.byte	0x7
- 835 01cb 28       		.byte	0x28
- 836 01cc 81000000 		.4byte	0x81
- 837 01d0 01       		.byte	0x1
- 838 01d1 07       		.uleb128 0x7
- 839 01d2 B1020000 		.4byte	.LASF33
- 840 01d6 07       		.byte	0x7
- 841 01d7 29       		.byte	0x29
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 20
-
-
- 842 01d8 68000000 		.4byte	0x68
- 843 01dc 04       		.byte	0x4
- 844 01dd 07       		.uleb128 0x7
- 845 01de 19030000 		.4byte	.LASF34
- 846 01e2 07       		.byte	0x7
- 847 01e3 2A       		.byte	0x2a
- 848 01e4 68000000 		.4byte	0x68
- 849 01e8 08       		.byte	0x8
- 850 01e9 00       		.byte	0
- 851 01ea 03       		.uleb128 0x3
- 852 01eb 40030000 		.4byte	.LASF35
- 853 01ef 07       		.byte	0x7
- 854 01f0 2B       		.byte	0x2b
- 855 01f1 B2010000 		.4byte	0x1b2
- 856 01f5 0D       		.uleb128 0xd
- 857 01f6 B8030000 		.4byte	.LASF63
- 858 01fa 01       		.byte	0x1
- 859 01fb 24       		.byte	0x24
- 860 01fc 00000000 		.4byte	.LFB64
- 861 0200 0C000000 		.4byte	.LFE64-.LFB64
- 862 0204 01       		.uleb128 0x1
- 863 0205 9C       		.byte	0x9c
- 864 0206 0E       		.uleb128 0xe
- 865 0207 A2010000 		.4byte	.LASF36
- 866 020b 01       		.byte	0x1
- 867 020c 30       		.byte	0x30
- 868 020d 00000000 		.4byte	.LFB65
- 869 0211 58000000 		.4byte	.LFE65-.LFB65
- 870 0215 01       		.uleb128 0x1
- 871 0216 9C       		.byte	0x9c
- 872 0217 0F       		.uleb128 0xf
- 873 0218 1C010000 		.4byte	.LASF38
- 874 021c 01       		.byte	0x1
- 875 021d 4C       		.byte	0x4c
- 876 021e 68000000 		.4byte	0x68
- 877 0222 00000000 		.4byte	.LFB66
- 878 0226 5C000000 		.4byte	.LFE66-.LFB66
- 879 022a 01       		.uleb128 0x1
- 880 022b 9C       		.byte	0x9c
- 881 022c 4A020000 		.4byte	0x24a
- 882 0230 10       		.uleb128 0x10
- 883 0231 10000000 		.4byte	.LBB2
- 884 0235 3A000000 		.4byte	.LBE2-.LBB2
- 885 0239 11       		.uleb128 0x11
- 886 023a 93020000 		.4byte	.LASF46
- 887 023e 01       		.byte	0x1
- 888 023f 59       		.byte	0x59
- 889 0240 5F010000 		.4byte	0x15f
- 890 0244 03       		.uleb128 0x3
- 891 0245 91       		.byte	0x91
- 892 0246 EC7C     		.sleb128 -404
- 893 0248 00       		.byte	0
- 894 0249 00       		.byte	0
- 895 024a 0E       		.uleb128 0xe
- 896 024b 65030000 		.4byte	.LASF37
- 897 024f 01       		.byte	0x1
- 898 0250 70       		.byte	0x70
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 21
-
-
- 899 0251 00000000 		.4byte	.LFB67
- 900 0255 22000000 		.4byte	.LFE67-.LFB67
- 901 0259 01       		.uleb128 0x1
- 902 025a 9C       		.byte	0x9c
- 903 025b 12       		.uleb128 0x12
- 904 025c 66000000 		.4byte	.LASF39
- 905 0260 01       		.byte	0x1
- 906 0261 8E       		.byte	0x8e
- 907 0262 00000000 		.4byte	.LFB68
- 908 0266 50000000 		.4byte	.LFE68-.LFB68
- 909 026a 01       		.uleb128 0x1
- 910 026b 9C       		.byte	0x9c
- 911 026c 7F020000 		.4byte	0x27f
- 912 0270 13       		.uleb128 0x13
- 913 0271 54030000 		.4byte	.LASF40
- 914 0275 01       		.byte	0x1
- 915 0276 8E       		.byte	0x8e
- 916 0277 81000000 		.4byte	0x81
- 917 027b 02       		.uleb128 0x2
- 918 027c 91       		.byte	0x91
- 919 027d 77       		.sleb128 -9
- 920 027e 00       		.byte	0
- 921 027f 14       		.uleb128 0x14
- 922 0280 1D000000 		.4byte	.LASF44
- 923 0284 01       		.byte	0x1
- 924 0285 A0       		.byte	0xa0
- 925 0286 81000000 		.4byte	0x81
- 926 028a 00000000 		.4byte	.LFB69
- 927 028e 4A000000 		.4byte	.LFE69-.LFB69
- 928 0292 01       		.uleb128 0x1
- 929 0293 9C       		.byte	0x9c
- 930 0294 B5020000 		.4byte	0x2b5
- 931 0298 13       		.uleb128 0x13
- 932 0299 DA030000 		.4byte	.LASF41
- 933 029d 01       		.byte	0x1
- 934 029e A0       		.byte	0xa0
- 935 029f B5020000 		.4byte	0x2b5
- 936 02a3 02       		.uleb128 0x2
- 937 02a4 91       		.byte	0x91
- 938 02a5 74       		.sleb128 -12
- 939 02a6 13       		.uleb128 0x13
- 940 02a7 54030000 		.4byte	.LASF40
- 941 02ab 01       		.byte	0x1
- 942 02ac A0       		.byte	0xa0
- 943 02ad 81000000 		.4byte	0x81
- 944 02b1 02       		.uleb128 0x2
- 945 02b2 91       		.byte	0x91
- 946 02b3 73       		.sleb128 -13
- 947 02b4 00       		.byte	0
- 948 02b5 15       		.uleb128 0x15
- 949 02b6 04       		.byte	0x4
- 950 02b7 01010000 		.4byte	0x101
- 951 02bb 16       		.uleb128 0x16
- 952 02bc CE010000 		.4byte	.LASF42
- 953 02c0 01       		.byte	0x1
- 954 02c1 AE       		.byte	0xae
- 955 02c2 00000000 		.4byte	.LFB70
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 22
-
-
- 956 02c6 1C000000 		.4byte	.LFE70-.LFB70
- 957 02ca 01       		.uleb128 0x1
- 958 02cb 9C       		.byte	0x9c
- 959 02cc DF020000 		.4byte	0x2df
- 960 02d0 13       		.uleb128 0x13
- 961 02d1 35010000 		.4byte	.LASF43
- 962 02d5 01       		.byte	0x1
- 963 02d6 AE       		.byte	0xae
- 964 02d7 B5020000 		.4byte	0x2b5
- 965 02db 02       		.uleb128 0x2
- 966 02dc 91       		.byte	0x91
- 967 02dd 74       		.sleb128 -12
- 968 02de 00       		.byte	0
- 969 02df 17       		.uleb128 0x17
- 970 02e0 4E020000 		.4byte	.LASF45
- 971 02e4 01       		.byte	0x1
- 972 02e5 B7       		.byte	0xb7
- 973 02e6 01010000 		.4byte	0x101
- 974 02ea 00000000 		.4byte	.LFB71
- 975 02ee 44000000 		.4byte	.LFE71-.LFB71
- 976 02f2 01       		.uleb128 0x1
- 977 02f3 9C       		.byte	0x9c
- 978 02f4 31030000 		.4byte	0x331
- 979 02f8 13       		.uleb128 0x13
- 980 02f9 4D000000 		.4byte	.LASF19
- 981 02fd 01       		.byte	0x1
- 982 02fe B7       		.byte	0xb7
- 983 02ff 8D000000 		.4byte	0x8d
- 984 0303 02       		.uleb128 0x2
- 985 0304 91       		.byte	0x91
- 986 0305 6A       		.sleb128 -22
- 987 0306 13       		.uleb128 0x13
- 988 0307 88030000 		.4byte	.LASF21
- 989 030b 01       		.byte	0x1
- 990 030c B7       		.byte	0xb7
- 991 030d 81000000 		.4byte	0x81
- 992 0311 02       		.uleb128 0x2
- 993 0312 91       		.byte	0x91
- 994 0313 69       		.sleb128 -23
- 995 0314 13       		.uleb128 0x13
- 996 0315 A0030000 		.4byte	.LASF22
- 997 0319 01       		.byte	0x1
- 998 031a B7       		.byte	0xb7
- 999 031b 81000000 		.4byte	0x81
- 1000 031f 02       		.uleb128 0x2
- 1001 0320 91       		.byte	0x91
- 1002 0321 68       		.sleb128 -24
- 1003 0322 11       		.uleb128 0x11
- 1004 0323 B8010000 		.4byte	.LASF47
- 1005 0327 01       		.byte	0x1
- 1006 0328 B9       		.byte	0xb9
- 1007 0329 01010000 		.4byte	0x101
- 1008 032d 02       		.uleb128 0x2
- 1009 032e 91       		.byte	0x91
- 1010 032f 70       		.sleb128 -16
- 1011 0330 00       		.byte	0
- 1012 0331 18       		.uleb128 0x18
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 23
-
-
- 1013 0332 D9010000 		.4byte	.LASF64
- 1014 0336 01       		.byte	0x1
- 1015 0337 CE       		.byte	0xce
- 1016 0338 00000000 		.4byte	.LFB72
- 1017 033c 90000000 		.4byte	.LFE72-.LFB72
- 1018 0340 01       		.uleb128 0x1
- 1019 0341 9C       		.byte	0x9c
- 1020 0342 80030000 		.4byte	0x380
- 1021 0346 11       		.uleb128 0x11
- 1022 0347 3E000000 		.4byte	.LASF48
- 1023 034b 01       		.byte	0x1
- 1024 034c D2       		.byte	0xd2
- 1025 034d 5F010000 		.4byte	0x15f
- 1026 0351 03       		.uleb128 0x3
- 1027 0352 91       		.byte	0x91
- 1028 0353 E87C     		.sleb128 -408
- 1029 0355 11       		.uleb128 0x11
- 1030 0356 44010000 		.4byte	.LASF49
- 1031 035a 01       		.byte	0x1
- 1032 035b D4       		.byte	0xd4
- 1033 035c 5F010000 		.4byte	0x15f
- 1034 0360 03       		.uleb128 0x3
- 1035 0361 91       		.byte	0x91
- 1036 0362 E479     		.sleb128 -796
- 1037 0364 11       		.uleb128 0x11
- 1038 0365 93020000 		.4byte	.LASF46
- 1039 0369 01       		.byte	0x1
- 1040 036a D6       		.byte	0xd6
- 1041 036b 5F010000 		.4byte	0x15f
- 1042 036f 03       		.uleb128 0x3
- 1043 0370 91       		.byte	0x91
- 1044 0371 E076     		.sleb128 -1184
- 1045 0373 19       		.uleb128 0x19
- 1046 0374 6300     		.ascii	"c\000"
- 1047 0376 01       		.byte	0x1
- 1048 0377 D9       		.byte	0xd9
- 1049 0378 68000000 		.4byte	0x68
- 1050 037c 02       		.uleb128 0x2
- 1051 037d 91       		.byte	0x91
- 1052 037e 6C       		.sleb128 -20
- 1053 037f 00       		.byte	0
- 1054 0380 1A       		.uleb128 0x1a
- 1055 0381 17010000 		.4byte	.LASF65
- 1056 0385 01       		.byte	0x1
- 1057 0386 E3       		.byte	0xe3
- 1058 0387 68000000 		.4byte	0x68
- 1059 038b 00000000 		.4byte	.LFB73
- 1060 038f 1E000000 		.4byte	.LFE73-.LFB73
- 1061 0393 01       		.uleb128 0x1
- 1062 0394 9C       		.byte	0x9c
- 1063 0395 1B       		.uleb128 0x1b
- 1064 0396 CD030000 		.4byte	.LASF50
- 1065 039a 08       		.byte	0x8
- 1066 039b 1207     		.2byte	0x712
- 1067 039d A1030000 		.4byte	0x3a1
- 1068 03a1 08       		.uleb128 0x8
- 1069 03a2 76000000 		.4byte	0x76
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 24
-
-
- 1070 03a6 0A       		.uleb128 0xa
- 1071 03a7 B3000000 		.4byte	0xb3
- 1072 03ab B6030000 		.4byte	0x3b6
- 1073 03af 0B       		.uleb128 0xb
- 1074 03b0 C1000000 		.4byte	0xc1
- 1075 03b4 63       		.byte	0x63
- 1076 03b5 00       		.byte	0
- 1077 03b6 1C       		.uleb128 0x1c
- 1078 03b7 00000000 		.4byte	.LASF51
- 1079 03bb 09       		.byte	0x9
- 1080 03bc 17       		.byte	0x17
- 1081 03bd A6030000 		.4byte	0x3a6
- 1082 03c1 05       		.uleb128 0x5
- 1083 03c2 03       		.byte	0x3
- 1084 03c3 00000000 		.4byte	debug_string
- 1085 03c7 1C       		.uleb128 0x1c
- 1086 03c8 1F020000 		.4byte	.LASF52
- 1087 03cc 07       		.byte	0x7
- 1088 03cd 0E       		.byte	0xe
- 1089 03ce 81000000 		.4byte	0x81
- 1090 03d2 05       		.uleb128 0x5
- 1091 03d3 03       		.byte	0x3
- 1092 03d4 00000000 		.4byte	modem_state
- 1093 03d8 1C       		.uleb128 0x1c
- 1094 03d9 61010000 		.4byte	.LASF53
- 1095 03dd 07       		.byte	0x7
- 1096 03de 2D       		.byte	0x2d
- 1097 03df 99000000 		.4byte	0x99
- 1098 03e3 05       		.uleb128 0x5
- 1099 03e4 03       		.byte	0x3
- 1100 03e5 00000000 		.4byte	modem_time_stamp
- 1101 03e9 1C       		.uleb128 0x1c
- 1102 03ea AD010000 		.4byte	.LASF54
- 1103 03ee 07       		.byte	0x7
- 1104 03ef 2E       		.byte	0x2e
- 1105 03f0 A7010000 		.4byte	0x1a7
- 1106 03f4 05       		.uleb128 0x5
- 1107 03f5 03       		.byte	0x3
- 1108 03f6 00000000 		.4byte	modem_info
- 1109 03fa 1C       		.uleb128 0x1c
- 1110 03fb 79020000 		.4byte	.LASF55
- 1111 03ff 07       		.byte	0x7
- 1112 0400 2F       		.byte	0x2f
- 1113 0401 EA010000 		.4byte	0x1ea
- 1114 0405 05       		.uleb128 0x5
- 1115 0406 03       		.byte	0x3
- 1116 0407 00000000 		.4byte	modem_stats
- 1117 040b 1C       		.uleb128 0x1c
- 1118 040c C1010000 		.4byte	.LASF56
- 1119 0410 01       		.byte	0x1
- 1120 0411 1A       		.byte	0x1a
- 1121 0412 01010000 		.4byte	0x101
- 1122 0416 05       		.uleb128 0x5
- 1123 0417 03       		.byte	0x3
- 1124 0418 00000000 		.4byte	alarmMeasure
- 1125 041c 1C       		.uleb128 0x1c
- 1126 041d 85020000 		.4byte	.LASF57
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 25
-
-
- 1127 0421 01       		.byte	0x1
- 1128 0422 1B       		.byte	0x1b
- 1129 0423 81000000 		.4byte	0x81
- 1130 0427 05       		.uleb128 0x5
- 1131 0428 03       		.byte	0x3
- 1132 0429 00000000 		.4byte	timeToMeasure
- 1133 042d 1C       		.uleb128 0x1c
- 1134 042e 6D030000 		.4byte	.LASF58
- 1135 0432 01       		.byte	0x1
- 1136 0433 1C       		.byte	0x1c
- 1137 0434 01010000 		.4byte	0x101
- 1138 0438 05       		.uleb128 0x5
- 1139 0439 03       		.byte	0x3
- 1140 043a 00000000 		.4byte	alarmMeasure2
- 1141 043e 1C       		.uleb128 0x1c
- 1142 043f 7A000000 		.4byte	.LASF59
- 1143 0443 01       		.byte	0x1
- 1144 0444 1D       		.byte	0x1d
- 1145 0445 81000000 		.4byte	0x81
- 1146 0449 05       		.uleb128 0x5
- 1147 044a 03       		.byte	0x3
- 1148 044b 00000000 		.4byte	timeToMeasure2
- 1149 044f 00       		.byte	0
- 1150              		.section	.debug_abbrev,"",%progbits
- 1151              	.Ldebug_abbrev0:
- 1152 0000 01       		.uleb128 0x1
- 1153 0001 11       		.uleb128 0x11
- 1154 0002 01       		.byte	0x1
- 1155 0003 25       		.uleb128 0x25
- 1156 0004 0E       		.uleb128 0xe
- 1157 0005 13       		.uleb128 0x13
- 1158 0006 0B       		.uleb128 0xb
- 1159 0007 03       		.uleb128 0x3
- 1160 0008 0E       		.uleb128 0xe
- 1161 0009 1B       		.uleb128 0x1b
- 1162 000a 0E       		.uleb128 0xe
- 1163 000b 55       		.uleb128 0x55
- 1164 000c 17       		.uleb128 0x17
- 1165 000d 11       		.uleb128 0x11
- 1166 000e 01       		.uleb128 0x1
- 1167 000f 10       		.uleb128 0x10
- 1168 0010 17       		.uleb128 0x17
- 1169 0011 00       		.byte	0
- 1170 0012 00       		.byte	0
- 1171 0013 02       		.uleb128 0x2
- 1172 0014 24       		.uleb128 0x24
- 1173 0015 00       		.byte	0
- 1174 0016 0B       		.uleb128 0xb
- 1175 0017 0B       		.uleb128 0xb
- 1176 0018 3E       		.uleb128 0x3e
- 1177 0019 0B       		.uleb128 0xb
- 1178 001a 03       		.uleb128 0x3
- 1179 001b 0E       		.uleb128 0xe
- 1180 001c 00       		.byte	0
- 1181 001d 00       		.byte	0
- 1182 001e 03       		.uleb128 0x3
- 1183 001f 16       		.uleb128 0x16
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 26
-
-
- 1184 0020 00       		.byte	0
- 1185 0021 03       		.uleb128 0x3
- 1186 0022 0E       		.uleb128 0xe
- 1187 0023 3A       		.uleb128 0x3a
- 1188 0024 0B       		.uleb128 0xb
- 1189 0025 3B       		.uleb128 0x3b
- 1190 0026 0B       		.uleb128 0xb
- 1191 0027 49       		.uleb128 0x49
- 1192 0028 13       		.uleb128 0x13
- 1193 0029 00       		.byte	0
- 1194 002a 00       		.byte	0
- 1195 002b 04       		.uleb128 0x4
- 1196 002c 24       		.uleb128 0x24
- 1197 002d 00       		.byte	0
- 1198 002e 0B       		.uleb128 0xb
- 1199 002f 0B       		.uleb128 0xb
- 1200 0030 3E       		.uleb128 0x3e
- 1201 0031 0B       		.uleb128 0xb
- 1202 0032 03       		.uleb128 0x3
- 1203 0033 08       		.uleb128 0x8
- 1204 0034 00       		.byte	0
- 1205 0035 00       		.byte	0
- 1206 0036 05       		.uleb128 0x5
- 1207 0037 16       		.uleb128 0x16
- 1208 0038 00       		.byte	0
- 1209 0039 03       		.uleb128 0x3
- 1210 003a 0E       		.uleb128 0xe
- 1211 003b 3A       		.uleb128 0x3a
- 1212 003c 0B       		.uleb128 0xb
- 1213 003d 3B       		.uleb128 0x3b
- 1214 003e 05       		.uleb128 0x5
- 1215 003f 49       		.uleb128 0x49
- 1216 0040 13       		.uleb128 0x13
- 1217 0041 00       		.byte	0
- 1218 0042 00       		.byte	0
- 1219 0043 06       		.uleb128 0x6
- 1220 0044 13       		.uleb128 0x13
- 1221 0045 01       		.byte	0x1
- 1222 0046 0B       		.uleb128 0xb
- 1223 0047 0B       		.uleb128 0xb
- 1224 0048 3A       		.uleb128 0x3a
- 1225 0049 0B       		.uleb128 0xb
- 1226 004a 3B       		.uleb128 0x3b
- 1227 004b 0B       		.uleb128 0xb
- 1228 004c 01       		.uleb128 0x1
- 1229 004d 13       		.uleb128 0x13
- 1230 004e 00       		.byte	0
- 1231 004f 00       		.byte	0
- 1232 0050 07       		.uleb128 0x7
- 1233 0051 0D       		.uleb128 0xd
- 1234 0052 00       		.byte	0
- 1235 0053 03       		.uleb128 0x3
- 1236 0054 0E       		.uleb128 0xe
- 1237 0055 3A       		.uleb128 0x3a
- 1238 0056 0B       		.uleb128 0xb
- 1239 0057 3B       		.uleb128 0x3b
- 1240 0058 0B       		.uleb128 0xb
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 27
-
-
- 1241 0059 49       		.uleb128 0x49
- 1242 005a 13       		.uleb128 0x13
- 1243 005b 38       		.uleb128 0x38
- 1244 005c 0B       		.uleb128 0xb
- 1245 005d 00       		.byte	0
- 1246 005e 00       		.byte	0
- 1247 005f 08       		.uleb128 0x8
- 1248 0060 35       		.uleb128 0x35
- 1249 0061 00       		.byte	0
- 1250 0062 49       		.uleb128 0x49
- 1251 0063 13       		.uleb128 0x13
- 1252 0064 00       		.byte	0
- 1253 0065 00       		.byte	0
- 1254 0066 09       		.uleb128 0x9
- 1255 0067 13       		.uleb128 0x13
- 1256 0068 01       		.byte	0x1
- 1257 0069 0B       		.uleb128 0xb
- 1258 006a 05       		.uleb128 0x5
- 1259 006b 3A       		.uleb128 0x3a
- 1260 006c 0B       		.uleb128 0xb
- 1261 006d 3B       		.uleb128 0x3b
- 1262 006e 0B       		.uleb128 0xb
- 1263 006f 01       		.uleb128 0x1
- 1264 0070 13       		.uleb128 0x13
- 1265 0071 00       		.byte	0
- 1266 0072 00       		.byte	0
- 1267 0073 0A       		.uleb128 0xa
- 1268 0074 01       		.uleb128 0x1
- 1269 0075 01       		.byte	0x1
- 1270 0076 49       		.uleb128 0x49
- 1271 0077 13       		.uleb128 0x13
- 1272 0078 01       		.uleb128 0x1
- 1273 0079 13       		.uleb128 0x13
- 1274 007a 00       		.byte	0
- 1275 007b 00       		.byte	0
- 1276 007c 0B       		.uleb128 0xb
- 1277 007d 21       		.uleb128 0x21
- 1278 007e 00       		.byte	0
- 1279 007f 49       		.uleb128 0x49
- 1280 0080 13       		.uleb128 0x13
- 1281 0081 2F       		.uleb128 0x2f
- 1282 0082 0B       		.uleb128 0xb
- 1283 0083 00       		.byte	0
- 1284 0084 00       		.byte	0
- 1285 0085 0C       		.uleb128 0xc
- 1286 0086 0D       		.uleb128 0xd
- 1287 0087 00       		.byte	0
- 1288 0088 03       		.uleb128 0x3
- 1289 0089 08       		.uleb128 0x8
- 1290 008a 3A       		.uleb128 0x3a
- 1291 008b 0B       		.uleb128 0xb
- 1292 008c 3B       		.uleb128 0x3b
- 1293 008d 0B       		.uleb128 0xb
- 1294 008e 49       		.uleb128 0x49
- 1295 008f 13       		.uleb128 0x13
- 1296 0090 38       		.uleb128 0x38
- 1297 0091 0B       		.uleb128 0xb
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 28
-
-
- 1298 0092 00       		.byte	0
- 1299 0093 00       		.byte	0
- 1300 0094 0D       		.uleb128 0xd
- 1301 0095 2E       		.uleb128 0x2e
- 1302 0096 00       		.byte	0
- 1303 0097 3F       		.uleb128 0x3f
- 1304 0098 19       		.uleb128 0x19
- 1305 0099 03       		.uleb128 0x3
- 1306 009a 0E       		.uleb128 0xe
- 1307 009b 3A       		.uleb128 0x3a
- 1308 009c 0B       		.uleb128 0xb
- 1309 009d 3B       		.uleb128 0x3b
- 1310 009e 0B       		.uleb128 0xb
- 1311 009f 27       		.uleb128 0x27
- 1312 00a0 19       		.uleb128 0x19
- 1313 00a1 11       		.uleb128 0x11
- 1314 00a2 01       		.uleb128 0x1
- 1315 00a3 12       		.uleb128 0x12
- 1316 00a4 06       		.uleb128 0x6
- 1317 00a5 40       		.uleb128 0x40
- 1318 00a6 18       		.uleb128 0x18
- 1319 00a7 9642     		.uleb128 0x2116
- 1320 00a9 19       		.uleb128 0x19
- 1321 00aa 00       		.byte	0
- 1322 00ab 00       		.byte	0
- 1323 00ac 0E       		.uleb128 0xe
- 1324 00ad 2E       		.uleb128 0x2e
- 1325 00ae 00       		.byte	0
- 1326 00af 3F       		.uleb128 0x3f
- 1327 00b0 19       		.uleb128 0x19
- 1328 00b1 03       		.uleb128 0x3
- 1329 00b2 0E       		.uleb128 0xe
- 1330 00b3 3A       		.uleb128 0x3a
- 1331 00b4 0B       		.uleb128 0xb
- 1332 00b5 3B       		.uleb128 0x3b
- 1333 00b6 0B       		.uleb128 0xb
- 1334 00b7 11       		.uleb128 0x11
- 1335 00b8 01       		.uleb128 0x1
- 1336 00b9 12       		.uleb128 0x12
- 1337 00ba 06       		.uleb128 0x6
- 1338 00bb 40       		.uleb128 0x40
- 1339 00bc 18       		.uleb128 0x18
- 1340 00bd 9642     		.uleb128 0x2116
- 1341 00bf 19       		.uleb128 0x19
- 1342 00c0 00       		.byte	0
- 1343 00c1 00       		.byte	0
- 1344 00c2 0F       		.uleb128 0xf
- 1345 00c3 2E       		.uleb128 0x2e
- 1346 00c4 01       		.byte	0x1
- 1347 00c5 3F       		.uleb128 0x3f
- 1348 00c6 19       		.uleb128 0x19
- 1349 00c7 03       		.uleb128 0x3
- 1350 00c8 0E       		.uleb128 0xe
- 1351 00c9 3A       		.uleb128 0x3a
- 1352 00ca 0B       		.uleb128 0xb
- 1353 00cb 3B       		.uleb128 0x3b
- 1354 00cc 0B       		.uleb128 0xb
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 29
-
-
- 1355 00cd 49       		.uleb128 0x49
- 1356 00ce 13       		.uleb128 0x13
- 1357 00cf 11       		.uleb128 0x11
- 1358 00d0 01       		.uleb128 0x1
- 1359 00d1 12       		.uleb128 0x12
- 1360 00d2 06       		.uleb128 0x6
- 1361 00d3 40       		.uleb128 0x40
- 1362 00d4 18       		.uleb128 0x18
- 1363 00d5 9642     		.uleb128 0x2116
- 1364 00d7 19       		.uleb128 0x19
- 1365 00d8 01       		.uleb128 0x1
- 1366 00d9 13       		.uleb128 0x13
- 1367 00da 00       		.byte	0
- 1368 00db 00       		.byte	0
- 1369 00dc 10       		.uleb128 0x10
- 1370 00dd 0B       		.uleb128 0xb
- 1371 00de 01       		.byte	0x1
- 1372 00df 11       		.uleb128 0x11
- 1373 00e0 01       		.uleb128 0x1
- 1374 00e1 12       		.uleb128 0x12
- 1375 00e2 06       		.uleb128 0x6
- 1376 00e3 00       		.byte	0
- 1377 00e4 00       		.byte	0
- 1378 00e5 11       		.uleb128 0x11
- 1379 00e6 34       		.uleb128 0x34
- 1380 00e7 00       		.byte	0
- 1381 00e8 03       		.uleb128 0x3
- 1382 00e9 0E       		.uleb128 0xe
- 1383 00ea 3A       		.uleb128 0x3a
- 1384 00eb 0B       		.uleb128 0xb
- 1385 00ec 3B       		.uleb128 0x3b
- 1386 00ed 0B       		.uleb128 0xb
- 1387 00ee 49       		.uleb128 0x49
- 1388 00ef 13       		.uleb128 0x13
- 1389 00f0 02       		.uleb128 0x2
- 1390 00f1 18       		.uleb128 0x18
- 1391 00f2 00       		.byte	0
- 1392 00f3 00       		.byte	0
- 1393 00f4 12       		.uleb128 0x12
- 1394 00f5 2E       		.uleb128 0x2e
- 1395 00f6 01       		.byte	0x1
- 1396 00f7 3F       		.uleb128 0x3f
- 1397 00f8 19       		.uleb128 0x19
- 1398 00f9 03       		.uleb128 0x3
- 1399 00fa 0E       		.uleb128 0xe
- 1400 00fb 3A       		.uleb128 0x3a
- 1401 00fc 0B       		.uleb128 0xb
- 1402 00fd 3B       		.uleb128 0x3b
- 1403 00fe 0B       		.uleb128 0xb
- 1404 00ff 27       		.uleb128 0x27
- 1405 0100 19       		.uleb128 0x19
- 1406 0101 11       		.uleb128 0x11
- 1407 0102 01       		.uleb128 0x1
- 1408 0103 12       		.uleb128 0x12
- 1409 0104 06       		.uleb128 0x6
- 1410 0105 40       		.uleb128 0x40
- 1411 0106 18       		.uleb128 0x18
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 30
-
-
- 1412 0107 9642     		.uleb128 0x2116
- 1413 0109 19       		.uleb128 0x19
- 1414 010a 01       		.uleb128 0x1
- 1415 010b 13       		.uleb128 0x13
- 1416 010c 00       		.byte	0
- 1417 010d 00       		.byte	0
- 1418 010e 13       		.uleb128 0x13
- 1419 010f 05       		.uleb128 0x5
- 1420 0110 00       		.byte	0
- 1421 0111 03       		.uleb128 0x3
- 1422 0112 0E       		.uleb128 0xe
- 1423 0113 3A       		.uleb128 0x3a
- 1424 0114 0B       		.uleb128 0xb
- 1425 0115 3B       		.uleb128 0x3b
- 1426 0116 0B       		.uleb128 0xb
- 1427 0117 49       		.uleb128 0x49
- 1428 0118 13       		.uleb128 0x13
- 1429 0119 02       		.uleb128 0x2
- 1430 011a 18       		.uleb128 0x18
- 1431 011b 00       		.byte	0
- 1432 011c 00       		.byte	0
- 1433 011d 14       		.uleb128 0x14
- 1434 011e 2E       		.uleb128 0x2e
- 1435 011f 01       		.byte	0x1
- 1436 0120 3F       		.uleb128 0x3f
- 1437 0121 19       		.uleb128 0x19
- 1438 0122 03       		.uleb128 0x3
- 1439 0123 0E       		.uleb128 0xe
- 1440 0124 3A       		.uleb128 0x3a
- 1441 0125 0B       		.uleb128 0xb
- 1442 0126 3B       		.uleb128 0x3b
- 1443 0127 0B       		.uleb128 0xb
- 1444 0128 27       		.uleb128 0x27
- 1445 0129 19       		.uleb128 0x19
- 1446 012a 49       		.uleb128 0x49
- 1447 012b 13       		.uleb128 0x13
- 1448 012c 11       		.uleb128 0x11
- 1449 012d 01       		.uleb128 0x1
- 1450 012e 12       		.uleb128 0x12
- 1451 012f 06       		.uleb128 0x6
- 1452 0130 40       		.uleb128 0x40
- 1453 0131 18       		.uleb128 0x18
- 1454 0132 9642     		.uleb128 0x2116
- 1455 0134 19       		.uleb128 0x19
- 1456 0135 01       		.uleb128 0x1
- 1457 0136 13       		.uleb128 0x13
- 1458 0137 00       		.byte	0
- 1459 0138 00       		.byte	0
- 1460 0139 15       		.uleb128 0x15
- 1461 013a 0F       		.uleb128 0xf
- 1462 013b 00       		.byte	0
- 1463 013c 0B       		.uleb128 0xb
- 1464 013d 0B       		.uleb128 0xb
- 1465 013e 49       		.uleb128 0x49
- 1466 013f 13       		.uleb128 0x13
- 1467 0140 00       		.byte	0
- 1468 0141 00       		.byte	0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 31
-
-
- 1469 0142 16       		.uleb128 0x16
- 1470 0143 2E       		.uleb128 0x2e
- 1471 0144 01       		.byte	0x1
- 1472 0145 3F       		.uleb128 0x3f
- 1473 0146 19       		.uleb128 0x19
- 1474 0147 03       		.uleb128 0x3
- 1475 0148 0E       		.uleb128 0xe
- 1476 0149 3A       		.uleb128 0x3a
- 1477 014a 0B       		.uleb128 0xb
- 1478 014b 3B       		.uleb128 0x3b
- 1479 014c 0B       		.uleb128 0xb
- 1480 014d 27       		.uleb128 0x27
- 1481 014e 19       		.uleb128 0x19
- 1482 014f 11       		.uleb128 0x11
- 1483 0150 01       		.uleb128 0x1
- 1484 0151 12       		.uleb128 0x12
- 1485 0152 06       		.uleb128 0x6
- 1486 0153 40       		.uleb128 0x40
- 1487 0154 18       		.uleb128 0x18
- 1488 0155 9742     		.uleb128 0x2117
- 1489 0157 19       		.uleb128 0x19
- 1490 0158 01       		.uleb128 0x1
- 1491 0159 13       		.uleb128 0x13
- 1492 015a 00       		.byte	0
- 1493 015b 00       		.byte	0
- 1494 015c 17       		.uleb128 0x17
- 1495 015d 2E       		.uleb128 0x2e
- 1496 015e 01       		.byte	0x1
- 1497 015f 3F       		.uleb128 0x3f
- 1498 0160 19       		.uleb128 0x19
- 1499 0161 03       		.uleb128 0x3
- 1500 0162 0E       		.uleb128 0xe
- 1501 0163 3A       		.uleb128 0x3a
- 1502 0164 0B       		.uleb128 0xb
- 1503 0165 3B       		.uleb128 0x3b
- 1504 0166 0B       		.uleb128 0xb
- 1505 0167 27       		.uleb128 0x27
- 1506 0168 19       		.uleb128 0x19
- 1507 0169 49       		.uleb128 0x49
- 1508 016a 13       		.uleb128 0x13
- 1509 016b 11       		.uleb128 0x11
- 1510 016c 01       		.uleb128 0x1
- 1511 016d 12       		.uleb128 0x12
- 1512 016e 06       		.uleb128 0x6
- 1513 016f 40       		.uleb128 0x40
- 1514 0170 18       		.uleb128 0x18
- 1515 0171 9742     		.uleb128 0x2117
- 1516 0173 19       		.uleb128 0x19
- 1517 0174 01       		.uleb128 0x1
- 1518 0175 13       		.uleb128 0x13
- 1519 0176 00       		.byte	0
- 1520 0177 00       		.byte	0
- 1521 0178 18       		.uleb128 0x18
- 1522 0179 2E       		.uleb128 0x2e
- 1523 017a 01       		.byte	0x1
- 1524 017b 3F       		.uleb128 0x3f
- 1525 017c 19       		.uleb128 0x19
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 32
-
-
- 1526 017d 03       		.uleb128 0x3
- 1527 017e 0E       		.uleb128 0xe
- 1528 017f 3A       		.uleb128 0x3a
- 1529 0180 0B       		.uleb128 0xb
- 1530 0181 3B       		.uleb128 0x3b
- 1531 0182 0B       		.uleb128 0xb
- 1532 0183 11       		.uleb128 0x11
- 1533 0184 01       		.uleb128 0x1
- 1534 0185 12       		.uleb128 0x12
- 1535 0186 06       		.uleb128 0x6
- 1536 0187 40       		.uleb128 0x40
- 1537 0188 18       		.uleb128 0x18
- 1538 0189 9642     		.uleb128 0x2116
- 1539 018b 19       		.uleb128 0x19
- 1540 018c 01       		.uleb128 0x1
- 1541 018d 13       		.uleb128 0x13
- 1542 018e 00       		.byte	0
- 1543 018f 00       		.byte	0
- 1544 0190 19       		.uleb128 0x19
- 1545 0191 34       		.uleb128 0x34
- 1546 0192 00       		.byte	0
- 1547 0193 03       		.uleb128 0x3
- 1548 0194 08       		.uleb128 0x8
- 1549 0195 3A       		.uleb128 0x3a
- 1550 0196 0B       		.uleb128 0xb
- 1551 0197 3B       		.uleb128 0x3b
- 1552 0198 0B       		.uleb128 0xb
- 1553 0199 49       		.uleb128 0x49
- 1554 019a 13       		.uleb128 0x13
- 1555 019b 02       		.uleb128 0x2
- 1556 019c 18       		.uleb128 0x18
- 1557 019d 00       		.byte	0
- 1558 019e 00       		.byte	0
- 1559 019f 1A       		.uleb128 0x1a
- 1560 01a0 2E       		.uleb128 0x2e
- 1561 01a1 00       		.byte	0
- 1562 01a2 3F       		.uleb128 0x3f
- 1563 01a3 19       		.uleb128 0x19
- 1564 01a4 03       		.uleb128 0x3
- 1565 01a5 0E       		.uleb128 0xe
- 1566 01a6 3A       		.uleb128 0x3a
- 1567 01a7 0B       		.uleb128 0xb
- 1568 01a8 3B       		.uleb128 0x3b
- 1569 01a9 0B       		.uleb128 0xb
- 1570 01aa 27       		.uleb128 0x27
- 1571 01ab 19       		.uleb128 0x19
- 1572 01ac 49       		.uleb128 0x49
- 1573 01ad 13       		.uleb128 0x13
- 1574 01ae 11       		.uleb128 0x11
- 1575 01af 01       		.uleb128 0x1
- 1576 01b0 12       		.uleb128 0x12
- 1577 01b1 06       		.uleb128 0x6
- 1578 01b2 40       		.uleb128 0x40
- 1579 01b3 18       		.uleb128 0x18
- 1580 01b4 9642     		.uleb128 0x2116
- 1581 01b6 19       		.uleb128 0x19
- 1582 01b7 00       		.byte	0
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 33
-
-
- 1583 01b8 00       		.byte	0
- 1584 01b9 1B       		.uleb128 0x1b
- 1585 01ba 34       		.uleb128 0x34
- 1586 01bb 00       		.byte	0
- 1587 01bc 03       		.uleb128 0x3
- 1588 01bd 0E       		.uleb128 0xe
- 1589 01be 3A       		.uleb128 0x3a
- 1590 01bf 0B       		.uleb128 0xb
- 1591 01c0 3B       		.uleb128 0x3b
- 1592 01c1 05       		.uleb128 0x5
- 1593 01c2 49       		.uleb128 0x49
- 1594 01c3 13       		.uleb128 0x13
- 1595 01c4 3F       		.uleb128 0x3f
- 1596 01c5 19       		.uleb128 0x19
- 1597 01c6 3C       		.uleb128 0x3c
- 1598 01c7 19       		.uleb128 0x19
- 1599 01c8 00       		.byte	0
- 1600 01c9 00       		.byte	0
- 1601 01ca 1C       		.uleb128 0x1c
- 1602 01cb 34       		.uleb128 0x34
- 1603 01cc 00       		.byte	0
- 1604 01cd 03       		.uleb128 0x3
- 1605 01ce 0E       		.uleb128 0xe
- 1606 01cf 3A       		.uleb128 0x3a
- 1607 01d0 0B       		.uleb128 0xb
- 1608 01d1 3B       		.uleb128 0x3b
- 1609 01d2 0B       		.uleb128 0xb
- 1610 01d3 49       		.uleb128 0x49
- 1611 01d4 13       		.uleb128 0x13
- 1612 01d5 3F       		.uleb128 0x3f
- 1613 01d6 19       		.uleb128 0x19
- 1614 01d7 02       		.uleb128 0x2
- 1615 01d8 18       		.uleb128 0x18
- 1616 01d9 00       		.byte	0
- 1617 01da 00       		.byte	0
- 1618 01db 00       		.byte	0
- 1619              		.section	.debug_aranges,"",%progbits
- 1620 0000 64000000 		.4byte	0x64
- 1621 0004 0200     		.2byte	0x2
- 1622 0006 00000000 		.4byte	.Ldebug_info0
- 1623 000a 04       		.byte	0x4
- 1624 000b 00       		.byte	0
- 1625 000c 0000     		.2byte	0
- 1626 000e 0000     		.2byte	0
- 1627 0010 00000000 		.4byte	.LFB64
- 1628 0014 0C000000 		.4byte	.LFE64-.LFB64
- 1629 0018 00000000 		.4byte	.LFB65
- 1630 001c 58000000 		.4byte	.LFE65-.LFB65
- 1631 0020 00000000 		.4byte	.LFB66
- 1632 0024 5C000000 		.4byte	.LFE66-.LFB66
- 1633 0028 00000000 		.4byte	.LFB67
- 1634 002c 22000000 		.4byte	.LFE67-.LFB67
- 1635 0030 00000000 		.4byte	.LFB68
- 1636 0034 50000000 		.4byte	.LFE68-.LFB68
- 1637 0038 00000000 		.4byte	.LFB69
- 1638 003c 4A000000 		.4byte	.LFE69-.LFB69
- 1639 0040 00000000 		.4byte	.LFB70
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 34
-
-
- 1640 0044 1C000000 		.4byte	.LFE70-.LFB70
- 1641 0048 00000000 		.4byte	.LFB71
- 1642 004c 44000000 		.4byte	.LFE71-.LFB71
- 1643 0050 00000000 		.4byte	.LFB72
- 1644 0054 90000000 		.4byte	.LFE72-.LFB72
- 1645 0058 00000000 		.4byte	.LFB73
- 1646 005c 1E000000 		.4byte	.LFE73-.LFB73
- 1647 0060 00000000 		.4byte	0
- 1648 0064 00000000 		.4byte	0
- 1649              		.section	.debug_ranges,"",%progbits
- 1650              	.Ldebug_ranges0:
- 1651 0000 00000000 		.4byte	.LFB64
- 1652 0004 0C000000 		.4byte	.LFE64
- 1653 0008 00000000 		.4byte	.LFB65
- 1654 000c 58000000 		.4byte	.LFE65
- 1655 0010 00000000 		.4byte	.LFB66
- 1656 0014 5C000000 		.4byte	.LFE66
- 1657 0018 00000000 		.4byte	.LFB67
- 1658 001c 22000000 		.4byte	.LFE67
- 1659 0020 00000000 		.4byte	.LFB68
- 1660 0024 50000000 		.4byte	.LFE68
- 1661 0028 00000000 		.4byte	.LFB69
- 1662 002c 4A000000 		.4byte	.LFE69
- 1663 0030 00000000 		.4byte	.LFB70
- 1664 0034 1C000000 		.4byte	.LFE70
- 1665 0038 00000000 		.4byte	.LFB71
- 1666 003c 44000000 		.4byte	.LFE71
- 1667 0040 00000000 		.4byte	.LFB72
- 1668 0044 90000000 		.4byte	.LFE72
- 1669 0048 00000000 		.4byte	.LFB73
- 1670 004c 1E000000 		.4byte	.LFE73
- 1671 0050 00000000 		.4byte	0
- 1672 0054 00000000 		.4byte	0
- 1673              		.section	.debug_line,"",%progbits
- 1674              	.Ldebug_line0:
- 1675 0000 61020000 		.section	.debug_str,"MS",%progbits,1
- 1675      02007D01 
- 1675      00000201 
- 1675      FB0E0D00 
- 1675      01010101 
- 1676              	.LASF51:
- 1677 0000 64656275 		.ascii	"debug_string\000"
- 1677      675F7374 
- 1677      72696E67 
- 1677      00
- 1678              	.LASF29:
- 1679 000d 6D6F6465 		.ascii	"model_id\000"
- 1679      6C5F6964 
- 1679      00
- 1680              	.LASF28:
- 1681 0016 73696D5F 		.ascii	"sim_id\000"
- 1681      696400
- 1682              	.LASF44:
- 1683 001d 416C6172 		.ascii	"AlarmReady\000"
- 1683      6D526561 
- 1683      647900
- 1684              	.LASF20:
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 35
-
-
- 1685 0028 63757272 		.ascii	"currentCountDownValue\000"
- 1685      656E7443 
- 1685      6F756E74 
- 1685      446F776E 
- 1685      56616C75 
- 1686              	.LASF48:
- 1687 003e 745F6C65 		.ascii	"t_level_sensor\000"
- 1687      76656C5F 
- 1687      73656E73 
- 1687      6F7200
- 1688              	.LASF19:
- 1689 004d 636F756E 		.ascii	"countDownValue\000"
- 1689      74446F77 
- 1689      6E56616C 
- 1689      756500
- 1690              	.LASF2:
- 1691 005c 73686F72 		.ascii	"short int\000"
- 1691      7420696E 
- 1691      7400
- 1692              	.LASF39:
- 1693 0066 41796F49 		.ascii	"AyoItsTime\000"
- 1693      74735469 
- 1693      6D6500
- 1694              	.LASF18:
- 1695 0071 73697A65 		.ascii	"sizetype\000"
- 1695      74797065 
- 1695      00
- 1696              	.LASF59:
- 1697 007a 74696D65 		.ascii	"timeToMeasure2\000"
- 1697      546F4D65 
- 1697      61737572 
- 1697      653200
- 1698              	.LASF60:
- 1699 0089 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1699      43313120 
- 1699      352E342E 
- 1699      31203230 
- 1699      31363036 
- 1700 00bc 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1700      20726576 
- 1700      6973696F 
- 1700      6E203233 
- 1700      37373135 
- 1701 00ef 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1701      66756E63 
- 1701      74696F6E 
- 1701      2D736563 
- 1701      74696F6E 
- 1702              	.LASF65:
- 1703 0117 6D61696E 		.ascii	"main\000"
- 1703      00
- 1704              	.LASF38:
- 1705 011c 576F726B 		.ascii	"WorkWorkWorkWorkWorkWork\000"
- 1705      576F726B 
- 1705      576F726B 
- 1705      576F726B 
- 1705      576F726B 
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 36
-
-
- 1706              	.LASF43:
- 1707 0135 616C6172 		.ascii	"alarmToBeReset\000"
- 1707      6D546F42 
- 1707      65526573 
- 1707      657400
- 1708              	.LASF49:
- 1709 0144 745F7364 		.ascii	"t_sd_card\000"
- 1709      5F636172 
- 1709      6400
- 1710              	.LASF12:
- 1711 014e 75696E74 		.ascii	"uint16\000"
- 1711      313600
- 1712              	.LASF11:
- 1713 0155 75696E74 		.ascii	"uint8\000"
- 1713      3800
- 1714              	.LASF14:
- 1715 015b 666C6F61 		.ascii	"float\000"
- 1715      7400
- 1716              	.LASF53:
- 1717 0161 6D6F6465 		.ascii	"modem_time_stamp\000"
- 1717      6D5F7469 
- 1717      6D655F73 
- 1717      74616D70 
- 1717      00
- 1718              	.LASF6:
- 1719 0172 6C6F6E67 		.ascii	"long long int\000"
- 1719      206C6F6E 
- 1719      6720696E 
- 1719      7400
- 1720              	.LASF16:
- 1721 0180 63686172 		.ascii	"char\000"
- 1721      00
- 1722              	.LASF31:
- 1723 0185 6D6F6465 		.ascii	"modem_info_t\000"
- 1723      6D5F696E 
- 1723      666F5F74 
- 1723      00
- 1724              	.LASF26:
- 1725 0192 72656173 		.ascii	"reason\000"
- 1725      6F6E00
- 1726              	.LASF4:
- 1727 0199 6C6F6E67 		.ascii	"long int\000"
- 1727      20696E74 
- 1727      00
- 1728              	.LASF36:
- 1729 01a2 52656164 		.ascii	"ReadyOrNot\000"
- 1729      794F724E 
- 1729      6F7400
- 1730              	.LASF54:
- 1731 01ad 6D6F6465 		.ascii	"modem_info\000"
- 1731      6D5F696E 
- 1731      666F00
- 1732              	.LASF47:
- 1733 01b8 6E657741 		.ascii	"newAlarm\000"
- 1733      6C61726D 
- 1733      00
- 1734              	.LASF56:
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 37
-
-
- 1735 01c1 616C6172 		.ascii	"alarmMeasure\000"
- 1735      6D4D6561 
- 1735      73757265 
- 1735      00
- 1736              	.LASF42:
- 1737 01ce 52657365 		.ascii	"ResetAlarm\000"
- 1737      74416C61 
- 1737      726D00
- 1738              	.LASF64:
- 1739 01d9 43686963 		.ascii	"ChickityCheckYourselfBeforeYouWreckYourself\000"
- 1739      6B697479 
- 1739      43686563 
- 1739      6B596F75 
- 1739      7273656C 
- 1740              	.LASF17:
- 1741 0205 6C6F6E67 		.ascii	"long double\000"
- 1741      20646F75 
- 1741      626C6500 
- 1742              	.LASF1:
- 1743 0211 756E7369 		.ascii	"unsigned char\000"
- 1743      676E6564 
- 1743      20636861 
- 1743      7200
- 1744              	.LASF52:
- 1745 021f 6D6F6465 		.ascii	"modem_state\000"
- 1745      6D5F7374 
- 1745      61746500 
- 1746              	.LASF0:
- 1747 022b 7369676E 		.ascii	"signed char\000"
- 1747      65642063 
- 1747      68617200 
- 1748              	.LASF7:
- 1749 0237 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1749      206C6F6E 
- 1749      6720756E 
- 1749      7369676E 
- 1749      65642069 
- 1750              	.LASF45:
- 1751 024e 43726561 		.ascii	"CreateAlarm\000"
- 1751      7465416C 
- 1751      61726D00 
- 1752              	.LASF8:
- 1753 025a 756E7369 		.ascii	"unsigned int\000"
- 1753      676E6564 
- 1753      20696E74 
- 1753      00
- 1754              	.LASF5:
- 1755 0267 6C6F6E67 		.ascii	"long unsigned int\000"
- 1755      20756E73 
- 1755      69676E65 
- 1755      6420696E 
- 1755      7400
- 1756              	.LASF55:
- 1757 0279 6D6F6465 		.ascii	"modem_stats\000"
- 1757      6D5F7374 
- 1757      61747300 
- 1758              	.LASF57:
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 38
-
-
- 1759 0285 74696D65 		.ascii	"timeToMeasure\000"
- 1759      546F4D65 
- 1759      61737572 
- 1759      6500
- 1760              	.LASF46:
- 1761 0293 745F766F 		.ascii	"t_voltages\000"
- 1761      6C746167 
- 1761      657300
- 1762              	.LASF3:
- 1763 029e 73686F72 		.ascii	"short unsigned int\000"
- 1763      7420756E 
- 1763      7369676E 
- 1763      65642069 
- 1763      6E7400
- 1764              	.LASF33:
- 1765 02b1 74696D65 		.ascii	"time_to_network_connect\000"
- 1765      5F746F5F 
- 1765      6E657477 
- 1765      6F726B5F 
- 1765      636F6E6E 
- 1766              	.LASF25:
- 1767 02c9 73746174 		.ascii	"status\000"
- 1767      757300
- 1768              	.LASF62:
- 1769 02d0 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
- 1769      73657273 
- 1769      5C626B5C 
- 1769      446F6375 
- 1769      6D656E74 
- 1770 02fd 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
- 1770      6E6F746F 
- 1770      72694F53 
- 1770      5C6E6F74 
- 1770      6F72694F 
- 1771              	.LASF34:
- 1772 0319 74696D65 		.ascii	"time_to_acquire_ip\000"
- 1772      5F746F5F 
- 1772      61637175 
- 1772      6972655F 
- 1772      697000
- 1773              	.LASF27:
- 1774 032c 74657374 		.ascii	"test_t\000"
- 1774      5F7400
- 1775              	.LASF30:
- 1776 0333 696D6569 		.ascii	"imei\000"
- 1776      00
- 1777              	.LASF10:
- 1778 0338 696E7433 		.ascii	"int32_t\000"
- 1778      325F7400 
- 1779              	.LASF35:
- 1780 0340 6D6F6465 		.ascii	"modem_stats_t\000"
- 1780      6D5F7374 
- 1780      6174735F 
- 1780      7400
- 1781              	.LASF23:
- 1782 034e 616C6172 		.ascii	"alarm\000"
- 1782      6D00
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 39
-
-
- 1783              	.LASF40:
- 1784 0354 616C6172 		.ascii	"alarmType\000"
- 1784      6D547970 
- 1784      6500
- 1785              	.LASF61:
- 1786 035e 6D61696E 		.ascii	"main.c\000"
- 1786      2E6300
- 1787              	.LASF37:
- 1788 0365 4C617942 		.ascii	"LayBack\000"
- 1788      61636B00 
- 1789              	.LASF58:
- 1790 036d 616C6172 		.ascii	"alarmMeasure2\000"
- 1790      6D4D6561 
- 1790      73757265 
- 1790      3200
- 1791              	.LASF13:
- 1792 037b 696E7433 		.ascii	"int32\000"
- 1792      3200
- 1793              	.LASF15:
- 1794 0381 646F7562 		.ascii	"double\000"
- 1794      6C6500
- 1795              	.LASF21:
- 1796 0388 636F756E 		.ascii	"countDownType\000"
- 1796      74446F77 
- 1796      6E547970 
- 1796      6500
- 1797              	.LASF9:
- 1798 0396 5F5F696E 		.ascii	"__int32_t\000"
- 1798      7433325F 
- 1798      7400
- 1799              	.LASF22:
- 1800 03a0 636F756E 		.ascii	"countDownResetCondition\000"
- 1800      74446F77 
- 1800      6E526573 
- 1800      6574436F 
- 1800      6E646974 
- 1801              	.LASF63:
- 1802 03b8 57616B65 		.ascii	"Wakeup_ISR\000"
- 1802      75705F49 
- 1802      535200
- 1803              	.LASF24:
- 1804 03c3 74657374 		.ascii	"test_name\000"
- 1804      5F6E616D 
- 1804      6500
- 1805              	.LASF50:
- 1806 03cd 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1806      52784275 
- 1806      66666572 
- 1806      00
- 1807              	.LASF41:
- 1808 03da 616C6172 		.ascii	"alarmToBeUpdated\000"
- 1808      6D546F42 
- 1808      65557064 
- 1808      61746564 
- 1808      00
- 1809              	.LASF32:
- 1810 03eb 72737369 		.ascii	"rssi\000"
-ARM GAS  C:\Users\bk\AppData\Local\Temp\ccqryncW.s 			page 40
-
-
- 1810      00
- 1811              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 137:main.c        **** // Put all hardware to sleep and go into low power mode to conserve Amps
+ 138:main.c        **** // ==============================================
+ 139:main.c        **** void LayBack()
+ 140:main.c        **** {
+ 325              		.loc 1 140 0
+ 326              		.cfi_startproc
+ 327              		@ args = 0, pretend = 0, frame = 0
+ 328              		@ frame_needed = 1, uses_anonymous_args = 0
+ 329 0000 80B5     		push	{r7, lr}
+ 330              		.cfi_def_cfa_offset 8
+ 331              		.cfi_offset 7, -8
+ 332              		.cfi_offset 14, -4
+ 333 0002 00AF     		add	r7, sp, #0
+ 334              		.cfi_def_cfa_register 7
+ 141:main.c        ****     
+ 142:main.c        ****     debug_sleep();
+ 335              		.loc 1 142 0
+ 336 0004 FFF7FEFF 		bl	debug_sleep
+ 143:main.c        ****     modem_sleep();
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 10
+
+
+ 337              		.loc 1 143 0
+ 338 0008 FFF7FEFF 		bl	modem_sleep
+ 144:main.c        ****     // Prepares system clocks for the Sleep mode
+ 145:main.c        ****     CyPmSaveClocks();
+ 339              		.loc 1 145 0
+ 340 000c FFF7FEFF 		bl	CyPmSaveClocks
+ 146:main.c        ****     
+ 147:main.c        ****     // Switch to the Sleep Mode for the other devices:
+ 148:main.c        ****     //  - PM_SLEEP_TIME_NONE: wakeup time is defined by Sleep Timer
+ 149:main.c        ****     //  - PM_SLEEP_SRC_CTW :  wakeup on CTW sources is allowed
+ 150:main.c        ****      //  - If real-time clock is used, it will also wake the device
+ 151:main.c        ****     //can also wake up from a pin intterup (PICU). This is useful with the moderm UART
+ 152:main.c        ****     //CyPmHibernate();
+ 153:main.c        ****     //CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW & PM_SLEEP_SRC_PICU);
+ 154:main.c        ****     CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW);
+ 341              		.loc 1 154 0
+ 342 0010 4FF40061 		mov	r1, #2048
+ 343 0014 0020     		movs	r0, #0
+ 344 0016 FFF7FEFF 		bl	CyPmSleep
+ 155:main.c        ****   
+ 156:main.c        ****     // Restore clock configuration
+ 157:main.c        ****     CyPmRestoreClocks();
+ 345              		.loc 1 157 0
+ 346 001a FFF7FEFF 		bl	CyPmRestoreClocks
+ 158:main.c        ****     debug_wakeup();
+ 347              		.loc 1 158 0
+ 348 001e FFF7FEFF 		bl	debug_wakeup
+ 159:main.c        ****     modem_wakeup();
+ 349              		.loc 1 159 0
+ 350 0022 FFF7FEFF 		bl	modem_wakeup
+ 160:main.c        ****     
+ 161:main.c        **** }
+ 351              		.loc 1 161 0
+ 352 0026 00BF     		nop
+ 353 0028 80BD     		pop	{r7, pc}
+ 354              		.cfi_endproc
+ 355              	.LFE68:
+ 356              		.size	LayBack, .-LayBack
+ 357 002a 00BF     		.section	.text.AyoItsTime,"ax",%progbits
+ 358              		.align	2
+ 359              		.global	AyoItsTime
+ 360              		.thumb
+ 361              		.thumb_func
+ 362              		.type	AyoItsTime, %function
+ 363              	AyoItsTime:
+ 364              	.LFB69:
+ 162:main.c        **** 
+ 163:main.c        **** 
+ 164:main.c        **** // ==============================================
+ 165:main.c        **** // I never sleep, 'cause sleep is the cousin of death
+ 166:main.c        **** //      - NAS (1994)
+ 167:main.c        **** //
+ 168:main.c        **** // This is the scheduler. It's called from various interrupts and timers,
+ 169:main.c        **** // ...in particular from fuctions with in the real-tiem clock interrupts (RTC_INT.c)
+ 170:main.c        **** // It will add tasks to the work queue,
+ 171:main.c        **** // which will be executed eventually by WorkWorkWorkWorkWorkWork()
+ 172:main.c        **** // ==============================================
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 11
+
+
+ 173:main.c        **** void AyoItsTime(uint8 alarmType)
+ 174:main.c        **** {
+ 365              		.loc 1 174 0
+ 366              		.cfi_startproc
+ 367              		@ args = 0, pretend = 0, frame = 8
+ 368              		@ frame_needed = 1, uses_anonymous_args = 0
+ 369 0000 80B5     		push	{r7, lr}
+ 370              		.cfi_def_cfa_offset 8
+ 371              		.cfi_offset 7, -8
+ 372              		.cfi_offset 14, -4
+ 373 0002 82B0     		sub	sp, sp, #8
+ 374              		.cfi_def_cfa_offset 16
+ 375 0004 00AF     		add	r7, sp, #0
+ 376              		.cfi_def_cfa_register 7
+ 377 0006 0346     		mov	r3, r0
+ 378 0008 FB71     		strb	r3, [r7, #7]
+ 175:main.c        **** 
+ 176:main.c        ****     if(AlarmReady(&alarmMeasure,alarmType))
+ 379              		.loc 1 176 0
+ 380 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 381 000c 1946     		mov	r1, r3
+ 382 000e 0C48     		ldr	r0, .L21
+ 383 0010 FFF7FEFF 		bl	AlarmReady
+ 384 0014 0346     		mov	r3, r0
+ 385 0016 002B     		cmp	r3, #0
+ 386 0018 02D0     		beq	.L18
+ 177:main.c        ****     {
+ 178:main.c        ****          //create new task and pass off to workworkworkworkwork()
+ 179:main.c        ****         //pass off to work work
+ 180:main.c        ****         timeToMeasure = 1u;
+ 387              		.loc 1 180 0
+ 388 001a 0A4B     		ldr	r3, .L21+4
+ 389 001c 0122     		movs	r2, #1
+ 390 001e 1A70     		strb	r2, [r3]
+ 391              	.L18:
+ 181:main.c        ****     }
+ 182:main.c        ****     if(AlarmReady(&alarmMeasure2,alarmType))
+ 392              		.loc 1 182 0
+ 393 0020 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 394 0022 1946     		mov	r1, r3
+ 395 0024 0848     		ldr	r0, .L21+8
+ 396 0026 FFF7FEFF 		bl	AlarmReady
+ 397 002a 0346     		mov	r3, r0
+ 398 002c 002B     		cmp	r3, #0
+ 399 002e 02D0     		beq	.L20
+ 183:main.c        ****     {
+ 184:main.c        ****          //create new task and pass off to workworkworkworkwork()
+ 185:main.c        ****         //pass off to work work
+ 186:main.c        ****         timeToMeasure2 = 1u;
+ 400              		.loc 1 186 0
+ 401 0030 064B     		ldr	r3, .L21+12
+ 402 0032 0122     		movs	r2, #1
+ 403 0034 1A70     		strb	r2, [r3]
+ 404              	.L20:
+ 187:main.c        ****     }
+ 188:main.c        ****     
+ 189:main.c        **** }
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 12
+
+
+ 405              		.loc 1 189 0
+ 406 0036 00BF     		nop
+ 407 0038 0837     		adds	r7, r7, #8
+ 408              		.cfi_def_cfa_offset 8
+ 409 003a BD46     		mov	sp, r7
+ 410              		.cfi_def_cfa_register 13
+ 411              		@ sp needed
+ 412 003c 80BD     		pop	{r7, pc}
+ 413              	.L22:
+ 414 003e 00BF     		.align	2
+ 415              	.L21:
+ 416 0040 00000000 		.word	alarmMeasure
+ 417 0044 00000000 		.word	timeToMeasure
+ 418 0048 00000000 		.word	alarmMeasure2
+ 419 004c 00000000 		.word	timeToMeasure2
+ 420              		.cfi_endproc
+ 421              	.LFE69:
+ 422              		.size	AyoItsTime, .-AyoItsTime
+ 423              		.section	.text.AlarmReady,"ax",%progbits
+ 424              		.align	2
+ 425              		.global	AlarmReady
+ 426              		.thumb
+ 427              		.thumb_func
+ 428              		.type	AlarmReady, %function
+ 429              	AlarmReady:
+ 430              	.LFB70:
+ 190:main.c        ****         
+ 191:main.c        **** uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType)
+ 192:main.c        **** {
+ 431              		.loc 1 192 0
+ 432              		.cfi_startproc
+ 433              		@ args = 0, pretend = 0, frame = 8
+ 434              		@ frame_needed = 1, uses_anonymous_args = 0
+ 435 0000 80B5     		push	{r7, lr}
+ 436              		.cfi_def_cfa_offset 8
+ 437              		.cfi_offset 7, -8
+ 438              		.cfi_offset 14, -4
+ 439 0002 82B0     		sub	sp, sp, #8
+ 440              		.cfi_def_cfa_offset 16
+ 441 0004 00AF     		add	r7, sp, #0
+ 442              		.cfi_def_cfa_register 7
+ 443 0006 7860     		str	r0, [r7, #4]
+ 444 0008 0B46     		mov	r3, r1
+ 445 000a FB70     		strb	r3, [r7, #3]
+ 193:main.c        ****     alarmToBeUpdated->currentCountDownValue--;
+ 446              		.loc 1 193 0
+ 447 000c 7B68     		ldr	r3, [r7, #4]
+ 448 000e 5B88     		ldrh	r3, [r3, #2]	@ movhi
+ 449 0010 9BB2     		uxth	r3, r3
+ 450 0012 013B     		subs	r3, r3, #1
+ 451 0014 9AB2     		uxth	r2, r3
+ 452 0016 7B68     		ldr	r3, [r7, #4]
+ 453 0018 5A80     		strh	r2, [r3, #2]	@ movhi
+ 194:main.c        ****     if(alarmToBeUpdated->currentCountDownValue == 0){
+ 454              		.loc 1 194 0
+ 455 001a 7B68     		ldr	r3, [r7, #4]
+ 456 001c 5B88     		ldrh	r3, [r3, #2]	@ movhi
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 13
+
+
+ 457 001e 9BB2     		uxth	r3, r3
+ 458 0020 002B     		cmp	r3, #0
+ 459 0022 04D1     		bne	.L24
+ 195:main.c        ****         ResetAlarm(alarmToBeUpdated);
+ 460              		.loc 1 195 0
+ 461 0024 7868     		ldr	r0, [r7, #4]
+ 462 0026 FFF7FEFF 		bl	ResetAlarm
+ 196:main.c        ****         return 1u;
+ 463              		.loc 1 196 0
+ 464 002a 0123     		movs	r3, #1
+ 465 002c 09E0     		b	.L25
+ 466              	.L24:
+ 197:main.c        ****     } 
+ 198:main.c        ****     else if(alarmToBeUpdated->countDownResetCondition == alarmType){
+ 467              		.loc 1 198 0
+ 468 002e 7B68     		ldr	r3, [r7, #4]
+ 469 0030 5B79     		ldrb	r3, [r3, #5]
+ 470 0032 DBB2     		uxtb	r3, r3
+ 471 0034 FA78     		ldrb	r2, [r7, #3]	@ zero_extendqisi2
+ 472 0036 9A42     		cmp	r2, r3
+ 473 0038 02D1     		bne	.L26
+ 199:main.c        ****         ResetAlarm(alarmToBeUpdated);
+ 474              		.loc 1 199 0
+ 475 003a 7868     		ldr	r0, [r7, #4]
+ 476 003c FFF7FEFF 		bl	ResetAlarm
+ 477              	.L26:
+ 200:main.c        ****     }
+ 201:main.c        ****     
+ 202:main.c        ****     return 0u;
+ 478              		.loc 1 202 0
+ 479 0040 0023     		movs	r3, #0
+ 480              	.L25:
+ 203:main.c        **** }
+ 481              		.loc 1 203 0
+ 482 0042 1846     		mov	r0, r3
+ 483 0044 0837     		adds	r7, r7, #8
+ 484              		.cfi_def_cfa_offset 8
+ 485 0046 BD46     		mov	sp, r7
+ 486              		.cfi_def_cfa_register 13
+ 487              		@ sp needed
+ 488 0048 80BD     		pop	{r7, pc}
+ 489              		.cfi_endproc
+ 490              	.LFE70:
+ 491              		.size	AlarmReady, .-AlarmReady
+ 492 004a 00BF     		.section	.text.ResetAlarm,"ax",%progbits
+ 493              		.align	2
+ 494              		.global	ResetAlarm
+ 495              		.thumb
+ 496              		.thumb_func
+ 497              		.type	ResetAlarm, %function
+ 498              	ResetAlarm:
+ 499              	.LFB71:
+ 204:main.c        **** 
+ 205:main.c        **** void ResetAlarm(alarm * alarmToBeReset)
+ 206:main.c        **** {
+ 500              		.loc 1 206 0
+ 501              		.cfi_startproc
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 14
+
+
+ 502              		@ args = 0, pretend = 0, frame = 8
+ 503              		@ frame_needed = 1, uses_anonymous_args = 0
+ 504              		@ link register save eliminated.
+ 505 0000 80B4     		push	{r7}
+ 506              		.cfi_def_cfa_offset 4
+ 507              		.cfi_offset 7, -4
+ 508 0002 83B0     		sub	sp, sp, #12
+ 509              		.cfi_def_cfa_offset 16
+ 510 0004 00AF     		add	r7, sp, #0
+ 511              		.cfi_def_cfa_register 7
+ 512 0006 7860     		str	r0, [r7, #4]
+ 207:main.c        ****     alarmToBeReset->currentCountDownValue = alarmToBeReset->countDownValue;
+ 513              		.loc 1 207 0
+ 514 0008 7B68     		ldr	r3, [r7, #4]
+ 515 000a 1B88     		ldrh	r3, [r3]	@ movhi
+ 516 000c 9AB2     		uxth	r2, r3
+ 517 000e 7B68     		ldr	r3, [r7, #4]
+ 518 0010 5A80     		strh	r2, [r3, #2]	@ movhi
+ 208:main.c        **** }
+ 519              		.loc 1 208 0
+ 520 0012 00BF     		nop
+ 521 0014 0C37     		adds	r7, r7, #12
+ 522              		.cfi_def_cfa_offset 4
+ 523 0016 BD46     		mov	sp, r7
+ 524              		.cfi_def_cfa_register 13
+ 525              		@ sp needed
+ 526 0018 80BC     		pop	{r7}
+ 527              		.cfi_restore 7
+ 528              		.cfi_def_cfa_offset 0
+ 529 001a 7047     		bx	lr
+ 530              		.cfi_endproc
+ 531              	.LFE71:
+ 532              		.size	ResetAlarm, .-ResetAlarm
+ 533              		.section	.text.CreateAlarm,"ax",%progbits
+ 534              		.align	2
+ 535              		.global	CreateAlarm
+ 536              		.thumb
+ 537              		.thumb_func
+ 538              		.type	CreateAlarm, %function
+ 539              	CreateAlarm:
+ 540              	.LFB72:
+ 209:main.c        **** 
+ 210:main.c        **** // ==============================================
+ 211:main.c        **** // Creates a new alarm, which will be handeled by another cutions
+ 212:main.c        **** // ==============================================
+ 213:main.c        **** 
+ 214:main.c        **** alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownResetCondition)
+ 215:main.c        **** {
+ 541              		.loc 1 215 0
+ 542              		.cfi_startproc
+ 543              		@ args = 0, pretend = 0, frame = 16
+ 544              		@ frame_needed = 1, uses_anonymous_args = 0
+ 545              		@ link register save eliminated.
+ 546 0000 80B4     		push	{r7}
+ 547              		.cfi_def_cfa_offset 4
+ 548              		.cfi_offset 7, -4
+ 549 0002 85B0     		sub	sp, sp, #20
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 15
+
+
+ 550              		.cfi_def_cfa_offset 24
+ 551 0004 00AF     		add	r7, sp, #0
+ 552              		.cfi_def_cfa_register 7
+ 553 0006 7860     		str	r0, [r7, #4]
+ 554 0008 0846     		mov	r0, r1
+ 555 000a 1146     		mov	r1, r2
+ 556 000c 1A46     		mov	r2, r3
+ 557 000e 0346     		mov	r3, r0	@ movhi
+ 558 0010 7B80     		strh	r3, [r7, #2]	@ movhi
+ 559 0012 0B46     		mov	r3, r1
+ 560 0014 7B70     		strb	r3, [r7, #1]
+ 561 0016 1346     		mov	r3, r2
+ 562 0018 3B70     		strb	r3, [r7]
+ 216:main.c        ****     alarm newAlarm;
+ 217:main.c        ****     
+ 218:main.c        ****     newAlarm.countDownValue = countDownValue;
+ 563              		.loc 1 218 0
+ 564 001a 7B88     		ldrh	r3, [r7, #2]	@ movhi
+ 565 001c 3B81     		strh	r3, [r7, #8]	@ movhi
+ 219:main.c        ****     newAlarm.countDownType = countDownType;
+ 566              		.loc 1 219 0
+ 567 001e 7B78     		ldrb	r3, [r7, #1]
+ 568 0020 3B73     		strb	r3, [r7, #12]
+ 220:main.c        ****     newAlarm.countDownResetCondition = countDownResetCondition;
+ 569              		.loc 1 220 0
+ 570 0022 3B78     		ldrb	r3, [r7]
+ 571 0024 7B73     		strb	r3, [r7, #13]
+ 221:main.c        ****     
+ 222:main.c        ****     //if you want a reccuring alarm (e.g. resets freshly each hour), then add
+ 223:main.c        ****     //account for already exprired time using the RTC. Otherwise, set to the countDownValue
+ 224:main.c        ****     newAlarm.currentCountDownValue = countDownValue;
+ 572              		.loc 1 224 0
+ 573 0026 7B88     		ldrh	r3, [r7, #2]	@ movhi
+ 574 0028 7B81     		strh	r3, [r7, #10]	@ movhi
+ 225:main.c        ****     
+ 226:main.c        ****     return newAlarm;
+ 575              		.loc 1 226 0
+ 576 002a 7B68     		ldr	r3, [r7, #4]
+ 577 002c 1A46     		mov	r2, r3
+ 578 002e 07F10803 		add	r3, r7, #8
+ 579 0032 1868     		ldr	r0, [r3]	@ unaligned
+ 580 0034 1060     		str	r0, [r2]	@ unaligned
+ 581 0036 9B88     		ldrh	r3, [r3, #4]	@ unaligned
+ 582 0038 9380     		strh	r3, [r2, #4]	@ unaligned
+ 227:main.c        ****     
+ 228:main.c        **** }
+ 583              		.loc 1 228 0
+ 584 003a 7868     		ldr	r0, [r7, #4]
+ 585 003c 1437     		adds	r7, r7, #20
+ 586              		.cfi_def_cfa_offset 4
+ 587 003e BD46     		mov	sp, r7
+ 588              		.cfi_def_cfa_register 13
+ 589              		@ sp needed
+ 590 0040 80BC     		pop	{r7}
+ 591              		.cfi_restore 7
+ 592              		.cfi_def_cfa_offset 0
+ 593 0042 7047     		bx	lr
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 16
+
+
+ 594              		.cfi_endproc
+ 595              	.LFE72:
+ 596              		.size	CreateAlarm, .-CreateAlarm
+ 597              		.section	.text.ChickityCheckYourselfBeforeYouWreckYourself,"ax",%progbits
+ 598              		.align	2
+ 599              		.global	ChickityCheckYourselfBeforeYouWreckYourself
+ 600              		.thumb
+ 601              		.thumb_func
+ 602              		.type	ChickityCheckYourselfBeforeYouWreckYourself, %function
+ 603              	ChickityCheckYourselfBeforeYouWreckYourself:
+ 604              	.LFB73:
+ 229:main.c        **** 
+ 230:main.c        **** // ==============================================
+ 231:main.c        **** // Dropping bombs on your moms
+ 232:main.c        **** //      - Ice Cube (1992)
+ 233:main.c        **** //
+ 234:main.c        **** // This is the global testing function, which runs all relevant tests
+ 235:main.c        **** // If you make a new components, it could be good to call its tester function here 
+ 236:main.c        **** // ==============================================
+ 237:main.c        **** void ChickityCheckYourselfBeforeYouWreckYourself(){
+ 605              		.loc 1 237 0
+ 606              		.cfi_startproc
+ 607              		@ args = 0, pretend = 0, frame = 1168
+ 608              		@ frame_needed = 1, uses_anonymous_args = 0
+ 609 0000 90B5     		push	{r4, r7, lr}
+ 610              		.cfi_def_cfa_offset 12
+ 611              		.cfi_offset 4, -12
+ 612              		.cfi_offset 7, -8
+ 613              		.cfi_offset 14, -4
+ 614 0002 ADF20C6D 		subw	sp, sp, #1548
+ 615              		.cfi_def_cfa_offset 1560
+ 616 0006 5EAF     		add	r7, sp, #376
+ 617              		.cfi_def_cfa 7, 1184
+ 238:main.c        **** 
+ 239:main.c        ****    // test_t t_modem = modem_test();
+ 240:main.c        ****     
+ 241:main.c        ****     test_t t_level_sensor = level_sensor_test();//test level sensor  
+ 618              		.loc 1 241 0
+ 619 0008 07F54273 		add	r3, r7, #776
+ 620 000c 1846     		mov	r0, r3
+ 621 000e FFF7FEFF 		bl	level_sensor_test
+ 242:main.c        ****     printTestStatus(t_level_sensor);
+ 622              		.loc 1 242 0
+ 623 0012 07F54274 		add	r4, r7, #776
+ 624 0016 6846     		mov	r0, sp
+ 625 0018 04F11003 		add	r3, r4, #16
+ 626 001c 40F27112 		movw	r2, #369
+ 627 0020 1946     		mov	r1, r3
+ 628 0022 FFF7FEFF 		bl	memcpy
+ 629 0026 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
+ 630 002a FFF7FEFF 		bl	printTestStatus
+ 243:main.c        ****     test_t t_sd_card = SD_card_test();
+ 631              		.loc 1 243 0
+ 632 002e 07F5C273 		add	r3, r7, #388
+ 633 0032 1846     		mov	r0, r3
+ 634 0034 FFF7FEFF 		bl	SD_card_test
+ 244:main.c        ****     printTestStatus(t_sd_card);
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 17
+
+
+ 635              		.loc 1 244 0
+ 636 0038 07F5C274 		add	r4, r7, #388
+ 637 003c 6846     		mov	r0, sp
+ 638 003e 04F11003 		add	r3, r4, #16
+ 639 0042 40F27112 		movw	r2, #369
+ 640 0046 1946     		mov	r1, r3
+ 641 0048 FFF7FEFF 		bl	memcpy
+ 642 004c 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
+ 643 0050 FFF7FEFF 		bl	printTestStatus
+ 245:main.c        ****     test_t t_voltages = voltages_test();
+ 644              		.loc 1 245 0
+ 645 0054 3B46     		mov	r3, r7
+ 646 0056 1846     		mov	r0, r3
+ 647 0058 FFF7FEFF 		bl	voltages_test
+ 246:main.c        ****     printTestStatus(t_voltages);
+ 648              		.loc 1 246 0
+ 649 005c 3C46     		mov	r4, r7
+ 650 005e 6846     		mov	r0, sp
+ 651 0060 04F11003 		add	r3, r4, #16
+ 652 0064 40F27112 		movw	r2, #369
+ 653 0068 1946     		mov	r1, r3
+ 654 006a FFF7FEFF 		bl	memcpy
+ 655 006e 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
+ 656 0072 FFF7FEFF 		bl	printTestStatus
+ 247:main.c        ****   
+ 248:main.c        ****     int c = 0;
+ 657              		.loc 1 248 0
+ 658 0076 0023     		movs	r3, #0
+ 659 0078 C7F88C34 		str	r3, [r7, #1164]
+ 249:main.c        ****     c++;
+ 660              		.loc 1 249 0
+ 661 007c D7F88C34 		ldr	r3, [r7, #1164]
+ 662 0080 0133     		adds	r3, r3, #1
+ 663 0082 C7F88C34 		str	r3, [r7, #1164]
+ 250:main.c        ****     //test modem
+ 251:main.c        ****     //test SD card
+ 252:main.c        ****     //analog: test battery voltage, solar voltage, and solar current
+ 253:main.c        ****       
+ 254:main.c        ****   
+ 255:main.c        **** }
+ 664              		.loc 1 255 0
+ 665 0086 00BF     		nop
+ 666 0088 07F29447 		addw	r7, r7, #1172
+ 667              		.cfi_def_cfa_offset 12
+ 668 008c BD46     		mov	sp, r7
+ 669              		.cfi_def_cfa_register 13
+ 670              		@ sp needed
+ 671 008e 90BD     		pop	{r4, r7, pc}
+ 672              		.cfi_endproc
+ 673              	.LFE73:
+ 674              		.size	ChickityCheckYourselfBeforeYouWreckYourself, .-ChickityCheckYourselfBeforeYouWreckYourself
+ 675              		.section	.text.main,"ax",%progbits
+ 676              		.align	2
+ 677              		.global	main
+ 678              		.thumb
+ 679              		.thumb_func
+ 680              		.type	main, %function
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 18
+
+
+ 681              	main:
+ 682              	.LFB74:
+ 256:main.c        **** 
+ 257:main.c        **** 
+ 258:main.c        **** int main(void)
+ 259:main.c        **** {
+ 683              		.loc 1 259 0
+ 684              		.cfi_startproc
+ 685              		@ args = 0, pretend = 0, frame = 0
+ 686              		@ frame_needed = 1, uses_anonymous_args = 0
+ 687 0000 80B5     		push	{r7, lr}
+ 688              		.cfi_def_cfa_offset 8
+ 689              		.cfi_offset 7, -8
+ 690              		.cfi_offset 14, -4
+ 691 0002 00AF     		add	r7, sp, #0
+ 692              		.cfi_def_cfa_register 7
+ 260:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+ 693              		.loc 1 260 0
+ 694              		.syntax unified
+ 695              	@ 260 "main.c" 1
+ 696 0004 62B6     		CPSIE   i
+ 697              	@ 0 "" 2
+ 261:main.c        **** 
+ 262:main.c        ****     ReadyOrNot();
+ 698              		.loc 1 262 0
+ 699              		.thumb
+ 700              		.syntax unified
+ 701 0006 FFF7FEFF 		bl	ReadyOrNot
+ 263:main.c        ****     
+ 264:main.c        ****     //run tests for all components on bootup
+ 265:main.c        ****     ChickityCheckYourselfBeforeYouWreckYourself();
+ 702              		.loc 1 265 0
+ 703 000a FFF7FEFF 		bl	ChickityCheckYourselfBeforeYouWreckYourself
+ 704              	.L33:
+ 266:main.c        ****    
+ 267:main.c        ****     for(;;)
+ 268:main.c        ****     {
+ 269:main.c        ****        if( ! WorkWorkWorkWorkWorkWork() )
+ 705              		.loc 1 269 0
+ 706 000e FFF7FEFF 		bl	WorkWorkWorkWorkWorkWork
+ 707 0012 0346     		mov	r3, r0
+ 708 0014 002B     		cmp	r3, #0
+ 709 0016 FAD1     		bne	.L33
+ 270:main.c        ****        {
+ 271:main.c        ****             LayBack();
+ 710              		.loc 1 271 0
+ 711 0018 FFF7FEFF 		bl	LayBack
+ 272:main.c        ****        }
+ 273:main.c        ****     }
+ 712              		.loc 1 273 0
+ 713 001c F7E7     		b	.L33
+ 714              		.cfi_endproc
+ 715              	.LFE74:
+ 716              		.size	main, .-main
+ 717 001e 00BF     		.text
+ 718              	.Letext0:
+ 719              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 19
+
+
+ 720              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 721              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 722              		.file 5 "notoriOS.h"
+ 723              		.file 6 "testing.h"
+ 724              		.file 7 "modem.h"
+ 725              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 726              		.file 9 "debug.h"
+ 727              		.section	.debug_info,"",%progbits
+ 728              	.Ldebug_info0:
+ 729 0000 66040000 		.4byte	0x466
+ 730 0004 0400     		.2byte	0x4
+ 731 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 732 000a 04       		.byte	0x4
+ 733 000b 01       		.uleb128 0x1
+ 734 000c 92000000 		.4byte	.LASF64
+ 735 0010 0C       		.byte	0xc
+ 736 0011 6D030000 		.4byte	.LASF65
+ 737 0015 DF020000 		.4byte	.LASF66
+ 738 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 739 001d 00000000 		.4byte	0
+ 740 0021 00000000 		.4byte	.Ldebug_line0
+ 741 0025 02       		.uleb128 0x2
+ 742 0026 01       		.byte	0x1
+ 743 0027 06       		.byte	0x6
+ 744 0028 3A020000 		.4byte	.LASF0
+ 745 002c 02       		.uleb128 0x2
+ 746 002d 01       		.byte	0x1
+ 747 002e 08       		.byte	0x8
+ 748 002f 09020000 		.4byte	.LASF1
+ 749 0033 02       		.uleb128 0x2
+ 750 0034 02       		.byte	0x2
+ 751 0035 05       		.byte	0x5
+ 752 0036 65000000 		.4byte	.LASF2
+ 753 003a 02       		.uleb128 0x2
+ 754 003b 02       		.byte	0x2
+ 755 003c 07       		.byte	0x7
+ 756 003d AD020000 		.4byte	.LASF3
+ 757 0041 03       		.uleb128 0x3
+ 758 0042 A5030000 		.4byte	.LASF9
+ 759 0046 02       		.byte	0x2
+ 760 0047 3F       		.byte	0x3f
+ 761 0048 4C000000 		.4byte	0x4c
+ 762 004c 02       		.uleb128 0x2
+ 763 004d 04       		.byte	0x4
+ 764 004e 05       		.byte	0x5
+ 765 004f 91010000 		.4byte	.LASF4
+ 766 0053 02       		.uleb128 0x2
+ 767 0054 04       		.byte	0x4
+ 768 0055 07       		.byte	0x7
+ 769 0056 76020000 		.4byte	.LASF5
+ 770 005a 02       		.uleb128 0x2
+ 771 005b 08       		.byte	0x8
+ 772 005c 05       		.byte	0x5
+ 773 005d 6A010000 		.4byte	.LASF6
+ 774 0061 02       		.uleb128 0x2
+ 775 0062 08       		.byte	0x8
+ 776 0063 07       		.byte	0x7
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 20
+
+
+ 777 0064 46020000 		.4byte	.LASF7
+ 778 0068 04       		.uleb128 0x4
+ 779 0069 04       		.byte	0x4
+ 780 006a 05       		.byte	0x5
+ 781 006b 696E7400 		.ascii	"int\000"
+ 782 006f 02       		.uleb128 0x2
+ 783 0070 04       		.byte	0x4
+ 784 0071 07       		.byte	0x7
+ 785 0072 69020000 		.4byte	.LASF8
+ 786 0076 03       		.uleb128 0x3
+ 787 0077 47030000 		.4byte	.LASF10
+ 788 007b 03       		.byte	0x3
+ 789 007c 2C       		.byte	0x2c
+ 790 007d 41000000 		.4byte	0x41
+ 791 0081 05       		.uleb128 0x5
+ 792 0082 5E010000 		.4byte	.LASF11
+ 793 0086 04       		.byte	0x4
+ 794 0087 E401     		.2byte	0x1e4
+ 795 0089 2C000000 		.4byte	0x2c
+ 796 008d 05       		.uleb128 0x5
+ 797 008e 57010000 		.4byte	.LASF12
+ 798 0092 04       		.byte	0x4
+ 799 0093 E501     		.2byte	0x1e5
+ 800 0095 3A000000 		.4byte	0x3a
+ 801 0099 05       		.uleb128 0x5
+ 802 009a 8A030000 		.4byte	.LASF13
+ 803 009e 04       		.byte	0x4
+ 804 009f E901     		.2byte	0x1e9
+ 805 00a1 4C000000 		.4byte	0x4c
+ 806 00a5 02       		.uleb128 0x2
+ 807 00a6 04       		.byte	0x4
+ 808 00a7 04       		.byte	0x4
+ 809 00a8 64010000 		.4byte	.LASF14
+ 810 00ac 02       		.uleb128 0x2
+ 811 00ad 08       		.byte	0x8
+ 812 00ae 04       		.byte	0x4
+ 813 00af 90030000 		.4byte	.LASF15
+ 814 00b3 02       		.uleb128 0x2
+ 815 00b4 01       		.byte	0x1
+ 816 00b5 08       		.byte	0x8
+ 817 00b6 78010000 		.4byte	.LASF16
+ 818 00ba 02       		.uleb128 0x2
+ 819 00bb 08       		.byte	0x8
+ 820 00bc 04       		.byte	0x4
+ 821 00bd FD010000 		.4byte	.LASF17
+ 822 00c1 02       		.uleb128 0x2
+ 823 00c2 04       		.byte	0x4
+ 824 00c3 07       		.byte	0x7
+ 825 00c4 7A000000 		.4byte	.LASF18
+ 826 00c8 06       		.uleb128 0x6
+ 827 00c9 06       		.byte	0x6
+ 828 00ca 05       		.byte	0x5
+ 829 00cb 1A       		.byte	0x1a
+ 830 00cc 01010000 		.4byte	0x101
+ 831 00d0 07       		.uleb128 0x7
+ 832 00d1 56000000 		.4byte	.LASF19
+ 833 00d5 05       		.byte	0x5
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 21
+
+
+ 834 00d6 1C       		.byte	0x1c
+ 835 00d7 8D000000 		.4byte	0x8d
+ 836 00db 00       		.byte	0
+ 837 00dc 07       		.uleb128 0x7
+ 838 00dd 31000000 		.4byte	.LASF20
+ 839 00e1 05       		.byte	0x5
+ 840 00e2 1D       		.byte	0x1d
+ 841 00e3 8D000000 		.4byte	0x8d
+ 842 00e7 02       		.byte	0x2
+ 843 00e8 07       		.uleb128 0x7
+ 844 00e9 97030000 		.4byte	.LASF21
+ 845 00ed 05       		.byte	0x5
+ 846 00ee 1E       		.byte	0x1e
+ 847 00ef 81000000 		.4byte	0x81
+ 848 00f3 04       		.byte	0x4
+ 849 00f4 07       		.uleb128 0x7
+ 850 00f5 AF030000 		.4byte	.LASF22
+ 851 00f9 05       		.byte	0x5
+ 852 00fa 1F       		.byte	0x1f
+ 853 00fb 81000000 		.4byte	0x81
+ 854 00ff 05       		.byte	0x5
+ 855 0100 00       		.byte	0
+ 856 0101 03       		.uleb128 0x3
+ 857 0102 5D030000 		.4byte	.LASF23
+ 858 0106 05       		.byte	0x5
+ 859 0107 22       		.byte	0x22
+ 860 0108 0C010000 		.4byte	0x10c
+ 861 010c 08       		.uleb128 0x8
+ 862 010d C8000000 		.4byte	0xc8
+ 863 0111 09       		.uleb128 0x9
+ 864 0112 8101     		.2byte	0x181
+ 865 0114 06       		.byte	0x6
+ 866 0115 0A       		.byte	0xa
+ 867 0116 3F010000 		.4byte	0x13f
+ 868 011a 07       		.uleb128 0x7
+ 869 011b D2030000 		.4byte	.LASF24
+ 870 011f 06       		.byte	0x6
+ 871 0120 0B       		.byte	0xb
+ 872 0121 3F010000 		.4byte	0x13f
+ 873 0125 00       		.byte	0
+ 874 0126 07       		.uleb128 0x7
+ 875 0127 D8020000 		.4byte	.LASF25
+ 876 012b 06       		.byte	0x6
+ 877 012c 0C       		.byte	0xc
+ 878 012d 81000000 		.4byte	0x81
+ 879 0131 80       		.byte	0x80
+ 880 0132 07       		.uleb128 0x7
+ 881 0133 8A010000 		.4byte	.LASF26
+ 882 0137 06       		.byte	0x6
+ 883 0138 0D       		.byte	0xd
+ 884 0139 4F010000 		.4byte	0x14f
+ 885 013d 81       		.byte	0x81
+ 886 013e 00       		.byte	0
+ 887 013f 0A       		.uleb128 0xa
+ 888 0140 B3000000 		.4byte	0xb3
+ 889 0144 4F010000 		.4byte	0x14f
+ 890 0148 0B       		.uleb128 0xb
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 22
+
+
+ 891 0149 C1000000 		.4byte	0xc1
+ 892 014d 7F       		.byte	0x7f
+ 893 014e 00       		.byte	0
+ 894 014f 0A       		.uleb128 0xa
+ 895 0150 B3000000 		.4byte	0xb3
+ 896 0154 5F010000 		.4byte	0x15f
+ 897 0158 0B       		.uleb128 0xb
+ 898 0159 C1000000 		.4byte	0xc1
+ 899 015d FF       		.byte	0xff
+ 900 015e 00       		.byte	0
+ 901 015f 03       		.uleb128 0x3
+ 902 0160 3B030000 		.4byte	.LASF27
+ 903 0164 06       		.byte	0x6
+ 904 0165 0E       		.byte	0xe
+ 905 0166 11010000 		.4byte	0x111
+ 906 016a 06       		.uleb128 0x6
+ 907 016b 3C       		.byte	0x3c
+ 908 016c 07       		.byte	0x7
+ 909 016d 24       		.byte	0x24
+ 910 016e 97010000 		.4byte	0x197
+ 911 0172 07       		.uleb128 0x7
+ 912 0173 16000000 		.4byte	.LASF28
+ 913 0177 07       		.byte	0x7
+ 914 0178 25       		.byte	0x25
+ 915 0179 97010000 		.4byte	0x197
+ 916 017d 00       		.byte	0
+ 917 017e 07       		.uleb128 0x7
+ 918 017f 0D000000 		.4byte	.LASF29
+ 919 0183 07       		.byte	0x7
+ 920 0184 26       		.byte	0x26
+ 921 0185 97010000 		.4byte	0x197
+ 922 0189 14       		.byte	0x14
+ 923 018a 07       		.uleb128 0x7
+ 924 018b 42030000 		.4byte	.LASF30
+ 925 018f 07       		.byte	0x7
+ 926 0190 27       		.byte	0x27
+ 927 0191 97010000 		.4byte	0x197
+ 928 0195 28       		.byte	0x28
+ 929 0196 00       		.byte	0
+ 930 0197 0A       		.uleb128 0xa
+ 931 0198 B3000000 		.4byte	0xb3
+ 932 019c A7010000 		.4byte	0x1a7
+ 933 01a0 0B       		.uleb128 0xb
+ 934 01a1 C1000000 		.4byte	0xc1
+ 935 01a5 13       		.byte	0x13
+ 936 01a6 00       		.byte	0
+ 937 01a7 03       		.uleb128 0x3
+ 938 01a8 7D010000 		.4byte	.LASF31
+ 939 01ac 07       		.byte	0x7
+ 940 01ad 28       		.byte	0x28
+ 941 01ae 6A010000 		.4byte	0x16a
+ 942 01b2 06       		.uleb128 0x6
+ 943 01b3 0C       		.byte	0xc
+ 944 01b4 07       		.byte	0x7
+ 945 01b5 2A       		.byte	0x2a
+ 946 01b6 EA010000 		.4byte	0x1ea
+ 947 01ba 07       		.uleb128 0x7
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 23
+
+
+ 948 01bb 0D040000 		.4byte	.LASF32
+ 949 01bf 07       		.byte	0x7
+ 950 01c0 2B       		.byte	0x2b
+ 951 01c1 81000000 		.4byte	0x81
+ 952 01c5 00       		.byte	0
+ 953 01c6 0C       		.uleb128 0xc
+ 954 01c7 737100   		.ascii	"sq\000"
+ 955 01ca 07       		.byte	0x7
+ 956 01cb 2C       		.byte	0x2c
+ 957 01cc 81000000 		.4byte	0x81
+ 958 01d0 01       		.byte	0x1
+ 959 01d1 07       		.uleb128 0x7
+ 960 01d2 C0020000 		.4byte	.LASF33
+ 961 01d6 07       		.byte	0x7
+ 962 01d7 2D       		.byte	0x2d
+ 963 01d8 68000000 		.4byte	0x68
+ 964 01dc 04       		.byte	0x4
+ 965 01dd 07       		.uleb128 0x7
+ 966 01de 28030000 		.4byte	.LASF34
+ 967 01e2 07       		.byte	0x7
+ 968 01e3 2E       		.byte	0x2e
+ 969 01e4 68000000 		.4byte	0x68
+ 970 01e8 08       		.byte	0x8
+ 971 01e9 00       		.byte	0
+ 972 01ea 03       		.uleb128 0x3
+ 973 01eb 4F030000 		.4byte	.LASF35
+ 974 01ef 07       		.byte	0x7
+ 975 01f0 2F       		.byte	0x2f
+ 976 01f1 B2010000 		.4byte	0x1b2
+ 977 01f5 0D       		.uleb128 0xd
+ 978 01f6 C7030000 		.4byte	.LASF67
+ 979 01fa 01       		.byte	0x1
+ 980 01fb 27       		.byte	0x27
+ 981 01fc 00000000 		.4byte	.LFB64
+ 982 0200 0C000000 		.4byte	.LFE64-.LFB64
+ 983 0204 01       		.uleb128 0x1
+ 984 0205 9C       		.byte	0x9c
+ 985 0206 0E       		.uleb128 0xe
+ 986 0207 9A010000 		.4byte	.LASF38
+ 987 020b 01       		.byte	0x1
+ 988 020c 33       		.byte	0x33
+ 989 020d 00000000 		.4byte	.LFB65
+ 990 0211 58000000 		.4byte	.LFE65-.LFB65
+ 991 0215 01       		.uleb128 0x1
+ 992 0216 9C       		.byte	0x9c
+ 993 0217 0F       		.uleb128 0xf
+ 994 0218 25010000 		.4byte	.LASF40
+ 995 021c 01       		.byte	0x1
+ 996 021d 4F       		.byte	0x4f
+ 997 021e 68000000 		.4byte	0x68
+ 998 0222 00000000 		.4byte	.LFB66
+ 999 0226 6C000000 		.4byte	.LFE66-.LFB66
+ 1000 022a 01       		.uleb128 0x1
+ 1001 022b 9C       		.byte	0x9c
+ 1002 022c 3F020000 		.4byte	0x23f
+ 1003 0230 10       		.uleb128 0x10
+ 1004 0231 E2030000 		.4byte	.LASF36
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 24
+
+
+ 1005 0235 01       		.byte	0x1
+ 1006 0236 6F       		.byte	0x6f
+ 1007 0237 81000000 		.4byte	0x81
+ 1008 023b 02       		.uleb128 0x2
+ 1009 023c 91       		.byte	0x91
+ 1010 023d 77       		.sleb128 -9
+ 1011 023e 00       		.byte	0
+ 1012 023f 11       		.uleb128 0x11
+ 1013 0240 28000000 		.4byte	.LASF49
+ 1014 0244 01       		.byte	0x1
+ 1015 0245 76       		.byte	0x76
+ 1016 0246 00000000 		.4byte	.LFB67
+ 1017 024a 70000000 		.4byte	.LFE67-.LFB67
+ 1018 024e 01       		.uleb128 0x1
+ 1019 024f 9C       		.byte	0x9c
+ 1020 0250 63020000 		.4byte	0x263
+ 1021 0254 10       		.uleb128 0x10
+ 1022 0255 DC030000 		.4byte	.LASF37
+ 1023 0259 01       		.byte	0x1
+ 1024 025a 79       		.byte	0x79
+ 1025 025b 81000000 		.4byte	0x81
+ 1026 025f 02       		.uleb128 0x2
+ 1027 0260 91       		.byte	0x91
+ 1028 0261 77       		.sleb128 -9
+ 1029 0262 00       		.byte	0
+ 1030 0263 0E       		.uleb128 0xe
+ 1031 0264 74030000 		.4byte	.LASF39
+ 1032 0268 01       		.byte	0x1
+ 1033 0269 8B       		.byte	0x8b
+ 1034 026a 00000000 		.4byte	.LFB68
+ 1035 026e 2A000000 		.4byte	.LFE68-.LFB68
+ 1036 0272 01       		.uleb128 0x1
+ 1037 0273 9C       		.byte	0x9c
+ 1038 0274 12       		.uleb128 0x12
+ 1039 0275 6F000000 		.4byte	.LASF41
+ 1040 0279 01       		.byte	0x1
+ 1041 027a AD       		.byte	0xad
+ 1042 027b 00000000 		.4byte	.LFB69
+ 1043 027f 50000000 		.4byte	.LFE69-.LFB69
+ 1044 0283 01       		.uleb128 0x1
+ 1045 0284 9C       		.byte	0x9c
+ 1046 0285 98020000 		.4byte	0x298
+ 1047 0289 13       		.uleb128 0x13
+ 1048 028a 63030000 		.4byte	.LASF42
+ 1049 028e 01       		.byte	0x1
+ 1050 028f AD       		.byte	0xad
+ 1051 0290 81000000 		.4byte	0x81
+ 1052 0294 02       		.uleb128 0x2
+ 1053 0295 91       		.byte	0x91
+ 1054 0296 77       		.sleb128 -9
+ 1055 0297 00       		.byte	0
+ 1056 0298 14       		.uleb128 0x14
+ 1057 0299 1D000000 		.4byte	.LASF46
+ 1058 029d 01       		.byte	0x1
+ 1059 029e BF       		.byte	0xbf
+ 1060 029f 81000000 		.4byte	0x81
+ 1061 02a3 00000000 		.4byte	.LFB70
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 25
+
+
+ 1062 02a7 4A000000 		.4byte	.LFE70-.LFB70
+ 1063 02ab 01       		.uleb128 0x1
+ 1064 02ac 9C       		.byte	0x9c
+ 1065 02ad CE020000 		.4byte	0x2ce
+ 1066 02b1 13       		.uleb128 0x13
+ 1067 02b2 FC030000 		.4byte	.LASF43
+ 1068 02b6 01       		.byte	0x1
+ 1069 02b7 BF       		.byte	0xbf
+ 1070 02b8 CE020000 		.4byte	0x2ce
+ 1071 02bc 02       		.uleb128 0x2
+ 1072 02bd 91       		.byte	0x91
+ 1073 02be 74       		.sleb128 -12
+ 1074 02bf 13       		.uleb128 0x13
+ 1075 02c0 63030000 		.4byte	.LASF42
+ 1076 02c4 01       		.byte	0x1
+ 1077 02c5 BF       		.byte	0xbf
+ 1078 02c6 81000000 		.4byte	0x81
+ 1079 02ca 02       		.uleb128 0x2
+ 1080 02cb 91       		.byte	0x91
+ 1081 02cc 73       		.sleb128 -13
+ 1082 02cd 00       		.byte	0
+ 1083 02ce 15       		.uleb128 0x15
+ 1084 02cf 04       		.byte	0x4
+ 1085 02d0 01010000 		.4byte	0x101
+ 1086 02d4 16       		.uleb128 0x16
+ 1087 02d5 C6010000 		.4byte	.LASF44
+ 1088 02d9 01       		.byte	0x1
+ 1089 02da CD       		.byte	0xcd
+ 1090 02db 00000000 		.4byte	.LFB71
+ 1091 02df 1C000000 		.4byte	.LFE71-.LFB71
+ 1092 02e3 01       		.uleb128 0x1
+ 1093 02e4 9C       		.byte	0x9c
+ 1094 02e5 F8020000 		.4byte	0x2f8
+ 1095 02e9 13       		.uleb128 0x13
+ 1096 02ea 3E010000 		.4byte	.LASF45
+ 1097 02ee 01       		.byte	0x1
+ 1098 02ef CD       		.byte	0xcd
+ 1099 02f0 CE020000 		.4byte	0x2ce
+ 1100 02f4 02       		.uleb128 0x2
+ 1101 02f5 91       		.byte	0x91
+ 1102 02f6 74       		.sleb128 -12
+ 1103 02f7 00       		.byte	0
+ 1104 02f8 17       		.uleb128 0x17
+ 1105 02f9 5D020000 		.4byte	.LASF47
+ 1106 02fd 01       		.byte	0x1
+ 1107 02fe D6       		.byte	0xd6
+ 1108 02ff 01010000 		.4byte	0x101
+ 1109 0303 00000000 		.4byte	.LFB72
+ 1110 0307 44000000 		.4byte	.LFE72-.LFB72
+ 1111 030b 01       		.uleb128 0x1
+ 1112 030c 9C       		.byte	0x9c
+ 1113 030d 4A030000 		.4byte	0x34a
+ 1114 0311 13       		.uleb128 0x13
+ 1115 0312 56000000 		.4byte	.LASF19
+ 1116 0316 01       		.byte	0x1
+ 1117 0317 D6       		.byte	0xd6
+ 1118 0318 8D000000 		.4byte	0x8d
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 26
+
+
+ 1119 031c 02       		.uleb128 0x2
+ 1120 031d 91       		.byte	0x91
+ 1121 031e 6A       		.sleb128 -22
+ 1122 031f 13       		.uleb128 0x13
+ 1123 0320 97030000 		.4byte	.LASF21
+ 1124 0324 01       		.byte	0x1
+ 1125 0325 D6       		.byte	0xd6
+ 1126 0326 81000000 		.4byte	0x81
+ 1127 032a 02       		.uleb128 0x2
+ 1128 032b 91       		.byte	0x91
+ 1129 032c 69       		.sleb128 -23
+ 1130 032d 13       		.uleb128 0x13
+ 1131 032e AF030000 		.4byte	.LASF22
+ 1132 0332 01       		.byte	0x1
+ 1133 0333 D6       		.byte	0xd6
+ 1134 0334 81000000 		.4byte	0x81
+ 1135 0338 02       		.uleb128 0x2
+ 1136 0339 91       		.byte	0x91
+ 1137 033a 68       		.sleb128 -24
+ 1138 033b 10       		.uleb128 0x10
+ 1139 033c B0010000 		.4byte	.LASF48
+ 1140 0340 01       		.byte	0x1
+ 1141 0341 D8       		.byte	0xd8
+ 1142 0342 01010000 		.4byte	0x101
+ 1143 0346 02       		.uleb128 0x2
+ 1144 0347 91       		.byte	0x91
+ 1145 0348 70       		.sleb128 -16
+ 1146 0349 00       		.byte	0
+ 1147 034a 11       		.uleb128 0x11
+ 1148 034b D1010000 		.4byte	.LASF50
+ 1149 034f 01       		.byte	0x1
+ 1150 0350 ED       		.byte	0xed
+ 1151 0351 00000000 		.4byte	.LFB73
+ 1152 0355 90000000 		.4byte	.LFE73-.LFB73
+ 1153 0359 01       		.uleb128 0x1
+ 1154 035a 9C       		.byte	0x9c
+ 1155 035b 99030000 		.4byte	0x399
+ 1156 035f 10       		.uleb128 0x10
+ 1157 0360 47000000 		.4byte	.LASF51
+ 1158 0364 01       		.byte	0x1
+ 1159 0365 F1       		.byte	0xf1
+ 1160 0366 5F010000 		.4byte	0x15f
+ 1161 036a 03       		.uleb128 0x3
+ 1162 036b 91       		.byte	0x91
+ 1163 036c E87C     		.sleb128 -408
+ 1164 036e 10       		.uleb128 0x10
+ 1165 036f 4D010000 		.4byte	.LASF52
+ 1166 0373 01       		.byte	0x1
+ 1167 0374 F3       		.byte	0xf3
+ 1168 0375 5F010000 		.4byte	0x15f
+ 1169 0379 03       		.uleb128 0x3
+ 1170 037a 91       		.byte	0x91
+ 1171 037b E479     		.sleb128 -796
+ 1172 037d 10       		.uleb128 0x10
+ 1173 037e A2020000 		.4byte	.LASF53
+ 1174 0382 01       		.byte	0x1
+ 1175 0383 F5       		.byte	0xf5
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 27
+
+
+ 1176 0384 5F010000 		.4byte	0x15f
+ 1177 0388 03       		.uleb128 0x3
+ 1178 0389 91       		.byte	0x91
+ 1179 038a E076     		.sleb128 -1184
+ 1180 038c 18       		.uleb128 0x18
+ 1181 038d 6300     		.ascii	"c\000"
+ 1182 038f 01       		.byte	0x1
+ 1183 0390 F8       		.byte	0xf8
+ 1184 0391 68000000 		.4byte	0x68
+ 1185 0395 02       		.uleb128 0x2
+ 1186 0396 91       		.byte	0x91
+ 1187 0397 6C       		.sleb128 -20
+ 1188 0398 00       		.byte	0
+ 1189 0399 19       		.uleb128 0x19
+ 1190 039a 20010000 		.4byte	.LASF68
+ 1191 039e 01       		.byte	0x1
+ 1192 039f 0201     		.2byte	0x102
+ 1193 03a1 68000000 		.4byte	0x68
+ 1194 03a5 00000000 		.4byte	.LFB74
+ 1195 03a9 1E000000 		.4byte	.LFE74-.LFB74
+ 1196 03ad 01       		.uleb128 0x1
+ 1197 03ae 9C       		.byte	0x9c
+ 1198 03af 1A       		.uleb128 0x1a
+ 1199 03b0 EF030000 		.4byte	.LASF54
+ 1200 03b4 08       		.byte	0x8
+ 1201 03b5 1207     		.2byte	0x712
+ 1202 03b7 BB030000 		.4byte	0x3bb
+ 1203 03bb 08       		.uleb128 0x8
+ 1204 03bc 76000000 		.4byte	0x76
+ 1205 03c0 0A       		.uleb128 0xa
+ 1206 03c1 B3000000 		.4byte	0xb3
+ 1207 03c5 D0030000 		.4byte	0x3d0
+ 1208 03c9 0B       		.uleb128 0xb
+ 1209 03ca C1000000 		.4byte	0xc1
+ 1210 03ce 63       		.byte	0x63
+ 1211 03cf 00       		.byte	0
+ 1212 03d0 1B       		.uleb128 0x1b
+ 1213 03d1 00000000 		.4byte	.LASF55
+ 1214 03d5 09       		.byte	0x9
+ 1215 03d6 17       		.byte	0x17
+ 1216 03d7 C0030000 		.4byte	0x3c0
+ 1217 03db 05       		.uleb128 0x5
+ 1218 03dc 03       		.byte	0x3
+ 1219 03dd 00000000 		.4byte	debug_string
+ 1220 03e1 1B       		.uleb128 0x1b
+ 1221 03e2 2E020000 		.4byte	.LASF56
+ 1222 03e6 07       		.byte	0x7
+ 1223 03e7 0E       		.byte	0xe
+ 1224 03e8 81000000 		.4byte	0x81
+ 1225 03ec 05       		.uleb128 0x5
+ 1226 03ed 03       		.byte	0x3
+ 1227 03ee 00000000 		.4byte	modem_state
+ 1228 03f2 1B       		.uleb128 0x1b
+ 1229 03f3 17020000 		.4byte	.LASF57
+ 1230 03f7 07       		.byte	0x7
+ 1231 03f8 31       		.byte	0x31
+ 1232 03f9 99000000 		.4byte	0x99
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 28
+
+
+ 1233 03fd 05       		.uleb128 0x5
+ 1234 03fe 03       		.byte	0x3
+ 1235 03ff 00000000 		.4byte	modem_start_time_stamp
+ 1236 0403 1B       		.uleb128 0x1b
+ 1237 0404 A5010000 		.4byte	.LASF58
+ 1238 0408 07       		.byte	0x7
+ 1239 0409 32       		.byte	0x32
+ 1240 040a A7010000 		.4byte	0x1a7
+ 1241 040e 05       		.uleb128 0x5
+ 1242 040f 03       		.byte	0x3
+ 1243 0410 00000000 		.4byte	modem_info
+ 1244 0414 1B       		.uleb128 0x1b
+ 1245 0415 88020000 		.4byte	.LASF59
+ 1246 0419 07       		.byte	0x7
+ 1247 041a 33       		.byte	0x33
+ 1248 041b EA010000 		.4byte	0x1ea
+ 1249 041f 05       		.uleb128 0x5
+ 1250 0420 03       		.byte	0x3
+ 1251 0421 00000000 		.4byte	modem_stats
+ 1252 0425 1B       		.uleb128 0x1b
+ 1253 0426 B9010000 		.4byte	.LASF60
+ 1254 042a 01       		.byte	0x1
+ 1255 042b 1A       		.byte	0x1a
+ 1256 042c 01010000 		.4byte	0x101
+ 1257 0430 05       		.uleb128 0x5
+ 1258 0431 03       		.byte	0x3
+ 1259 0432 00000000 		.4byte	alarmMeasure
+ 1260 0436 1B       		.uleb128 0x1b
+ 1261 0437 94020000 		.4byte	.LASF61
+ 1262 043b 01       		.byte	0x1
+ 1263 043c 1B       		.byte	0x1b
+ 1264 043d 81000000 		.4byte	0x81
+ 1265 0441 05       		.uleb128 0x5
+ 1266 0442 03       		.byte	0x3
+ 1267 0443 00000000 		.4byte	timeToMeasure
+ 1268 0447 1B       		.uleb128 0x1b
+ 1269 0448 7C030000 		.4byte	.LASF62
+ 1270 044c 01       		.byte	0x1
+ 1271 044d 1C       		.byte	0x1c
+ 1272 044e 01010000 		.4byte	0x101
+ 1273 0452 05       		.uleb128 0x5
+ 1274 0453 03       		.byte	0x3
+ 1275 0454 00000000 		.4byte	alarmMeasure2
+ 1276 0458 1B       		.uleb128 0x1b
+ 1277 0459 83000000 		.4byte	.LASF63
+ 1278 045d 01       		.byte	0x1
+ 1279 045e 1D       		.byte	0x1d
+ 1280 045f 81000000 		.4byte	0x81
+ 1281 0463 05       		.uleb128 0x5
+ 1282 0464 03       		.byte	0x3
+ 1283 0465 00000000 		.4byte	timeToMeasure2
+ 1284 0469 00       		.byte	0
+ 1285              		.section	.debug_abbrev,"",%progbits
+ 1286              	.Ldebug_abbrev0:
+ 1287 0000 01       		.uleb128 0x1
+ 1288 0001 11       		.uleb128 0x11
+ 1289 0002 01       		.byte	0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 29
+
+
+ 1290 0003 25       		.uleb128 0x25
+ 1291 0004 0E       		.uleb128 0xe
+ 1292 0005 13       		.uleb128 0x13
+ 1293 0006 0B       		.uleb128 0xb
+ 1294 0007 03       		.uleb128 0x3
+ 1295 0008 0E       		.uleb128 0xe
+ 1296 0009 1B       		.uleb128 0x1b
+ 1297 000a 0E       		.uleb128 0xe
+ 1298 000b 55       		.uleb128 0x55
+ 1299 000c 17       		.uleb128 0x17
+ 1300 000d 11       		.uleb128 0x11
+ 1301 000e 01       		.uleb128 0x1
+ 1302 000f 10       		.uleb128 0x10
+ 1303 0010 17       		.uleb128 0x17
+ 1304 0011 00       		.byte	0
+ 1305 0012 00       		.byte	0
+ 1306 0013 02       		.uleb128 0x2
+ 1307 0014 24       		.uleb128 0x24
+ 1308 0015 00       		.byte	0
+ 1309 0016 0B       		.uleb128 0xb
+ 1310 0017 0B       		.uleb128 0xb
+ 1311 0018 3E       		.uleb128 0x3e
+ 1312 0019 0B       		.uleb128 0xb
+ 1313 001a 03       		.uleb128 0x3
+ 1314 001b 0E       		.uleb128 0xe
+ 1315 001c 00       		.byte	0
+ 1316 001d 00       		.byte	0
+ 1317 001e 03       		.uleb128 0x3
+ 1318 001f 16       		.uleb128 0x16
+ 1319 0020 00       		.byte	0
+ 1320 0021 03       		.uleb128 0x3
+ 1321 0022 0E       		.uleb128 0xe
+ 1322 0023 3A       		.uleb128 0x3a
+ 1323 0024 0B       		.uleb128 0xb
+ 1324 0025 3B       		.uleb128 0x3b
+ 1325 0026 0B       		.uleb128 0xb
+ 1326 0027 49       		.uleb128 0x49
+ 1327 0028 13       		.uleb128 0x13
+ 1328 0029 00       		.byte	0
+ 1329 002a 00       		.byte	0
+ 1330 002b 04       		.uleb128 0x4
+ 1331 002c 24       		.uleb128 0x24
+ 1332 002d 00       		.byte	0
+ 1333 002e 0B       		.uleb128 0xb
+ 1334 002f 0B       		.uleb128 0xb
+ 1335 0030 3E       		.uleb128 0x3e
+ 1336 0031 0B       		.uleb128 0xb
+ 1337 0032 03       		.uleb128 0x3
+ 1338 0033 08       		.uleb128 0x8
+ 1339 0034 00       		.byte	0
+ 1340 0035 00       		.byte	0
+ 1341 0036 05       		.uleb128 0x5
+ 1342 0037 16       		.uleb128 0x16
+ 1343 0038 00       		.byte	0
+ 1344 0039 03       		.uleb128 0x3
+ 1345 003a 0E       		.uleb128 0xe
+ 1346 003b 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 30
+
+
+ 1347 003c 0B       		.uleb128 0xb
+ 1348 003d 3B       		.uleb128 0x3b
+ 1349 003e 05       		.uleb128 0x5
+ 1350 003f 49       		.uleb128 0x49
+ 1351 0040 13       		.uleb128 0x13
+ 1352 0041 00       		.byte	0
+ 1353 0042 00       		.byte	0
+ 1354 0043 06       		.uleb128 0x6
+ 1355 0044 13       		.uleb128 0x13
+ 1356 0045 01       		.byte	0x1
+ 1357 0046 0B       		.uleb128 0xb
+ 1358 0047 0B       		.uleb128 0xb
+ 1359 0048 3A       		.uleb128 0x3a
+ 1360 0049 0B       		.uleb128 0xb
+ 1361 004a 3B       		.uleb128 0x3b
+ 1362 004b 0B       		.uleb128 0xb
+ 1363 004c 01       		.uleb128 0x1
+ 1364 004d 13       		.uleb128 0x13
+ 1365 004e 00       		.byte	0
+ 1366 004f 00       		.byte	0
+ 1367 0050 07       		.uleb128 0x7
+ 1368 0051 0D       		.uleb128 0xd
+ 1369 0052 00       		.byte	0
+ 1370 0053 03       		.uleb128 0x3
+ 1371 0054 0E       		.uleb128 0xe
+ 1372 0055 3A       		.uleb128 0x3a
+ 1373 0056 0B       		.uleb128 0xb
+ 1374 0057 3B       		.uleb128 0x3b
+ 1375 0058 0B       		.uleb128 0xb
+ 1376 0059 49       		.uleb128 0x49
+ 1377 005a 13       		.uleb128 0x13
+ 1378 005b 38       		.uleb128 0x38
+ 1379 005c 0B       		.uleb128 0xb
+ 1380 005d 00       		.byte	0
+ 1381 005e 00       		.byte	0
+ 1382 005f 08       		.uleb128 0x8
+ 1383 0060 35       		.uleb128 0x35
+ 1384 0061 00       		.byte	0
+ 1385 0062 49       		.uleb128 0x49
+ 1386 0063 13       		.uleb128 0x13
+ 1387 0064 00       		.byte	0
+ 1388 0065 00       		.byte	0
+ 1389 0066 09       		.uleb128 0x9
+ 1390 0067 13       		.uleb128 0x13
+ 1391 0068 01       		.byte	0x1
+ 1392 0069 0B       		.uleb128 0xb
+ 1393 006a 05       		.uleb128 0x5
+ 1394 006b 3A       		.uleb128 0x3a
+ 1395 006c 0B       		.uleb128 0xb
+ 1396 006d 3B       		.uleb128 0x3b
+ 1397 006e 0B       		.uleb128 0xb
+ 1398 006f 01       		.uleb128 0x1
+ 1399 0070 13       		.uleb128 0x13
+ 1400 0071 00       		.byte	0
+ 1401 0072 00       		.byte	0
+ 1402 0073 0A       		.uleb128 0xa
+ 1403 0074 01       		.uleb128 0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 31
+
+
+ 1404 0075 01       		.byte	0x1
+ 1405 0076 49       		.uleb128 0x49
+ 1406 0077 13       		.uleb128 0x13
+ 1407 0078 01       		.uleb128 0x1
+ 1408 0079 13       		.uleb128 0x13
+ 1409 007a 00       		.byte	0
+ 1410 007b 00       		.byte	0
+ 1411 007c 0B       		.uleb128 0xb
+ 1412 007d 21       		.uleb128 0x21
+ 1413 007e 00       		.byte	0
+ 1414 007f 49       		.uleb128 0x49
+ 1415 0080 13       		.uleb128 0x13
+ 1416 0081 2F       		.uleb128 0x2f
+ 1417 0082 0B       		.uleb128 0xb
+ 1418 0083 00       		.byte	0
+ 1419 0084 00       		.byte	0
+ 1420 0085 0C       		.uleb128 0xc
+ 1421 0086 0D       		.uleb128 0xd
+ 1422 0087 00       		.byte	0
+ 1423 0088 03       		.uleb128 0x3
+ 1424 0089 08       		.uleb128 0x8
+ 1425 008a 3A       		.uleb128 0x3a
+ 1426 008b 0B       		.uleb128 0xb
+ 1427 008c 3B       		.uleb128 0x3b
+ 1428 008d 0B       		.uleb128 0xb
+ 1429 008e 49       		.uleb128 0x49
+ 1430 008f 13       		.uleb128 0x13
+ 1431 0090 38       		.uleb128 0x38
+ 1432 0091 0B       		.uleb128 0xb
+ 1433 0092 00       		.byte	0
+ 1434 0093 00       		.byte	0
+ 1435 0094 0D       		.uleb128 0xd
+ 1436 0095 2E       		.uleb128 0x2e
+ 1437 0096 00       		.byte	0
+ 1438 0097 3F       		.uleb128 0x3f
+ 1439 0098 19       		.uleb128 0x19
+ 1440 0099 03       		.uleb128 0x3
+ 1441 009a 0E       		.uleb128 0xe
+ 1442 009b 3A       		.uleb128 0x3a
+ 1443 009c 0B       		.uleb128 0xb
+ 1444 009d 3B       		.uleb128 0x3b
+ 1445 009e 0B       		.uleb128 0xb
+ 1446 009f 27       		.uleb128 0x27
+ 1447 00a0 19       		.uleb128 0x19
+ 1448 00a1 11       		.uleb128 0x11
+ 1449 00a2 01       		.uleb128 0x1
+ 1450 00a3 12       		.uleb128 0x12
+ 1451 00a4 06       		.uleb128 0x6
+ 1452 00a5 40       		.uleb128 0x40
+ 1453 00a6 18       		.uleb128 0x18
+ 1454 00a7 9642     		.uleb128 0x2116
+ 1455 00a9 19       		.uleb128 0x19
+ 1456 00aa 00       		.byte	0
+ 1457 00ab 00       		.byte	0
+ 1458 00ac 0E       		.uleb128 0xe
+ 1459 00ad 2E       		.uleb128 0x2e
+ 1460 00ae 00       		.byte	0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 32
+
+
+ 1461 00af 3F       		.uleb128 0x3f
+ 1462 00b0 19       		.uleb128 0x19
+ 1463 00b1 03       		.uleb128 0x3
+ 1464 00b2 0E       		.uleb128 0xe
+ 1465 00b3 3A       		.uleb128 0x3a
+ 1466 00b4 0B       		.uleb128 0xb
+ 1467 00b5 3B       		.uleb128 0x3b
+ 1468 00b6 0B       		.uleb128 0xb
+ 1469 00b7 11       		.uleb128 0x11
+ 1470 00b8 01       		.uleb128 0x1
+ 1471 00b9 12       		.uleb128 0x12
+ 1472 00ba 06       		.uleb128 0x6
+ 1473 00bb 40       		.uleb128 0x40
+ 1474 00bc 18       		.uleb128 0x18
+ 1475 00bd 9642     		.uleb128 0x2116
+ 1476 00bf 19       		.uleb128 0x19
+ 1477 00c0 00       		.byte	0
+ 1478 00c1 00       		.byte	0
+ 1479 00c2 0F       		.uleb128 0xf
+ 1480 00c3 2E       		.uleb128 0x2e
+ 1481 00c4 01       		.byte	0x1
+ 1482 00c5 3F       		.uleb128 0x3f
+ 1483 00c6 19       		.uleb128 0x19
+ 1484 00c7 03       		.uleb128 0x3
+ 1485 00c8 0E       		.uleb128 0xe
+ 1486 00c9 3A       		.uleb128 0x3a
+ 1487 00ca 0B       		.uleb128 0xb
+ 1488 00cb 3B       		.uleb128 0x3b
+ 1489 00cc 0B       		.uleb128 0xb
+ 1490 00cd 49       		.uleb128 0x49
+ 1491 00ce 13       		.uleb128 0x13
+ 1492 00cf 11       		.uleb128 0x11
+ 1493 00d0 01       		.uleb128 0x1
+ 1494 00d1 12       		.uleb128 0x12
+ 1495 00d2 06       		.uleb128 0x6
+ 1496 00d3 40       		.uleb128 0x40
+ 1497 00d4 18       		.uleb128 0x18
+ 1498 00d5 9642     		.uleb128 0x2116
+ 1499 00d7 19       		.uleb128 0x19
+ 1500 00d8 01       		.uleb128 0x1
+ 1501 00d9 13       		.uleb128 0x13
+ 1502 00da 00       		.byte	0
+ 1503 00db 00       		.byte	0
+ 1504 00dc 10       		.uleb128 0x10
+ 1505 00dd 34       		.uleb128 0x34
+ 1506 00de 00       		.byte	0
+ 1507 00df 03       		.uleb128 0x3
+ 1508 00e0 0E       		.uleb128 0xe
+ 1509 00e1 3A       		.uleb128 0x3a
+ 1510 00e2 0B       		.uleb128 0xb
+ 1511 00e3 3B       		.uleb128 0x3b
+ 1512 00e4 0B       		.uleb128 0xb
+ 1513 00e5 49       		.uleb128 0x49
+ 1514 00e6 13       		.uleb128 0x13
+ 1515 00e7 02       		.uleb128 0x2
+ 1516 00e8 18       		.uleb128 0x18
+ 1517 00e9 00       		.byte	0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 33
+
+
+ 1518 00ea 00       		.byte	0
+ 1519 00eb 11       		.uleb128 0x11
+ 1520 00ec 2E       		.uleb128 0x2e
+ 1521 00ed 01       		.byte	0x1
+ 1522 00ee 3F       		.uleb128 0x3f
+ 1523 00ef 19       		.uleb128 0x19
+ 1524 00f0 03       		.uleb128 0x3
+ 1525 00f1 0E       		.uleb128 0xe
+ 1526 00f2 3A       		.uleb128 0x3a
+ 1527 00f3 0B       		.uleb128 0xb
+ 1528 00f4 3B       		.uleb128 0x3b
+ 1529 00f5 0B       		.uleb128 0xb
+ 1530 00f6 11       		.uleb128 0x11
+ 1531 00f7 01       		.uleb128 0x1
+ 1532 00f8 12       		.uleb128 0x12
+ 1533 00f9 06       		.uleb128 0x6
+ 1534 00fa 40       		.uleb128 0x40
+ 1535 00fb 18       		.uleb128 0x18
+ 1536 00fc 9642     		.uleb128 0x2116
+ 1537 00fe 19       		.uleb128 0x19
+ 1538 00ff 01       		.uleb128 0x1
+ 1539 0100 13       		.uleb128 0x13
+ 1540 0101 00       		.byte	0
+ 1541 0102 00       		.byte	0
+ 1542 0103 12       		.uleb128 0x12
+ 1543 0104 2E       		.uleb128 0x2e
+ 1544 0105 01       		.byte	0x1
+ 1545 0106 3F       		.uleb128 0x3f
+ 1546 0107 19       		.uleb128 0x19
+ 1547 0108 03       		.uleb128 0x3
+ 1548 0109 0E       		.uleb128 0xe
+ 1549 010a 3A       		.uleb128 0x3a
+ 1550 010b 0B       		.uleb128 0xb
+ 1551 010c 3B       		.uleb128 0x3b
+ 1552 010d 0B       		.uleb128 0xb
+ 1553 010e 27       		.uleb128 0x27
+ 1554 010f 19       		.uleb128 0x19
+ 1555 0110 11       		.uleb128 0x11
+ 1556 0111 01       		.uleb128 0x1
+ 1557 0112 12       		.uleb128 0x12
+ 1558 0113 06       		.uleb128 0x6
+ 1559 0114 40       		.uleb128 0x40
+ 1560 0115 18       		.uleb128 0x18
+ 1561 0116 9642     		.uleb128 0x2116
+ 1562 0118 19       		.uleb128 0x19
+ 1563 0119 01       		.uleb128 0x1
+ 1564 011a 13       		.uleb128 0x13
+ 1565 011b 00       		.byte	0
+ 1566 011c 00       		.byte	0
+ 1567 011d 13       		.uleb128 0x13
+ 1568 011e 05       		.uleb128 0x5
+ 1569 011f 00       		.byte	0
+ 1570 0120 03       		.uleb128 0x3
+ 1571 0121 0E       		.uleb128 0xe
+ 1572 0122 3A       		.uleb128 0x3a
+ 1573 0123 0B       		.uleb128 0xb
+ 1574 0124 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 34
+
+
+ 1575 0125 0B       		.uleb128 0xb
+ 1576 0126 49       		.uleb128 0x49
+ 1577 0127 13       		.uleb128 0x13
+ 1578 0128 02       		.uleb128 0x2
+ 1579 0129 18       		.uleb128 0x18
+ 1580 012a 00       		.byte	0
+ 1581 012b 00       		.byte	0
+ 1582 012c 14       		.uleb128 0x14
+ 1583 012d 2E       		.uleb128 0x2e
+ 1584 012e 01       		.byte	0x1
+ 1585 012f 3F       		.uleb128 0x3f
+ 1586 0130 19       		.uleb128 0x19
+ 1587 0131 03       		.uleb128 0x3
+ 1588 0132 0E       		.uleb128 0xe
+ 1589 0133 3A       		.uleb128 0x3a
+ 1590 0134 0B       		.uleb128 0xb
+ 1591 0135 3B       		.uleb128 0x3b
+ 1592 0136 0B       		.uleb128 0xb
+ 1593 0137 27       		.uleb128 0x27
+ 1594 0138 19       		.uleb128 0x19
+ 1595 0139 49       		.uleb128 0x49
+ 1596 013a 13       		.uleb128 0x13
+ 1597 013b 11       		.uleb128 0x11
+ 1598 013c 01       		.uleb128 0x1
+ 1599 013d 12       		.uleb128 0x12
+ 1600 013e 06       		.uleb128 0x6
+ 1601 013f 40       		.uleb128 0x40
+ 1602 0140 18       		.uleb128 0x18
+ 1603 0141 9642     		.uleb128 0x2116
+ 1604 0143 19       		.uleb128 0x19
+ 1605 0144 01       		.uleb128 0x1
+ 1606 0145 13       		.uleb128 0x13
+ 1607 0146 00       		.byte	0
+ 1608 0147 00       		.byte	0
+ 1609 0148 15       		.uleb128 0x15
+ 1610 0149 0F       		.uleb128 0xf
+ 1611 014a 00       		.byte	0
+ 1612 014b 0B       		.uleb128 0xb
+ 1613 014c 0B       		.uleb128 0xb
+ 1614 014d 49       		.uleb128 0x49
+ 1615 014e 13       		.uleb128 0x13
+ 1616 014f 00       		.byte	0
+ 1617 0150 00       		.byte	0
+ 1618 0151 16       		.uleb128 0x16
+ 1619 0152 2E       		.uleb128 0x2e
+ 1620 0153 01       		.byte	0x1
+ 1621 0154 3F       		.uleb128 0x3f
+ 1622 0155 19       		.uleb128 0x19
+ 1623 0156 03       		.uleb128 0x3
+ 1624 0157 0E       		.uleb128 0xe
+ 1625 0158 3A       		.uleb128 0x3a
+ 1626 0159 0B       		.uleb128 0xb
+ 1627 015a 3B       		.uleb128 0x3b
+ 1628 015b 0B       		.uleb128 0xb
+ 1629 015c 27       		.uleb128 0x27
+ 1630 015d 19       		.uleb128 0x19
+ 1631 015e 11       		.uleb128 0x11
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 35
+
+
+ 1632 015f 01       		.uleb128 0x1
+ 1633 0160 12       		.uleb128 0x12
+ 1634 0161 06       		.uleb128 0x6
+ 1635 0162 40       		.uleb128 0x40
+ 1636 0163 18       		.uleb128 0x18
+ 1637 0164 9742     		.uleb128 0x2117
+ 1638 0166 19       		.uleb128 0x19
+ 1639 0167 01       		.uleb128 0x1
+ 1640 0168 13       		.uleb128 0x13
+ 1641 0169 00       		.byte	0
+ 1642 016a 00       		.byte	0
+ 1643 016b 17       		.uleb128 0x17
+ 1644 016c 2E       		.uleb128 0x2e
+ 1645 016d 01       		.byte	0x1
+ 1646 016e 3F       		.uleb128 0x3f
+ 1647 016f 19       		.uleb128 0x19
+ 1648 0170 03       		.uleb128 0x3
+ 1649 0171 0E       		.uleb128 0xe
+ 1650 0172 3A       		.uleb128 0x3a
+ 1651 0173 0B       		.uleb128 0xb
+ 1652 0174 3B       		.uleb128 0x3b
+ 1653 0175 0B       		.uleb128 0xb
+ 1654 0176 27       		.uleb128 0x27
+ 1655 0177 19       		.uleb128 0x19
+ 1656 0178 49       		.uleb128 0x49
+ 1657 0179 13       		.uleb128 0x13
+ 1658 017a 11       		.uleb128 0x11
+ 1659 017b 01       		.uleb128 0x1
+ 1660 017c 12       		.uleb128 0x12
+ 1661 017d 06       		.uleb128 0x6
+ 1662 017e 40       		.uleb128 0x40
+ 1663 017f 18       		.uleb128 0x18
+ 1664 0180 9742     		.uleb128 0x2117
+ 1665 0182 19       		.uleb128 0x19
+ 1666 0183 01       		.uleb128 0x1
+ 1667 0184 13       		.uleb128 0x13
+ 1668 0185 00       		.byte	0
+ 1669 0186 00       		.byte	0
+ 1670 0187 18       		.uleb128 0x18
+ 1671 0188 34       		.uleb128 0x34
+ 1672 0189 00       		.byte	0
+ 1673 018a 03       		.uleb128 0x3
+ 1674 018b 08       		.uleb128 0x8
+ 1675 018c 3A       		.uleb128 0x3a
+ 1676 018d 0B       		.uleb128 0xb
+ 1677 018e 3B       		.uleb128 0x3b
+ 1678 018f 0B       		.uleb128 0xb
+ 1679 0190 49       		.uleb128 0x49
+ 1680 0191 13       		.uleb128 0x13
+ 1681 0192 02       		.uleb128 0x2
+ 1682 0193 18       		.uleb128 0x18
+ 1683 0194 00       		.byte	0
+ 1684 0195 00       		.byte	0
+ 1685 0196 19       		.uleb128 0x19
+ 1686 0197 2E       		.uleb128 0x2e
+ 1687 0198 00       		.byte	0
+ 1688 0199 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 36
+
+
+ 1689 019a 19       		.uleb128 0x19
+ 1690 019b 03       		.uleb128 0x3
+ 1691 019c 0E       		.uleb128 0xe
+ 1692 019d 3A       		.uleb128 0x3a
+ 1693 019e 0B       		.uleb128 0xb
+ 1694 019f 3B       		.uleb128 0x3b
+ 1695 01a0 05       		.uleb128 0x5
+ 1696 01a1 27       		.uleb128 0x27
+ 1697 01a2 19       		.uleb128 0x19
+ 1698 01a3 49       		.uleb128 0x49
+ 1699 01a4 13       		.uleb128 0x13
+ 1700 01a5 11       		.uleb128 0x11
+ 1701 01a6 01       		.uleb128 0x1
+ 1702 01a7 12       		.uleb128 0x12
+ 1703 01a8 06       		.uleb128 0x6
+ 1704 01a9 40       		.uleb128 0x40
+ 1705 01aa 18       		.uleb128 0x18
+ 1706 01ab 9642     		.uleb128 0x2116
+ 1707 01ad 19       		.uleb128 0x19
+ 1708 01ae 00       		.byte	0
+ 1709 01af 00       		.byte	0
+ 1710 01b0 1A       		.uleb128 0x1a
+ 1711 01b1 34       		.uleb128 0x34
+ 1712 01b2 00       		.byte	0
+ 1713 01b3 03       		.uleb128 0x3
+ 1714 01b4 0E       		.uleb128 0xe
+ 1715 01b5 3A       		.uleb128 0x3a
+ 1716 01b6 0B       		.uleb128 0xb
+ 1717 01b7 3B       		.uleb128 0x3b
+ 1718 01b8 05       		.uleb128 0x5
+ 1719 01b9 49       		.uleb128 0x49
+ 1720 01ba 13       		.uleb128 0x13
+ 1721 01bb 3F       		.uleb128 0x3f
+ 1722 01bc 19       		.uleb128 0x19
+ 1723 01bd 3C       		.uleb128 0x3c
+ 1724 01be 19       		.uleb128 0x19
+ 1725 01bf 00       		.byte	0
+ 1726 01c0 00       		.byte	0
+ 1727 01c1 1B       		.uleb128 0x1b
+ 1728 01c2 34       		.uleb128 0x34
+ 1729 01c3 00       		.byte	0
+ 1730 01c4 03       		.uleb128 0x3
+ 1731 01c5 0E       		.uleb128 0xe
+ 1732 01c6 3A       		.uleb128 0x3a
+ 1733 01c7 0B       		.uleb128 0xb
+ 1734 01c8 3B       		.uleb128 0x3b
+ 1735 01c9 0B       		.uleb128 0xb
+ 1736 01ca 49       		.uleb128 0x49
+ 1737 01cb 13       		.uleb128 0x13
+ 1738 01cc 3F       		.uleb128 0x3f
+ 1739 01cd 19       		.uleb128 0x19
+ 1740 01ce 02       		.uleb128 0x2
+ 1741 01cf 18       		.uleb128 0x18
+ 1742 01d0 00       		.byte	0
+ 1743 01d1 00       		.byte	0
+ 1744 01d2 00       		.byte	0
+ 1745              		.section	.debug_aranges,"",%progbits
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 37
+
+
+ 1746 0000 6C000000 		.4byte	0x6c
+ 1747 0004 0200     		.2byte	0x2
+ 1748 0006 00000000 		.4byte	.Ldebug_info0
+ 1749 000a 04       		.byte	0x4
+ 1750 000b 00       		.byte	0
+ 1751 000c 0000     		.2byte	0
+ 1752 000e 0000     		.2byte	0
+ 1753 0010 00000000 		.4byte	.LFB64
+ 1754 0014 0C000000 		.4byte	.LFE64-.LFB64
+ 1755 0018 00000000 		.4byte	.LFB65
+ 1756 001c 58000000 		.4byte	.LFE65-.LFB65
+ 1757 0020 00000000 		.4byte	.LFB66
+ 1758 0024 6C000000 		.4byte	.LFE66-.LFB66
+ 1759 0028 00000000 		.4byte	.LFB67
+ 1760 002c 70000000 		.4byte	.LFE67-.LFB67
+ 1761 0030 00000000 		.4byte	.LFB68
+ 1762 0034 2A000000 		.4byte	.LFE68-.LFB68
+ 1763 0038 00000000 		.4byte	.LFB69
+ 1764 003c 50000000 		.4byte	.LFE69-.LFB69
+ 1765 0040 00000000 		.4byte	.LFB70
+ 1766 0044 4A000000 		.4byte	.LFE70-.LFB70
+ 1767 0048 00000000 		.4byte	.LFB71
+ 1768 004c 1C000000 		.4byte	.LFE71-.LFB71
+ 1769 0050 00000000 		.4byte	.LFB72
+ 1770 0054 44000000 		.4byte	.LFE72-.LFB72
+ 1771 0058 00000000 		.4byte	.LFB73
+ 1772 005c 90000000 		.4byte	.LFE73-.LFB73
+ 1773 0060 00000000 		.4byte	.LFB74
+ 1774 0064 1E000000 		.4byte	.LFE74-.LFB74
+ 1775 0068 00000000 		.4byte	0
+ 1776 006c 00000000 		.4byte	0
+ 1777              		.section	.debug_ranges,"",%progbits
+ 1778              	.Ldebug_ranges0:
+ 1779 0000 00000000 		.4byte	.LFB64
+ 1780 0004 0C000000 		.4byte	.LFE64
+ 1781 0008 00000000 		.4byte	.LFB65
+ 1782 000c 58000000 		.4byte	.LFE65
+ 1783 0010 00000000 		.4byte	.LFB66
+ 1784 0014 6C000000 		.4byte	.LFE66
+ 1785 0018 00000000 		.4byte	.LFB67
+ 1786 001c 70000000 		.4byte	.LFE67
+ 1787 0020 00000000 		.4byte	.LFB68
+ 1788 0024 2A000000 		.4byte	.LFE68
+ 1789 0028 00000000 		.4byte	.LFB69
+ 1790 002c 50000000 		.4byte	.LFE69
+ 1791 0030 00000000 		.4byte	.LFB70
+ 1792 0034 4A000000 		.4byte	.LFE70
+ 1793 0038 00000000 		.4byte	.LFB71
+ 1794 003c 1C000000 		.4byte	.LFE71
+ 1795 0040 00000000 		.4byte	.LFB72
+ 1796 0044 44000000 		.4byte	.LFE72
+ 1797 0048 00000000 		.4byte	.LFB73
+ 1798 004c 90000000 		.4byte	.LFE73
+ 1799 0050 00000000 		.4byte	.LFB74
+ 1800 0054 1E000000 		.4byte	.LFE74
+ 1801 0058 00000000 		.4byte	0
+ 1802 005c 00000000 		.4byte	0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 38
+
+
+ 1803              		.section	.debug_line,"",%progbits
+ 1804              	.Ldebug_line0:
+ 1805 0000 81020000 		.section	.debug_str,"MS",%progbits,1
+ 1805      02007D01 
+ 1805      00000201 
+ 1805      FB0E0D00 
+ 1805      01010101 
+ 1806              	.LASF55:
+ 1807 0000 64656275 		.ascii	"debug_string\000"
+ 1807      675F7374 
+ 1807      72696E67 
+ 1807      00
+ 1808              	.LASF29:
+ 1809 000d 6D6F6465 		.ascii	"model_id\000"
+ 1809      6C5F6964 
+ 1809      00
+ 1810              	.LASF28:
+ 1811 0016 73696D5F 		.ascii	"sim_id\000"
+ 1811      696400
+ 1812              	.LASF46:
+ 1813 001d 416C6172 		.ascii	"AlarmReady\000"
+ 1813      6D526561 
+ 1813      647900
+ 1814              	.LASF49:
+ 1815 0028 73796E63 		.ascii	"syncData\000"
+ 1815      44617461 
+ 1815      00
+ 1816              	.LASF20:
+ 1817 0031 63757272 		.ascii	"currentCountDownValue\000"
+ 1817      656E7443 
+ 1817      6F756E74 
+ 1817      446F776E 
+ 1817      56616C75 
+ 1818              	.LASF51:
+ 1819 0047 745F6C65 		.ascii	"t_level_sensor\000"
+ 1819      76656C5F 
+ 1819      73656E73 
+ 1819      6F7200
+ 1820              	.LASF19:
+ 1821 0056 636F756E 		.ascii	"countDownValue\000"
+ 1821      74446F77 
+ 1821      6E56616C 
+ 1821      756500
+ 1822              	.LASF2:
+ 1823 0065 73686F72 		.ascii	"short int\000"
+ 1823      7420696E 
+ 1823      7400
+ 1824              	.LASF41:
+ 1825 006f 41796F49 		.ascii	"AyoItsTime\000"
+ 1825      74735469 
+ 1825      6D6500
+ 1826              	.LASF18:
+ 1827 007a 73697A65 		.ascii	"sizetype\000"
+ 1827      74797065 
+ 1827      00
+ 1828              	.LASF63:
+ 1829 0083 74696D65 		.ascii	"timeToMeasure2\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 39
+
+
+ 1829      546F4D65 
+ 1829      61737572 
+ 1829      653200
+ 1830              	.LASF64:
+ 1831 0092 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1831      43313120 
+ 1831      352E342E 
+ 1831      31203230 
+ 1831      31363036 
+ 1832 00c5 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1832      20726576 
+ 1832      6973696F 
+ 1832      6E203233 
+ 1832      37373135 
+ 1833 00f8 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1833      66756E63 
+ 1833      74696F6E 
+ 1833      2D736563 
+ 1833      74696F6E 
+ 1834              	.LASF68:
+ 1835 0120 6D61696E 		.ascii	"main\000"
+ 1835      00
+ 1836              	.LASF40:
+ 1837 0125 576F726B 		.ascii	"WorkWorkWorkWorkWorkWork\000"
+ 1837      576F726B 
+ 1837      576F726B 
+ 1837      576F726B 
+ 1837      576F726B 
+ 1838              	.LASF45:
+ 1839 013e 616C6172 		.ascii	"alarmToBeReset\000"
+ 1839      6D546F42 
+ 1839      65526573 
+ 1839      657400
+ 1840              	.LASF52:
+ 1841 014d 745F7364 		.ascii	"t_sd_card\000"
+ 1841      5F636172 
+ 1841      6400
+ 1842              	.LASF12:
+ 1843 0157 75696E74 		.ascii	"uint16\000"
+ 1843      313600
+ 1844              	.LASF11:
+ 1845 015e 75696E74 		.ascii	"uint8\000"
+ 1845      3800
+ 1846              	.LASF14:
+ 1847 0164 666C6F61 		.ascii	"float\000"
+ 1847      7400
+ 1848              	.LASF6:
+ 1849 016a 6C6F6E67 		.ascii	"long long int\000"
+ 1849      206C6F6E 
+ 1849      6720696E 
+ 1849      7400
+ 1850              	.LASF16:
+ 1851 0178 63686172 		.ascii	"char\000"
+ 1851      00
+ 1852              	.LASF31:
+ 1853 017d 6D6F6465 		.ascii	"modem_info_t\000"
+ 1853      6D5F696E 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 40
+
+
+ 1853      666F5F74 
+ 1853      00
+ 1854              	.LASF26:
+ 1855 018a 72656173 		.ascii	"reason\000"
+ 1855      6F6E00
+ 1856              	.LASF4:
+ 1857 0191 6C6F6E67 		.ascii	"long int\000"
+ 1857      20696E74 
+ 1857      00
+ 1858              	.LASF38:
+ 1859 019a 52656164 		.ascii	"ReadyOrNot\000"
+ 1859      794F724E 
+ 1859      6F7400
+ 1860              	.LASF58:
+ 1861 01a5 6D6F6465 		.ascii	"modem_info\000"
+ 1861      6D5F696E 
+ 1861      666F00
+ 1862              	.LASF48:
+ 1863 01b0 6E657741 		.ascii	"newAlarm\000"
+ 1863      6C61726D 
+ 1863      00
+ 1864              	.LASF60:
+ 1865 01b9 616C6172 		.ascii	"alarmMeasure\000"
+ 1865      6D4D6561 
+ 1865      73757265 
+ 1865      00
+ 1866              	.LASF44:
+ 1867 01c6 52657365 		.ascii	"ResetAlarm\000"
+ 1867      74416C61 
+ 1867      726D00
+ 1868              	.LASF50:
+ 1869 01d1 43686963 		.ascii	"ChickityCheckYourselfBeforeYouWreckYourself\000"
+ 1869      6B697479 
+ 1869      43686563 
+ 1869      6B596F75 
+ 1869      7273656C 
+ 1870              	.LASF17:
+ 1871 01fd 6C6F6E67 		.ascii	"long double\000"
+ 1871      20646F75 
+ 1871      626C6500 
+ 1872              	.LASF1:
+ 1873 0209 756E7369 		.ascii	"unsigned char\000"
+ 1873      676E6564 
+ 1873      20636861 
+ 1873      7200
+ 1874              	.LASF57:
+ 1875 0217 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 1875      6D5F7374 
+ 1875      6172745F 
+ 1875      74696D65 
+ 1875      5F737461 
+ 1876              	.LASF56:
+ 1877 022e 6D6F6465 		.ascii	"modem_state\000"
+ 1877      6D5F7374 
+ 1877      61746500 
+ 1878              	.LASF0:
+ 1879 023a 7369676E 		.ascii	"signed char\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 41
+
+
+ 1879      65642063 
+ 1879      68617200 
+ 1880              	.LASF7:
+ 1881 0246 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1881      206C6F6E 
+ 1881      6720756E 
+ 1881      7369676E 
+ 1881      65642069 
+ 1882              	.LASF47:
+ 1883 025d 43726561 		.ascii	"CreateAlarm\000"
+ 1883      7465416C 
+ 1883      61726D00 
+ 1884              	.LASF8:
+ 1885 0269 756E7369 		.ascii	"unsigned int\000"
+ 1885      676E6564 
+ 1885      20696E74 
+ 1885      00
+ 1886              	.LASF5:
+ 1887 0276 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1887      20756E73 
+ 1887      69676E65 
+ 1887      6420696E 
+ 1887      7400
+ 1888              	.LASF59:
+ 1889 0288 6D6F6465 		.ascii	"modem_stats\000"
+ 1889      6D5F7374 
+ 1889      61747300 
+ 1890              	.LASF61:
+ 1891 0294 74696D65 		.ascii	"timeToMeasure\000"
+ 1891      546F4D65 
+ 1891      61737572 
+ 1891      6500
+ 1892              	.LASF53:
+ 1893 02a2 745F766F 		.ascii	"t_voltages\000"
+ 1893      6C746167 
+ 1893      657300
+ 1894              	.LASF3:
+ 1895 02ad 73686F72 		.ascii	"short unsigned int\000"
+ 1895      7420756E 
+ 1895      7369676E 
+ 1895      65642069 
+ 1895      6E7400
+ 1896              	.LASF33:
+ 1897 02c0 74696D65 		.ascii	"time_to_network_connect\000"
+ 1897      5F746F5F 
+ 1897      6E657477 
+ 1897      6F726B5F 
+ 1897      636F6E6E 
+ 1898              	.LASF25:
+ 1899 02d8 73746174 		.ascii	"status\000"
+ 1899      757300
+ 1900              	.LASF66:
+ 1901 02df 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
+ 1901      73657273 
+ 1901      5C626B5C 
+ 1901      446F6375 
+ 1901      6D656E74 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 42
+
+
+ 1902 030c 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
+ 1902      6E6F746F 
+ 1902      72694F53 
+ 1902      5C6E6F74 
+ 1902      6F72694F 
+ 1903              	.LASF34:
+ 1904 0328 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1904      5F746F5F 
+ 1904      61637175 
+ 1904      6972655F 
+ 1904      697000
+ 1905              	.LASF27:
+ 1906 033b 74657374 		.ascii	"test_t\000"
+ 1906      5F7400
+ 1907              	.LASF30:
+ 1908 0342 696D6569 		.ascii	"imei\000"
+ 1908      00
+ 1909              	.LASF10:
+ 1910 0347 696E7433 		.ascii	"int32_t\000"
+ 1910      325F7400 
+ 1911              	.LASF35:
+ 1912 034f 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1912      6D5F7374 
+ 1912      6174735F 
+ 1912      7400
+ 1913              	.LASF23:
+ 1914 035d 616C6172 		.ascii	"alarm\000"
+ 1914      6D00
+ 1915              	.LASF42:
+ 1916 0363 616C6172 		.ascii	"alarmType\000"
+ 1916      6D547970 
+ 1916      6500
+ 1917              	.LASF65:
+ 1918 036d 6D61696E 		.ascii	"main.c\000"
+ 1918      2E6300
+ 1919              	.LASF39:
+ 1920 0374 4C617942 		.ascii	"LayBack\000"
+ 1920      61636B00 
+ 1921              	.LASF62:
+ 1922 037c 616C6172 		.ascii	"alarmMeasure2\000"
+ 1922      6D4D6561 
+ 1922      73757265 
+ 1922      3200
+ 1923              	.LASF13:
+ 1924 038a 696E7433 		.ascii	"int32\000"
+ 1924      3200
+ 1925              	.LASF15:
+ 1926 0390 646F7562 		.ascii	"double\000"
+ 1926      6C6500
+ 1927              	.LASF21:
+ 1928 0397 636F756E 		.ascii	"countDownType\000"
+ 1928      74446F77 
+ 1928      6E547970 
+ 1928      6500
+ 1929              	.LASF9:
+ 1930 03a5 5F5F696E 		.ascii	"__int32_t\000"
+ 1930      7433325F 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccrf2R9C.s 			page 43
+
+
+ 1930      7400
+ 1931              	.LASF22:
+ 1932 03af 636F756E 		.ascii	"countDownResetCondition\000"
+ 1932      74446F77 
+ 1932      6E526573 
+ 1932      6574436F 
+ 1932      6E646974 
+ 1933              	.LASF67:
+ 1934 03c7 57616B65 		.ascii	"Wakeup_ISR\000"
+ 1934      75705F49 
+ 1934      535200
+ 1935              	.LASF24:
+ 1936 03d2 74657374 		.ascii	"test_name\000"
+ 1936      5F6E616D 
+ 1936      6500
+ 1937              	.LASF37:
+ 1938 03dc 63686563 		.ascii	"check\000"
+ 1938      6B00
+ 1939              	.LASF36:
+ 1940 03e2 6D6F6465 		.ascii	"modem_status\000"
+ 1940      6D5F7374 
+ 1940      61747573 
+ 1940      00
+ 1941              	.LASF54:
+ 1942 03ef 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1942      52784275 
+ 1942      66666572 
+ 1942      00
+ 1943              	.LASF43:
+ 1944 03fc 616C6172 		.ascii	"alarmToBeUpdated\000"
+ 1944      6D546F42 
+ 1944      65557064 
+ 1944      61746564 
+ 1944      00
+ 1945              	.LASF32:
+ 1946 040d 72737369 		.ascii	"rssi\000"
+ 1946      00
+ 1947              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -493,6 +493,7 @@
 .set Rx_Telit__DM2, CYREG_PRT3_DM2
 .set Rx_Telit__DR, CYREG_PRT3_DR
 .set Rx_Telit__INP_DIS, CYREG_PRT3_INP_DIS
+.set Rx_Telit__INTSTAT, CYREG_PICU3_INTSTAT
 .set Rx_Telit__INTTYPE_BASE, CYDEV_PICU_INTTYPE_PICU3_BASE
 .set Rx_Telit__LCD_COM_SEG, CYREG_PRT3_LCD_COM_SEG
 .set Rx_Telit__LCD_EN, CYREG_PRT3_LCD_EN
@@ -509,6 +510,7 @@
 .set Rx_Telit__PS, CYREG_PRT3_PS
 .set Rx_Telit__SHIFT, 6
 .set Rx_Telit__SLW, CYREG_PRT3_SLW
+.set Rx_Telit__SNAP, CYREG_PICU3_SNAP
 
 /* Tx_Telit */
 .set Tx_Telit__0__INTTYPE, CYREG_PICU3_INTTYPE7

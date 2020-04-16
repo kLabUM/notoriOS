@@ -12,7 +12,7 @@
 #define MODEM_STATE_READY 4u
     
 uint8 modem_state;
-void modem_process_tasks();
+uint8 modem_process_tasks();
 
 void modem_intilize();
 uint8 modem_power_up();
@@ -22,12 +22,16 @@ void pins_configure_inactive();
 void pins_configure_active();
 test_t modem_test();
 void modem_configure_settings();
-uint8 is_connected_to_network();
+uint8 is_connected_to_cell_network();
 void get_cell_network_stats();
 void set_up_internet_connection();
 uint8 is_connected_to_internet();
+uint8 modem_get_state();
+void modem_sleep();
+void modem_wakeup();
 uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeout);
 uint8 extract_string(char* from, const char* beginMarker, const char* endMarker,  char* target);
+
 
 typedef struct { 
     char sim_id[20];
@@ -42,7 +46,7 @@ typedef struct {
     int   time_to_acquire_ip;
 } modem_stats_t;
 
-int32 modem_time_stamp;
+int32 modem_start_time_stamp;
 modem_info_t modem_info;
 modem_stats_t modem_stats;
 

@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 04/12/2020 at 17:15
+// 04/16/2020 at 00:09
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1242,6 +1242,7 @@ module top ;
           wire  Net_214;
           wire  Net_213;
           wire  Net_212;
+          wire  Net_248;
           wire  Net_190;
           wire  Net_189;
           wire  Net_188;
@@ -2718,7 +2719,6 @@ module top ;
 
 	wire [0:0] tmpOE__Rx_Telit_net;
 	wire [0:0] tmpIO_0__Rx_Telit_net;
-	wire [0:0] tmpINTERRUPT_0__Rx_Telit_net;
 	electrical [0:0] tmpSIOVREF__Rx_Telit_net;
 
 	cy_psoc3_pins_v1_10
@@ -2729,7 +2729,7 @@ module top ;
 		  .input_clk_en(0),
 		  .input_sync(1'b1),
 		  .input_sync_mode(1'b0),
-		  .intr_mode(2'b00),
+		  .intr_mode(2'b10),
 		  .invert_in_clock(0),
 		  .invert_in_clock_en(0),
 		  .invert_in_reset(0),
@@ -2780,7 +2780,7 @@ module top ;
 		  .fb({Net_177}),
 		  .io({tmpIO_0__Rx_Telit_net[0:0]}),
 		  .siovref(tmpSIOVREF__Rx_Telit_net),
-		  .interrupt({tmpINTERRUPT_0__Rx_Telit_net[0:0]}),
+		  .interrupt({Net_248}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),

@@ -28,6 +28,9 @@ uint8 timeToMeasure;
 alarm alarmMeasure2;
 uint8 timeToMeasure2;
 
+//callback functions
+void syncData();
+
 
 // This function must always be called (when the Sleep Timer's interrupt
 // is disabled or enabled) after wake up to clear the ctw_int status bit.
@@ -59,8 +62,8 @@ void ReadyOrNot()
     
 
     
-    alarmMeasure = CreateAlarm(2,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
-    timeToMeasure = 0;
+    alarmMeasure = CreateAlarm(120u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    timeToMeasure = 1;
     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     //timeToMeasure = 0;
     
@@ -79,25 +82,49 @@ int WorkWorkWorkWorkWorkWork()
     if(timeToMeasure){
        
 
-       //printNotif("Light ON");
+ 
        
-       LED_Write(1u);
-       CyDelay(100u);
-       LED_Write(0u);
-       timeToMeasure = 0u;
     
-       test_t t_voltages = voltages_test();
-       printTestStatus(t_voltages);
-    
-       //printNotif("Light Off");
-       
+        if(modem_get_state() == MODEM_STATE_OFF){
+            
+            //printNotif("Light ON");
+             LED_Write(1u);
+            CyDelay(100u);
+            LED_Write(0u);
+            modem_power_up();
+        }else if(modem_get_state() == MODEM_STATE_READY){
+            printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
+            syncData();
+            modem_power_down();
+            timeToMeasure = 0u;
+        }
+        
+        
+   
        
     }
     //if(timeToMeasure2){
         //dosomething
     //}
     
-    return 0;   
+    //check modem state machine 
+    uint8 modem_status = modem_process_tasks();
+    
+   
+    return 0u +  modem_status;  
+}
+
+
+void syncData(){
+    
+    //at_write_command("AT#SCFG?\r","OK",1000);
+    uint8 check = 0;
+    check = at_write_command("AT#SD=3,0,8086,\"data.open-storm.org\",0,0,1\r","OK",5000u);
+    check = at_write_command("AT#SSEND=3\r\n",   ">", 1000u);
+    check = at_write_command("GET /query?db=ARB&u=open_storm_user&p=AllocationListingsLoan&q=SELECT%20value%20from%20v_bat,sleeptimer,maxbotix_depth,meta_trigger%20where%20node_id='ARB006'%20limit%201&pretty=true HTTP/1.1\r\nHost: data.open-storm.org:8086\r\nConnection: Close\r\n\r\n\032","HTTP/1.1 204", 5000u);
+    if(!check){
+        at_write_command("\032","OK", 1000u);
+    }
 }
 
 
@@ -113,6 +140,7 @@ void LayBack()
 {
     
     debug_sleep();
+    modem_sleep();
     // Prepares system clocks for the Sleep mode
     CyPmSaveClocks();
     
@@ -120,12 +148,15 @@ void LayBack()
     //  - PM_SLEEP_TIME_NONE: wakeup time is defined by Sleep Timer
     //  - PM_SLEEP_SRC_CTW :  wakeup on CTW sources is allowed
      //  - If real-time clock is used, it will also wake the device
+    //can also wake up from a pin intterup (PICU). This is useful with the moderm UART
     //CyPmHibernate();
+    //CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW & PM_SLEEP_SRC_PICU);
     CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW);
   
     // Restore clock configuration
     CyPmRestoreClocks();
     debug_wakeup();
+    modem_wakeup();
     
 }
 

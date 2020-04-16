@@ -9,6 +9,9 @@ uint8_t uart_string_index=0;
 #define DEFAULT_AT_TIMEOUT 2000u
 #define NO_AT_TIMEOUT 0u
 
+#define TIMEOUT_NETWORK_CONNECT 200 //seconds
+#define TIMEOUT_IP_ACQUIRE 230 //seconds (cummulatinve) add to TIMEOUT_NETWORK_CONNECT
+
 CY_ISR_PROTO(isr_telit_rx);
 
 CY_ISR(isr_telit_rx){      
@@ -33,6 +36,8 @@ void modem_intilize(){
     modem_stats.rssi = 0;
     modem_stats.time_to_acquire_ip = 0;
     modem_stats.time_to_network_connect = 0;
+    //disable the RX Pin interrupt, and only enable it during long timeouts
+    Rx_Telit_SetInterruptMode(Rx_Telit_0_INTR,Rx_Telit_INTR_NONE);
     
 }
 
@@ -69,7 +74,7 @@ void modem_power_down(){
    at_write_command("AT#SHDN\r","OK",5000u); 
     
    modem_soft_power_cycle();
-   CyDelay(5000u);
+   CyDelay(1000u);
     
    UART_Telit_Stop();
    isr_telit_rx_Stop();
@@ -103,7 +108,7 @@ uint8 modem_power_up(){
     
     if(at_ready == 1){
         printNotif(NOTIF_TYPE_EVENT,"Modem ready for AT commands after %d attempt(s).",attemps);
-        modem_state = MODEM_STATE_WAITING_FOR_NETWORK;
+        modem_state = MODEM_STATE_STARTUP;
     }else{
         printNotif(NOTIF_TYPE_ERROR,"No response from modem.");
         modem_state = MODEM_STATE_OFF;
@@ -146,23 +151,24 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
             return 1u;
         }
       
-       
-        for(i=0;i<interval;i++){        
+     
+        for(i=0;i<interval;i++){ 
+            CyDelay((uint32) delay);
             compare_location=strstr(uart_received_string,expected_response);        
             if(compare_location!=NULL) {
                 if (at_attempt == 0){
-                    printNotif(NOTIF_TYPE_EVENT,"Modem Received expected AT Response on first Try: %s\r\n", uart_received_string);
+                   // printNotif(NOTIF_TYPE_EVENT,"Modem Received expected AT Response on first Try: %s\r\n", uart_received_string);
                 }else{
-                   printNotif(NOTIF_TYPE_WARNING,"Modem required %d tries to receive AT Response: %s\r\n", (at_attempt+1), uart_received_string);
+                   //printNotif(NOTIF_TYPE_WARNING,"Modem required %d tries to receive AT Response: %s\r\n", (at_attempt+1), uart_received_string);
                  
                 }
                  return(1);
             }
-            CyDelay((uint32) delay);
+            
         }   
-        CyDelay((uint32) delay);
+      
     }
-    printNotif(NOTIF_TYPE_ERROR,"Modem AT response timeout: %s\r\n", commands);
+   // printNotif(NOTIF_TYPE_ERROR,"Modem AT response timeout: %s\r\n", commands);
           
     return(0);    
 }
@@ -171,35 +177,7 @@ test_t modem_test(){
     
     test_t test;
     modem_power_up();
-    
-    //timestamping
-    uint32 time_Start, time_network_connect, time_obrtain_ip = 0;
-    
-    //modem globakl IDs
-    char *model;
-    char *SIM;
-    char *IMEI;
-    
-    //modem settings
-    char *CFUN;
-    
-    time_Start = getTimeStamp();
-    
-    
-    
-    uint32 connection_time = time_network_connect - time_Start;
-    
-    printNotif(NOTIF_TYPE_EVENT,"Time to connecto to network: %d seconds",connection_time);
-    
-
-        
-        time_obrtain_ip = getTimeStamp();
-         connection_time = time_obrtain_ip- time_Start;
-        
-         printNotif(NOTIF_TYPE_EVENT,"Time to connecto to get IP: %d seconds",connection_time);
-        
-    
-    
+    //tbd 
     modem_power_down();
     
     
@@ -236,92 +214,56 @@ uint8 extract_string(char* from, const char* beginMarker, const char* endMarker,
 }
 
 
-void modem_process_tasks(){
+uint8 modem_process_tasks(){
     
     if(modem_state == MODEM_STATE_STARTUP){
         
-        modem_time_stamp = getTimeStamp();
+        modem_start_time_stamp = getTimeStamp();
         modem_configure_settings();
         modem_state = MODEM_STATE_WAITING_FOR_NETWORK;
+        return 1u;//keep going, don't hand off to sleep yet
         
     }
     else if(modem_state == MODEM_STATE_WAITING_FOR_NETWORK){
         
-        if(is_connected_to_network()){
-             modem_stats.time_to_network_connect = (int)(getTimeStamp() - (int32)modem_time_stamp);
+        if(is_connected_to_cell_network()){
+             modem_stats.time_to_network_connect = (int)(getTimeStamp() - (int32)modem_start_time_stamp);
              printNotif(NOTIF_TYPE_EVENT,"Time to connecto to network: %d seconds",
                                             modem_stats.time_to_network_connect);
             get_cell_network_stats();
             set_up_internet_connection();
             modem_state = MODEM_STATE_WAITING_FOR_IP;
         }
+        //power off if we times out shold only take ~30 secs to connect to network
+        if((int)(getTimeStamp()-(int32)modem_start_time_stamp) > TIMEOUT_NETWORK_CONNECT){
+            modem_state = MODEM_STATE_OFF;
+            modem_power_down();
+            printNotif(NOTIF_TYPE_ERROR,"Modem timed out on network connect");
+            
+        }
+        
+        return 0u;//ok to hand off to sleep
 
     }else if(modem_state == MODEM_STATE_WAITING_FOR_IP){
         if(is_connected_to_internet()){
             modem_state = MODEM_STATE_READY;
-            modem_stats.time_to_acquire_ip = (int)(getTimeStamp() - (int32)modem_time_stamp);
+            modem_stats.time_to_acquire_ip = (int)(getTimeStamp() - (int32)modem_start_time_stamp);
              printNotif(NOTIF_TYPE_EVENT,"Acquired IP address: %d seconds",
                                             modem_stats.time_to_acquire_ip);
         }
-    }
-    
-    
-}
-
-uint8 is_connected_to_network(){
-    //check network status -- need '0,0' response to continue
-    at_write_command("AT+CREG?\r", "OK",DEFAULT_AT_TIMEOUT);
-    
-    char creg[10];
-    extract_string(uart_received_string,": ","\r",creg);
-    printNotif(NOTIF_TYPE_EVENT,"Registered to network, CREG: %s",creg);
-   
-    if(strstr(creg,"0,1")!=NULL){
-        //time_network_connect = getTimeStamp();
-        return 1u;
-    }
-    
-    return 0u;
         
-}
-
-void set_up_internet_connection(){
-    
-    //port 3
-    at_write_command("AT#SCFGEXT=3,1,0,0,0,0\r", "OK",DEFAULT_AT_TIMEOUT);
-    
-    //<connId>,<cid>,<pktSz>,<maxTo>,<connTo>,<txTo>
-    at_write_command("AT#SCFG=1,3,300,90,600,50\r", "OK",DEFAULT_AT_TIMEOUT);
-    at_write_command("AT#SGACT=1,1\r", "OK",NO_AT_TIMEOUT);
-    
-}
-
-uint8 is_connected_to_internet(){
-    
-    if(at_write_command("AT#SGACT?\r", "3,1",NO_AT_TIMEOUT)){
-        return 1u;
+        //power off if we times out shold only take ~30 secs to connect to network
+        if((int)(getTimeStamp()-(int32)modem_start_time_stamp) > TIMEOUT_IP_ACQUIRE){
+            modem_state = MODEM_STATE_OFF;
+            modem_power_down();
+            printNotif(NOTIF_TYPE_ERROR,"Modem timed out on IP address acquire.");
+      
+        }
+        return 0u;//ok to hand off to sleep
     }
- 
+    
     return 0u;
     
-}
-
-void get_cell_network_stats(){
-    //gets RSSI and FER values
-    at_write_command("AT+CSQ\r", "OK",DEFAULT_AT_TIMEOUT);
-    char csq[10];
-    extract_string(uart_received_string,": ","\r",csq);
-    printNotif(NOTIF_TYPE_EVENT,"Network STts: %s",csq);
-    
-    char *token;
-    token = strtok(csq,",");
-    if(token != NULL){
-        modem_stats.rssi = atoi(token);
-    }
-    token = strtok(NULL,",");
-    if(token != NULL){
-        modem_stats.sq = atoi(token);
-    }
 }
 
 uint8 is_connected_to_cell_network(){
@@ -341,6 +283,56 @@ uint8 is_connected_to_cell_network(){
         
 }
 
+void set_up_internet_connection(){
+    
+    //port 3
+   //<connId>,<srMode>,<dataMode>, 
+    at_write_command("AT#SCFGEXT=3,1,0,0,0,0\r", "OK",DEFAULT_AT_TIMEOUT);
+    
+    //<connId>,<cid>,<pktSz>,<maxTo>,<connTo>,<txTo>
+    //at_write_command("AT#SCFG=1,3,300,90,600,50\r", "OK",DEFAULT_AT_TIMEOUT);
+    // <cid>,<stat>
+    at_write_command("AT#SGACT=1,1\r", "OK",10000u);
+
+    
+}
+
+uint8 is_connected_to_internet(){
+    
+    //check for 3,1 if verizon 
+    if(at_write_command("AT#SGACT?\r", "1,1",DEFAULT_AT_TIMEOUT)){
+        return 1u;
+    }
+ 
+    return 0u;
+    
+}
+
+void get_cell_network_stats(){
+    //gets RSSI and FER values
+    for(uint8 attempts =0; attempts <10; attempts++){
+        at_write_command("AT+CSQ\r", "OK",DEFAULT_AT_TIMEOUT);
+        
+        char csq[10];
+        extract_string(uart_received_string,": ","\r",csq);
+        printNotif(NOTIF_TYPE_EVENT,"Network STts: %s",csq);
+        
+        char *token;
+        token = strtok(csq,",");
+        if(token != NULL){
+            modem_stats.rssi = atoi(token);
+        }
+        token = strtok(NULL,",");
+        if(token != NULL){
+            modem_stats.sq = atoi(token);
+        }
+        if(modem_stats.rssi != 99 || modem_stats.rssi !=0){
+            break;
+        }
+    }
+}
+    
+    
 
 void modem_configure_settings(){
     
@@ -386,7 +378,34 @@ void modem_configure_settings(){
 
 
 
+uint8 modem_get_state(){
+    return modem_state;
+}
+
+void modem_sleep(){
+    if(modem_get_state() != MODEM_STATE_OFF){
+        UART_Telit_Sleep();
+        //set interrupt on RX pin to wakeup chip from sleep if UART comm starts
+       // Rx_Telit_SetInterruptMode(Rx_Telit_0_INTR,Rx_Telit_INTR_FALLING);
+     }
+}
+
+void modem_wakeup(){
     
+     if(modem_get_state() != MODEM_STATE_OFF){
+        UART_Telit_Wakeup();
+        //remove the need for this pin itterupt
+        //Rx_Telit_SetInterruptMode(Rx_Telit_0_INTR,Rx_Telit_INTR_NONE);
+        //if woken up from pin, go ahead and delay for 100ms to allow modem UART to deliver the message
+        if(modem_get_state() == MODEM_STATE_WAITING_FOR_IP){
+            CyDelay(100u);
+            uint8 i; 
+            i++;
+        }
+        
+     }
+    
+}
 
     
 
