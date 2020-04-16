@@ -95,6 +95,7 @@ int WorkWorkWorkWorkWorkWork()
         }else if(modem_get_state() == MODEM_STATE_READY){
             printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
             syncData();
+            int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
             modem_power_down();
             timeToMeasure = 0u;
         }
@@ -119,12 +120,11 @@ void syncData(){
     
     //at_write_command("AT#SCFG?\r","OK",1000);
     uint8 check = 0;
-    check = at_write_command("AT#SD=3,0,8086,\"data.open-storm.org\",0,0,1\r","OK",5000u);
-    check = at_write_command("AT#SSEND=3\r\n",   ">", 1000u);
-    check = at_write_command("GET /query?db=ARB&u=open_storm_user&p=AllocationListingsLoan&q=SELECT%20value%20from%20v_bat,sleeptimer,maxbotix_depth,meta_trigger%20where%20node_id='ARB006'%20limit%201&pretty=true HTTP/1.1\r\nHost: data.open-storm.org:8086\r\nConnection: Close\r\n\r\n\032","HTTP/1.1 204", 5000u);
-    if(!check){
-        at_write_command("\032","OK", 1000u);
-    }
+    //"AT#SD=,0,80,\”www.google.com\”,0,0,0\r"
+    check = at_write_command("AT#SD=1,0,8086,\"data.open-storm.org\",0,0,1\r","OK",10000u);
+    check = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
+    check = at_write_command("POST /write?db=ARB&u=generic_node&p=MakeFloodsCurrents HTTP/1.1\r\nHost: data.open-storm.org:8086\r\nConnection: Close\r\nContent-Length: 39\r\nContent-Type: plain/text\r\n\r\nmaxbotix_depth,node_id=GGB000 value=111\r\n\r\n\032", "NO CARRIER", 10000u);
+
 }
 
 

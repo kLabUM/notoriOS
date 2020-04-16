@@ -287,19 +287,22 @@ void set_up_internet_connection(){
     
     //port 3
    //<connId>,<srMode>,<dataMode>, 
-    at_write_command("AT#SCFGEXT=3,1,0,0,0,0\r", "OK",DEFAULT_AT_TIMEOUT);
+    //at_write_command("AT#SCFGEXT=1,1,0,0,0,0\r", "OK",DEFAULT_AT_TIMEOUT);////LTE modem relevant
     
     //<connId>,<cid>,<pktSz>,<maxTo>,<connTo>,<txTo>
-    //at_write_command("AT#SCFG=1,3,300,90,600,50\r", "OK",DEFAULT_AT_TIMEOUT);
+    //at_write_command("AT#SCFG=1,3,300,90,600,50\r", "OK",DEFAULT_AT_TIMEOUT); //LTE modem relevant
     // <cid>,<stat>
-    at_write_command("AT#SGACT=1,1\r", "OK",10000u);
+   
+    at_write_command("AT#SGACT=1,1\r\n", "OK",NO_AT_TIMEOUT);
+
+    
 
     
 }
 
 uint8 is_connected_to_internet(){
     
-    //check for 3,1 if verizon 
+    //check for 3,1 if verizon
     if(at_write_command("AT#SGACT?\r", "1,1",DEFAULT_AT_TIMEOUT)){
         return 1u;
     }
