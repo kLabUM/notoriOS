@@ -1,14 +1,9 @@
-#include "influx.h"
-
+#include "influx.h"                   
                         
-                        
-unsigned int generate_influx_write_body(char* body, char *node_id){
+unsigned int construct_influx_write_body(char* body, char *node_id){
    
-    unsigned int length = 0;
     body[0] = '\0';
  
-
-    
     //construct influx body
     for(uint16 i = 0;i<sizeOfDataStack();i++){
         sprintf(body, "%s%s,node_id=%s, value=%s %ld\n", body, data[i].key, node_id, data[i].value, data[i].timeStamp);
@@ -16,11 +11,11 @@ unsigned int generate_influx_write_body(char* body, char *node_id){
     
     unsigned int request_len = strlen(body);
    
-    length = strlen(body);
-    return length;
+
+    return request_len;
 }
 
-void construct_route(char* route, char* base, char* user, char* pass, char* database){
+void construct_influx_route(char* route, char* base, char* user, char* pass, char* database){
     route[0] = '\0';
     sprintf(route, "%s%s?u=%s&p=%s&db=%s", route, base, user, pass, database); 
 }
@@ -37,7 +32,7 @@ test_t influx_test(){
     pushData("test_reading_1", "000", 12345);
     pushData("test_reading_2", "111", 67890);
     char test_write_body[200];
-    generate_influx_write_body(test_write_body, "XYZ10");
+    construct_influx_write_body(test_write_body, "XYZ10");
     
     //will return zero if strings are identical,
     int compare = strcmp(test_write_body,expected_string);

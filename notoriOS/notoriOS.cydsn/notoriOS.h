@@ -6,6 +6,12 @@
 */
 
 #include "project.h"
+#include "level_sensor.h"
+#include "sd_card.h"
+#include "voltages.h"
+#include "debug.h"
+#include "modem.h"
+#include "influx.h"
 
 #define ALARM_TYPE_SECOND       0u
 #define ALARM_TYPE_MINUTE       1u
@@ -23,6 +29,7 @@
 
 #define MAX_NUM_ALARMS 5u
 //uised to create alarms, which fire when a tasks needs doing
+
 typedef struct
 {
     uint16 countDownValue;          //how many ticks.

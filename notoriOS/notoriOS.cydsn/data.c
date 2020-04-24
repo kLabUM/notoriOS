@@ -52,8 +52,8 @@ void Initialize_Data_Stack(){
 void Clear_Data_Stack(){
     
     for(uint16 i;i<DATA_MAX_VALUES;i++){
-        sprintf(data[i].key, "");
-        sprintf(data[i].value, "");
+        data[i].key[0] = '\0';
+        data[i].value[0] = '\0';
         data[i].timeStamp = 0;
     }
     dataPointsInStack =0;
@@ -64,26 +64,28 @@ uint16 sizeOfDataStack(){
     return dataPointsInStack;
 }
 
-void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
+
+//thsi function could really use a test
+void construct_generic_HTTP_request(char* header, char* body, char* host, char* route,
                                int port, char* method, char* connection_type,
 	                           char *extra_headers, int extra_len, char* http_protocol){
 
-    sprintf(request,"%s /%s HTTP/%s\r\n", method, route, http_protocol);
-    sprintf(request,"%s%s%s%s%d%s%s%s%s",
-            request, // 1
+    sprintf(header,"%s /%s HTTP/%s\r\n", method, route, http_protocol);
+    sprintf(header,"%s%s%s%s%d%s%s%s%s",
+            header, // 1
             "Host: ", host, ":", port, "\r\n", // 2 3 4 5 6
             "Connection: ", connection_type, "\r\n"); // 7 8 9
 	if (extra_headers && strlen(extra_headers) > 0){
-		sprintf(request, "%s%s", request, extra_headers);
+		sprintf(header, "%s%s", header, extra_headers);
 	}
 	if (strcmp(method, "GET") != 0){
-		sprintf(request, "%s%s%s%d%s%s",
-			request,
+		sprintf(body, "%s%s%s%d%s%s",
+			header,
             "Content-Type: text/plain\r\n", // 10
             "Content-Length: ", (extra_len + strlen(body)), //11 12 (Extra len should be 2 for flask server)
             "\r\n\r\n", body); // 13 14 15
 	}
-	sprintf(request, "%s%s", request, "\r\n"); 
+	sprintf(body, "%s%s", body, "\r\n"); 
     
 }
     

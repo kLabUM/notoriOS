@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include "debug.h"
 
-#define DATA_MAX_VALUES 1024     //max vlaues that will ever be part of one node id. think of this as the numebr of senors
-#define DATA_MAX_KEY_LENGTH 20  //max vlaues that will ever be part of one node id. think of this as the numebr of senors
+#define DATA_MAX_VALUES 240     //max vlaues that will ever be part of one node id. think of this as the numebr of senors
+#define DATA_MAX_KEY_LENGTH 20  
 
 
 typedef struct{
@@ -25,7 +25,7 @@ void Clear_Data_Stack();
 uint16 dataPointsInStack; 
 key_value_t data[DATA_MAX_VALUES];
 
-void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
+void construct_generic_HTTP_request(char* header, char* body, char* host, char* route,
                                int port, char* method, char* connection_type,
 	                           char *extra_headers, int extra_len, char* http_protocol);
 
