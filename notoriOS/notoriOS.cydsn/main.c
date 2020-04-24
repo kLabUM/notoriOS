@@ -16,6 +16,7 @@
 #include "voltages.h"
 #include "debug.h"
 #include "modem.h"
+#include "influx.h"
 
 
 
@@ -83,14 +84,15 @@ int WorkWorkWorkWorkWorkWork()
        
 
  
+          LED_Write(1u);
+          CyDelay(100u);
+          LED_Write(0u);
        
-    
+        /*
         if(modem_get_state() == MODEM_STATE_OFF){
             
             //printNotif("Light ON");
-             LED_Write(1u);
-            CyDelay(100u);
-            LED_Write(0u);
+          
             modem_power_up();
         }else if(modem_get_state() == MODEM_STATE_READY){
             printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
@@ -98,7 +100,7 @@ int WorkWorkWorkWorkWorkWork()
             int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
             modem_power_down();
             timeToMeasure = 0u;
-        }
+        }*/
         
         
    
@@ -237,7 +239,8 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 void ChickityCheckYourselfBeforeYouWreckYourself(){
 
    // test_t t_modem = modem_test();
-    
+    test_t t_influx = influx_test();
+    printTestStatus(t_influx);
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     printTestStatus(t_level_sensor);
     test_t t_sd_card = SD_card_test();

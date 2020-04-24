@@ -1,0 +1,1345 @@
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"influx.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	debug_string,100,4
+  20              		.syntax unified
+  21              		.global _printf_float
+  22              		.thumb
+  23              		.syntax unified
+  24              		.comm	dataPointsInStack,2,2
+  25              		.comm	data,45056,4
+  26              		.section	.rodata
+  27              		.align	2
+  28              	.LC0:
+  29 0000 25732573 		.ascii	"%s%s,node_id=%s, value=%s %ld\012\000"
+  29      2C6E6F64 
+  29      655F6964 
+  29      3D25732C 
+  29      2076616C 
+  30              		.section	.text.generate_influx_write_body,"ax",%progbits
+  31              		.align	2
+  32              		.global	generate_influx_write_body
+  33              		.thumb
+  34              		.thumb_func
+  35              		.type	generate_influx_write_body, %function
+  36              	generate_influx_write_body:
+  37              	.LFB64:
+  38              		.file 1 "influx.c"
+   1:influx.c      **** #include "influx.h"
+   2:influx.c      **** 
+   3:influx.c      ****                         
+   4:influx.c      ****                         
+   5:influx.c      **** unsigned int generate_influx_write_body(char* body, char *node_id){
+  39              		.loc 1 5 0
+  40              		.cfi_startproc
+  41              		@ args = 0, pretend = 0, frame = 24
+  42              		@ frame_needed = 1, uses_anonymous_args = 0
+  43 0000 90B5     		push	{r4, r7, lr}
+  44              		.cfi_def_cfa_offset 12
+  45              		.cfi_offset 4, -12
+  46              		.cfi_offset 7, -8
+  47              		.cfi_offset 14, -4
+  48 0002 8BB0     		sub	sp, sp, #44
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 2
+
+
+  49              		.cfi_def_cfa_offset 56
+  50 0004 04AF     		add	r7, sp, #16
+  51              		.cfi_def_cfa 7, 40
+  52 0006 7860     		str	r0, [r7, #4]
+  53 0008 3960     		str	r1, [r7]
+   6:influx.c      ****    
+   7:influx.c      ****     unsigned int length = 0;
+  54              		.loc 1 7 0
+  55 000a 0023     		movs	r3, #0
+  56 000c 3B61     		str	r3, [r7, #16]
+   8:influx.c      ****     body[0] = '\0';
+  57              		.loc 1 8 0
+  58 000e 7B68     		ldr	r3, [r7, #4]
+  59 0010 0022     		movs	r2, #0
+  60 0012 1A70     		strb	r2, [r3]
+  61              	.LBB2:
+   9:influx.c      ****  
+  10:influx.c      **** 
+  11:influx.c      ****     
+  12:influx.c      ****     //construct influx body
+  13:influx.c      ****     for(uint16 i = 0;i<sizeOfDataStack();i++){
+  62              		.loc 1 13 0
+  63 0014 0023     		movs	r3, #0
+  64 0016 FB82     		strh	r3, [r7, #22]	@ movhi
+  65 0018 22E0     		b	.L2
+  66              	.L3:
+  14:influx.c      ****         sprintf(body, "%s%s,node_id=%s, value=%s %ld\n", body, data[i].key, node_id, data[i].value,
+  67              		.loc 1 14 0 discriminator 3
+  68 001a FB8A     		ldrh	r3, [r7, #22]
+  69 001c 2C22     		movs	r2, #44
+  70 001e 02FB03F3 		mul	r3, r2, r3
+  71 0022 194A     		ldr	r2, .L5
+  72 0024 9C18     		adds	r4, r3, r2
+  73 0026 FB8A     		ldrh	r3, [r7, #22]
+  74 0028 2C22     		movs	r2, #44
+  75 002a 02FB03F3 		mul	r3, r2, r3
+  76 002e 1033     		adds	r3, r3, #16
+  77 0030 154A     		ldr	r2, .L5
+  78 0032 1344     		add	r3, r3, r2
+  79 0034 0433     		adds	r3, r3, #4
+  80 0036 FA8A     		ldrh	r2, [r7, #22]
+  81 0038 1349     		ldr	r1, .L5
+  82 003a 2C20     		movs	r0, #44
+  83 003c 00FB02F2 		mul	r2, r0, r2
+  84 0040 0A44     		add	r2, r2, r1
+  85 0042 2832     		adds	r2, r2, #40
+  86 0044 1268     		ldr	r2, [r2]
+  87 0046 0292     		str	r2, [sp, #8]
+  88 0048 0193     		str	r3, [sp, #4]
+  89 004a 3B68     		ldr	r3, [r7]
+  90 004c 0093     		str	r3, [sp]
+  91 004e 2346     		mov	r3, r4
+  92 0050 7A68     		ldr	r2, [r7, #4]
+  93 0052 0E49     		ldr	r1, .L5+4
+  94 0054 7868     		ldr	r0, [r7, #4]
+  95 0056 FFF7FEFF 		bl	sprintf
+  13:influx.c      ****         sprintf(body, "%s%s,node_id=%s, value=%s %ld\n", body, data[i].key, node_id, data[i].value,
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 3
+
+
+  96              		.loc 1 13 0 discriminator 3
+  97 005a FB8A     		ldrh	r3, [r7, #22]
+  98 005c 0133     		adds	r3, r3, #1
+  99 005e FB82     		strh	r3, [r7, #22]	@ movhi
+ 100              	.L2:
+  13:influx.c      ****         sprintf(body, "%s%s,node_id=%s, value=%s %ld\n", body, data[i].key, node_id, data[i].value,
+ 101              		.loc 1 13 0 is_stmt 0 discriminator 1
+ 102 0060 FFF7FEFF 		bl	sizeOfDataStack
+ 103 0064 0346     		mov	r3, r0
+ 104 0066 1A46     		mov	r2, r3
+ 105 0068 FB8A     		ldrh	r3, [r7, #22]
+ 106 006a 9342     		cmp	r3, r2
+ 107 006c D5D3     		bcc	.L3
+ 108              	.LBE2:
+  15:influx.c      ****     }
+  16:influx.c      ****     
+  17:influx.c      ****     unsigned int request_len = strlen(body);
+ 109              		.loc 1 17 0 is_stmt 1
+ 110 006e 7868     		ldr	r0, [r7, #4]
+ 111 0070 FFF7FEFF 		bl	strlen
+ 112 0074 F860     		str	r0, [r7, #12]
+  18:influx.c      ****    
+  19:influx.c      ****     length = strlen(body);
+ 113              		.loc 1 19 0
+ 114 0076 7868     		ldr	r0, [r7, #4]
+ 115 0078 FFF7FEFF 		bl	strlen
+ 116 007c 3861     		str	r0, [r7, #16]
+  20:influx.c      ****     return length;
+ 117              		.loc 1 20 0
+ 118 007e 3B69     		ldr	r3, [r7, #16]
+  21:influx.c      **** }
+ 119              		.loc 1 21 0
+ 120 0080 1846     		mov	r0, r3
+ 121 0082 1C37     		adds	r7, r7, #28
+ 122              		.cfi_def_cfa_offset 12
+ 123 0084 BD46     		mov	sp, r7
+ 124              		.cfi_def_cfa_register 13
+ 125              		@ sp needed
+ 126 0086 90BD     		pop	{r4, r7, pc}
+ 127              	.L6:
+ 128              		.align	2
+ 129              	.L5:
+ 130 0088 00000000 		.word	data
+ 131 008c 00000000 		.word	.LC0
+ 132              		.cfi_endproc
+ 133              	.LFE64:
+ 134              		.size	generate_influx_write_body, .-generate_influx_write_body
+ 135              		.section	.rodata
+ 136 001f 00       		.align	2
+ 137              	.LC1:
+ 138 0020 494E464C 		.ascii	"INFLUX\000"
+ 138      555800
+ 139 0027 00       		.align	2
+ 140              	.LC2:
+ 141 0028 74657374 		.ascii	"test_reading_1,node_id=XYZ10, value=000 12345\012te"
+ 141      5F726561 
+ 141      64696E67 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 4
+
+
+ 141      5F312C6E 
+ 141      6F64655F 
+ 142 0058 73745F72 		.ascii	"st_reading_2,node_id=XYZ10, value=111 67890\012\000"
+ 142      65616469 
+ 142      6E675F32 
+ 142      2C6E6F64 
+ 142      655F6964 
+ 143 0085 000000   		.align	2
+ 144              	.LC3:
+ 145 0088 30303000 		.ascii	"000\000"
+ 146              		.align	2
+ 147              	.LC4:
+ 148 008c 74657374 		.ascii	"test_reading_1\000"
+ 148      5F726561 
+ 148      64696E67 
+ 148      5F3100
+ 149 009b 00       		.align	2
+ 150              	.LC5:
+ 151 009c 31313100 		.ascii	"111\000"
+ 152              		.align	2
+ 153              	.LC6:
+ 154 00a0 74657374 		.ascii	"test_reading_2\000"
+ 154      5F726561 
+ 154      64696E67 
+ 154      5F3200
+ 155 00af 00       		.align	2
+ 156              	.LC7:
+ 157 00b0 58595A31 		.ascii	"XYZ10\000"
+ 157      3000
+ 158 00b6 0000     		.align	2
+ 159              	.LC8:
+ 160 00b8 496E666C 		.ascii	"Influx body generated correctly.\000"
+ 160      75782062 
+ 160      6F647920 
+ 160      67656E65 
+ 160      72617465 
+ 161 00d9 000000   		.align	2
+ 162              	.LC9:
+ 163 00dc 496E666C 		.ascii	"Influx body could not be generated correctly.\000"
+ 163      75782062 
+ 163      6F647920 
+ 163      636F756C 
+ 163      64206E6F 
+ 164              		.section	.text.influx_test,"ax",%progbits
+ 165              		.align	2
+ 166              		.global	influx_test
+ 167              		.thumb
+ 168              		.thumb_func
+ 169              		.type	influx_test, %function
+ 170              	influx_test:
+ 171              	.LFB65:
+  22:influx.c      **** 
+  23:influx.c      **** test_t influx_test(){
+ 172              		.loc 1 23 0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 608
+ 175              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 5
+
+
+ 176 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 177              		.cfi_def_cfa_offset 20
+ 178              		.cfi_offset 4, -20
+ 179              		.cfi_offset 5, -16
+ 180              		.cfi_offset 6, -12
+ 181              		.cfi_offset 7, -8
+ 182              		.cfi_offset 14, -4
+ 183 0002 ADF5197D 		sub	sp, sp, #612
+ 184              		.cfi_def_cfa_offset 632
+ 185 0006 00AF     		add	r7, sp, #0
+ 186              		.cfi_def_cfa_register 7
+ 187 0008 3B1D     		adds	r3, r7, #4
+ 188 000a 1860     		str	r0, [r3]
+  24:influx.c      ****     test_t test;
+  25:influx.c      ****     test.status = 0u;
+ 189              		.loc 1 25 0
+ 190 000c 07F1D403 		add	r3, r7, #212
+ 191 0010 0022     		movs	r2, #0
+ 192 0012 83F88020 		strb	r2, [r3, #128]
+  26:influx.c      ****     sprintf(test.test_name,"INFLUX");
+ 193              		.loc 1 26 0
+ 194 0016 07F1D403 		add	r3, r7, #212
+ 195 001a 3C4A     		ldr	r2, .L13
+ 196 001c 92E80300 		ldmia	r2, {r0, r1}
+ 197 0020 1860     		str	r0, [r3]
+ 198 0022 0433     		adds	r3, r3, #4
+ 199 0024 1980     		strh	r1, [r3]	@ movhi
+ 200 0026 0233     		adds	r3, r3, #2
+ 201 0028 0A0C     		lsrs	r2, r1, #16
+ 202 002a 1A70     		strb	r2, [r3]
+  27:influx.c      ****     
+  28:influx.c      ****     //we'll create a few fake test, generate a string and compare it to a known value
+  29:influx.c      ****     char *expected_string = "test_reading_1,node_id=XYZ10, value=000 12345\ntest_reading_2,node_id=
+ 203              		.loc 1 29 0
+ 204 002c 384B     		ldr	r3, .L13+4
+ 205 002e C7F85C32 		str	r3, [r7, #604]
+  30:influx.c      ****     
+  31:influx.c      ****     Clear_Data_Stack();
+ 206              		.loc 1 31 0
+ 207 0032 FFF7FEFF 		bl	Clear_Data_Stack
+  32:influx.c      ****     pushData("test_reading_1", "000", 12345);
+ 208              		.loc 1 32 0
+ 209 0036 43F23902 		movw	r2, #12345
+ 210 003a 3649     		ldr	r1, .L13+8
+ 211 003c 3648     		ldr	r0, .L13+12
+ 212 003e FFF7FEFF 		bl	pushData
+  33:influx.c      ****     pushData("test_reading_2", "111", 67890);
+ 213              		.loc 1 33 0
+ 214 0042 364A     		ldr	r2, .L13+16
+ 215 0044 3649     		ldr	r1, .L13+20
+ 216 0046 3748     		ldr	r0, .L13+24
+ 217 0048 FFF7FEFF 		bl	pushData
+  34:influx.c      ****     char test_write_body[200];
+  35:influx.c      ****     generate_influx_write_body(test_write_body, "XYZ10");
+ 218              		.loc 1 35 0
+ 219 004c 07F10C03 		add	r3, r7, #12
+ 220 0050 3549     		ldr	r1, .L13+28
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 6
+
+
+ 221 0052 1846     		mov	r0, r3
+ 222 0054 FFF7FEFF 		bl	generate_influx_write_body
+  36:influx.c      ****     
+  37:influx.c      ****     //will return zero if strings are identical,
+  38:influx.c      ****     int compare = strcmp(test_write_body,expected_string);
+ 223              		.loc 1 38 0
+ 224 0058 07F10C03 		add	r3, r7, #12
+ 225 005c D7F85C12 		ldr	r1, [r7, #604]
+ 226 0060 1846     		mov	r0, r3
+ 227 0062 FFF7FEFF 		bl	strcmp
+ 228 0066 C7F85802 		str	r0, [r7, #600]
+  39:influx.c      ****     
+  40:influx.c      ****     if(compare == 0){
+ 229              		.loc 1 40 0
+ 230 006a D7F85832 		ldr	r3, [r7, #600]
+ 231 006e 002B     		cmp	r3, #0
+ 232 0070 1DD1     		bne	.L8
+  41:influx.c      ****         test.status = 1u;
+ 233              		.loc 1 41 0
+ 234 0072 07F1D403 		add	r3, r7, #212
+ 235 0076 0122     		movs	r2, #1
+ 236 0078 83F88020 		strb	r2, [r3, #128]
+  42:influx.c      ****         sprintf(test.reason,"Influx body generated correctly.");
+ 237              		.loc 1 42 0
+ 238 007c 07F1D403 		add	r3, r7, #212
+ 239 0080 8133     		adds	r3, r3, #129
+ 240 0082 2A4A     		ldr	r2, .L13+32
+ 241 0084 1446     		mov	r4, r2
+ 242 0086 9E46     		mov	lr, r3
+ 243 0088 04F1200C 		add	ip, r4, #32
+ 244              	.L9:
+ 245 008c 7546     		mov	r5, lr
+ 246 008e 2646     		mov	r6, r4
+ 247 0090 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 248 0092 2860     		str	r0, [r5]	@ unaligned
+ 249 0094 6960     		str	r1, [r5, #4]	@ unaligned
+ 250 0096 AA60     		str	r2, [r5, #8]	@ unaligned
+ 251 0098 EB60     		str	r3, [r5, #12]	@ unaligned
+ 252 009a 1034     		adds	r4, r4, #16
+ 253 009c 0EF1100E 		add	lr, lr, #16
+ 254 00a0 6445     		cmp	r4, ip
+ 255 00a2 F3D1     		bne	.L9
+ 256 00a4 7346     		mov	r3, lr
+ 257 00a6 2246     		mov	r2, r4
+ 258 00a8 1278     		ldrb	r2, [r2]
+ 259 00aa 1A70     		strb	r2, [r3]
+ 260 00ac 1BE0     		b	.L10
+ 261              	.L8:
+  43:influx.c      ****     }else{
+  44:influx.c      ****         sprintf(test.reason,"Influx body could not be generated correctly.");
+ 262              		.loc 1 44 0
+ 263 00ae 07F1D403 		add	r3, r7, #212
+ 264 00b2 8133     		adds	r3, r3, #129
+ 265 00b4 1E4A     		ldr	r2, .L13+36
+ 266 00b6 1446     		mov	r4, r2
+ 267 00b8 9E46     		mov	lr, r3
+ 268 00ba 04F1200C 		add	ip, r4, #32
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 7
+
+
+ 269              	.L11:
+ 270 00be 7546     		mov	r5, lr
+ 271 00c0 2646     		mov	r6, r4
+ 272 00c2 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 273 00c4 2860     		str	r0, [r5]	@ unaligned
+ 274 00c6 6960     		str	r1, [r5, #4]	@ unaligned
+ 275 00c8 AA60     		str	r2, [r5, #8]	@ unaligned
+ 276 00ca EB60     		str	r3, [r5, #12]	@ unaligned
+ 277 00cc 1034     		adds	r4, r4, #16
+ 278 00ce 0EF1100E 		add	lr, lr, #16
+ 279 00d2 6445     		cmp	r4, ip
+ 280 00d4 F3D1     		bne	.L11
+ 281 00d6 7546     		mov	r5, lr
+ 282 00d8 2346     		mov	r3, r4
+ 283 00da 07CB     		ldmia	r3!, {r0, r1, r2}
+ 284 00dc 2860     		str	r0, [r5]	@ unaligned
+ 285 00de 6960     		str	r1, [r5, #4]	@ unaligned
+ 286 00e0 AA60     		str	r2, [r5, #8]	@ unaligned
+ 287 00e2 1B88     		ldrh	r3, [r3]	@ unaligned
+ 288 00e4 AB81     		strh	r3, [r5, #12]	@ unaligned
+ 289              	.L10:
+  45:influx.c      ****     }
+  46:influx.c      ****     
+  47:influx.c      ****     Clear_Data_Stack();
+ 290              		.loc 1 47 0
+ 291 00e6 FFF7FEFF 		bl	Clear_Data_Stack
+  48:influx.c      ****     
+  49:influx.c      ****     return test;
+ 292              		.loc 1 49 0
+ 293 00ea 3B1D     		adds	r3, r7, #4
+ 294 00ec 1A68     		ldr	r2, [r3]
+ 295 00ee 07F1D403 		add	r3, r7, #212
+ 296 00f2 1046     		mov	r0, r2
+ 297 00f4 1946     		mov	r1, r3
+ 298 00f6 40F28113 		movw	r3, #385
+ 299 00fa 1A46     		mov	r2, r3
+ 300 00fc FFF7FEFF 		bl	memcpy
+  50:influx.c      **** }...
+ 301              		.loc 1 50 0
+ 302 0100 3B1D     		adds	r3, r7, #4
+ 303 0102 1868     		ldr	r0, [r3]
+ 304 0104 07F51977 		add	r7, r7, #612
+ 305              		.cfi_def_cfa_offset 20
+ 306 0108 BD46     		mov	sp, r7
+ 307              		.cfi_def_cfa_register 13
+ 308              		@ sp needed
+ 309 010a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 310              	.L14:
+ 311              		.align	2
+ 312              	.L13:
+ 313 010c 20000000 		.word	.LC1
+ 314 0110 28000000 		.word	.LC2
+ 315 0114 88000000 		.word	.LC3
+ 316 0118 8C000000 		.word	.LC4
+ 317 011c 32090100 		.word	67890
+ 318 0120 9C000000 		.word	.LC5
+ 319 0124 A0000000 		.word	.LC6
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 8
+
+
+ 320 0128 B0000000 		.word	.LC7
+ 321 012c B8000000 		.word	.LC8
+ 322 0130 DC000000 		.word	.LC9
+ 323              		.cfi_endproc
+ 324              	.LFE65:
+ 325              		.size	influx_test, .-influx_test
+ 326              		.text
+ 327              	.Letext0:
+ 328              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 329              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 330              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 331              		.file 5 "testing.h"
+ 332              		.file 6 "data.h"
+ 333              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 334              		.file 8 "debug.h"
+ 335              		.section	.debug_info,"",%progbits
+ 336              	.Ldebug_info0:
+ 337 0000 9D020000 		.4byte	0x29d
+ 338 0004 0400     		.2byte	0x4
+ 339 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 340 000a 04       		.byte	0x4
+ 341 000b 01       		.uleb128 0x1
+ 342 000c 10000000 		.4byte	.LASF38
+ 343 0010 0C       		.byte	0xc
+ 344 0011 C8010000 		.4byte	.LASF39
+ 345 0015 18010000 		.4byte	.LASF40
+ 346 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 347 001d 00000000 		.4byte	0
+ 348 0021 00000000 		.4byte	.Ldebug_line0
+ 349 0025 02       		.uleb128 0x2
+ 350 0026 01       		.byte	0x1
+ 351 0027 06       		.byte	0x6
+ 352 0028 75020000 		.4byte	.LASF0
+ 353 002c 02       		.uleb128 0x2
+ 354 002d 01       		.byte	0x1
+ 355 002e 08       		.byte	0x8
+ 356 002f 61010000 		.4byte	.LASF1
+ 357 0033 02       		.uleb128 0x2
+ 358 0034 02       		.byte	0x2
+ 359 0035 05       		.byte	0x5
+ 360 0036 3E020000 		.4byte	.LASF2
+ 361 003a 02       		.uleb128 0x2
+ 362 003b 02       		.byte	0x2
+ 363 003c 07       		.byte	0x7
+ 364 003d C8000000 		.4byte	.LASF3
+ 365 0041 03       		.uleb128 0x3
+ 366 0042 B7000000 		.4byte	.LASF9
+ 367 0046 02       		.byte	0x2
+ 368 0047 3F       		.byte	0x3f
+ 369 0048 4C000000 		.4byte	0x4c
+ 370 004c 02       		.uleb128 0x2
+ 371 004d 04       		.byte	0x4
+ 372 004e 05       		.byte	0x5
+ 373 004f 60020000 		.4byte	.LASF4
+ 374 0053 02       		.uleb128 0x2
+ 375 0054 04       		.byte	0x4
+ 376 0055 07       		.byte	0x7
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 9
+
+
+ 377 0056 79010000 		.4byte	.LASF5
+ 378 005a 02       		.uleb128 0x2
+ 379 005b 08       		.byte	0x8
+ 380 005c 05       		.byte	0x5
+ 381 005d 25020000 		.4byte	.LASF6
+ 382 0061 02       		.uleb128 0x2
+ 383 0062 08       		.byte	0x8
+ 384 0063 07       		.byte	0x7
+ 385 0064 F6010000 		.4byte	.LASF7
+ 386 0068 04       		.uleb128 0x4
+ 387 0069 04       		.byte	0x4
+ 388 006a 05       		.byte	0x5
+ 389 006b 696E7400 		.ascii	"int\000"
+ 390 006f 02       		.uleb128 0x2
+ 391 0070 04       		.byte	0x4
+ 392 0071 07       		.byte	0x7
+ 393 0072 E9010000 		.4byte	.LASF8
+ 394 0076 03       		.uleb128 0x3
+ 395 0077 14020000 		.4byte	.LASF10
+ 396 007b 03       		.byte	0x3
+ 397 007c 2C       		.byte	0x2c
+ 398 007d 41000000 		.4byte	0x41
+ 399 0081 05       		.uleb128 0x5
+ 400 0082 48020000 		.4byte	.LASF11
+ 401 0086 04       		.byte	0x4
+ 402 0087 E401     		.2byte	0x1e4
+ 403 0089 2C000000 		.4byte	0x2c
+ 404 008d 05       		.uleb128 0x5
+ 405 008e DD010000 		.4byte	.LASF12
+ 406 0092 04       		.byte	0x4
+ 407 0093 E501     		.2byte	0x1e5
+ 408 0095 3A000000 		.4byte	0x3a
+ 409 0099 05       		.uleb128 0x5
+ 410 009a 97010000 		.4byte	.LASF13
+ 411 009e 04       		.byte	0x4
+ 412 009f E901     		.2byte	0x1e9
+ 413 00a1 4C000000 		.4byte	0x4c
+ 414 00a5 02       		.uleb128 0x2
+ 415 00a6 04       		.byte	0x4
+ 416 00a7 04       		.byte	0x4
+ 417 00a8 0D010000 		.4byte	.LASF14
+ 418 00ac 02       		.uleb128 0x2
+ 419 00ad 08       		.byte	0x8
+ 420 00ae 04       		.byte	0x4
+ 421 00af D6010000 		.4byte	.LASF15
+ 422 00b3 02       		.uleb128 0x2
+ 423 00b4 01       		.byte	0x1
+ 424 00b5 08       		.byte	0x8
+ 425 00b6 33020000 		.4byte	.LASF16
+ 426 00ba 02       		.uleb128 0x2
+ 427 00bb 08       		.byte	0x8
+ 428 00bc 04       		.byte	0x4
+ 429 00bd 69020000 		.4byte	.LASF17
+ 430 00c1 02       		.uleb128 0x2
+ 431 00c2 04       		.byte	0x4
+ 432 00c3 07       		.byte	0x7
+ 433 00c4 1C020000 		.4byte	.LASF18
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 10
+
+
+ 434 00c8 06       		.uleb128 0x6
+ 435 00c9 04       		.byte	0x4
+ 436 00ca B3000000 		.4byte	0xb3
+ 437 00ce 07       		.uleb128 0x7
+ 438 00cf 8101     		.2byte	0x181
+ 439 00d1 05       		.byte	0x5
+ 440 00d2 0A       		.byte	0xa
+ 441 00d3 FC000000 		.4byte	0xfc
+ 442 00d7 08       		.uleb128 0x8
+ 443 00d8 4E020000 		.4byte	.LASF19
+ 444 00dc 05       		.byte	0x5
+ 445 00dd 0B       		.byte	0xb
+ 446 00de FC000000 		.4byte	0xfc
+ 447 00e2 00       		.byte	0
+ 448 00e3 08       		.uleb128 0x8
+ 449 00e4 F6000000 		.4byte	.LASF20
+ 450 00e8 05       		.byte	0x5
+ 451 00e9 0C       		.byte	0xc
+ 452 00ea 81000000 		.4byte	0x81
+ 453 00ee 80       		.byte	0x80
+ 454 00ef 08       		.uleb128 0x8
+ 455 00f0 0D020000 		.4byte	.LASF21
+ 456 00f4 05       		.byte	0x5
+ 457 00f5 0D       		.byte	0xd
+ 458 00f6 0C010000 		.4byte	0x10c
+ 459 00fa 81       		.byte	0x81
+ 460 00fb 00       		.byte	0
+ 461 00fc 09       		.uleb128 0x9
+ 462 00fd B3000000 		.4byte	0xb3
+ 463 0101 0C010000 		.4byte	0x10c
+ 464 0105 0A       		.uleb128 0xa
+ 465 0106 C1000000 		.4byte	0xc1
+ 466 010a 7F       		.byte	0x7f
+ 467 010b 00       		.byte	0
+ 468 010c 09       		.uleb128 0x9
+ 469 010d B3000000 		.4byte	0xb3
+ 470 0111 1C010000 		.4byte	0x11c
+ 471 0115 0A       		.uleb128 0xa
+ 472 0116 C1000000 		.4byte	0xc1
+ 473 011a FF       		.byte	0xff
+ 474 011b 00       		.byte	0
+ 475 011c 03       		.uleb128 0x3
+ 476 011d C1000000 		.4byte	.LASF22
+ 477 0121 05       		.byte	0x5
+ 478 0122 0E       		.byte	0xe
+ 479 0123 CE000000 		.4byte	0xce
+ 480 0127 0B       		.uleb128 0xb
+ 481 0128 2C       		.byte	0x2c
+ 482 0129 06       		.byte	0x6
+ 483 012a 0B       		.byte	0xb
+ 484 012b 54010000 		.4byte	0x154
+ 485 012f 0C       		.uleb128 0xc
+ 486 0130 6B657900 		.ascii	"key\000"
+ 487 0134 06       		.byte	0x6
+ 488 0135 0C       		.byte	0xc
+ 489 0136 54010000 		.4byte	0x154
+ 490 013a 00       		.byte	0
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 11
+
+
+ 491 013b 08       		.uleb128 0x8
+ 492 013c 38020000 		.4byte	.LASF23
+ 493 0140 06       		.byte	0x6
+ 494 0141 0D       		.byte	0xd
+ 495 0142 54010000 		.4byte	0x154
+ 496 0146 14       		.byte	0x14
+ 497 0147 08       		.uleb128 0x8
+ 498 0148 6F010000 		.4byte	.LASF24
+ 499 014c 06       		.byte	0x6
+ 500 014d 0E       		.byte	0xe
+ 501 014e 99000000 		.4byte	0x99
+ 502 0152 28       		.byte	0x28
+ 503 0153 00       		.byte	0
+ 504 0154 09       		.uleb128 0x9
+ 505 0155 B3000000 		.4byte	0xb3
+ 506 0159 64010000 		.4byte	0x164
+ 507 015d 0A       		.uleb128 0xa
+ 508 015e C1000000 		.4byte	0xc1
+ 509 0162 13       		.byte	0x13
+ 510 0163 00       		.byte	0
+ 511 0164 03       		.uleb128 0x3
+ 512 0165 BC010000 		.4byte	.LASF25
+ 513 0169 06       		.byte	0x6
+ 514 016a 0F       		.byte	0xf
+ 515 016b 27010000 		.4byte	0x127
+ 516 016f 0D       		.uleb128 0xd
+ 517 0170 DB000000 		.4byte	.LASF41
+ 518 0174 01       		.byte	0x1
+ 519 0175 05       		.byte	0x5
+ 520 0176 6F000000 		.4byte	0x6f
+ 521 017a 00000000 		.4byte	.LFB64
+ 522 017e 90000000 		.4byte	.LFE64-.LFB64
+ 523 0182 01       		.uleb128 0x1
+ 524 0183 9C       		.byte	0x9c
+ 525 0184 D7010000 		.4byte	0x1d7
+ 526 0188 0E       		.uleb128 0xe
+ 527 0189 D1010000 		.4byte	.LASF26
+ 528 018d 01       		.byte	0x1
+ 529 018e 05       		.byte	0x5
+ 530 018f C8000000 		.4byte	0xc8
+ 531 0193 02       		.uleb128 0x2
+ 532 0194 91       		.byte	0x91
+ 533 0195 5C       		.sleb128 -36
+ 534 0196 0E       		.uleb128 0xe
+ 535 0197 58020000 		.4byte	.LASF27
+ 536 019b 01       		.byte	0x1
+ 537 019c 05       		.byte	0x5
+ 538 019d C8000000 		.4byte	0xc8
+ 539 01a1 02       		.uleb128 0x2
+ 540 01a2 91       		.byte	0x91
+ 541 01a3 58       		.sleb128 -40
+ 542 01a4 0F       		.uleb128 0xf
+ 543 01a5 89020000 		.4byte	.LASF28
+ 544 01a9 01       		.byte	0x1
+ 545 01aa 07       		.byte	0x7
+ 546 01ab 6F000000 		.4byte	0x6f
+ 547 01af 02       		.uleb128 0x2
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 12
+
+
+ 548 01b0 91       		.byte	0x91
+ 549 01b1 68       		.sleb128 -24
+ 550 01b2 0F       		.uleb128 0xf
+ 551 01b3 AB000000 		.4byte	.LASF29
+ 552 01b7 01       		.byte	0x1
+ 553 01b8 11       		.byte	0x11
+ 554 01b9 6F000000 		.4byte	0x6f
+ 555 01bd 02       		.uleb128 0x2
+ 556 01be 91       		.byte	0x91
+ 557 01bf 64       		.sleb128 -28
+ 558 01c0 10       		.uleb128 0x10
+ 559 01c1 14000000 		.4byte	.LBB2
+ 560 01c5 5A000000 		.4byte	.LBE2-.LBB2
+ 561 01c9 11       		.uleb128 0x11
+ 562 01ca 6900     		.ascii	"i\000"
+ 563 01cc 01       		.byte	0x1
+ 564 01cd 0D       		.byte	0xd
+ 565 01ce 8D000000 		.4byte	0x8d
+ 566 01d2 02       		.uleb128 0x2
+ 567 01d3 91       		.byte	0x91
+ 568 01d4 6E       		.sleb128 -18
+ 569 01d5 00       		.byte	0
+ 570 01d6 00       		.byte	0
+ 571 01d7 12       		.uleb128 0x12
+ 572 01d8 8B010000 		.4byte	.LASF42
+ 573 01dc 01       		.byte	0x1
+ 574 01dd 17       		.byte	0x17
+ 575 01de 1C010000 		.4byte	0x11c
+ 576 01e2 00000000 		.4byte	.LFB65
+ 577 01e6 34010000 		.4byte	.LFE65-.LFB65
+ 578 01ea 01       		.uleb128 0x1
+ 579 01eb 9C       		.byte	0x9c
+ 580 01ec 2B020000 		.4byte	0x22b
+ 581 01f0 0F       		.uleb128 0xf
+ 582 01f1 E4010000 		.4byte	.LASF30
+ 583 01f5 01       		.byte	0x1
+ 584 01f6 18       		.byte	0x18
+ 585 01f7 1C010000 		.4byte	0x11c
+ 586 01fb 03       		.uleb128 0x3
+ 587 01fc 91       		.byte	0x91
+ 588 01fd DC7C     		.sleb128 -420
+ 589 01ff 0F       		.uleb128 0xf
+ 590 0200 00000000 		.4byte	.LASF31
+ 591 0204 01       		.byte	0x1
+ 592 0205 1D       		.byte	0x1d
+ 593 0206 C8000000 		.4byte	0xc8
+ 594 020a 02       		.uleb128 0x2
+ 595 020b 91       		.byte	0x91
+ 596 020c 64       		.sleb128 -28
+ 597 020d 0F       		.uleb128 0xf
+ 598 020e FD000000 		.4byte	.LASF32
+ 599 0212 01       		.byte	0x1
+ 600 0213 22       		.byte	0x22
+ 601 0214 2B020000 		.4byte	0x22b
+ 602 0218 03       		.uleb128 0x3
+ 603 0219 91       		.byte	0x91
+ 604 021a 947B     		.sleb128 -620
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 13
+
+
+ 605 021c 0F       		.uleb128 0xf
+ 606 021d 81020000 		.4byte	.LASF33
+ 607 0221 01       		.byte	0x1
+ 608 0222 26       		.byte	0x26
+ 609 0223 68000000 		.4byte	0x68
+ 610 0227 02       		.uleb128 0x2
+ 611 0228 91       		.byte	0x91
+ 612 0229 60       		.sleb128 -32
+ 613 022a 00       		.byte	0
+ 614 022b 09       		.uleb128 0x9
+ 615 022c B3000000 		.4byte	0xb3
+ 616 0230 3B020000 		.4byte	0x23b
+ 617 0234 0A       		.uleb128 0xa
+ 618 0235 C1000000 		.4byte	0xc1
+ 619 0239 C7       		.byte	0xc7
+ 620 023a 00       		.byte	0
+ 621 023b 13       		.uleb128 0x13
+ 622 023c AF010000 		.4byte	.LASF34
+ 623 0240 07       		.byte	0x7
+ 624 0241 1207     		.2byte	0x712
+ 625 0243 47020000 		.4byte	0x247
+ 626 0247 14       		.uleb128 0x14
+ 627 0248 76000000 		.4byte	0x76
+ 628 024c 09       		.uleb128 0x9
+ 629 024d B3000000 		.4byte	0xb3
+ 630 0251 5C020000 		.4byte	0x25c
+ 631 0255 0A       		.uleb128 0xa
+ 632 0256 C1000000 		.4byte	0xc1
+ 633 025a 63       		.byte	0x63
+ 634 025b 00       		.byte	0
+ 635 025c 15       		.uleb128 0x15
+ 636 025d 9E000000 		.4byte	.LASF35
+ 637 0261 08       		.byte	0x8
+ 638 0262 17       		.byte	0x17
+ 639 0263 4C020000 		.4byte	0x24c
+ 640 0267 05       		.uleb128 0x5
+ 641 0268 03       		.byte	0x3
+ 642 0269 00000000 		.4byte	debug_string
+ 643 026d 15       		.uleb128 0x15
+ 644 026e 9D010000 		.4byte	.LASF36
+ 645 0272 06       		.byte	0x6
+ 646 0273 19       		.byte	0x19
+ 647 0274 8D000000 		.4byte	0x8d
+ 648 0278 05       		.uleb128 0x5
+ 649 0279 03       		.byte	0x3
+ 650 027a 00000000 		.4byte	dataPointsInStack
+ 651 027e 09       		.uleb128 0x9
+ 652 027f 64010000 		.4byte	0x164
+ 653 0283 8F020000 		.4byte	0x28f
+ 654 0287 16       		.uleb128 0x16
+ 655 0288 C1000000 		.4byte	0xc1
+ 656 028c FF03     		.2byte	0x3ff
+ 657 028e 00       		.byte	0
+ 658 028f 15       		.uleb128 0x15
+ 659 0290 13010000 		.4byte	.LASF37
+ 660 0294 06       		.byte	0x6
+ 661 0295 1A       		.byte	0x1a
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 14
+
+
+ 662 0296 7E020000 		.4byte	0x27e
+ 663 029a 05       		.uleb128 0x5
+ 664 029b 03       		.byte	0x3
+ 665 029c 00000000 		.4byte	data
+ 666 02a0 00       		.byte	0
+ 667              		.section	.debug_abbrev,"",%progbits
+ 668              	.Ldebug_abbrev0:
+ 669 0000 01       		.uleb128 0x1
+ 670 0001 11       		.uleb128 0x11
+ 671 0002 01       		.byte	0x1
+ 672 0003 25       		.uleb128 0x25
+ 673 0004 0E       		.uleb128 0xe
+ 674 0005 13       		.uleb128 0x13
+ 675 0006 0B       		.uleb128 0xb
+ 676 0007 03       		.uleb128 0x3
+ 677 0008 0E       		.uleb128 0xe
+ 678 0009 1B       		.uleb128 0x1b
+ 679 000a 0E       		.uleb128 0xe
+ 680 000b 55       		.uleb128 0x55
+ 681 000c 17       		.uleb128 0x17
+ 682 000d 11       		.uleb128 0x11
+ 683 000e 01       		.uleb128 0x1
+ 684 000f 10       		.uleb128 0x10
+ 685 0010 17       		.uleb128 0x17
+ 686 0011 00       		.byte	0
+ 687 0012 00       		.byte	0
+ 688 0013 02       		.uleb128 0x2
+ 689 0014 24       		.uleb128 0x24
+ 690 0015 00       		.byte	0
+ 691 0016 0B       		.uleb128 0xb
+ 692 0017 0B       		.uleb128 0xb
+ 693 0018 3E       		.uleb128 0x3e
+ 694 0019 0B       		.uleb128 0xb
+ 695 001a 03       		.uleb128 0x3
+ 696 001b 0E       		.uleb128 0xe
+ 697 001c 00       		.byte	0
+ 698 001d 00       		.byte	0
+ 699 001e 03       		.uleb128 0x3
+ 700 001f 16       		.uleb128 0x16
+ 701 0020 00       		.byte	0
+ 702 0021 03       		.uleb128 0x3
+ 703 0022 0E       		.uleb128 0xe
+ 704 0023 3A       		.uleb128 0x3a
+ 705 0024 0B       		.uleb128 0xb
+ 706 0025 3B       		.uleb128 0x3b
+ 707 0026 0B       		.uleb128 0xb
+ 708 0027 49       		.uleb128 0x49
+ 709 0028 13       		.uleb128 0x13
+ 710 0029 00       		.byte	0
+ 711 002a 00       		.byte	0
+ 712 002b 04       		.uleb128 0x4
+ 713 002c 24       		.uleb128 0x24
+ 714 002d 00       		.byte	0
+ 715 002e 0B       		.uleb128 0xb
+ 716 002f 0B       		.uleb128 0xb
+ 717 0030 3E       		.uleb128 0x3e
+ 718 0031 0B       		.uleb128 0xb
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 15
+
+
+ 719 0032 03       		.uleb128 0x3
+ 720 0033 08       		.uleb128 0x8
+ 721 0034 00       		.byte	0
+ 722 0035 00       		.byte	0
+ 723 0036 05       		.uleb128 0x5
+ 724 0037 16       		.uleb128 0x16
+ 725 0038 00       		.byte	0
+ 726 0039 03       		.uleb128 0x3
+ 727 003a 0E       		.uleb128 0xe
+ 728 003b 3A       		.uleb128 0x3a
+ 729 003c 0B       		.uleb128 0xb
+ 730 003d 3B       		.uleb128 0x3b
+ 731 003e 05       		.uleb128 0x5
+ 732 003f 49       		.uleb128 0x49
+ 733 0040 13       		.uleb128 0x13
+ 734 0041 00       		.byte	0
+ 735 0042 00       		.byte	0
+ 736 0043 06       		.uleb128 0x6
+ 737 0044 0F       		.uleb128 0xf
+ 738 0045 00       		.byte	0
+ 739 0046 0B       		.uleb128 0xb
+ 740 0047 0B       		.uleb128 0xb
+ 741 0048 49       		.uleb128 0x49
+ 742 0049 13       		.uleb128 0x13
+ 743 004a 00       		.byte	0
+ 744 004b 00       		.byte	0
+ 745 004c 07       		.uleb128 0x7
+ 746 004d 13       		.uleb128 0x13
+ 747 004e 01       		.byte	0x1
+ 748 004f 0B       		.uleb128 0xb
+ 749 0050 05       		.uleb128 0x5
+ 750 0051 3A       		.uleb128 0x3a
+ 751 0052 0B       		.uleb128 0xb
+ 752 0053 3B       		.uleb128 0x3b
+ 753 0054 0B       		.uleb128 0xb
+ 754 0055 01       		.uleb128 0x1
+ 755 0056 13       		.uleb128 0x13
+ 756 0057 00       		.byte	0
+ 757 0058 00       		.byte	0
+ 758 0059 08       		.uleb128 0x8
+ 759 005a 0D       		.uleb128 0xd
+ 760 005b 00       		.byte	0
+ 761 005c 03       		.uleb128 0x3
+ 762 005d 0E       		.uleb128 0xe
+ 763 005e 3A       		.uleb128 0x3a
+ 764 005f 0B       		.uleb128 0xb
+ 765 0060 3B       		.uleb128 0x3b
+ 766 0061 0B       		.uleb128 0xb
+ 767 0062 49       		.uleb128 0x49
+ 768 0063 13       		.uleb128 0x13
+ 769 0064 38       		.uleb128 0x38
+ 770 0065 0B       		.uleb128 0xb
+ 771 0066 00       		.byte	0
+ 772 0067 00       		.byte	0
+ 773 0068 09       		.uleb128 0x9
+ 774 0069 01       		.uleb128 0x1
+ 775 006a 01       		.byte	0x1
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 16
+
+
+ 776 006b 49       		.uleb128 0x49
+ 777 006c 13       		.uleb128 0x13
+ 778 006d 01       		.uleb128 0x1
+ 779 006e 13       		.uleb128 0x13
+ 780 006f 00       		.byte	0
+ 781 0070 00       		.byte	0
+ 782 0071 0A       		.uleb128 0xa
+ 783 0072 21       		.uleb128 0x21
+ 784 0073 00       		.byte	0
+ 785 0074 49       		.uleb128 0x49
+ 786 0075 13       		.uleb128 0x13
+ 787 0076 2F       		.uleb128 0x2f
+ 788 0077 0B       		.uleb128 0xb
+ 789 0078 00       		.byte	0
+ 790 0079 00       		.byte	0
+ 791 007a 0B       		.uleb128 0xb
+ 792 007b 13       		.uleb128 0x13
+ 793 007c 01       		.byte	0x1
+ 794 007d 0B       		.uleb128 0xb
+ 795 007e 0B       		.uleb128 0xb
+ 796 007f 3A       		.uleb128 0x3a
+ 797 0080 0B       		.uleb128 0xb
+ 798 0081 3B       		.uleb128 0x3b
+ 799 0082 0B       		.uleb128 0xb
+ 800 0083 01       		.uleb128 0x1
+ 801 0084 13       		.uleb128 0x13
+ 802 0085 00       		.byte	0
+ 803 0086 00       		.byte	0
+ 804 0087 0C       		.uleb128 0xc
+ 805 0088 0D       		.uleb128 0xd
+ 806 0089 00       		.byte	0
+ 807 008a 03       		.uleb128 0x3
+ 808 008b 08       		.uleb128 0x8
+ 809 008c 3A       		.uleb128 0x3a
+ 810 008d 0B       		.uleb128 0xb
+ 811 008e 3B       		.uleb128 0x3b
+ 812 008f 0B       		.uleb128 0xb
+ 813 0090 49       		.uleb128 0x49
+ 814 0091 13       		.uleb128 0x13
+ 815 0092 38       		.uleb128 0x38
+ 816 0093 0B       		.uleb128 0xb
+ 817 0094 00       		.byte	0
+ 818 0095 00       		.byte	0
+ 819 0096 0D       		.uleb128 0xd
+ 820 0097 2E       		.uleb128 0x2e
+ 821 0098 01       		.byte	0x1
+ 822 0099 3F       		.uleb128 0x3f
+ 823 009a 19       		.uleb128 0x19
+ 824 009b 03       		.uleb128 0x3
+ 825 009c 0E       		.uleb128 0xe
+ 826 009d 3A       		.uleb128 0x3a
+ 827 009e 0B       		.uleb128 0xb
+ 828 009f 3B       		.uleb128 0x3b
+ 829 00a0 0B       		.uleb128 0xb
+ 830 00a1 27       		.uleb128 0x27
+ 831 00a2 19       		.uleb128 0x19
+ 832 00a3 49       		.uleb128 0x49
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 17
+
+
+ 833 00a4 13       		.uleb128 0x13
+ 834 00a5 11       		.uleb128 0x11
+ 835 00a6 01       		.uleb128 0x1
+ 836 00a7 12       		.uleb128 0x12
+ 837 00a8 06       		.uleb128 0x6
+ 838 00a9 40       		.uleb128 0x40
+ 839 00aa 18       		.uleb128 0x18
+ 840 00ab 9642     		.uleb128 0x2116
+ 841 00ad 19       		.uleb128 0x19
+ 842 00ae 01       		.uleb128 0x1
+ 843 00af 13       		.uleb128 0x13
+ 844 00b0 00       		.byte	0
+ 845 00b1 00       		.byte	0
+ 846 00b2 0E       		.uleb128 0xe
+ 847 00b3 05       		.uleb128 0x5
+ 848 00b4 00       		.byte	0
+ 849 00b5 03       		.uleb128 0x3
+ 850 00b6 0E       		.uleb128 0xe
+ 851 00b7 3A       		.uleb128 0x3a
+ 852 00b8 0B       		.uleb128 0xb
+ 853 00b9 3B       		.uleb128 0x3b
+ 854 00ba 0B       		.uleb128 0xb
+ 855 00bb 49       		.uleb128 0x49
+ 856 00bc 13       		.uleb128 0x13
+ 857 00bd 02       		.uleb128 0x2
+ 858 00be 18       		.uleb128 0x18
+ 859 00bf 00       		.byte	0
+ 860 00c0 00       		.byte	0
+ 861 00c1 0F       		.uleb128 0xf
+ 862 00c2 34       		.uleb128 0x34
+ 863 00c3 00       		.byte	0
+ 864 00c4 03       		.uleb128 0x3
+ 865 00c5 0E       		.uleb128 0xe
+ 866 00c6 3A       		.uleb128 0x3a
+ 867 00c7 0B       		.uleb128 0xb
+ 868 00c8 3B       		.uleb128 0x3b
+ 869 00c9 0B       		.uleb128 0xb
+ 870 00ca 49       		.uleb128 0x49
+ 871 00cb 13       		.uleb128 0x13
+ 872 00cc 02       		.uleb128 0x2
+ 873 00cd 18       		.uleb128 0x18
+ 874 00ce 00       		.byte	0
+ 875 00cf 00       		.byte	0
+ 876 00d0 10       		.uleb128 0x10
+ 877 00d1 0B       		.uleb128 0xb
+ 878 00d2 01       		.byte	0x1
+ 879 00d3 11       		.uleb128 0x11
+ 880 00d4 01       		.uleb128 0x1
+ 881 00d5 12       		.uleb128 0x12
+ 882 00d6 06       		.uleb128 0x6
+ 883 00d7 00       		.byte	0
+ 884 00d8 00       		.byte	0
+ 885 00d9 11       		.uleb128 0x11
+ 886 00da 34       		.uleb128 0x34
+ 887 00db 00       		.byte	0
+ 888 00dc 03       		.uleb128 0x3
+ 889 00dd 08       		.uleb128 0x8
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 18
+
+
+ 890 00de 3A       		.uleb128 0x3a
+ 891 00df 0B       		.uleb128 0xb
+ 892 00e0 3B       		.uleb128 0x3b
+ 893 00e1 0B       		.uleb128 0xb
+ 894 00e2 49       		.uleb128 0x49
+ 895 00e3 13       		.uleb128 0x13
+ 896 00e4 02       		.uleb128 0x2
+ 897 00e5 18       		.uleb128 0x18
+ 898 00e6 00       		.byte	0
+ 899 00e7 00       		.byte	0
+ 900 00e8 12       		.uleb128 0x12
+ 901 00e9 2E       		.uleb128 0x2e
+ 902 00ea 01       		.byte	0x1
+ 903 00eb 3F       		.uleb128 0x3f
+ 904 00ec 19       		.uleb128 0x19
+ 905 00ed 03       		.uleb128 0x3
+ 906 00ee 0E       		.uleb128 0xe
+ 907 00ef 3A       		.uleb128 0x3a
+ 908 00f0 0B       		.uleb128 0xb
+ 909 00f1 3B       		.uleb128 0x3b
+ 910 00f2 0B       		.uleb128 0xb
+ 911 00f3 49       		.uleb128 0x49
+ 912 00f4 13       		.uleb128 0x13
+ 913 00f5 11       		.uleb128 0x11
+ 914 00f6 01       		.uleb128 0x1
+ 915 00f7 12       		.uleb128 0x12
+ 916 00f8 06       		.uleb128 0x6
+ 917 00f9 40       		.uleb128 0x40
+ 918 00fa 18       		.uleb128 0x18
+ 919 00fb 9642     		.uleb128 0x2116
+ 920 00fd 19       		.uleb128 0x19
+ 921 00fe 01       		.uleb128 0x1
+ 922 00ff 13       		.uleb128 0x13
+ 923 0100 00       		.byte	0
+ 924 0101 00       		.byte	0
+ 925 0102 13       		.uleb128 0x13
+ 926 0103 34       		.uleb128 0x34
+ 927 0104 00       		.byte	0
+ 928 0105 03       		.uleb128 0x3
+ 929 0106 0E       		.uleb128 0xe
+ 930 0107 3A       		.uleb128 0x3a
+ 931 0108 0B       		.uleb128 0xb
+ 932 0109 3B       		.uleb128 0x3b
+ 933 010a 05       		.uleb128 0x5
+ 934 010b 49       		.uleb128 0x49
+ 935 010c 13       		.uleb128 0x13
+ 936 010d 3F       		.uleb128 0x3f
+ 937 010e 19       		.uleb128 0x19
+ 938 010f 3C       		.uleb128 0x3c
+ 939 0110 19       		.uleb128 0x19
+ 940 0111 00       		.byte	0
+ 941 0112 00       		.byte	0
+ 942 0113 14       		.uleb128 0x14
+ 943 0114 35       		.uleb128 0x35
+ 944 0115 00       		.byte	0
+ 945 0116 49       		.uleb128 0x49
+ 946 0117 13       		.uleb128 0x13
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 19
+
+
+ 947 0118 00       		.byte	0
+ 948 0119 00       		.byte	0
+ 949 011a 15       		.uleb128 0x15
+ 950 011b 34       		.uleb128 0x34
+ 951 011c 00       		.byte	0
+ 952 011d 03       		.uleb128 0x3
+ 953 011e 0E       		.uleb128 0xe
+ 954 011f 3A       		.uleb128 0x3a
+ 955 0120 0B       		.uleb128 0xb
+ 956 0121 3B       		.uleb128 0x3b
+ 957 0122 0B       		.uleb128 0xb
+ 958 0123 49       		.uleb128 0x49
+ 959 0124 13       		.uleb128 0x13
+ 960 0125 3F       		.uleb128 0x3f
+ 961 0126 19       		.uleb128 0x19
+ 962 0127 02       		.uleb128 0x2
+ 963 0128 18       		.uleb128 0x18
+ 964 0129 00       		.byte	0
+ 965 012a 00       		.byte	0
+ 966 012b 16       		.uleb128 0x16
+ 967 012c 21       		.uleb128 0x21
+ 968 012d 00       		.byte	0
+ 969 012e 49       		.uleb128 0x49
+ 970 012f 13       		.uleb128 0x13
+ 971 0130 2F       		.uleb128 0x2f
+ 972 0131 05       		.uleb128 0x5
+ 973 0132 00       		.byte	0
+ 974 0133 00       		.byte	0
+ 975 0134 00       		.byte	0
+ 976              		.section	.debug_aranges,"",%progbits
+ 977 0000 24000000 		.4byte	0x24
+ 978 0004 0200     		.2byte	0x2
+ 979 0006 00000000 		.4byte	.Ldebug_info0
+ 980 000a 04       		.byte	0x4
+ 981 000b 00       		.byte	0
+ 982 000c 0000     		.2byte	0
+ 983 000e 0000     		.2byte	0
+ 984 0010 00000000 		.4byte	.LFB64
+ 985 0014 90000000 		.4byte	.LFE64-.LFB64
+ 986 0018 00000000 		.4byte	.LFB65
+ 987 001c 34010000 		.4byte	.LFE65-.LFB65
+ 988 0020 00000000 		.4byte	0
+ 989 0024 00000000 		.4byte	0
+ 990              		.section	.debug_ranges,"",%progbits
+ 991              	.Ldebug_ranges0:
+ 992 0000 00000000 		.4byte	.LFB64
+ 993 0004 90000000 		.4byte	.LFE64
+ 994 0008 00000000 		.4byte	.LFB65
+ 995 000c 34010000 		.4byte	.LFE65
+ 996 0010 00000000 		.4byte	0
+ 997 0014 00000000 		.4byte	0
+ 998              		.section	.debug_line,"",%progbits
+ 999              	.Ldebug_line0:
+ 1000 0000 BC010000 		.section	.debug_str,"MS",%progbits,1
+ 1000      02007001 
+ 1000      00000201 
+ 1000      FB0E0D00 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 20
+
+
+ 1000      01010101 
+ 1001              	.LASF31:
+ 1002 0000 65787065 		.ascii	"expected_string\000"
+ 1002      63746564 
+ 1002      5F737472 
+ 1002      696E6700 
+ 1003              	.LASF38:
+ 1004 0010 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1004      43313120 
+ 1004      352E342E 
+ 1004      31203230 
+ 1004      31363036 
+ 1005 0043 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1005      20726576 
+ 1005      6973696F 
+ 1005      6E203233 
+ 1005      37373135 
+ 1006 0076 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1006      66756E63 
+ 1006      74696F6E 
+ 1006      2D736563 
+ 1006      74696F6E 
+ 1007              	.LASF35:
+ 1008 009e 64656275 		.ascii	"debug_string\000"
+ 1008      675F7374 
+ 1008      72696E67 
+ 1008      00
+ 1009              	.LASF29:
+ 1010 00ab 72657175 		.ascii	"request_len\000"
+ 1010      6573745F 
+ 1010      6C656E00 
+ 1011              	.LASF9:
+ 1012 00b7 5F5F696E 		.ascii	"__int32_t\000"
+ 1012      7433325F 
+ 1012      7400
+ 1013              	.LASF22:
+ 1014 00c1 74657374 		.ascii	"test_t\000"
+ 1014      5F7400
+ 1015              	.LASF3:
+ 1016 00c8 73686F72 		.ascii	"short unsigned int\000"
+ 1016      7420756E 
+ 1016      7369676E 
+ 1016      65642069 
+ 1016      6E7400
+ 1017              	.LASF41:
+ 1018 00db 67656E65 		.ascii	"generate_influx_write_body\000"
+ 1018      72617465 
+ 1018      5F696E66 
+ 1018      6C75785F 
+ 1018      77726974 
+ 1019              	.LASF20:
+ 1020 00f6 73746174 		.ascii	"status\000"
+ 1020      757300
+ 1021              	.LASF32:
+ 1022 00fd 74657374 		.ascii	"test_write_body\000"
+ 1022      5F777269 
+ 1022      74655F62 
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 21
+
+
+ 1022      6F647900 
+ 1023              	.LASF14:
+ 1024 010d 666C6F61 		.ascii	"float\000"
+ 1024      7400
+ 1025              	.LASF37:
+ 1026 0113 64617461 		.ascii	"data\000"
+ 1026      00
+ 1027              	.LASF40:
+ 1028 0118 433A5C55 		.ascii	"C:\\Users\\bk\\Documents\\GitHub\\Open Storm\\notor"
+ 1028      73657273 
+ 1028      5C626B5C 
+ 1028      446F6375 
+ 1028      6D656E74 
+ 1029 0145 694F535C 		.ascii	"iOS\\notoriOS\\notoriOS.cydsn\000"
+ 1029      6E6F746F 
+ 1029      72694F53 
+ 1029      5C6E6F74 
+ 1029      6F72694F 
+ 1030              	.LASF1:
+ 1031 0161 756E7369 		.ascii	"unsigned char\000"
+ 1031      676E6564 
+ 1031      20636861 
+ 1031      7200
+ 1032              	.LASF24:
+ 1033 016f 74696D65 		.ascii	"timeStamp\000"
+ 1033      5374616D 
+ 1033      7000
+ 1034              	.LASF5:
+ 1035 0179 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1035      20756E73 
+ 1035      69676E65 
+ 1035      6420696E 
+ 1035      7400
+ 1036              	.LASF42:
+ 1037 018b 696E666C 		.ascii	"influx_test\000"
+ 1037      75785F74 
+ 1037      65737400 
+ 1038              	.LASF13:
+ 1039 0197 696E7433 		.ascii	"int32\000"
+ 1039      3200
+ 1040              	.LASF36:
+ 1041 019d 64617461 		.ascii	"dataPointsInStack\000"
+ 1041      506F696E 
+ 1041      7473496E 
+ 1041      53746163 
+ 1041      6B00
+ 1042              	.LASF34:
+ 1043 01af 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1043      52784275 
+ 1043      66666572 
+ 1043      00
+ 1044              	.LASF25:
+ 1045 01bc 6B65795F 		.ascii	"key_value_t\000"
+ 1045      76616C75 
+ 1045      655F7400 
+ 1046              	.LASF39:
+ 1047 01c8 696E666C 		.ascii	"influx.c\000"
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 22
+
+
+ 1047      75782E63 
+ 1047      00
+ 1048              	.LASF26:
+ 1049 01d1 626F6479 		.ascii	"body\000"
+ 1049      00
+ 1050              	.LASF15:
+ 1051 01d6 646F7562 		.ascii	"double\000"
+ 1051      6C6500
+ 1052              	.LASF12:
+ 1053 01dd 75696E74 		.ascii	"uint16\000"
+ 1053      313600
+ 1054              	.LASF30:
+ 1055 01e4 74657374 		.ascii	"test\000"
+ 1055      00
+ 1056              	.LASF8:
+ 1057 01e9 756E7369 		.ascii	"unsigned int\000"
+ 1057      676E6564 
+ 1057      20696E74 
+ 1057      00
+ 1058              	.LASF7:
+ 1059 01f6 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1059      206C6F6E 
+ 1059      6720756E 
+ 1059      7369676E 
+ 1059      65642069 
+ 1060              	.LASF21:
+ 1061 020d 72656173 		.ascii	"reason\000"
+ 1061      6F6E00
+ 1062              	.LASF10:
+ 1063 0214 696E7433 		.ascii	"int32_t\000"
+ 1063      325F7400 
+ 1064              	.LASF18:
+ 1065 021c 73697A65 		.ascii	"sizetype\000"
+ 1065      74797065 
+ 1065      00
+ 1066              	.LASF6:
+ 1067 0225 6C6F6E67 		.ascii	"long long int\000"
+ 1067      206C6F6E 
+ 1067      6720696E 
+ 1067      7400
+ 1068              	.LASF16:
+ 1069 0233 63686172 		.ascii	"char\000"
+ 1069      00
+ 1070              	.LASF23:
+ 1071 0238 76616C75 		.ascii	"value\000"
+ 1071      6500
+ 1072              	.LASF2:
+ 1073 023e 73686F72 		.ascii	"short int\000"
+ 1073      7420696E 
+ 1073      7400
+ 1074              	.LASF11:
+ 1075 0248 75696E74 		.ascii	"uint8\000"
+ 1075      3800
+ 1076              	.LASF19:
+ 1077 024e 74657374 		.ascii	"test_name\000"
+ 1077      5F6E616D 
+ 1077      6500
+ARM GAS  C:\Users\bk\AppData\Local\Temp\ccyJ01Ja.s 			page 23
+
+
+ 1078              	.LASF27:
+ 1079 0258 6E6F6465 		.ascii	"node_id\000"
+ 1079      5F696400 
+ 1080              	.LASF4:
+ 1081 0260 6C6F6E67 		.ascii	"long int\000"
+ 1081      20696E74 
+ 1081      00
+ 1082              	.LASF17:
+ 1083 0269 6C6F6E67 		.ascii	"long double\000"
+ 1083      20646F75 
+ 1083      626C6500 
+ 1084              	.LASF0:
+ 1085 0275 7369676E 		.ascii	"signed char\000"
+ 1085      65642063 
+ 1085      68617200 
+ 1086              	.LASF33:
+ 1087 0281 636F6D70 		.ascii	"compare\000"
+ 1087      61726500 
+ 1088              	.LASF28:
+ 1089 0289 6C656E67 		.ascii	"length\000"
+ 1089      746800
+ 1090              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
