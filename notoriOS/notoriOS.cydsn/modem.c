@@ -157,9 +157,9 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
             compare_location=strstr(uart_received_string,expected_response);        
             if(compare_location!=NULL) {
                 if (at_attempt == 0){
-                   // printNotif(NOTIF_TYPE_EVENT,"Modem Received expected AT Response on first Try: %s\r\n", uart_received_string);
+                   printNotif(NOTIF_TYPE_EVENT,"Modem Received expected AT Response on first Try: %s\r\n", uart_received_string);
                 }else{
-                   //printNotif(NOTIF_TYPE_WARNING,"Modem required %d tries to receive AT Response: %s\r\n", (at_attempt+1), uart_received_string);
+                   printNotif(NOTIF_TYPE_WARNING,"Modem required %d tries to receive AT Response: %s\r\n", (at_attempt+1), uart_received_string);
                  
                 }
                  return(1);

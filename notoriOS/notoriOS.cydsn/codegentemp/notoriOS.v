@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 04/24/2020 at 13:00
+// 04/29/2020 at 13:56
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1253,19 +1253,19 @@ module top ;
           wire  Net_183;
           wire  Net_182;
           wire  Net_181;
-          wire  Net_137;
-          wire  Net_136;
-          wire  Net_135;
-          wire  Net_134;
-          wire  Net_133;
-          wire  Net_132;
-          wire  Net_131;
+          wire  Net_259;
+          wire  Net_258;
+          wire  Net_257;
+          wire  Net_256;
+          wire  Net_255;
+          wire  Net_254;
+          wire  Net_253;
           wire  Net_116;
-          wire  Net_130;
-          wire  Net_129;
-          wire  Net_128;
+          wire  Net_252;
+          wire  Net_251;
+          wire  Net_250;
           wire  Net_112;
-          wire  Net_127;
+          wire  Net_249;
           wire  Net_103;
     electrical  Net_102;
           wire  Net_101;
@@ -2364,17 +2364,17 @@ module top ;
     UART_v2_50_6 Debug_UART (
         .cts_n(1'b0),
         .tx(Net_112),
-        .rts_n(Net_128),
-        .tx_en(Net_129),
+        .rts_n(Net_250),
+        .tx_en(Net_251),
         .clock(1'b0),
         .reset(Net_116),
         .rx(1'b0),
-        .tx_interrupt(Net_132),
-        .rx_interrupt(Net_133),
-        .tx_data(Net_134),
-        .tx_clk(Net_135),
-        .rx_data(Net_136),
-        .rx_clk(Net_137));
+        .tx_interrupt(Net_254),
+        .rx_interrupt(Net_255),
+        .tx_data(Net_256),
+        .tx_clk(Net_257),
+        .rx_data(Net_258),
+        .rx_clk(Net_259));
     defparam Debug_UART.Address1 = 0;
     defparam Debug_UART.Address2 = 0;
     defparam Debug_UART.EnIntRXInterrupt = 0;

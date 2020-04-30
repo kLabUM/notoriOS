@@ -283,10 +283,10 @@ uint8 syncData(){
     printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", route);
     
     construct_influx_write_body(http_body,node_id);
-    printNotif(NOTIF_TYPE_EVENT,"Full HTTP body: %s", http_body);
+    printNotif(NOTIF_TYPE_EVENT,"HTTP body: %s", http_body);
     
     construct_generic_HTTP_request(http_header,http_body,host,route,port,"POST","Close","",0,"1.1");
-    printNotif(NOTIF_TYPE_EVENT,"HTTP header: %s", http_header);
+   printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_body);
 
         
 

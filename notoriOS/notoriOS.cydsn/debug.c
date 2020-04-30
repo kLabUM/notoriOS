@@ -4,10 +4,12 @@
 uint8 stillWriting;
 #include <stdarg.h>
 
+
+
 void debug_start(){
     #if USE_DEBUG
        Debug_UART_Start();
-       //setvbuf(stdout, NULL, _IOFBF, 0);//this sets the printf() bufefr to zero, so there are not delays
+       //setvbuf(stdout, NULL, _IOFBF, Debug_UART_TX_BUFFER_SIZE);//this sets the printf() bufefr to zero, so there are not delays
        //setbuf(stdout, NULL);
     #endif
 }
@@ -44,8 +46,8 @@ int _write(int file, char *ptr, int len)
     int i;
     file = file;
     for (i = 0; i < len; i++)
-    {
-        Debug_UART_PutChar(*ptr++);
+    {   
+       Debug_UART_PutChar(*ptr++);
     }
     
     stillWriting = 1;//flag ongoing write
@@ -69,14 +71,15 @@ void printNotif(uint8 type, char* format, ...){
     }else{
        printf("\"event\":\"undefined\" \"value\":\""); 
     }
+   
     
-    vsprintf(dest, format, argptr);
-    printf("%s",dest);
+    //overflow here -- FIX DEBUG_STRING_LENGTH -- not long enough
+    vfprintf(stdout,format, argptr);
+    va_end(argptr);
+    //Debug_UART_PutString(dest);
+    //printf("%s",dest);
     
     printf("\"}\r\n");
-    va_end(argptr);
-    
-    
     
 }
 

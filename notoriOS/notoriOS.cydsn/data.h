@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "debug.h"
 
-#define DATA_MAX_VALUES 240     //max vlaues that will ever be part of one node id. think of this as the numebr of senors
+#define DATA_MAX_VALUES 10     //max vlaues that will ever be part of one node id. think of this as the numebr of senors
 #define DATA_MAX_KEY_LENGTH 20  
 
 
