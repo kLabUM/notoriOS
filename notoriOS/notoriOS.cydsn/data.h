@@ -25,7 +25,7 @@ void Clear_Data_Stack();
 uint16 dataPointsInStack; 
 key_value_t data[DATA_MAX_VALUES];
 
-void construct_generic_HTTP_request(char* header, char* body, char* host, char* route,
+void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
                                int port, char* method, char* connection_type,
 	                           char *extra_headers, int extra_len, char* http_protocol);
 

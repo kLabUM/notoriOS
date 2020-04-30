@@ -58,7 +58,7 @@ int _write(int file, char *ptr, int len)
 void printNotif(uint8 type, char* format, ...){
     va_list argptr;
     va_start(argptr, format);
-    char dest[DEBUG_STRING_LENGTH];
+
     //basically, just hijack printf and inject the timestamp infront
     printf("{ ");
     printf("\"time\":\"%ld\" " , getTimeStamp());
@@ -73,11 +73,9 @@ void printNotif(uint8 type, char* format, ...){
     }
    
     
-    //overflow here -- FIX DEBUG_STRING_LENGTH -- not long enough
     vfprintf(stdout,format, argptr);
     va_end(argptr);
-    //Debug_UART_PutString(dest);
-    //printf("%s",dest);
+
     
     printf("\"}\r\n");
     
