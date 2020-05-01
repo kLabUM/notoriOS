@@ -3,7 +3,12 @@
 #define MODEM_H   
     
 #include <project.h>  
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include "testing.h"
+    
     
 #define MODEM_STATE_OFF 0u
 #define MODEM_STATE_STARTUP 1u
@@ -31,6 +36,7 @@ void modem_sleep();
 void modem_wakeup();
 uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeout);
 uint8 extract_string(char* from, const char* beginMarker, const char* endMarker,  char* target);
+long modem_get_network_time();
 
 
 typedef struct { 
@@ -45,6 +51,7 @@ typedef struct {
     int   time_to_network_connect; 
     int   time_to_acquire_ip;
 } modem_stats_t;
+
 
 int32 modem_start_time_stamp;
 modem_info_t modem_info;

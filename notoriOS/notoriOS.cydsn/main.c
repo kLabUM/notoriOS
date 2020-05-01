@@ -12,11 +12,15 @@ void makeMeasurements(){
 
 /*
 TODO:
-    - data structure for modem/system settings (port, end point, etc)
-    - sync time with cell-tower time
+
+    - initilizwe modem parameters and cell tower time at bootup
+    - GPS lock
     - Write real maxbotixdata to server
+    - watchdog -- built-in is too short (2sec), so may need to build one using a timer
     - test power
     - write data to SD card
-    - bootloader?
+    - bootloader
+    - test power
 
 */
+

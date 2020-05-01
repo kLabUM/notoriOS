@@ -60,8 +60,28 @@ void ReadyOrNot()
     debug_start();
     
     modem_intilize();
+   
     
-
+    //collect system info and store in struct (modem ID, silicon ID, etc)
+      /* An array of char elements for the resulting string to be stored */
+    
+    
+    //get unique ID of PSOC chip, this can be concatenated with the MODEM IDs to generate a unique string for the entire system
+    uint32 uniqueId[2];
+    CyGetUniqueId(uniqueId); 
+    sprintf(system_info.chip_uniqueId,"%X-%X",(unsigned int)uniqueId[0],(unsigned int)uniqueId[1]);
+    //the modem will track/popualte it's own IDs, so just point to them for now
+    system_info.modem_info = &modem_info;
+    
+    //configure server endpoints -- these should obviosuly be provided  remotely by the meta data-base server
+    sprintf(system_settings.ep_host,"%s","data.open-storm.org");
+    system_settings.ep_port = 8086;
+    sprintf(system_settings.ep_user,"%s","generic_node");
+    sprintf(system_settings.ep_pswd,"%s","MakeFloodsCurrents");
+    sprintf(system_settings.ep_database,"%s","ARB");
+    sprintf(system_settings.node_id,"%s","GGB000");
+        
+    
     
     alarmMeasure = CreateAlarm(120u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 1;
@@ -70,6 +90,7 @@ void ReadyOrNot()
     
     
 }
+
 
 // ==============================================
 // You see me I be work, work, work, work, work, work 
@@ -262,52 +283,81 @@ uint8 syncData(){
     CyDelay(100u);
     LED_Write(0u);
     
-    http_request[0] = '\0';
-    http_body[0] = '\0';
-    char *host = "data.open-storm.org";
-    int port = 8086;
-    char *base = "write";
-    char *user = "generic_node";
-    char *pass = "MakeFloodsCurrents";
-    char *database = "ARB";
-    char *node_id = "GGB000";
-    char route[100];
-    
-    //push some fake data
-    pushData("maxbotix_depth","2000",12345);
-    
-    //construct HTPP request
-    printNotif(NOTIF_TYPE_EVENT,"Begin HTTP test.");
-    
-    construct_influx_route(route,base,user,pass,database);
-    printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", route);
-    
-    construct_influx_write_body(http_body,node_id);
-    
-    
-    construct_generic_HTTP_request(http_request,http_body,host,route,port,"POST","Close","",0,"1.1");
-    printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
-    //printNotif(NOTIF_TYPE_EVENT,"HTTP body: %s", http_body);
-        
-
     //create request body, in this case influx
     //place body into HTTP request header
     //fire up modem and get it out
        
-     /*   
+     
      if(modem_get_state() == MODEM_STATE_OFF){
             
             modem_power_up();
+            
       }else if(modem_get_state() == MODEM_STATE_READY){
             printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
-            syncData();
+            
+            
+            http_request[0] = '\0';
+            http_body[0] = '\0';
+            char *base = "write";
+            char route[100];
+            
+            //push some fake data
+            pushData("maxbotix_depth","2000",12345);
+            
+            //construct HTPP request
+            printNotif(NOTIF_TYPE_EVENT,"Begin HTTP test.");
+            
+            construct_influx_route(route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
+            printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", route);
+            
+            construct_influx_write_body(http_body,system_settings.node_id);
+            
+            
+            construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,route,system_settings.ep_port,"POST","Close","",0,"1.1");
+            printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
+            
+           
+            
             int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
+             
+            //get time, and if it looks good, set the RTC with it
+            long network_time = modem_get_network_time();
+            if(network_time != 0){
+               setTime(network_time);
+            }
+            
             modem_power_down();
             return 0u;
       }
-      */
+      
       return 1;//not done yet
 }
+
+
+uint8 setTime(long timeStamp){
+    
+    if(timeStamp <=0){
+        printNotif(NOTIF_TYPE_ERROR,"Error setting sytem time.");
+        return 0;  
+    }
+    
+    struct tm * t;
+    //time(&timeStamp);
+    t = gmtime(&timeStamp);
+    
+    RTC_TIME_DATE localTime;
+    localTime.Sec = t->tm_sec;
+    localTime.Min = t->tm_min;
+    localTime.Hour = t->tm_hour;
+    localTime.Year = t->tm_year + 1900;
+    localTime.Month = t->tm_mon;
+    localTime.DayOfMonth = t->tm_mday;
+
+    RTC_WriteTime(&localTime);
+   
+    return 1;
+}
+
 
 
 

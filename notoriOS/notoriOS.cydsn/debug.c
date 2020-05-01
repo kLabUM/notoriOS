@@ -127,6 +127,7 @@ long getTimeStamp(){
     return (long) t_of_day;
 }
 
+
 void stripEscapeCharacters(char *string){
 
   char * pch;

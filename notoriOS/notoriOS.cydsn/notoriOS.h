@@ -13,6 +13,7 @@
 #include "modem.h"
 #include "influx.h"
 
+
 #define ALARM_TYPE_SECOND       0u
 #define ALARM_TYPE_MINUTE       1u
 #define ALARM_TYPE_HOUR         2u
@@ -40,6 +41,28 @@ typedef struct
     
 } volatile alarm;
 
+typedef struct
+{
+    modem_info_t *modem_info;
+    char chip_uniqueId[24]; 
+    
+}  sys_info_t;
+sys_info_t system_info;
+
+typedef struct
+{
+    //this is the site ID --where in the field the node is located (e.g ARB10)
+    char node_id[20];
+    //end-point config
+    char ep_host[100];
+    int ep_port;
+    char ep_user[50];
+    char ep_pswd[100];
+    char ep_database[50];
+    
+}  sys_settings_t;
+sys_settings_t system_settings;
+
 /*//to be implemented
 uint8 num_alarms;
 uint8 num_repeating_alarms;
@@ -53,8 +76,8 @@ alarm CreateAlarm(uint16 countDownValue,uint8 countDownType,uint8 countDownReset
 uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType);
 void ResetAlarm(alarm * alarmToBeReset);
 
-
-
+//sets the system time using epoch timestamp
+uint8 setTime(long timeStamp);
 
 void ReadyOrNot();
 int  WorkWorkWorkWorkWorkWork();

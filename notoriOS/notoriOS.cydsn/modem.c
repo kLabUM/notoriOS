@@ -379,6 +379,53 @@ void modem_configure_settings(){
     
 }
 
+//returns 0 if modem can't get time
+long modem_get_network_time(){
+    
+    //modem reposen format (careful to include the quotes "")
+    //+CCLK: "20/05/01,10:48:33-16" the "-16" is the number of quarter hourts (15 mins) from GMT time .. int this case subtract 4 hrs
+    //ex: 14:48 GMT
+
+    if(modem_state != MODEM_STATE_READY){
+        printNotif(NOTIF_TYPE_ERROR,"Modem not ready to get time. Not conncted to network.");
+        return 0;   
+    }
+    long epoch_time = 0;
+    
+    if(at_write_command("AT+CCLK?\r","OK",DEFAULT_AT_TIMEOUT)){
+        char network_time[30];
+        extract_string(uart_received_string,": \"","\"\r",network_time);
+        
+        ///////////////////  
+        struct tm t;
+        
+        int year, month, day, hour, minute, second, gmt_offset = 0;
+      
+        if(sscanf(network_time,"%d/%d/%d,%d:%d:%d-%d",&year,&month,&day,&hour,&minute,&second,&gmt_offset) == 7){
+            gmt_offset = gmt_offset*(900);
+        }else if(sscanf(network_time,"%d/%d/%d,%d:%d:%d+%d",&year,&month,&day,&hour,&minute,&second,&gmt_offset) == 7){
+            gmt_offset = gmt_offset*(-900);
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not parse modem time: %s.",network_time);
+            return 0;   
+        }
+        
+        t.tm_sec = second;
+        t.tm_min = minute;
+        t.tm_hour = hour;
+        t.tm_year = year + 100;    // Year since 1900
+        t.tm_mon = month-1;        // Month, where 0 = jan
+        t.tm_mday = day;           // Day of the month
+        t.tm_isdst = 0;            // Is Daylight Savings on? 1 = yes, 0 = no, -1 = unknown
+    
+        epoch_time = mktime(&t) + gmt_offset;
+    }
+
+    
+    return epoch_time;
+}
+
+
 
 
 uint8 modem_get_state(){
