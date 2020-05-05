@@ -59,6 +59,7 @@ typedef struct
     char ep_user[50];
     char ep_pswd[100];
     char ep_database[50];
+    //char commit_hash[100];
     
 }  sys_settings_t;
 sys_settings_t system_settings;

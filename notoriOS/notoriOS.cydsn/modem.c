@@ -143,7 +143,9 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
         uint32_t i, interval=timeout/delay;        
         
         uart_string_reset();
+        
         UART_Telit_PutString(commands);
+        
         
         //if no timeout, no need to wait for response
         if(timeout == NO_AT_TIMEOUT){
@@ -165,7 +167,10 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
                  return(1);
             }
             
-        }   
+        }  
+        
+        //somehitng went wrong, restart UARt
+        printNotif(NOTIF_TYPE_ERROR,"Could not write AT command: %s", commands);
       
     }
    // printNotif(NOTIF_TYPE_ERROR,"Modem AT response timeout: %s\r\n", commands);
@@ -216,6 +221,8 @@ uint8 extract_string(char* from, const char* beginMarker, const char* endMarker,
 
 uint8 modem_process_tasks(){
     
+    
+
     if(modem_state == MODEM_STATE_STARTUP){
         
         modem_start_time_stamp = getTimeStamp();
@@ -226,14 +233,18 @@ uint8 modem_process_tasks(){
     }
     else if(modem_state == MODEM_STATE_WAITING_FOR_NETWORK){
         
+
         if(is_connected_to_cell_network()){
+      
              modem_stats.time_to_network_connect = (int)(getTimeStamp() - (int32)modem_start_time_stamp);
              printNotif(NOTIF_TYPE_EVENT,"Time to connecto to network: %d seconds",
                                             modem_stats.time_to_network_connect);
             get_cell_network_stats();
             set_up_internet_connection();
             modem_state = MODEM_STATE_WAITING_FOR_IP;
+            
         }
+
         //power off if we times out shold only take ~30 secs to connect to network
         if((int)(getTimeStamp()-(int32)modem_start_time_stamp) > TIMEOUT_NETWORK_CONNECT){
             modem_state = MODEM_STATE_OFF;
@@ -268,15 +279,23 @@ uint8 modem_process_tasks(){
 
 uint8 is_connected_to_cell_network(){
     //check network status -- need '0,0' response to continue
-    at_write_command("AT+CREG?\r", "OK",DEFAULT_AT_TIMEOUT);
+    printNotif(NOTIF_TYPE_EVENT,"Checking AT+CREG?");
+    uint8 status = at_write_command("AT+CREG?\r", "OK",DEFAULT_AT_TIMEOUT);
     
-    char creg[10];
-    extract_string(uart_received_string,": ","\r",creg);
-    printNotif(NOTIF_TYPE_EVENT,"Registered to network, CREG: %s",creg);
-   
-    if(strstr(creg,"0,1")!=NULL){
-        //time_network_connect = getTimeStamp();
-        return 1u;
+    printNotif(NOTIF_TYPE_EVENT,"Extracting string AT+CREG?");
+    printNotif(NOTIF_TYPE_EVENT,"uart_received_string: %s",uart_received_string);
+    
+    if(status){
+        char creg[10];
+        
+        extract_string(uart_received_string,": ","\r",creg);
+        printNotif(NOTIF_TYPE_EVENT,"Registered to network, CREG: %s",creg);
+        printNotif(NOTIF_TYPE_EVENT,"Done extracing string AT+CREG?");
+       
+        if(strstr(creg,"0,1")!=NULL){
+            //time_network_connect = getTimeStamp();
+            return 1u;
+        }
     }
     
     return 0u;
@@ -434,28 +453,30 @@ uint8 modem_get_state(){
 
 void modem_sleep(){
     if(modem_get_state() != MODEM_STATE_OFF){
+
+        Telit_ControlReg_Sleep();
         UART_Telit_Sleep();
+        
         //set interrupt on RX pin to wakeup chip from sleep if UART comm starts
        // Rx_Telit_SetInterruptMode(Rx_Telit_0_INTR,Rx_Telit_INTR_FALLING);
      }
 }
 
 void modem_wakeup(){
-    
      if(modem_get_state() != MODEM_STATE_OFF){
+        Telit_ControlReg_Wakeup();
         UART_Telit_Wakeup();
         //remove the need for this pin itterupt
         //Rx_Telit_SetInterruptMode(Rx_Telit_0_INTR,Rx_Telit_INTR_NONE);
         //if woken up from pin, go ahead and delay for 100ms to allow modem UART to deliver the message
         if(modem_get_state() == MODEM_STATE_WAITING_FOR_IP){
             CyDelay(100u);
-            uint8 i; 
-            i++;
         }
         
      }
     
 }
+
 
     
 

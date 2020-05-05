@@ -6,7 +6,8 @@ unsigned int construct_influx_write_body(char* body, char *node_id){
  
     //construct influx body
     for(uint16 i = 0;i<sizeOfDataStack();i++){
-        sprintf(body, "%s%s,node_id=%s, value=%s %ld\n", body, data[i].key, node_id, data[i].value, data[i].timeStamp);
+        //note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+        sprintf(body, "%s%s,node_id=%s value=%s %ld000000000\n", body, data[i].key, node_id, data[i].value, data[i].timeStamp);
     }
     
     unsigned int request_len = strlen(body);
@@ -26,7 +27,7 @@ test_t influx_test(){
     sprintf(test.test_name,"INFLUX");
     
     //we'll create a few fake test, generate a string and compare it to a known value
-    char *expected_string = "test_reading_1,node_id=XYZ10, value=000 12345\ntest_reading_2,node_id=XYZ10, value=111 67890\n";
+    char *expected_string = "test_reading_1,node_id=XYZ10, value=000 12345\ntest_reading_2,node_id=XYZ10, value=111 67890\r\n";
     
     Clear_Data_Stack();
     pushData("test_reading_1", "000", 12345);

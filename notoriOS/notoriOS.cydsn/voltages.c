@@ -38,7 +38,7 @@ voltage_t voltage_take_readings(){
     voltage.voltage_battery = channels[ADC_MUX_VBAT] * 11; //voltage divider is (1/10) ratio, so multiply by 11
     voltage.voltage_solar = channels[ADC_MUX_VSOL]; //just want voltage here
     //votage across sense resistor gives 100mV drop for max current, which is 800mA
-    voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
+    //voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
     
     voltage.valid = 1;
     

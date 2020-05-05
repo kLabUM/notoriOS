@@ -16,6 +16,8 @@
 #define MODEM_STATE_WAITING_FOR_IP 3u
 #define MODEM_STATE_READY 4u
     
+    
+    
 uint8 modem_state;
 uint8 modem_process_tasks();
 

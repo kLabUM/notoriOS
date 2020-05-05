@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 04/30/2020 at 14:51
+// 05/05/2020 at 14:43
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1242,7 +1242,7 @@ module top ;
           wire  Net_214;
           wire  Net_213;
           wire  Net_212;
-          wire  Net_248;
+          wire  Net_261;
           wire  Net_190;
           wire  Net_189;
           wire  Net_188;
@@ -2780,7 +2780,7 @@ module top ;
 		  .fb({Net_177}),
 		  .io({tmpIO_0__Rx_Telit_net[0:0]}),
 		  .siovref(tmpSIOVREF__Rx_Telit_net),
-		  .interrupt({Net_248}),
+		  .interrupt({Net_261}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),

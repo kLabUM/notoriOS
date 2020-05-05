@@ -12,18 +12,12 @@
 
 #include "notoriOS.h"
 
-
-
-
-
-
-
 //global variables
 alarm alarmMeasure;
 uint8 timeToMeasure;
-alarm alarmMeasure2;
-uint8 timeToMeasure2;
-
+alarm alarmSync;
+uint8 timeToSync;
+uint8 timeToSycnRemoteParams;
 
 
 // This function must always be called (when the Sleep Timer's interrupt
@@ -36,11 +30,14 @@ CY_ISR(Wakeup_ISR) {
 
 
 //pre-allocate some memory for the HTTP requests
-#define MAX_HTTP_HEADER_LENFGTH 1000
-char http_request[MAX_HTTP_HEADER_LENFGTH];
-char http_body[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENFGTH];
-uint8 syncData();
+#define MAX_HTTP_HEADER_LENGTH 1000
+char http_request[MAX_HTTP_HEADER_LENGTH];
+char http_body[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
 
+
+uint8 syncData();               //syncs data with server 
+uint8 configureRemoteParams();  //syncs RTC with cell network and obtains meta-DB params
+uint8 makeMeasurements();
 
 // ==============================================
 // Ready or not, here I come, you can't hide
@@ -83,8 +80,13 @@ void ReadyOrNot()
         
     
     
-    alarmMeasure = CreateAlarm(120u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
-    timeToMeasure = 1;
+    alarmMeasure = CreateAlarm(1u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    timeToMeasure = 1u;
+    
+    alarmSync = CreateAlarm(5u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    timeToSync = 1u;
+    
+    timeToSycnRemoteParams = 1u;
     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     //timeToMeasure = 0;
     
@@ -101,15 +103,24 @@ void ReadyOrNot()
 int WorkWorkWorkWorkWorkWork()
 {
     
-    if(timeToMeasure){
-        timeToMeasure = syncData();//will return 0 when done sending data
-    }
-    //if(timeToMeasure2){
-        //dosomething
-    //}
+    //the priority of these tasks is determined by the if statements
+    //for example, taking measurements should always precede data transmisison, even if both fire
+    //getting meta-DB info and system configs precedes all
+    //that said, the modem is always qeried to check if it needs anything
     
-    //check modem state machine 
+    if(timeToSycnRemoteParams){
+        timeToSycnRemoteParams = configureRemoteParams();//will return 0 when done sending data
+    }
+    else if(timeToMeasure){
+        timeToMeasure = makeMeasurements();//will return 0 when done sending data
+    }else if(timeToSync){
+            timeToSync = syncData();
+    }
+    
+    //check modem state machine on every loop
+
     uint8 modem_status = modem_process_tasks();
+
     
    
     return 0u +  modem_status;  
@@ -129,9 +140,16 @@ int WorkWorkWorkWorkWorkWork()
 void LayBack()
 {
     
-    debug_sleep();
+  
+    
     modem_sleep();
     // Prepares system clocks for the Sleep mode
+
+    
+    //important, call this last because we want to sleep uart before shutting down
+ 
+    debug_sleep();
+    
     CyPmSaveClocks();
     
     // Switch to the Sleep Mode for the other devices:
@@ -140,13 +158,17 @@ void LayBack()
      //  - If real-time clock is used, it will also wake the device
     //can also wake up from a pin intterup (PICU). This is useful with the moderm UART
     //CyPmHibernate();
-    //CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW & PM_SLEEP_SRC_PICU);
-    CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW);
+   //CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW & PM_SLEEP_SRC_PICU);
+
+    CyPmSleep(PM_SLEEP_TIME_NONE, PM_SLEEP_SRC_CTW & PM_SLEEP_SRC_ONE_PPS);
+
   
     // Restore clock configuration
     CyPmRestoreClocks();
+
     debug_wakeup();
     modem_wakeup();
+
     
 }
 
@@ -165,28 +187,28 @@ void AyoItsTime(uint8 alarmType)
 
     if(AlarmReady(&alarmMeasure,alarmType))
     {
-         //create new task and pass off to workworkworkworkwork()
-        //pass off to work work
+         //flag new task as "ready" and pass off to workworkworkworkwork()
         timeToMeasure = 1u;
     }
-    if(AlarmReady(&alarmMeasure2,alarmType))
+    if(AlarmReady(&alarmSync,alarmType))
     {
-         //create new task and pass off to workworkworkworkwork()
-        //pass off to work work
-        timeToMeasure2 = 1u;
+        //create new task and pass off to workworkworkworkwork()
+        timeToSync = 1u;
     }
     
 }
         
 uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType)
 {
-    alarmToBeUpdated->currentCountDownValue--;
-    if(alarmToBeUpdated->currentCountDownValue == 0){
-        ResetAlarm(alarmToBeUpdated);
-        return 1u;
-    } 
-    else if(alarmToBeUpdated->countDownResetCondition == alarmType){
-        ResetAlarm(alarmToBeUpdated);
+    if(alarmToBeUpdated->countDownType == alarmType){
+        alarmToBeUpdated->currentCountDownValue--;
+        if(alarmToBeUpdated->currentCountDownValue == 0){
+            ResetAlarm(alarmToBeUpdated);
+            return 1u;
+        } 
+        else if(alarmToBeUpdated->countDownResetCondition == alarmType){
+            ResetAlarm(alarmToBeUpdated);
+        }
     }
     
     return 0u;
@@ -226,7 +248,6 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 // ==============================================
 void ChickityCheckYourselfBeforeYouWreckYourself(){
 
-   syncData();
     
     // test_t t_modem = modem_test();
     test_t t_influx = influx_test();
@@ -238,8 +259,6 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     test_t t_voltages = voltages_test();
     printTestStatus(t_voltages);
   
-    int c = 0;
-    c++;
     //test modem
     //test SD card
     //analog: test battery voltage, solar voltage, and solar current
@@ -261,13 +280,13 @@ int main(void)
     {
        if( ! WorkWorkWorkWorkWorkWork() )
        {
-            LayBack();
+           LayBack();
        }
     }
 }
 
-
-
+//syncs data with server
+//retunrns zero when done
 uint8 syncData(){
     
     /*
@@ -282,6 +301,11 @@ uint8 syncData(){
     LED_Write(1u);
     CyDelay(100u);
     LED_Write(0u);
+    
+    //if there's no data, not need to do anything
+    if(sizeOfDataStack() == 0){
+        return 0u;
+    }
     
     //create request body, in this case influx
     //place body into HTTP request header
@@ -301,11 +325,9 @@ uint8 syncData(){
             char *base = "write";
             char route[100];
             
-            //push some fake data
-            pushData("maxbotix_depth","2000",12345);
             
             //construct HTPP request
-            printNotif(NOTIF_TYPE_EVENT,"Begin HTTP test.");
+            printNotif(NOTIF_TYPE_EVENT,"Begin HTTP post.");
             
             construct_influx_route(route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
             printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", route);
@@ -316,9 +338,40 @@ uint8 syncData(){
             construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,route,system_settings.ep_port,"POST","Close","",0,"1.1");
             printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
             
+            
+            
+            
+           
+            //push request to modem and escaope with <ctrl+z> escape sequence
+            //open port and begin command line sequence
+            char portConfig[200];
+            uint8 status = 0u;
+            sprintf(portConfig,"AT#SD=1,0,%d,\"%s\",0,0,1\r",system_settings.ep_port,system_settings.ep_host);
+            printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
+            status = at_write_command(portConfig,"OK",10000u);
+            status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
+            //append <ctrl+z> escape sequence to http_request to exit modem command line
+            strncat(http_request, "\032", 1); 
+            status = at_write_command(http_request, "NO CARRIER", 5000u);
+            
+            //read recevied buyffe
+            //a good write will return code "204 No Content"
+            status = at_write_command("AT#SRECV=1,1000\r","204 No Content",5000u);
+            //printNotif(NOTIF_TYPE_EVENT,"Received SRECV: %s",uart_received_string);
+           
+      
+            //if it worked, clear the queue and clock how long the end-to-end tx took
+            if(status == 1u){
+                Clear_Data_Stack();
+                int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
+                char s_send_time[10];
+                sprintf(s_send_time,"%d",send_time);
+                pushData("modem_tx_time",s_send_time,getTimeStamp());
+            }
+            
            
             
-            int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
+       
              
             //get time, and if it looks good, set the RTC with it
             long network_time = modem_get_network_time();
@@ -326,11 +379,78 @@ uint8 syncData(){
                setTime(network_time);
             }
             
+            //if transmitted, flush the data stack and shut down modem
+            //if not -- keep the statck and try next time
+
+            
             modem_power_down();
+            
             return 0u;
       }
       
       return 1;//not done yet
+}
+
+//syncs with cell-tower clock and check meta-DB
+//retunrns zero when done
+uint8 configureRemoteParams(){
+    
+    if(modem_get_state() == MODEM_STATE_OFF){
+            
+        modem_power_up();
+            
+    }else if(modem_get_state() == MODEM_STATE_READY){
+        
+        //this is where we will interfasce with some sort of broker that assings node IDs
+        
+        //get time, and if it looks good, set the RTC with it
+        long network_time = modem_get_network_time();
+        if(network_time != 0){
+            setTime(network_time);
+        }
+        
+        modem_power_down();
+        return 0u;
+        
+    }
+    
+    return 1u;
+}
+
+//makes sensor measurments 
+//retunrns zero when done
+uint8 makeMeasurements(){
+   
+    level_sensor_t m_level_sensor;
+    voltage_t m_voltage;
+    
+    //clock time
+    long timeStamp = getTimeStamp();
+    //holds string for value that will be written 
+    char value[DATA_MAX_KEY_LENGTH];
+    
+    m_level_sensor = level_sensor_take_reading();
+ 
+   
+    if(m_level_sensor.num_valid_readings > 0){
+        sprintf(value,"%d",m_level_sensor.level_reading);
+        printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
+        pushData("maxbotix_depth",value,timeStamp);
+    }else{
+        pushData("maxbotix_depth","error",timeStamp);
+    }
+    
+    
+    m_voltage = voltage_take_readings();
+    if(m_voltage.valid){
+        sprintf(value,"%.2f",m_voltage.voltage_battery);
+        printNotif(NOTIF_TYPE_EVENT,"v_bat=%s",value);
+        pushData("v_bat",value,timeStamp);
+    }else{
+        pushData("v_bat","error",timeStamp);
+    }
+    
+    return 0u;
 }
 
 
