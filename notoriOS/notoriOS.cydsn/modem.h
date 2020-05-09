@@ -54,6 +54,17 @@ typedef struct {
     int   time_to_acquire_ip;
 } modem_stats_t;
 
+typedef struct{
+    float latitude;
+    float longitude;
+    float altitude;
+    uint16 time_to_lock;
+    uint8 valid;
+    
+} gps_t;
+
+gps_t modem_get_gps_coordinates();
+
 
 int32 modem_start_time_stamp;
 modem_info_t modem_info;

@@ -34,7 +34,7 @@
 typedef struct
 {
     uint16 countDownValue;          //how many ticks.
-    uint16 currentCountDownValue;   //current value -- resets on 0
+    int16 currentCountDownValue;   //current value -- resets on 0
     uint8 countDownType;            //what time unit is used to do the counting (e.g. second, minutes, etc)
     uint8 countDownResetCondition;  //Is this a continuous countdown, or does it reset (e.g. every hour for even intervals)
     //void (*callbackFuc)();          //callback function that will be called when timer fires

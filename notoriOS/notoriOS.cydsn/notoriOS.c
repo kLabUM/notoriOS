@@ -117,6 +117,9 @@ int WorkWorkWorkWorkWorkWork()
             timeToSync = syncData();
     }
     
+    printNotif(NOTIF_TYPE_EVENT,"Measure CNT %d, Sync CNT %d, Data Wheel CNT %d",alarmMeasure.currentCountDownValue,alarmSync.currentCountDownValue,sizeOfDataStack());
+    
+    
     //check modem state machine on every loop
 
     uint8 modem_status = modem_process_tasks();
@@ -189,11 +192,14 @@ void AyoItsTime(uint8 alarmType)
     {
          //flag new task as "ready" and pass off to workworkworkworkwork()
         timeToMeasure = 1u;
+        //printNotif(NOTIF_TYPE_EVENT,"Measure Alarm");
+        
     }
     if(AlarmReady(&alarmSync,alarmType))
     {
         //create new task and pass off to workworkworkworkwork()
         timeToSync = 1u;
+         //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
     }
     
 }
@@ -201,14 +207,12 @@ void AyoItsTime(uint8 alarmType)
 uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType)
 {
     if(alarmToBeUpdated->countDownType == alarmType){
-        alarmToBeUpdated->currentCountDownValue--;
-        if(alarmToBeUpdated->currentCountDownValue == 0){
+       
+       alarmToBeUpdated->currentCountDownValue--;
+       if(alarmToBeUpdated->currentCountDownValue <= 0){
             ResetAlarm(alarmToBeUpdated);
             return 1u;
         } 
-        else if(alarmToBeUpdated->countDownResetCondition == alarmType){
-            ResetAlarm(alarmToBeUpdated);
-        }
     }
     
     return 0u;
@@ -409,7 +413,10 @@ uint8 configureRemoteParams(){
             setTime(network_time);
         }
         
-        modem_power_down();
+        //get GPS coordinates
+        //gps_t gps = modem_get_gps_coordinates();
+        
+       modem_power_down();
         return 0u;
         
     }
@@ -423,6 +430,7 @@ uint8 makeMeasurements(){
    
     level_sensor_t m_level_sensor;
     voltage_t m_voltage;
+    
     
     //clock time
     long timeStamp = getTimeStamp();

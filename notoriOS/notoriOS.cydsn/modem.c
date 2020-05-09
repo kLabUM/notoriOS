@@ -170,7 +170,7 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
         }  
         
         //somehitng went wrong, restart UARt
-        printNotif(NOTIF_TYPE_ERROR,"Could not write AT command: %s", commands);
+        printNotif(NOTIF_TYPE_ERROR,"Could not write AT command: %s\n Received: %s\n", commands,uart_received_string);
       
     }
    // printNotif(NOTIF_TYPE_ERROR,"Modem AT response timeout: %s\r\n", commands);
@@ -479,8 +479,123 @@ void modem_wakeup(){
 
 
     
+//retunrs lat,lom,alt data from Assited GPS (AGPS) system
+gps_t modem_get_gps_coordinates(){
+    gps_t gps;
+    gps.altitude = 0;
+    gps.longitude = 0;
+    gps.latitude = 0;
+    gps.time_to_lock =0;
+    gps.valid = 0;
+    
+    //AGPS will only work if we're connected to network, so don't call this fuction otherwise
+    if(modem_state != MODEM_STATE_READY){
+        return gps;//where valid = 0
+    }
+    
+    long lock_time = getTimeStamp();
+    
+    /*enable this for thr LTER module
+    //enable GPS Low-Dropout Regulator
+    at_write_command("AT#GPIO=5,1,1,0\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //configure SUPL connection params
+    at_write_command("AT$SUPLSEC=1\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //use SUPL2.0
+    at_write_command("AT$SUPLV2=1\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //enable AGPS service
+    at_write_command("AT$AGPSEN=1\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //chose SUPL server, use google publiuc service
+    at_write_command("AT$SLP=1,\"supl.google.com:7275\"\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //pdp context has to be lockeed to carrier for this to work
+    
+    at_write_command("AT$LCSLK=1,1\r","OK",DEFAULT_AT_TIMEOUT);//ATT
+    //at_write_command("AT$LCSLK=1,3\r","OK",DEFAULT_AT_TIMEOUT);//Verizon
+    
+    //start the AGPS service
+    //will keep receiving a buynch of commas without numbers, until GPS locks
+    //good lock will retunr a string with "N" and "W" coordinates
+    
+    
+ 
+    uint8 gps_status = 0;
+    for(uint16 i=0;i<200;i++){
+        gps_status = at_write_command("AT$GPSACP\r","N",DEFAULT_AT_TIMEOUT);//ATT
+        if(gps_status){
+            break;   
+        }
+        CyDelay(1000u);//wait for a second -- BLOCKING. Could be more elegant to incorporate this into the modem state machine
+    }
+    
+    
+    //parse data here
+    
+    //disable LDO, just in case
+    at_write_command("AT#GPIO=5,0,1,0\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //flush modem's GPS data, just in case
+    at_write_command("AT$GPSR=0\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    */
+    
+    
+    //Setthe GPS Quality of Servicep arameters. Inorder,theyare<horiz_accuracy(inmeters)>,<vertical_accuracy(inmeters)>,<response_time(inseconds)>,<age_of_location_info (in seconds)>:
+    //AT$GPSQOS=50,50,100,0
+    at_write_command("AT$GPSQOS=50,50,100,0\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //SettheSUPLLocationPlatform(SLP)addressoftheserverthatwillprovidetheA-GPS data:
+    at_write_command("AT$LCSSLP=1,\"supl.google.com\"\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //unlock contedt, simnce its being used by modem
+    at_write_command("AT#SGACT=1,0\r\n", "OK",DEFAULT_AT_TIMEOUT);
+    //Lock context 1 for LoCation Services (LCS) use only
+    at_write_command("AT$LCSLK=1,1\r","OK",5000u);
+    
+    //unlock contedt, simnce its being used by modem
+    at_write_command("AT#SGACT=1,1\r\n", "OK",10000u);
+    
+    //EnableunsolicitedNMEAGPSdataintheformatof<NMEASENTENCE><CR>
+    at_write_command("AT$GPSNMUN=2,1,0,0,0,0,0\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    //StartGPSlocationservicerequest.Sendingthiscommandsets$GPSP=1
+   uint8 gps_status = 0;
+    for(uint16 i=0;i<200;i++){
+        gps_status = at_write_command("AT$GPSSLSR=1,1,,,,,0,255\r","N",3000u);
+        if(gps_status){
+            break;   
+        }
+  }
+    
+    //$GPGGA,030307.691,4217.7923,N,08341.3240,W,1,05,2.25,225.0,M,,M,,0000*6E
+    //$GPGGA,213852.000,4600.8755,N,09327.7008,W,1,05,3.00,292.0,M,,M,,0000*6E
+    if(gps_status){
+        float lat,lon,alt = 0;
+        if(sscanf(uart_received_string,"%*s,%f,N,%f,W,%*s",&lat,&lon) > 0){
+            gps.altitude = alt;
+            gps.latitude = lat/60;
+            gps.longitude = lon/60;
+            gps.valid = 1;
+        }
+        
+    }
+    
+    //turn off gps
+    //AT$GPSP=0
+    at_write_command("AT$GPSP=0\r","OK",DEFAULT_AT_TIMEOUT);
+    
+    
 
     
+    lock_time = getTimeStamp() - lock_time;
+    gps.time_to_lock = lock_time;
+    
+    return gps;
+    
+}
 
 
 

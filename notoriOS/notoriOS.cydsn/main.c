@@ -12,10 +12,12 @@ TODO:
     X initilizwe modem parameters and cell tower time at bootup
     X Write real maxbotixdata to server
     - GPS lock
+    -- start alarm on 0 (on the hour), rather then arbitrary time
     - watchdog -- built-in is too short (2sec), so may need to build one using a timer
     - test power
     - write data to SD card
     - bootloader
+    - Read form influx anbd parse  Meta DB
     - test power
 
 */

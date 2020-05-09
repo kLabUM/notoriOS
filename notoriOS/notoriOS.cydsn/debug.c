@@ -54,8 +54,11 @@ int _write(int file, char *ptr, int len)
     return (len);
 }
 
+#endif
+
 //use like printf, but this will add an depoch timestamp to the printput
 void printNotif(uint8 type, char* format, ...){
+    #if USE_DEBUG
     va_list argptr;
     va_start(argptr, format);
 
@@ -78,11 +81,12 @@ void printNotif(uint8 type, char* format, ...){
 
     
     printf("\"}\r\n");
+    #endif
     
 }
 
 void printTestStatus(test_t test){
-
+#if USE_DEBUG
     printf("{ ");
     printf("\"time\":\"%ld\" " , getTimeStamp());
     
@@ -92,6 +96,7 @@ void printTestStatus(test_t test){
     printf("\"reason\":\"%s\" ", test.reason);
 
     printf("}\r\n");
+    #endif
    
 }
 
@@ -101,8 +106,6 @@ void printTestStatus(test_t test){
 
     
 
-
-#endif
 
 
 //returns local times in epoch seconds (seconds since Jan 1, 1970)
