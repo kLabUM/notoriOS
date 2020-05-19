@@ -86,14 +86,14 @@ test_t voltages_test(){
     
     test_t test;
     test.status = 0;
-    sprintf(test.test_name,"TEST_ANALOG_VOLTAGES");
+    snprintf(test.test_name,sizeof(test.test_name),"TEST_ANALOG_VOLTAGES");
     
     voltage_t voltage = voltage_take_readings();
     
     //do some checks here if you want the test to meet some voltage requrement
     //poipoi
     
-    sprintf(test.reason,"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f",
+    snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f",
             voltage.voltage_battery,
             voltage.voltage_solar,
             voltage.voltage_charge_current);

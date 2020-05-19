@@ -29,11 +29,6 @@ CY_ISR(Wakeup_ISR) {
 }
 
 
-//pre-allocate some memory for the HTTP requests
-#define MAX_HTTP_HEADER_LENGTH 1000
-char http_request[MAX_HTTP_HEADER_LENGTH];
-char http_body[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
-
 
 uint8 syncData();               //syncs data with server 
 uint8 configureRemoteParams();  //syncs RTC with cell network and obtains meta-DB params
@@ -66,17 +61,17 @@ void ReadyOrNot()
     //get unique ID of PSOC chip, this can be concatenated with the MODEM IDs to generate a unique string for the entire system
     uint32 uniqueId[2];
     CyGetUniqueId(uniqueId); 
-    sprintf(system_info.chip_uniqueId,"%X-%X",(unsigned int)uniqueId[0],(unsigned int)uniqueId[1]);
+    snprintf(system_info.chip_uniqueId,sizeof(system_info.chip_uniqueId),"%X-%X",(unsigned int)uniqueId[0],(unsigned int)uniqueId[1]);
     //the modem will track/popualte it's own IDs, so just point to them for now
     system_info.modem_info = &modem_info;
     
     //configure server endpoints -- these should obviosuly be provided  remotely by the meta data-base server
-    sprintf(system_settings.ep_host,"%s","data.open-storm.org");
+    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","data.open-storm.org");
     system_settings.ep_port = 8086;
-    sprintf(system_settings.ep_user,"%s","generic_node");
-    sprintf(system_settings.ep_pswd,"%s","MakeFloodsCurrents");
-    sprintf(system_settings.ep_database,"%s","ARB");
-    sprintf(system_settings.node_id,"%s","GGB000");
+    snprintf(system_settings.ep_user,sizeof(system_settings.ep_user),"%s","generic_node");
+    snprintf(system_settings.ep_pswd,sizeof(system_settings.ep_pswd),"%s","MakeFloodsCurrents");
+    snprintf(system_settings.ep_database,sizeof(system_settings.ep_database),"%s","ARB");
+    snprintf(system_settings.node_id,sizeof(system_settings.node_id),"%s","GGB000");
         
     
     
@@ -326,20 +321,21 @@ uint8 syncData(){
             
             http_request[0] = '\0';
             http_body[0] = '\0';
+            http_route[0] = '\0';
             char *base = "write";
-            char route[100];
+       
             
             
             //construct HTPP request
             printNotif(NOTIF_TYPE_EVENT,"Begin HTTP post.");
             
-            construct_influx_route(route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
-            printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", route);
+            construct_influx_route(http_route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
+            printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", http_route);
             
             construct_influx_write_body(http_body,system_settings.node_id);
             
             
-            construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,route,system_settings.ep_port,"POST","Close","",0,"1.1");
+            construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,http_route,system_settings.ep_port,"POST","Close","",0,"1.1");
             printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
             
             
@@ -350,7 +346,7 @@ uint8 syncData(){
             //open port and begin command line sequence
             char portConfig[200];
             uint8 status = 0u;
-            sprintf(portConfig,"AT#SD=1,0,%d,\"%s\",0,0,1\r",system_settings.ep_port,system_settings.ep_host);
+            snprintf(portConfig,sizeof(portConfig),"AT#SD=1,0,%d,\"%s\",0,0,1\r",system_settings.ep_port,system_settings.ep_host);
             printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
             status = at_write_command(portConfig,"OK",10000u);
             status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
@@ -369,7 +365,7 @@ uint8 syncData(){
                 Clear_Data_Stack();
                 int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
                 char s_send_time[10];
-                sprintf(s_send_time,"%d",send_time);
+                snprintf(s_send_time,sizeof(s_send_time),"%d",send_time);
                 pushData("modem_tx_time",s_send_time,getTimeStamp());
             }
             
@@ -441,7 +437,7 @@ uint8 makeMeasurements(){
  
    
     if(m_level_sensor.num_valid_readings > 0){
-        sprintf(value,"%d",m_level_sensor.level_reading);
+        snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
         printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
         pushData("maxbotix_depth",value,timeStamp);
     }else{
@@ -451,7 +447,7 @@ uint8 makeMeasurements(){
     
     m_voltage = voltage_take_readings();
     if(m_voltage.valid){
-        sprintf(value,"%.2f",m_voltage.voltage_battery);
+        snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_battery);
         printNotif(NOTIF_TYPE_EVENT,"v_bat=%s",value);
         pushData("v_bat",value,timeStamp);
     }else{

@@ -14,13 +14,12 @@ long getTimeStamp();
 
 //set to 1 if debug data will be written to UART
 #define USE_DEBUG 1
-#define DEBUG_STRING_LENGTH 100
+#define MAX_DEBUG_STRING_LENGTH 500
 
 #define NOTIF_TYPE_EVENT 0u
 #define NOTIF_TYPE_WARNING 1u
 #define NOTIF_TYPE_ERROR 2u
     
-char debug_string[DEBUG_STRING_LENGTH];
 
 
 /* Add an explicit reference to the floating point printf library to allow
@@ -29,6 +28,7 @@ the usage of floating point conversion specifier */
     asm (".global _printf_float");
 #endif
 
+void printd(char* format, ...);
 void debug_start();
 void debug_stop();
 void debug_sleep();

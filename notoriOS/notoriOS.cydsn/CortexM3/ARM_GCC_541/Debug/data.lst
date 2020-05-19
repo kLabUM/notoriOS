@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 1
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 1
 
 
    1              		.syntax unified
@@ -19,1701 +19,2124 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 1
   16              		.text
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
-  19              		.comm	debug_string,100,4
-  20              		.syntax unified
-  21              		.global _printf_float
-  22              		.thumb
-  23              		.syntax unified
-  24              		.comm	dataPointsInStack,2,2
-  25              		.comm	data,4400,4
-  26              		.section	.rodata
-  27              		.align	2
-  28              	.LC0:
-  29 0000 44617461 		.ascii	"Data stack full. Begin overwrite of circular buffer"
-  29      20737461 
-  29      636B2066 
-  29      756C6C2E 
-  29      20426567 
-  30 0033 2E00     		.ascii	".\000"
-  31              		.section	.text.pushData,"ax",%progbits
-  32              		.align	2
-  33              		.global	pushData
-  34              		.thumb
-  35              		.thumb_func
-  36              		.type	pushData, %function
-  37              	pushData:
-  38              	.LFB64:
-  39              		.file 1 "data.c"
+  19              		.syntax unified
+  20              		.global _printf_float
+  21              		.thumb
+  22              		.syntax unified
+  23              		.comm	dataPointsInStack,2,2
+  24              		.comm	data,4400,4
+  25              		.comm	modem_state,1,1
+  26              		.comm	modem_start_time_stamp,4,4
+  27              		.comm	modem_info,60,4
+  28              		.comm	modem_stats,12,4
+  29              		.comm	http_request,1000,4
+  30              		.comm	http_body,7000,4
+  31              		.comm	http_route,200,4
+  32              		.comm	system_info,28,4
+  33              		.comm	system_settings,324,4
+  34              		.section	.rodata
+  35              		.align	2
+  36              	.LC0:
+  37 0000 257300   		.ascii	"%s\000"
+  38 0003 00       		.align	2
+  39              	.LC1:
+  40 0004 44617461 		.ascii	"Data stack full. Begin overwrite of circular buffer"
+  40      20737461 
+  40      636B2066 
+  40      756C6C2E 
+  40      20426567 
+  41 0037 2E00     		.ascii	".\000"
+  42              		.section	.text.pushData,"ax",%progbits
+  43              		.align	2
+  44              		.global	pushData
+  45              		.thumb
+  46              		.thumb_func
+  47              		.type	pushData, %function
+  48              	pushData:
+  49              	.LFB64:
+  50              		.file 1 "data.c"
    1:data.c        **** // ==============================================
    2:data.c        **** //  I got stacks on stacks (on stacks)
    3:data.c        **** //      - Soulja Boy (2011)
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 2
+
+
    4:data.c        **** //
    5:data.c        **** // This defines methods for the core data stack, which will be syunced with the server
    6:data.c        **** // ==============================================
    7:data.c        **** #include "data.h"
-   8:data.c        **** 
+   8:data.c        **** #include "notoriOS.h"
    9:data.c        **** 
-  10:data.c        **** // ==============================================
-  11:data.c        **** //  Push It
-  12:data.c        **** //      - Salt-n-Peppa (1987)
-  13:data.c        **** //
-  14:data.c        **** // This pushes data onto the stack
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 2
-
-
-  15:data.c        **** // ==============================================
-  16:data.c        **** uint8 pushData(char * key, char *value, int32 timestamp){
-  40              		.loc 1 16 0
-  41              		.cfi_startproc
-  42              		@ args = 0, pretend = 0, frame = 16
-  43              		@ frame_needed = 1, uses_anonymous_args = 0
-  44 0000 80B5     		push	{r7, lr}
-  45              		.cfi_def_cfa_offset 8
-  46              		.cfi_offset 7, -8
-  47              		.cfi_offset 14, -4
-  48 0002 84B0     		sub	sp, sp, #16
-  49              		.cfi_def_cfa_offset 24
-  50 0004 00AF     		add	r7, sp, #0
-  51              		.cfi_def_cfa_register 7
-  52 0006 F860     		str	r0, [r7, #12]
-  53 0008 B960     		str	r1, [r7, #8]
-  54 000a 7A60     		str	r2, [r7, #4]
-  17:data.c        ****     
-  18:data.c        ****     sprintf(data[dataPointsInStack].key, "%s", key);
-  55              		.loc 1 18 0
-  56 000c 1E4B     		ldr	r3, .L4
-  57 000e 1B88     		ldrh	r3, [r3]
-  58 0010 1A46     		mov	r2, r3
-  59 0012 2C23     		movs	r3, #44
-  60 0014 03FB02F3 		mul	r3, r3, r2
-  61 0018 1C4A     		ldr	r2, .L4+4
-  62 001a 1344     		add	r3, r3, r2
-  63 001c F968     		ldr	r1, [r7, #12]
-  64 001e 1846     		mov	r0, r3
-  65 0020 FFF7FEFF 		bl	strcpy
-  19:data.c        ****     sprintf(data[dataPointsInStack].value, "%s", value);
+  10:data.c        **** 
+  11:data.c        **** // ==============================================
+  12:data.c        **** //  Push It
+  13:data.c        **** //      - Salt-n-Peppa (1987)
+  14:data.c        **** //
+  15:data.c        **** // This pushes data onto the stack
+  16:data.c        **** // ==============================================
+  17:data.c        **** uint8 pushData(char * key, char *value, int32 timestamp){
+  51              		.loc 1 17 0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 16
+  54              		@ frame_needed = 1, uses_anonymous_args = 0
+  55 0000 80B5     		push	{r7, lr}
+  56              		.cfi_def_cfa_offset 8
+  57              		.cfi_offset 7, -8
+  58              		.cfi_offset 14, -4
+  59 0002 84B0     		sub	sp, sp, #16
+  60              		.cfi_def_cfa_offset 24
+  61 0004 00AF     		add	r7, sp, #0
+  62              		.cfi_def_cfa_register 7
+  63 0006 F860     		str	r0, [r7, #12]
+  64 0008 B960     		str	r1, [r7, #8]
+  65 000a 7A60     		str	r2, [r7, #4]
+  18:data.c        ****     
+  19:data.c        ****     snprintf(data[dataPointsInStack].key,sizeof(data[dataPointsInStack].key), "%s", key);
   66              		.loc 1 19 0
-  67 0024 184B     		ldr	r3, .L4
-  68 0026 1B88     		ldrh	r3, [r3]
-  69 0028 1A46     		mov	r2, r3
-  70 002a 2C23     		movs	r3, #44
-  71 002c 03FB02F3 		mul	r3, r3, r2
-  72 0030 1033     		adds	r3, r3, #16
-  73 0032 164A     		ldr	r2, .L4+4
-  74 0034 1344     		add	r3, r3, r2
-  75 0036 0433     		adds	r3, r3, #4
-  76 0038 B968     		ldr	r1, [r7, #8]
-  77 003a 1846     		mov	r0, r3
-  78 003c FFF7FEFF 		bl	strcpy
-  20:data.c        ****     data[dataPointsInStack].timeStamp = timestamp;
-  79              		.loc 1 20 0
-  80 0040 114B     		ldr	r3, .L4
-  81 0042 1B88     		ldrh	r3, [r3]
-  82 0044 1946     		mov	r1, r3
-  83 0046 114A     		ldr	r2, .L4+4
-  84 0048 2C23     		movs	r3, #44
-  85 004a 03FB01F3 		mul	r3, r3, r1
-  86 004e 1344     		add	r3, r3, r2
-  87 0050 2833     		adds	r3, r3, #40
-  88 0052 7A68     		ldr	r2, [r7, #4]
-  89 0054 1A60     		str	r2, [r3]
-  21:data.c        ****   
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 3
+  67 000c 1F4B     		ldr	r3, .L4
+  68 000e 1B88     		ldrh	r3, [r3]
+  69 0010 1A46     		mov	r2, r3
+  70 0012 2C23     		movs	r3, #44
+  71 0014 03FB02F3 		mul	r3, r3, r2
+  72 0018 1D4A     		ldr	r2, .L4+4
+  73 001a 9818     		adds	r0, r3, r2
+  74 001c FB68     		ldr	r3, [r7, #12]
+  75 001e 1D4A     		ldr	r2, .L4+8
+  76 0020 1421     		movs	r1, #20
+  77 0022 FFF7FEFF 		bl	snprintf
+  20:data.c        ****     snprintf(data[dataPointsInStack].value,sizeof(data[dataPointsInStack].value), "%s", value);
+  78              		.loc 1 20 0
+  79 0026 194B     		ldr	r3, .L4
+  80 0028 1B88     		ldrh	r3, [r3]
+  81 002a 1A46     		mov	r2, r3
+  82 002c 2C23     		movs	r3, #44
+  83 002e 03FB02F3 		mul	r3, r3, r2
+  84 0032 1033     		adds	r3, r3, #16
+  85 0034 164A     		ldr	r2, .L4+4
+  86 0036 1344     		add	r3, r3, r2
+  87 0038 181D     		adds	r0, r3, #4
+  88 003a BB68     		ldr	r3, [r7, #8]
+  89 003c 154A     		ldr	r2, .L4+8
+  90 003e 1421     		movs	r1, #20
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 3
 
 
-  22:data.c        ****     dataPointsInStack++;
-  90              		.loc 1 22 0
-  91 0056 0C4B     		ldr	r3, .L4
-  92 0058 1B88     		ldrh	r3, [r3]
-  93 005a 0133     		adds	r3, r3, #1
-  94 005c 9AB2     		uxth	r2, r3
-  95 005e 0A4B     		ldr	r3, .L4
-  96 0060 1A80     		strh	r2, [r3]	@ movhi
-  23:data.c        ****     
-  24:data.c        ****     //cricular buffer
-  25:data.c        ****     //if stack is full, loop around and delete first point
-  26:data.c        ****     //this should be fixed to store the overwritte data onto SD card
-  27:data.c        ****     if(dataPointsInStack >= DATA_MAX_VALUES){
-  97              		.loc 1 27 0
-  98 0062 094B     		ldr	r3, .L4
-  99 0064 1B88     		ldrh	r3, [r3]
- 100 0066 632B     		cmp	r3, #99
- 101 0068 08D9     		bls	.L2
-  28:data.c        ****         dataPointsInStack = 0;
- 102              		.loc 1 28 0
- 103 006a 074B     		ldr	r3, .L4
- 104 006c 0022     		movs	r2, #0
- 105 006e 1A80     		strh	r2, [r3]	@ movhi
-  29:data.c        ****         printNotif(NOTIF_TYPE_ERROR,"Data stack full. Begin overwrite of circular buffer.");
- 106              		.loc 1 29 0
- 107 0070 0749     		ldr	r1, .L4+8
- 108 0072 0220     		movs	r0, #2
- 109 0074 FFF7FEFF 		bl	printNotif
-  30:data.c        ****         return 0;
- 110              		.loc 1 30 0
- 111 0078 0023     		movs	r3, #0
- 112 007a 00E0     		b	.L3
- 113              	.L2:
-  31:data.c        ****     }
-  32:data.c        ****     
-  33:data.c        ****     return 1;
- 114              		.loc 1 33 0
- 115 007c 0123     		movs	r3, #1
- 116              	.L3:
-  34:data.c        **** }
- 117              		.loc 1 34 0
- 118 007e 1846     		mov	r0, r3
- 119 0080 1037     		adds	r7, r7, #16
- 120              		.cfi_def_cfa_offset 8
- 121 0082 BD46     		mov	sp, r7
- 122              		.cfi_def_cfa_register 13
- 123              		@ sp needed
- 124 0084 80BD     		pop	{r7, pc}
- 125              	.L5:
- 126 0086 00BF     		.align	2
- 127              	.L4:
- 128 0088 00000000 		.word	dataPointsInStack
- 129 008c 00000000 		.word	data
- 130 0090 00000000 		.word	.LC0
- 131              		.cfi_endproc
- 132              	.LFE64:
- 133              		.size	pushData, .-pushData
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 4
+  91 0040 FFF7FEFF 		bl	snprintf
+  21:data.c        ****     data[dataPointsInStack].timeStamp = timestamp;
+  92              		.loc 1 21 0
+  93 0044 114B     		ldr	r3, .L4
+  94 0046 1B88     		ldrh	r3, [r3]
+  95 0048 1946     		mov	r1, r3
+  96 004a 114A     		ldr	r2, .L4+4
+  97 004c 2C23     		movs	r3, #44
+  98 004e 03FB01F3 		mul	r3, r3, r1
+  99 0052 1344     		add	r3, r3, r2
+ 100 0054 2833     		adds	r3, r3, #40
+ 101 0056 7A68     		ldr	r2, [r7, #4]
+ 102 0058 1A60     		str	r2, [r3]
+  22:data.c        ****   
+  23:data.c        ****     dataPointsInStack++;
+ 103              		.loc 1 23 0
+ 104 005a 0C4B     		ldr	r3, .L4
+ 105 005c 1B88     		ldrh	r3, [r3]
+ 106 005e 0133     		adds	r3, r3, #1
+ 107 0060 9AB2     		uxth	r2, r3
+ 108 0062 0A4B     		ldr	r3, .L4
+ 109 0064 1A80     		strh	r2, [r3]	@ movhi
+  24:data.c        ****     
+  25:data.c        ****     //cricular buffer
+  26:data.c        ****     //if stack is full, loop around and delete first point
+  27:data.c        ****     //this should be fixed to store the overwritte data onto SD card
+  28:data.c        ****     if(dataPointsInStack >= DATA_MAX_VALUES){
+ 110              		.loc 1 28 0
+ 111 0066 094B     		ldr	r3, .L4
+ 112 0068 1B88     		ldrh	r3, [r3]
+ 113 006a 632B     		cmp	r3, #99
+ 114 006c 08D9     		bls	.L2
+  29:data.c        ****         dataPointsInStack = 0;
+ 115              		.loc 1 29 0
+ 116 006e 074B     		ldr	r3, .L4
+ 117 0070 0022     		movs	r2, #0
+ 118 0072 1A80     		strh	r2, [r3]	@ movhi
+  30:data.c        ****         printNotif(NOTIF_TYPE_ERROR,"Data stack full. Begin overwrite of circular buffer.");
+ 119              		.loc 1 30 0
+ 120 0074 0849     		ldr	r1, .L4+12
+ 121 0076 0220     		movs	r0, #2
+ 122 0078 FFF7FEFF 		bl	printNotif
+  31:data.c        ****         return 0;
+ 123              		.loc 1 31 0
+ 124 007c 0023     		movs	r3, #0
+ 125 007e 00E0     		b	.L3
+ 126              	.L2:
+  32:data.c        ****     }
+  33:data.c        ****     
+  34:data.c        ****     return 1;
+ 127              		.loc 1 34 0
+ 128 0080 0123     		movs	r3, #1
+ 129              	.L3:
+  35:data.c        **** }
+ 130              		.loc 1 35 0
+ 131 0082 1846     		mov	r0, r3
+ 132 0084 1037     		adds	r7, r7, #16
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 4
 
 
- 134              		.section	.text.popData,"ax",%progbits
- 135              		.align	2
- 136              		.global	popData
- 137              		.thumb
- 138              		.thumb_func
- 139              		.type	popData, %function
- 140              	popData:
- 141              	.LFB65:
-  35:data.c        **** 
-  36:data.c        **** key_value_t popData(){
- 142              		.loc 1 36 0
- 143              		.cfi_startproc
- 144              		@ args = 0, pretend = 0, frame = 8
- 145              		@ frame_needed = 1, uses_anonymous_args = 0
- 146              		@ link register save eliminated.
- 147 0000 B0B4     		push	{r4, r5, r7}
- 148              		.cfi_def_cfa_offset 12
- 149              		.cfi_offset 4, -12
- 150              		.cfi_offset 5, -8
- 151              		.cfi_offset 7, -4
- 152 0002 83B0     		sub	sp, sp, #12
- 153              		.cfi_def_cfa_offset 24
- 154 0004 00AF     		add	r7, sp, #0
- 155              		.cfi_def_cfa_register 7
- 156 0006 7860     		str	r0, [r7, #4]
-  37:data.c        ****     
-  38:data.c        ****     if(dataPointsInStack>0){
- 157              		.loc 1 38 0
- 158 0008 184B     		ldr	r3, .L9
- 159 000a 1B88     		ldrh	r3, [r3]
- 160 000c 002B     		cmp	r3, #0
- 161 000e 19D0     		beq	.L7
-  39:data.c        ****         dataPointsInStack--;
- 162              		.loc 1 39 0
- 163 0010 164B     		ldr	r3, .L9
- 164 0012 1B88     		ldrh	r3, [r3]
- 165 0014 013B     		subs	r3, r3, #1
- 166 0016 9AB2     		uxth	r2, r3
- 167 0018 144B     		ldr	r3, .L9
- 168 001a 1A80     		strh	r2, [r3]	@ movhi
-  40:data.c        ****         return data[dataPointsInStack];
- 169              		.loc 1 40 0
- 170 001c 134B     		ldr	r3, .L9
- 171 001e 1B88     		ldrh	r3, [r3]
- 172 0020 1846     		mov	r0, r3
- 173 0022 7968     		ldr	r1, [r7, #4]
- 174 0024 124A     		ldr	r2, .L9+4
- 175 0026 2C23     		movs	r3, #44
- 176 0028 03FB00F3 		mul	r3, r3, r0
- 177 002c 1344     		add	r3, r3, r2
- 178 002e 0C46     		mov	r4, r1
- 179 0030 1D46     		mov	r5, r3
- 180 0032 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 181 0034 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 182 0036 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 183 0038 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 184 003a 95E80700 		ldmia	r5, {r0, r1, r2}
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 5
+ 133              		.cfi_def_cfa_offset 8
+ 134 0086 BD46     		mov	sp, r7
+ 135              		.cfi_def_cfa_register 13
+ 136              		@ sp needed
+ 137 0088 80BD     		pop	{r7, pc}
+ 138              	.L5:
+ 139 008a 00BF     		.align	2
+ 140              	.L4:
+ 141 008c 00000000 		.word	dataPointsInStack
+ 142 0090 00000000 		.word	data
+ 143 0094 00000000 		.word	.LC0
+ 144 0098 04000000 		.word	.LC1
+ 145              		.cfi_endproc
+ 146              	.LFE64:
+ 147              		.size	pushData, .-pushData
+ 148              		.section	.text.popData,"ax",%progbits
+ 149              		.align	2
+ 150              		.global	popData
+ 151              		.thumb
+ 152              		.thumb_func
+ 153              		.type	popData, %function
+ 154              	popData:
+ 155              	.LFB65:
+  36:data.c        **** 
+  37:data.c        **** key_value_t popData(){
+ 156              		.loc 1 37 0
+ 157              		.cfi_startproc
+ 158              		@ args = 0, pretend = 0, frame = 8
+ 159              		@ frame_needed = 1, uses_anonymous_args = 0
+ 160              		@ link register save eliminated.
+ 161 0000 B0B4     		push	{r4, r5, r7}
+ 162              		.cfi_def_cfa_offset 12
+ 163              		.cfi_offset 4, -12
+ 164              		.cfi_offset 5, -8
+ 165              		.cfi_offset 7, -4
+ 166 0002 83B0     		sub	sp, sp, #12
+ 167              		.cfi_def_cfa_offset 24
+ 168 0004 00AF     		add	r7, sp, #0
+ 169              		.cfi_def_cfa_register 7
+ 170 0006 7860     		str	r0, [r7, #4]
+  38:data.c        ****     
+  39:data.c        ****     if(dataPointsInStack>0){
+ 171              		.loc 1 39 0
+ 172 0008 184B     		ldr	r3, .L9
+ 173 000a 1B88     		ldrh	r3, [r3]
+ 174 000c 002B     		cmp	r3, #0
+ 175 000e 19D0     		beq	.L7
+  40:data.c        ****         dataPointsInStack--;
+ 176              		.loc 1 40 0
+ 177 0010 164B     		ldr	r3, .L9
+ 178 0012 1B88     		ldrh	r3, [r3]
+ 179 0014 013B     		subs	r3, r3, #1
+ 180 0016 9AB2     		uxth	r2, r3
+ 181 0018 144B     		ldr	r3, .L9
+ 182 001a 1A80     		strh	r2, [r3]	@ movhi
+  41:data.c        ****         return data[dataPointsInStack];
+ 183              		.loc 1 41 0
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 5
 
 
- 185 003e 84E80700 		stmia	r4, {r0, r1, r2}
- 186 0042 0EE0     		b	.L6
- 187              	.L7:
-  41:data.c        ****     }else{
-  42:data.c        ****         dataPointsInStack = 0;
- 188              		.loc 1 42 0
- 189 0044 094B     		ldr	r3, .L9
- 190 0046 0022     		movs	r2, #0
- 191 0048 1A80     		strh	r2, [r3]	@ movhi
-  43:data.c        ****         return data[0];   
- 192              		.loc 1 43 0
- 193 004a 7B68     		ldr	r3, [r7, #4]
- 194 004c 084A     		ldr	r2, .L9+4
- 195 004e 1C46     		mov	r4, r3
- 196 0050 1546     		mov	r5, r2
- 197 0052 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 198 0054 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 199 0056 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 200 0058 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 201 005a 95E80700 		ldmia	r5, {r0, r1, r2}
- 202 005e 84E80700 		stmia	r4, {r0, r1, r2}
- 203              	.L6:
-  44:data.c        ****     }
-  45:data.c        **** }
- 204              		.loc 1 45 0
- 205 0062 7868     		ldr	r0, [r7, #4]
- 206 0064 0C37     		adds	r7, r7, #12
- 207              		.cfi_def_cfa_offset 12
- 208 0066 BD46     		mov	sp, r7
- 209              		.cfi_def_cfa_register 13
- 210              		@ sp needed
- 211 0068 B0BC     		pop	{r4, r5, r7}
- 212              		.cfi_restore 7
- 213              		.cfi_restore 5
- 214              		.cfi_restore 4
- 215              		.cfi_def_cfa_offset 0
- 216 006a 7047     		bx	lr
- 217              	.L10:
- 218              		.align	2
- 219              	.L9:
- 220 006c 00000000 		.word	dataPointsInStack
- 221 0070 00000000 		.word	data
- 222              		.cfi_endproc
- 223              	.LFE65:
- 224              		.size	popData, .-popData
- 225              		.section	.text.Initialize_Data_Stack,"ax",%progbits
- 226              		.align	2
- 227              		.global	Initialize_Data_Stack
- 228              		.thumb
- 229              		.thumb_func
- 230              		.type	Initialize_Data_Stack, %function
- 231              	Initialize_Data_Stack:
- 232              	.LFB66:
-  46:data.c        **** 
+ 184 001c 134B     		ldr	r3, .L9
+ 185 001e 1B88     		ldrh	r3, [r3]
+ 186 0020 1846     		mov	r0, r3
+ 187 0022 7968     		ldr	r1, [r7, #4]
+ 188 0024 124A     		ldr	r2, .L9+4
+ 189 0026 2C23     		movs	r3, #44
+ 190 0028 03FB00F3 		mul	r3, r3, r0
+ 191 002c 1344     		add	r3, r3, r2
+ 192 002e 0C46     		mov	r4, r1
+ 193 0030 1D46     		mov	r5, r3
+ 194 0032 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 195 0034 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 196 0036 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 197 0038 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 198 003a 95E80700 		ldmia	r5, {r0, r1, r2}
+ 199 003e 84E80700 		stmia	r4, {r0, r1, r2}
+ 200 0042 0EE0     		b	.L6
+ 201              	.L7:
+  42:data.c        ****     }else{
+  43:data.c        ****         dataPointsInStack = 0;
+ 202              		.loc 1 43 0
+ 203 0044 094B     		ldr	r3, .L9
+ 204 0046 0022     		movs	r2, #0
+ 205 0048 1A80     		strh	r2, [r3]	@ movhi
+  44:data.c        ****         return data[0];   
+ 206              		.loc 1 44 0
+ 207 004a 7B68     		ldr	r3, [r7, #4]
+ 208 004c 084A     		ldr	r2, .L9+4
+ 209 004e 1C46     		mov	r4, r3
+ 210 0050 1546     		mov	r5, r2
+ 211 0052 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 212 0054 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 213 0056 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 214 0058 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 215 005a 95E80700 		ldmia	r5, {r0, r1, r2}
+ 216 005e 84E80700 		stmia	r4, {r0, r1, r2}
+ 217              	.L6:
+  45:data.c        ****     }
+  46:data.c        **** }
+ 218              		.loc 1 46 0
+ 219 0062 7868     		ldr	r0, [r7, #4]
+ 220 0064 0C37     		adds	r7, r7, #12
+ 221              		.cfi_def_cfa_offset 12
+ 222 0066 BD46     		mov	sp, r7
+ 223              		.cfi_def_cfa_register 13
+ 224              		@ sp needed
+ 225 0068 B0BC     		pop	{r4, r5, r7}
+ 226              		.cfi_restore 7
+ 227              		.cfi_restore 5
+ 228              		.cfi_restore 4
+ 229              		.cfi_def_cfa_offset 0
+ 230 006a 7047     		bx	lr
+ 231              	.L10:
+ 232              		.align	2
+ 233              	.L9:
+ 234 006c 00000000 		.word	dataPointsInStack
+ 235 0070 00000000 		.word	data
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 6
+
+
+ 236              		.cfi_endproc
+ 237              	.LFE65:
+ 238              		.size	popData, .-popData
+ 239              		.section	.text.Initialize_Data_Stack,"ax",%progbits
+ 240              		.align	2
+ 241              		.global	Initialize_Data_Stack
+ 242              		.thumb
+ 243              		.thumb_func
+ 244              		.type	Initialize_Data_Stack, %function
+ 245              	Initialize_Data_Stack:
+ 246              	.LFB66:
   47:data.c        **** 
-  48:data.c        **** void Initialize_Data_Stack(){
- 233              		.loc 1 48 0
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 6
+  48:data.c        **** 
+  49:data.c        **** void Initialize_Data_Stack(){
+ 247              		.loc 1 49 0
+ 248              		.cfi_startproc
+ 249              		@ args = 0, pretend = 0, frame = 0
+ 250              		@ frame_needed = 1, uses_anonymous_args = 0
+ 251 0000 80B5     		push	{r7, lr}
+ 252              		.cfi_def_cfa_offset 8
+ 253              		.cfi_offset 7, -8
+ 254              		.cfi_offset 14, -4
+ 255 0002 00AF     		add	r7, sp, #0
+ 256              		.cfi_def_cfa_register 7
+  50:data.c        ****     Clear_Data_Stack();
+ 257              		.loc 1 50 0
+ 258 0004 FFF7FEFF 		bl	Clear_Data_Stack
+  51:data.c        **** }
+ 259              		.loc 1 51 0
+ 260 0008 00BF     		nop
+ 261 000a 80BD     		pop	{r7, pc}
+ 262              		.cfi_endproc
+ 263              	.LFE66:
+ 264              		.size	Initialize_Data_Stack, .-Initialize_Data_Stack
+ 265              		.section	.text.Clear_Data_Stack,"ax",%progbits
+ 266              		.align	2
+ 267              		.global	Clear_Data_Stack
+ 268              		.thumb
+ 269              		.thumb_func
+ 270              		.type	Clear_Data_Stack, %function
+ 271              	Clear_Data_Stack:
+ 272              	.LFB67:
+  52:data.c        **** 
+  53:data.c        **** void Clear_Data_Stack(){
+ 273              		.loc 1 53 0
+ 274              		.cfi_startproc
+ 275              		@ args = 0, pretend = 0, frame = 8
+ 276              		@ frame_needed = 1, uses_anonymous_args = 0
+ 277              		@ link register save eliminated.
+ 278 0000 80B4     		push	{r7}
+ 279              		.cfi_def_cfa_offset 4
+ 280              		.cfi_offset 7, -4
+ 281 0002 83B0     		sub	sp, sp, #12
+ 282              		.cfi_def_cfa_offset 16
+ 283 0004 00AF     		add	r7, sp, #0
+ 284              		.cfi_def_cfa_register 7
+ 285              	.LBB2:
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 7
 
 
- 234              		.cfi_startproc
- 235              		@ args = 0, pretend = 0, frame = 0
- 236              		@ frame_needed = 1, uses_anonymous_args = 0
- 237 0000 80B5     		push	{r7, lr}
- 238              		.cfi_def_cfa_offset 8
- 239              		.cfi_offset 7, -8
- 240              		.cfi_offset 14, -4
- 241 0002 00AF     		add	r7, sp, #0
- 242              		.cfi_def_cfa_register 7
-  49:data.c        ****     Clear_Data_Stack();
- 243              		.loc 1 49 0
- 244 0004 FFF7FEFF 		bl	Clear_Data_Stack
-  50:data.c        **** }
- 245              		.loc 1 50 0
- 246 0008 00BF     		nop
- 247 000a 80BD     		pop	{r7, pc}
- 248              		.cfi_endproc
- 249              	.LFE66:
- 250              		.size	Initialize_Data_Stack, .-Initialize_Data_Stack
- 251              		.section	.text.Clear_Data_Stack,"ax",%progbits
- 252              		.align	2
- 253              		.global	Clear_Data_Stack
- 254              		.thumb
- 255              		.thumb_func
- 256              		.type	Clear_Data_Stack, %function
- 257              	Clear_Data_Stack:
- 258              	.LFB67:
-  51:data.c        **** 
-  52:data.c        **** void Clear_Data_Stack(){
- 259              		.loc 1 52 0
- 260              		.cfi_startproc
- 261              		@ args = 0, pretend = 0, frame = 8
- 262              		@ frame_needed = 1, uses_anonymous_args = 0
- 263              		@ link register save eliminated.
- 264 0000 80B4     		push	{r7}
- 265              		.cfi_def_cfa_offset 4
- 266              		.cfi_offset 7, -4
- 267 0002 83B0     		sub	sp, sp, #12
- 268              		.cfi_def_cfa_offset 16
- 269 0004 00AF     		add	r7, sp, #0
- 270              		.cfi_def_cfa_register 7
- 271              	.LBB2:
-  53:data.c        ****     
-  54:data.c        ****     for(uint16 i;i<DATA_MAX_VALUES;i++){
- 272              		.loc 1 54 0
- 273 0006 1CE0     		b	.L13
- 274              	.L14:
+  54:data.c        ****     
+  55:data.c        ****     for(uint16 i;i<DATA_MAX_VALUES;i++){
+ 286              		.loc 1 55 0
+ 287 0006 1CE0     		b	.L13
+ 288              	.L14:
+  56:data.c        ****         data[i].key[0] = '\0';
+ 289              		.loc 1 56 0 discriminator 2
+ 290 0008 FB88     		ldrh	r3, [r7, #6]
+ 291 000a 134A     		ldr	r2, .L15
+ 292 000c 2C21     		movs	r1, #44
+ 293 000e 01FB03F3 		mul	r3, r1, r3
+ 294 0012 1344     		add	r3, r3, r2
+ 295 0014 0022     		movs	r2, #0
+ 296 0016 1A70     		strb	r2, [r3]
+  57:data.c        ****         data[i].value[0] = '\0';
+ 297              		.loc 1 57 0 discriminator 2
+ 298 0018 FB88     		ldrh	r3, [r7, #6]
+ 299 001a 0F4A     		ldr	r2, .L15
+ 300 001c 2C21     		movs	r1, #44
+ 301 001e 01FB03F3 		mul	r3, r1, r3
+ 302 0022 1344     		add	r3, r3, r2
+ 303 0024 1433     		adds	r3, r3, #20
+ 304 0026 0022     		movs	r2, #0
+ 305 0028 1A70     		strb	r2, [r3]
+  58:data.c        ****         data[i].timeStamp = 0;
+ 306              		.loc 1 58 0 discriminator 2
+ 307 002a FB88     		ldrh	r3, [r7, #6]
+ 308 002c 0A4A     		ldr	r2, .L15
+ 309 002e 2C21     		movs	r1, #44
+ 310 0030 01FB03F3 		mul	r3, r1, r3
+ 311 0034 1344     		add	r3, r3, r2
+ 312 0036 2833     		adds	r3, r3, #40
+ 313 0038 0022     		movs	r2, #0
+ 314 003a 1A60     		str	r2, [r3]
   55:data.c        ****         data[i].key[0] = '\0';
- 275              		.loc 1 55 0 discriminator 2
- 276 0008 FB88     		ldrh	r3, [r7, #6]
- 277 000a 134A     		ldr	r2, .L15
- 278 000c 2C21     		movs	r1, #44
- 279 000e 01FB03F3 		mul	r3, r1, r3
- 280 0012 1344     		add	r3, r3, r2
- 281 0014 0022     		movs	r2, #0
- 282 0016 1A70     		strb	r2, [r3]
-  56:data.c        ****         data[i].value[0] = '\0';
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 7
+ 315              		.loc 1 55 0 discriminator 2
+ 316 003c FB88     		ldrh	r3, [r7, #6]
+ 317 003e 0133     		adds	r3, r3, #1
+ 318 0040 FB80     		strh	r3, [r7, #6]	@ movhi
+ 319              	.L13:
+  55:data.c        ****         data[i].key[0] = '\0';
+ 320              		.loc 1 55 0 is_stmt 0 discriminator 1
+ 321 0042 FB88     		ldrh	r3, [r7, #6]
+ 322 0044 632B     		cmp	r3, #99
+ 323 0046 DFD9     		bls	.L14
+ 324              	.LBE2:
+  59:data.c        ****     }
+  60:data.c        ****     dataPointsInStack =0;
+ 325              		.loc 1 60 0 is_stmt 1
+ 326 0048 044B     		ldr	r3, .L15+4
+ 327 004a 0022     		movs	r2, #0
+ 328 004c 1A80     		strh	r2, [r3]	@ movhi
+  61:data.c        ****    
+  62:data.c        **** }
+ 329              		.loc 1 62 0
+ 330 004e 00BF     		nop
+ 331 0050 0C37     		adds	r7, r7, #12
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 8
 
 
- 283              		.loc 1 56 0 discriminator 2
- 284 0018 FB88     		ldrh	r3, [r7, #6]
- 285 001a 0F4A     		ldr	r2, .L15
- 286 001c 2C21     		movs	r1, #44
- 287 001e 01FB03F3 		mul	r3, r1, r3
- 288 0022 1344     		add	r3, r3, r2
- 289 0024 1433     		adds	r3, r3, #20
- 290 0026 0022     		movs	r2, #0
- 291 0028 1A70     		strb	r2, [r3]
-  57:data.c        ****         data[i].timeStamp = 0;
- 292              		.loc 1 57 0 discriminator 2
- 293 002a FB88     		ldrh	r3, [r7, #6]
- 294 002c 0A4A     		ldr	r2, .L15
- 295 002e 2C21     		movs	r1, #44
- 296 0030 01FB03F3 		mul	r3, r1, r3
- 297 0034 1344     		add	r3, r3, r2
- 298 0036 2833     		adds	r3, r3, #40
- 299 0038 0022     		movs	r2, #0
- 300 003a 1A60     		str	r2, [r3]
-  54:data.c        ****         data[i].key[0] = '\0';
- 301              		.loc 1 54 0 discriminator 2
- 302 003c FB88     		ldrh	r3, [r7, #6]
- 303 003e 0133     		adds	r3, r3, #1
- 304 0040 FB80     		strh	r3, [r7, #6]	@ movhi
- 305              	.L13:
-  54:data.c        ****         data[i].key[0] = '\0';
- 306              		.loc 1 54 0 is_stmt 0 discriminator 1
- 307 0042 FB88     		ldrh	r3, [r7, #6]
- 308 0044 632B     		cmp	r3, #99
- 309 0046 DFD9     		bls	.L14
- 310              	.LBE2:
-  58:data.c        ****     }
-  59:data.c        ****     dataPointsInStack =0;
- 311              		.loc 1 59 0 is_stmt 1
- 312 0048 044B     		ldr	r3, .L15+4
- 313 004a 0022     		movs	r2, #0
- 314 004c 1A80     		strh	r2, [r3]	@ movhi
-  60:data.c        ****    
-  61:data.c        **** }
- 315              		.loc 1 61 0
- 316 004e 00BF     		nop
- 317 0050 0C37     		adds	r7, r7, #12
- 318              		.cfi_def_cfa_offset 4
- 319 0052 BD46     		mov	sp, r7
- 320              		.cfi_def_cfa_register 13
- 321              		@ sp needed
- 322 0054 80BC     		pop	{r7}
- 323              		.cfi_restore 7
- 324              		.cfi_def_cfa_offset 0
- 325 0056 7047     		bx	lr
- 326              	.L16:
- 327              		.align	2
- 328              	.L15:
- 329 0058 00000000 		.word	data
- 330 005c 00000000 		.word	dataPointsInStack
- 331              		.cfi_endproc
- 332              	.LFE67:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 8
+ 332              		.cfi_def_cfa_offset 4
+ 333 0052 BD46     		mov	sp, r7
+ 334              		.cfi_def_cfa_register 13
+ 335              		@ sp needed
+ 336 0054 80BC     		pop	{r7}
+ 337              		.cfi_restore 7
+ 338              		.cfi_def_cfa_offset 0
+ 339 0056 7047     		bx	lr
+ 340              	.L16:
+ 341              		.align	2
+ 342              	.L15:
+ 343 0058 00000000 		.word	data
+ 344 005c 00000000 		.word	dataPointsInStack
+ 345              		.cfi_endproc
+ 346              	.LFE67:
+ 347              		.size	Clear_Data_Stack, .-Clear_Data_Stack
+ 348              		.section	.text.sizeOfDataStack,"ax",%progbits
+ 349              		.align	2
+ 350              		.global	sizeOfDataStack
+ 351              		.thumb
+ 352              		.thumb_func
+ 353              		.type	sizeOfDataStack, %function
+ 354              	sizeOfDataStack:
+ 355              	.LFB68:
+  63:data.c        **** 
+  64:data.c        **** uint16 sizeOfDataStack(){
+ 356              		.loc 1 64 0
+ 357              		.cfi_startproc
+ 358              		@ args = 0, pretend = 0, frame = 0
+ 359              		@ frame_needed = 1, uses_anonymous_args = 0
+ 360              		@ link register save eliminated.
+ 361 0000 80B4     		push	{r7}
+ 362              		.cfi_def_cfa_offset 4
+ 363              		.cfi_offset 7, -4
+ 364 0002 00AF     		add	r7, sp, #0
+ 365              		.cfi_def_cfa_register 7
+  65:data.c        ****     return dataPointsInStack;
+ 366              		.loc 1 65 0
+ 367 0004 024B     		ldr	r3, .L19
+ 368 0006 1B88     		ldrh	r3, [r3]
+  66:data.c        **** }
+ 369              		.loc 1 66 0
+ 370 0008 1846     		mov	r0, r3
+ 371 000a BD46     		mov	sp, r7
+ 372              		.cfi_def_cfa_register 13
+ 373              		@ sp needed
+ 374 000c 80BC     		pop	{r7}
+ 375              		.cfi_restore 7
+ 376              		.cfi_def_cfa_offset 0
+ 377 000e 7047     		bx	lr
+ 378              	.L20:
+ 379              		.align	2
+ 380              	.L19:
+ 381 0010 00000000 		.word	dataPointsInStack
+ 382              		.cfi_endproc
+ 383              	.LFE68:
+ 384              		.size	sizeOfDataStack, .-sizeOfDataStack
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 9
 
 
- 333              		.size	Clear_Data_Stack, .-Clear_Data_Stack
- 334              		.section	.text.sizeOfDataStack,"ax",%progbits
- 335              		.align	2
- 336              		.global	sizeOfDataStack
- 337              		.thumb
- 338              		.thumb_func
- 339              		.type	sizeOfDataStack, %function
- 340              	sizeOfDataStack:
- 341              	.LFB68:
-  62:data.c        **** 
-  63:data.c        **** uint16 sizeOfDataStack(){
- 342              		.loc 1 63 0
- 343              		.cfi_startproc
- 344              		@ args = 0, pretend = 0, frame = 0
- 345              		@ frame_needed = 1, uses_anonymous_args = 0
- 346              		@ link register save eliminated.
- 347 0000 80B4     		push	{r7}
- 348              		.cfi_def_cfa_offset 4
- 349              		.cfi_offset 7, -4
- 350 0002 00AF     		add	r7, sp, #0
- 351              		.cfi_def_cfa_register 7
-  64:data.c        ****     return dataPointsInStack;
- 352              		.loc 1 64 0
- 353 0004 024B     		ldr	r3, .L19
- 354 0006 1B88     		ldrh	r3, [r3]
-  65:data.c        **** }
- 355              		.loc 1 65 0
- 356 0008 1846     		mov	r0, r3
- 357 000a BD46     		mov	sp, r7
- 358              		.cfi_def_cfa_register 13
- 359              		@ sp needed
- 360 000c 80BC     		pop	{r7}
- 361              		.cfi_restore 7
- 362              		.cfi_def_cfa_offset 0
- 363 000e 7047     		bx	lr
- 364              	.L20:
- 365              		.align	2
- 366              	.L19:
- 367 0010 00000000 		.word	dataPointsInStack
- 368              		.cfi_endproc
- 369              	.LFE68:
- 370              		.size	sizeOfDataStack, .-sizeOfDataStack
- 371              		.section	.rodata
- 372 0035 000000   		.align	2
- 373              	.LC1:
- 374 0038 2573202F 		.ascii	"%s /%s HTTP/%s\015\012\000"
- 374      25732048 
- 374      5454502F 
- 374      25730D0A 
- 374      00
- 375 0049 000000   		.align	2
- 376              	.LC2:
- 377 004c 486F7374 		.ascii	"Host: \000"
- 377      3A2000
- 378 0053 00       		.align	2
- 379              	.LC3:
- 380 0054 25732573 		.ascii	"%s%s%s%s%d%s%s%s%s\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 9
+ 385              		.section	.rodata
+ 386 0039 000000   		.align	2
+ 387              	.LC2:
+ 388 003c 2573202F 		.ascii	"%s /%s HTTP/%s\015\012\000"
+ 388      25732048 
+ 388      5454502F 
+ 388      25730D0A 
+ 388      00
+ 389 004d 000000   		.align	2
+ 390              	.LC3:
+ 391 0050 25732573 		.ascii	"%s%s%s%s%d%s%s%s%s\000"
+ 391      25732573 
+ 391      25642573 
+ 391      25732573 
+ 391      257300
+ 392 0063 00       		.align	2
+ 393              	.LC4:
+ 394 0064 0D0A00   		.ascii	"\015\012\000"
+ 395 0067 00       		.align	2
+ 396              	.LC5:
+ 397 0068 436F6E6E 		.ascii	"Connection: \000"
+ 397      65637469 
+ 397      6F6E3A20 
+ 397      00
+ 398 0075 000000   		.align	2
+ 399              	.LC6:
+ 400 0078 3A00     		.ascii	":\000"
+ 401 007a 0000     		.align	2
+ 402              	.LC7:
+ 403 007c 486F7374 		.ascii	"Host: \000"
+ 403      3A2000
+ 404 0083 00       		.align	2
+ 405              	.LC8:
+ 406 0084 25732573 		.ascii	"%s%s\000"
+ 406      00
+ 407 0089 000000   		.align	2
+ 408              	.LC9:
+ 409 008c 47455400 		.ascii	"GET\000"
+ 410              		.align	2
+ 411              	.LC10:
+ 412 0090 25732573 		.ascii	"%s%s%s%d%s\000"
+ 412      25732564 
+ 412      257300
+ 413 009b 00       		.align	2
+ 414              	.LC11:
+ 415 009c 0D0A0D0A 		.ascii	"\015\012\015\012\000"
+ 415      00
+ 416 00a1 000000   		.align	2
+ 417              	.LC12:
+ 418 00a4 436F6E74 		.ascii	"Content-Length: \000"
+ 418      656E742D 
+ 418      4C656E67 
+ 418      74683A20 
+ 418      00
+ 419 00b5 000000   		.align	2
+ 420              	.LC13:
+ 421 00b8 436F6E74 		.ascii	"Content-Type: text/plain\015\012\000"
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 10
 
 
- 380      25732573 
- 380      25642573 
- 380      25732573 
- 380      257300
- 381 0067 00       		.align	2
- 382              	.LC4:
- 383 0068 0D0A00   		.ascii	"\015\012\000"
- 384 006b 00       		.align	2
- 385              	.LC5:
- 386 006c 436F6E6E 		.ascii	"Connection: \000"
- 386      65637469 
- 386      6F6E3A20 
- 386      00
- 387 0079 000000   		.align	2
- 388              	.LC6:
- 389 007c 3A00     		.ascii	":\000"
- 390 007e 0000     		.align	2
- 391              	.LC7:
- 392 0080 25732573 		.ascii	"%s%s\000"
- 392      00
- 393 0085 000000   		.align	2
- 394              	.LC8:
- 395 0088 47455400 		.ascii	"GET\000"
- 396              		.align	2
- 397              	.LC9:
- 398 008c 436F6E74 		.ascii	"Content-Type: text/plain\015\012\000"
- 398      656E742D 
- 398      54797065 
- 398      3A207465 
- 398      78742F70 
- 399 00a7 00       		.align	2
- 400              	.LC10:
- 401 00a8 25732573 		.ascii	"%s%s%s%d%s\000"
- 401      25732564 
- 401      257300
- 402 00b3 00       		.align	2
- 403              	.LC11:
- 404 00b4 0D0A0D0A 		.ascii	"\015\012\015\012\000"
- 404      00
- 405 00b9 000000   		.align	2
- 406              	.LC12:
- 407 00bc 436F6E74 		.ascii	"Content-Length: \000"
- 407      656E742D 
- 407      4C656E67 
- 407      74683A20 
- 407      00
- 408 00cd 000000   		.align	2
- 409              	.LC13:
- 410 00d0 25732573 		.ascii	"%s%s\015\012\000"
- 410      0D0A00
- 411              		.section	.text.construct_generic_HTTP_request,"ax",%progbits
- 412              		.align	2
- 413              		.global	construct_generic_HTTP_request
- 414              		.thumb
- 415              		.thumb_func
- 416              		.type	construct_generic_HTTP_request, %function
- 417              	construct_generic_HTTP_request:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 10
-
-
- 418              	.LFB69:
-  66:data.c        **** 
+ 421      656E742D 
+ 421      54797065 
+ 421      3A207465 
+ 421      78742F70 
+ 422 00d3 00       		.align	2
+ 423              	.LC14:
+ 424 00d4 25732573 		.ascii	"%s%s\015\012\000"
+ 424      0D0A00
+ 425              		.section	.text.construct_generic_HTTP_request,"ax",%progbits
+ 426              		.align	2
+ 427              		.global	construct_generic_HTTP_request
+ 428              		.thumb
+ 429              		.thumb_func
+ 430              		.type	construct_generic_HTTP_request, %function
+ 431              	construct_generic_HTTP_request:
+ 432              	.LFB69:
   67:data.c        **** 
-  68:data.c        **** //thsi function could really use a test
-  69:data.c        **** void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
-  70:data.c        ****                                int port, char* method, char* connection_type,
-  71:data.c        **** 	                           char *extra_headers, int extra_len, char* http_protocol){
- 419              		.loc 1 71 0
- 420              		.cfi_startproc
- 421              		@ args = 24, pretend = 0, frame = 16
- 422              		@ frame_needed = 1, uses_anonymous_args = 0
- 423 0000 80B5     		push	{r7, lr}
- 424              		.cfi_def_cfa_offset 8
- 425              		.cfi_offset 7, -8
- 426              		.cfi_offset 14, -4
- 427 0002 8CB0     		sub	sp, sp, #48
- 428              		.cfi_def_cfa_offset 56
- 429 0004 08AF     		add	r7, sp, #32
- 430              		.cfi_def_cfa 7, 24
- 431 0006 F860     		str	r0, [r7, #12]
- 432 0008 B960     		str	r1, [r7, #8]
- 433 000a 7A60     		str	r2, [r7, #4]
- 434 000c 3B60     		str	r3, [r7]
-  72:data.c        **** 
-  73:data.c        ****     sprintf(request,"%s /%s HTTP/%s\r\n", method, route, http_protocol);
- 435              		.loc 1 73 0
- 436 000e FB6A     		ldr	r3, [r7, #44]
- 437 0010 0093     		str	r3, [sp]
- 438 0012 3B68     		ldr	r3, [r7]
- 439 0014 FA69     		ldr	r2, [r7, #28]
- 440 0016 2349     		ldr	r1, .L24
- 441 0018 F868     		ldr	r0, [r7, #12]
- 442 001a FFF7FEFF 		bl	sprintf
-  74:data.c        ****     sprintf(request,"%s%s%s%s%d%s%s%s%s",
- 443              		.loc 1 74 0
- 444 001e 224B     		ldr	r3, .L24+4
- 445 0020 0693     		str	r3, [sp, #24]
- 446 0022 3B6A     		ldr	r3, [r7, #32]
- 447 0024 0593     		str	r3, [sp, #20]
- 448 0026 214B     		ldr	r3, .L24+8
- 449 0028 0493     		str	r3, [sp, #16]
- 450 002a 1F4B     		ldr	r3, .L24+4
- 451 002c 0393     		str	r3, [sp, #12]
- 452 002e BB69     		ldr	r3, [r7, #24]
- 453 0030 0293     		str	r3, [sp, #8]
- 454 0032 1F4B     		ldr	r3, .L24+12
- 455 0034 0193     		str	r3, [sp, #4]
- 456 0036 7B68     		ldr	r3, [r7, #4]
- 457 0038 0093     		str	r3, [sp]
- 458 003a 1E4B     		ldr	r3, .L24+16
- 459 003c FA68     		ldr	r2, [r7, #12]
- 460 003e 1E49     		ldr	r1, .L24+20
- 461 0040 F868     		ldr	r0, [r7, #12]
- 462 0042 FFF7FEFF 		bl	sprintf
-  75:data.c        ****             request, // 1
-  76:data.c        ****             "Host: ", host, ":", port, "\r\n", // 2 3 4 5 6
-  77:data.c        ****             "Connection: ", connection_type, "\r\n"); // 7 8 9
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 11
+  68:data.c        **** 
+  69:data.c        **** //thsi function could really use a test
+  70:data.c        **** void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
+  71:data.c        ****                                int port, char* method, char* connection_type,
+  72:data.c        **** 	                           char *extra_headers, int extra_len, char* http_protocol){
+ 433              		.loc 1 72 0
+ 434              		.cfi_startproc
+ 435              		@ args = 24, pretend = 0, frame = 16
+ 436              		@ frame_needed = 1, uses_anonymous_args = 0
+ 437 0000 80B5     		push	{r7, lr}
+ 438              		.cfi_def_cfa_offset 8
+ 439              		.cfi_offset 7, -8
+ 440              		.cfi_offset 14, -4
+ 441 0002 8CB0     		sub	sp, sp, #48
+ 442              		.cfi_def_cfa_offset 56
+ 443 0004 08AF     		add	r7, sp, #32
+ 444              		.cfi_def_cfa 7, 24
+ 445 0006 F860     		str	r0, [r7, #12]
+ 446 0008 B960     		str	r1, [r7, #8]
+ 447 000a 7A60     		str	r2, [r7, #4]
+ 448 000c 3B60     		str	r3, [r7]
+  73:data.c        **** 
+  74:data.c        ****     snprintf(request,sizeof(http_request),"%s /%s HTTP/%s\r\n", method, route, http_protocol);
+ 449              		.loc 1 74 0
+ 450 000e FB6A     		ldr	r3, [r7, #44]
+ 451 0010 0193     		str	r3, [sp, #4]
+ 452 0012 3B68     		ldr	r3, [r7]
+ 453 0014 0093     		str	r3, [sp]
+ 454 0016 FB69     		ldr	r3, [r7, #28]
+ 455 0018 2A4A     		ldr	r2, .L24
+ 456 001a 4FF47A71 		mov	r1, #1000
+ 457 001e F868     		ldr	r0, [r7, #12]
+ 458 0020 FFF7FEFF 		bl	snprintf
+  75:data.c        ****     snprintf(request,sizeof(http_request),"%s%s%s%s%d%s%s%s%s",
+ 459              		.loc 1 75 0
+ 460 0024 284B     		ldr	r3, .L24+4
+ 461 0026 0793     		str	r3, [sp, #28]
+ 462 0028 3B6A     		ldr	r3, [r7, #32]
+ 463 002a 0693     		str	r3, [sp, #24]
+ 464 002c 274B     		ldr	r3, .L24+8
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 11
 
 
-  78:data.c        **** 	if (extra_headers && strlen(extra_headers) > 0){
- 463              		.loc 1 78 0
- 464 0046 7B6A     		ldr	r3, [r7, #36]
- 465 0048 002B     		cmp	r3, #0
- 466 004a 09D0     		beq	.L22
- 467              		.loc 1 78 0 is_stmt 0 discriminator 1
- 468 004c 7B6A     		ldr	r3, [r7, #36]
- 469 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 470 0050 002B     		cmp	r3, #0
- 471 0052 05D0     		beq	.L22
-  79:data.c        **** 		sprintf(request, "%s%s", request, extra_headers);
- 472              		.loc 1 79 0 is_stmt 1
- 473 0054 7B6A     		ldr	r3, [r7, #36]
- 474 0056 FA68     		ldr	r2, [r7, #12]
- 475 0058 1849     		ldr	r1, .L24+24
- 476 005a F868     		ldr	r0, [r7, #12]
- 477 005c FFF7FEFF 		bl	sprintf
- 478              	.L22:
-  80:data.c        **** 	}
-  81:data.c        **** 	if (strcmp(method, "GET") != 0){
- 479              		.loc 1 81 0
- 480 0060 1749     		ldr	r1, .L24+28
- 481 0062 F869     		ldr	r0, [r7, #28]
- 482 0064 FFF7FEFF 		bl	strcmp
- 483 0068 0346     		mov	r3, r0
- 484 006a 002B     		cmp	r3, #0
- 485 006c 10D0     		beq	.L23
-  82:data.c        **** 		sprintf(request, "%s%s%s%d%s",
-  83:data.c        **** 			request,
-  84:data.c        ****             "Content-Type: text/plain\r\n", // 10
-  85:data.c        ****             "Content-Length: ", (extra_len + strlen(body)), //11 12 (Extra len should be 2 for flas
- 486              		.loc 1 85 0
- 487 006e B868     		ldr	r0, [r7, #8]
- 488 0070 FFF7FEFF 		bl	strlen
- 489 0074 0246     		mov	r2, r0
-  82:data.c        **** 		sprintf(request, "%s%s%s%d%s",
- 490              		.loc 1 82 0
- 491 0076 BB6A     		ldr	r3, [r7, #40]
- 492 0078 1344     		add	r3, r3, r2
- 493 007a 124A     		ldr	r2, .L24+32
- 494 007c 0292     		str	r2, [sp, #8]
- 495 007e 0193     		str	r3, [sp, #4]
- 496 0080 114B     		ldr	r3, .L24+36
- 497 0082 0093     		str	r3, [sp]
- 498 0084 114B     		ldr	r3, .L24+40
- 499 0086 FA68     		ldr	r2, [r7, #12]
- 500 0088 1149     		ldr	r1, .L24+44
- 501 008a F868     		ldr	r0, [r7, #12]
- 502 008c FFF7FEFF 		bl	sprintf
- 503              	.L23:
-  86:data.c        ****             "\r\n\r\n"); // 13 14 15
-  87:data.c        **** 	}
-  88:data.c        **** 	sprintf(request, "%s%s\r\n", request, body); 
- 504              		.loc 1 88 0
- 505 0090 BB68     		ldr	r3, [r7, #8]
- 506 0092 FA68     		ldr	r2, [r7, #12]
- 507 0094 0F49     		ldr	r1, .L24+48
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 12
+ 465 002e 0593     		str	r3, [sp, #20]
+ 466 0030 254B     		ldr	r3, .L24+4
+ 467 0032 0493     		str	r3, [sp, #16]
+ 468 0034 BB69     		ldr	r3, [r7, #24]
+ 469 0036 0393     		str	r3, [sp, #12]
+ 470 0038 254B     		ldr	r3, .L24+12
+ 471 003a 0293     		str	r3, [sp, #8]
+ 472 003c 7B68     		ldr	r3, [r7, #4]
+ 473 003e 0193     		str	r3, [sp, #4]
+ 474 0040 244B     		ldr	r3, .L24+16
+ 475 0042 0093     		str	r3, [sp]
+ 476 0044 FB68     		ldr	r3, [r7, #12]
+ 477 0046 244A     		ldr	r2, .L24+20
+ 478 0048 4FF47A71 		mov	r1, #1000
+ 479 004c F868     		ldr	r0, [r7, #12]
+ 480 004e FFF7FEFF 		bl	snprintf
+  76:data.c        ****             request, // 1
+  77:data.c        ****             "Host: ", host, ":", port, "\r\n", // 2 3 4 5 6
+  78:data.c        ****             "Connection: ", connection_type, "\r\n"); // 7 8 9
+  79:data.c        **** 	if (extra_headers && strlen(extra_headers) > 0){
+ 481              		.loc 1 79 0
+ 482 0052 7B6A     		ldr	r3, [r7, #36]
+ 483 0054 002B     		cmp	r3, #0
+ 484 0056 0CD0     		beq	.L22
+ 485              		.loc 1 79 0 is_stmt 0 discriminator 1
+ 486 0058 7B6A     		ldr	r3, [r7, #36]
+ 487 005a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 488 005c 002B     		cmp	r3, #0
+ 489 005e 08D0     		beq	.L22
+  80:data.c        **** 		snprintf(request,sizeof(http_request), "%s%s", request, extra_headers);
+ 490              		.loc 1 80 0 is_stmt 1
+ 491 0060 7B6A     		ldr	r3, [r7, #36]
+ 492 0062 0093     		str	r3, [sp]
+ 493 0064 FB68     		ldr	r3, [r7, #12]
+ 494 0066 1D4A     		ldr	r2, .L24+24
+ 495 0068 4FF47A71 		mov	r1, #1000
+ 496 006c F868     		ldr	r0, [r7, #12]
+ 497 006e FFF7FEFF 		bl	snprintf
+ 498              	.L22:
+  81:data.c        **** 	}
+  82:data.c        **** 	if (strcmp(method, "GET") != 0){
+ 499              		.loc 1 82 0
+ 500 0072 1B49     		ldr	r1, .L24+28
+ 501 0074 F869     		ldr	r0, [r7, #28]
+ 502 0076 FFF7FEFF 		bl	strcmp
+ 503 007a 0346     		mov	r3, r0
+ 504 007c 002B     		cmp	r3, #0
+ 505 007e 13D0     		beq	.L23
+  83:data.c        **** 		snprintf(request,sizeof(http_request), "%s%s%s%d%s",
+  84:data.c        **** 			request,
+  85:data.c        ****             "Content-Type: text/plain\r\n", // 10
+  86:data.c        ****             "Content-Length: ", (extra_len + strlen(body)), //11 12 (Extra len should be 2 for flas
+ 506              		.loc 1 86 0
+ 507 0080 B868     		ldr	r0, [r7, #8]
+ 508 0082 FFF7FEFF 		bl	strlen
+ 509 0086 0246     		mov	r2, r0
+  83:data.c        **** 		snprintf(request,sizeof(http_request), "%s%s%s%d%s",
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 12
 
 
- 508 0096 F868     		ldr	r0, [r7, #12]
- 509 0098 FFF7FEFF 		bl	sprintf
-  89:data.c        ****     
-  90:data.c        **** }
- 510              		.loc 1 90 0
- 511 009c 00BF     		nop
- 512 009e 1037     		adds	r7, r7, #16
- 513              		.cfi_def_cfa_offset 8
- 514 00a0 BD46     		mov	sp, r7
- 515              		.cfi_def_cfa_register 13
- 516              		@ sp needed
- 517 00a2 80BD     		pop	{r7, pc}
- 518              	.L25:
- 519              		.align	2
- 520              	.L24:
- 521 00a4 38000000 		.word	.LC1
- 522 00a8 68000000 		.word	.LC4
- 523 00ac 6C000000 		.word	.LC5
- 524 00b0 7C000000 		.word	.LC6
- 525 00b4 4C000000 		.word	.LC2
- 526 00b8 54000000 		.word	.LC3
- 527 00bc 80000000 		.word	.LC7
- 528 00c0 88000000 		.word	.LC8
- 529 00c4 B4000000 		.word	.LC11
- 530 00c8 BC000000 		.word	.LC12
- 531 00cc 8C000000 		.word	.LC9
- 532 00d0 A8000000 		.word	.LC10
- 533 00d4 D0000000 		.word	.LC13
- 534              		.cfi_endproc
- 535              	.LFE69:
- 536              		.size	construct_generic_HTTP_request, .-construct_generic_HTTP_request
- 537              		.text
- 538              	.Letext0:
- 539              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 540              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 541              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 542              		.file 5 "data.h"
- 543              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
- 544              		.file 7 "debug.h"
- 545              		.section	.debug_info,"",%progbits
- 546              	.Ldebug_info0:
- 547 0000 C4020000 		.4byte	0x2c4
- 548 0004 0400     		.2byte	0x4
- 549 0006 00000000 		.4byte	.Ldebug_abbrev0
- 550 000a 04       		.byte	0x4
- 551 000b 01       		.uleb128 0x1
- 552 000c 0A000000 		.4byte	.LASF39
- 553 0010 0C       		.byte	0xc
- 554 0011 1C020000 		.4byte	.LASF40
- 555 0015 4B020000 		.4byte	.LASF41
- 556 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 557 001d 00000000 		.4byte	0
- 558 0021 00000000 		.4byte	.Ldebug_line0
- 559 0025 02       		.uleb128 0x2
- 560 0026 01       		.byte	0x1
- 561 0027 06       		.byte	0x6
- 562 0028 A4020000 		.4byte	.LASF0
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 13
+ 510              		.loc 1 83 0
+ 511 0088 BB6A     		ldr	r3, [r7, #40]
+ 512 008a 1344     		add	r3, r3, r2
+ 513 008c 154A     		ldr	r2, .L24+32
+ 514 008e 0392     		str	r2, [sp, #12]
+ 515 0090 0293     		str	r3, [sp, #8]
+ 516 0092 154B     		ldr	r3, .L24+36
+ 517 0094 0193     		str	r3, [sp, #4]
+ 518 0096 154B     		ldr	r3, .L24+40
+ 519 0098 0093     		str	r3, [sp]
+ 520 009a FB68     		ldr	r3, [r7, #12]
+ 521 009c 144A     		ldr	r2, .L24+44
+ 522 009e 4FF47A71 		mov	r1, #1000
+ 523 00a2 F868     		ldr	r0, [r7, #12]
+ 524 00a4 FFF7FEFF 		bl	snprintf
+ 525              	.L23:
+  87:data.c        ****             "\r\n\r\n"); // 13 14 15
+  88:data.c        **** 	}
+  89:data.c        **** 	snprintf(request,sizeof(http_request), "%s%s\r\n", request, body); 
+ 526              		.loc 1 89 0
+ 527 00a8 BB68     		ldr	r3, [r7, #8]
+ 528 00aa 0093     		str	r3, [sp]
+ 529 00ac FB68     		ldr	r3, [r7, #12]
+ 530 00ae 114A     		ldr	r2, .L24+48
+ 531 00b0 4FF47A71 		mov	r1, #1000
+ 532 00b4 F868     		ldr	r0, [r7, #12]
+ 533 00b6 FFF7FEFF 		bl	snprintf
+  90:data.c        ****     
+  91:data.c        **** }
+ 534              		.loc 1 91 0
+ 535 00ba 00BF     		nop
+ 536 00bc 1037     		adds	r7, r7, #16
+ 537              		.cfi_def_cfa_offset 8
+ 538 00be BD46     		mov	sp, r7
+ 539              		.cfi_def_cfa_register 13
+ 540              		@ sp needed
+ 541 00c0 80BD     		pop	{r7, pc}
+ 542              	.L25:
+ 543 00c2 00BF     		.align	2
+ 544              	.L24:
+ 545 00c4 3C000000 		.word	.LC2
+ 546 00c8 64000000 		.word	.LC4
+ 547 00cc 68000000 		.word	.LC5
+ 548 00d0 78000000 		.word	.LC6
+ 549 00d4 7C000000 		.word	.LC7
+ 550 00d8 50000000 		.word	.LC3
+ 551 00dc 84000000 		.word	.LC8
+ 552 00e0 8C000000 		.word	.LC9
+ 553 00e4 9C000000 		.word	.LC11
+ 554 00e8 A4000000 		.word	.LC12
+ 555 00ec B8000000 		.word	.LC13
+ 556 00f0 90000000 		.word	.LC10
+ 557 00f4 D4000000 		.word	.LC14
+ 558              		.cfi_endproc
+ 559              	.LFE69:
+ 560              		.size	construct_generic_HTTP_request, .-construct_generic_HTTP_request
+ 561              		.text
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 13
 
 
- 563 002c 02       		.uleb128 0x2
- 564 002d 01       		.byte	0x1
- 565 002e 08       		.byte	0x8
- 566 002f 12010000 		.4byte	.LASF1
- 567 0033 02       		.uleb128 0x2
- 568 0034 02       		.byte	0x2
- 569 0035 05       		.byte	0x5
- 570 0036 28020000 		.4byte	.LASF2
- 571 003a 02       		.uleb128 0x2
- 572 003b 02       		.byte	0x2
- 573 003c 07       		.byte	0x7
- 574 003d B0020000 		.4byte	.LASF3
- 575 0041 03       		.uleb128 0x3
- 576 0042 AB000000 		.4byte	.LASF9
- 577 0046 02       		.byte	0x2
- 578 0047 3F       		.byte	0x3f
- 579 0048 4C000000 		.4byte	0x4c
- 580 004c 02       		.uleb128 0x2
- 581 004d 04       		.byte	0x4
- 582 004e 05       		.byte	0x5
- 583 004f 42020000 		.4byte	.LASF4
- 584 0053 02       		.uleb128 0x2
- 585 0054 04       		.byte	0x4
- 586 0055 07       		.byte	0x7
- 587 0056 38010000 		.4byte	.LASF5
- 588 005a 02       		.uleb128 0x2
- 589 005b 08       		.byte	0x8
- 590 005c 05       		.byte	0x5
- 591 005d F8010000 		.4byte	.LASF6
- 592 0061 02       		.uleb128 0x2
- 593 0062 08       		.byte	0x8
- 594 0063 07       		.byte	0x7
- 595 0064 CA010000 		.4byte	.LASF7
- 596 0068 04       		.uleb128 0x4
- 597 0069 04       		.byte	0x4
- 598 006a 05       		.byte	0x5
- 599 006b 696E7400 		.ascii	"int\000"
- 600 006f 02       		.uleb128 0x2
- 601 0070 04       		.byte	0x4
- 602 0071 07       		.byte	0x7
- 603 0072 AD010000 		.4byte	.LASF8
- 604 0076 03       		.uleb128 0x3
- 605 0077 E1010000 		.4byte	.LASF10
- 606 007b 03       		.byte	0x3
- 607 007c 2C       		.byte	0x2c
- 608 007d 41000000 		.4byte	0x41
- 609 0081 05       		.uleb128 0x5
- 610 0082 32020000 		.4byte	.LASF11
- 611 0086 04       		.byte	0x4
- 612 0087 E401     		.2byte	0x1e4
- 613 0089 2C000000 		.4byte	0x2c
- 614 008d 05       		.uleb128 0x5
- 615 008e 8B010000 		.4byte	.LASF12
- 616 0092 04       		.byte	0x4
- 617 0093 E501     		.2byte	0x1e5
- 618 0095 3A000000 		.4byte	0x3a
- 619 0099 05       		.uleb128 0x5
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 14
+ 562              	.Letext0:
+ 563              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 564              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 565              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 566              		.file 5 "data.h"
+ 567              		.file 6 "modem.h"
+ 568              		.file 7 "notoriOS.h"
+ 569              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 570              		.section	.debug_info,"",%progbits
+ 571              	.Ldebug_info0:
+ 572 0000 A9040000 		.4byte	0x4a9
+ 573 0004 0400     		.2byte	0x4
+ 574 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 575 000a 04       		.byte	0x4
+ 576 000b 01       		.uleb128 0x1
+ 577 000c 53000000 		.4byte	.LASF64
+ 578 0010 0C       		.byte	0xc
+ 579 0011 E1000000 		.4byte	.LASF65
+ 580 0015 82030000 		.4byte	.LASF66
+ 581 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 582 001d 00000000 		.4byte	0
+ 583 0021 00000000 		.4byte	.Ldebug_line0
+ 584 0025 02       		.uleb128 0x2
+ 585 0026 01       		.byte	0x1
+ 586 0027 06       		.byte	0x6
+ 587 0028 02020000 		.4byte	.LASF0
+ 588 002c 02       		.uleb128 0x2
+ 589 002d 01       		.byte	0x1
+ 590 002e 08       		.byte	0x8
+ 591 002f C0010000 		.4byte	.LASF1
+ 592 0033 02       		.uleb128 0x2
+ 593 0034 02       		.byte	0x2
+ 594 0035 05       		.byte	0x5
+ 595 0036 38000000 		.4byte	.LASF2
+ 596 003a 02       		.uleb128 0x2
+ 597 003b 02       		.byte	0x2
+ 598 003c 07       		.byte	0x7
+ 599 003d 66020000 		.4byte	.LASF3
+ 600 0041 03       		.uleb128 0x3
+ 601 0042 1E030000 		.4byte	.LASF9
+ 602 0046 02       		.byte	0x2
+ 603 0047 3F       		.byte	0x3f
+ 604 0048 4C000000 		.4byte	0x4c
+ 605 004c 02       		.uleb128 0x2
+ 606 004d 04       		.byte	0x4
+ 607 004e 05       		.byte	0x5
+ 608 004f 8B010000 		.4byte	.LASF4
+ 609 0053 02       		.uleb128 0x2
+ 610 0054 04       		.byte	0x4
+ 611 0055 07       		.byte	0x7
+ 612 0056 F2020000 		.4byte	.LASF5
+ 613 005a 02       		.uleb128 0x2
+ 614 005b 08       		.byte	0x8
+ 615 005c 05       		.byte	0x5
+ 616 005d 6B010000 		.4byte	.LASF6
+ 617 0061 02       		.uleb128 0x2
+ 618 0062 08       		.byte	0x8
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 14
 
 
- 620 009a 4A010000 		.4byte	.LASF13
- 621 009e 04       		.byte	0x4
- 622 009f E901     		.2byte	0x1e9
- 623 00a1 4C000000 		.4byte	0x4c
- 624 00a5 02       		.uleb128 0x2
- 625 00a6 04       		.byte	0x4
- 626 00a7 04       		.byte	0x4
- 627 00a8 02010000 		.4byte	.LASF14
- 628 00ac 02       		.uleb128 0x2
- 629 00ad 08       		.byte	0x8
- 630 00ae 04       		.byte	0x4
- 631 00af 84010000 		.4byte	.LASF15
- 632 00b3 02       		.uleb128 0x2
- 633 00b4 01       		.byte	0x1
- 634 00b5 08       		.byte	0x8
- 635 00b6 17020000 		.4byte	.LASF16
- 636 00ba 02       		.uleb128 0x2
- 637 00bb 08       		.byte	0x8
- 638 00bc 04       		.byte	0x4
- 639 00bd 98020000 		.4byte	.LASF17
- 640 00c1 02       		.uleb128 0x2
- 641 00c2 04       		.byte	0x4
- 642 00c3 07       		.byte	0x7
- 643 00c4 EF010000 		.4byte	.LASF18
- 644 00c8 06       		.uleb128 0x6
- 645 00c9 04       		.byte	0x4
- 646 00ca B3000000 		.4byte	0xb3
- 647 00ce 07       		.uleb128 0x7
- 648 00cf 2C       		.byte	0x2c
- 649 00d0 05       		.byte	0x5
- 650 00d1 0B       		.byte	0xb
- 651 00d2 FB000000 		.4byte	0xfb
- 652 00d6 08       		.uleb128 0x8
- 653 00d7 6B657900 		.ascii	"key\000"
- 654 00db 05       		.byte	0x5
- 655 00dc 0C       		.byte	0xc
- 656 00dd FB000000 		.4byte	0xfb
- 657 00e1 00       		.byte	0
- 658 00e2 09       		.uleb128 0x9
- 659 00e3 A5000000 		.4byte	.LASF19
- 660 00e7 05       		.byte	0x5
- 661 00e8 0D       		.byte	0xd
- 662 00e9 FB000000 		.4byte	0xfb
- 663 00ed 14       		.byte	0x14
- 664 00ee 09       		.uleb128 0x9
- 665 00ef 20010000 		.4byte	.LASF20
- 666 00f3 05       		.byte	0x5
- 667 00f4 0E       		.byte	0xe
- 668 00f5 99000000 		.4byte	0x99
- 669 00f9 28       		.byte	0x28
- 670 00fa 00       		.byte	0
- 671 00fb 0A       		.uleb128 0xa
- 672 00fc B3000000 		.4byte	0xb3
- 673 0100 0B010000 		.4byte	0x10b
- 674 0104 0B       		.uleb128 0xb
- 675 0105 C1000000 		.4byte	0xc1
- 676 0109 13       		.byte	0x13
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 15
+ 619 0063 07       		.byte	0x7
+ 620 0064 0E020000 		.4byte	.LASF7
+ 621 0068 04       		.uleb128 0x4
+ 622 0069 04       		.byte	0x4
+ 623 006a 05       		.byte	0x5
+ 624 006b 696E7400 		.ascii	"int\000"
+ 625 006f 02       		.uleb128 0x2
+ 626 0070 04       		.byte	0x4
+ 627 0071 07       		.byte	0x7
+ 628 0072 25020000 		.4byte	.LASF8
+ 629 0076 03       		.uleb128 0x3
+ 630 0077 B5020000 		.4byte	.LASF10
+ 631 007b 03       		.byte	0x3
+ 632 007c 2C       		.byte	0x2c
+ 633 007d 41000000 		.4byte	0x41
+ 634 0081 05       		.uleb128 0x5
+ 635 0082 33010000 		.4byte	.LASF11
+ 636 0086 04       		.byte	0x4
+ 637 0087 E401     		.2byte	0x1e4
+ 638 0089 2C000000 		.4byte	0x2c
+ 639 008d 05       		.uleb128 0x5
+ 640 008e 1A010000 		.4byte	.LASF12
+ 641 0092 04       		.byte	0x4
+ 642 0093 E501     		.2byte	0x1e5
+ 643 0095 3A000000 		.4byte	0x3a
+ 644 0099 05       		.uleb128 0x5
+ 645 009a 04030000 		.4byte	.LASF13
+ 646 009e 04       		.byte	0x4
+ 647 009f E901     		.2byte	0x1e9
+ 648 00a1 4C000000 		.4byte	0x4c
+ 649 00a5 02       		.uleb128 0x2
+ 650 00a6 04       		.byte	0x4
+ 651 00a7 04       		.byte	0x4
+ 652 00a8 65010000 		.4byte	.LASF14
+ 653 00ac 02       		.uleb128 0x2
+ 654 00ad 08       		.byte	0x8
+ 655 00ae 04       		.byte	0x4
+ 656 00af 0A030000 		.4byte	.LASF15
+ 657 00b3 02       		.uleb128 0x2
+ 658 00b4 01       		.byte	0x1
+ 659 00b5 08       		.byte	0x8
+ 660 00b6 79010000 		.4byte	.LASF16
+ 661 00ba 02       		.uleb128 0x2
+ 662 00bb 08       		.byte	0x8
+ 663 00bc 04       		.byte	0x4
+ 664 00bd B4010000 		.4byte	.LASF17
+ 665 00c1 02       		.uleb128 0x2
+ 666 00c2 04       		.byte	0x4
+ 667 00c3 07       		.byte	0x7
+ 668 00c4 42000000 		.4byte	.LASF18
+ 669 00c8 06       		.uleb128 0x6
+ 670 00c9 04       		.byte	0x4
+ 671 00ca B3000000 		.4byte	0xb3
+ 672 00ce 07       		.uleb128 0x7
+ 673 00cf B3000000 		.4byte	0xb3
+ 674 00d3 DE000000 		.4byte	0xde
+ 675 00d7 08       		.uleb128 0x8
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 15
 
 
- 677 010a 00       		.byte	0
- 678 010b 03       		.uleb128 0x3
- 679 010c 6B010000 		.4byte	.LASF21
- 680 0110 05       		.byte	0x5
- 681 0111 0F       		.byte	0xf
- 682 0112 CE000000 		.4byte	0xce
- 683 0116 0C       		.uleb128 0xc
- 684 0117 62010000 		.4byte	.LASF42
- 685 011b 01       		.byte	0x1
- 686 011c 10       		.byte	0x10
- 687 011d 81000000 		.4byte	0x81
- 688 0121 00000000 		.4byte	.LFB64
- 689 0125 94000000 		.4byte	.LFE64-.LFB64
- 690 0129 01       		.uleb128 0x1
- 691 012a 9C       		.byte	0x9c
- 692 012b 5A010000 		.4byte	0x15a
- 693 012f 0D       		.uleb128 0xd
- 694 0130 6B657900 		.ascii	"key\000"
- 695 0134 01       		.byte	0x1
- 696 0135 10       		.byte	0x10
- 697 0136 C8000000 		.4byte	0xc8
- 698 013a 02       		.uleb128 0x2
- 699 013b 91       		.byte	0x91
- 700 013c 74       		.sleb128 -12
- 701 013d 0E       		.uleb128 0xe
- 702 013e A5000000 		.4byte	.LASF19
- 703 0142 01       		.byte	0x1
- 704 0143 10       		.byte	0x10
- 705 0144 C8000000 		.4byte	0xc8
- 706 0148 02       		.uleb128 0x2
- 707 0149 91       		.byte	0x91
- 708 014a 70       		.sleb128 -16
- 709 014b 0E       		.uleb128 0xe
- 710 014c 00000000 		.4byte	.LASF22
- 711 0150 01       		.byte	0x1
- 712 0151 10       		.byte	0x10
- 713 0152 99000000 		.4byte	0x99
- 714 0156 02       		.uleb128 0x2
- 715 0157 91       		.byte	0x91
- 716 0158 6C       		.sleb128 -20
- 717 0159 00       		.byte	0
- 718 015a 0F       		.uleb128 0xf
- 719 015b 77010000 		.4byte	.LASF23
- 720 015f 01       		.byte	0x1
- 721 0160 24       		.byte	0x24
- 722 0161 0B010000 		.4byte	0x10b
- 723 0165 00000000 		.4byte	.LFB65
- 724 0169 74000000 		.4byte	.LFE65-.LFB65
- 725 016d 01       		.uleb128 0x1
- 726 016e 9C       		.byte	0x9c
- 727 016f 10       		.uleb128 0x10
- 728 0170 BD000000 		.4byte	.LASF43
- 729 0174 01       		.byte	0x1
- 730 0175 30       		.byte	0x30
- 731 0176 00000000 		.4byte	.LFB66
- 732 017a 0C000000 		.4byte	.LFE66-.LFB66
- 733 017e 01       		.uleb128 0x1
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 16
+ 676 00d8 C1000000 		.4byte	0xc1
+ 677 00dc 17       		.byte	0x17
+ 678 00dd 00       		.byte	0
+ 679 00de 09       		.uleb128 0x9
+ 680 00df 2C       		.byte	0x2c
+ 681 00e0 05       		.byte	0x5
+ 682 00e1 0F       		.byte	0xf
+ 683 00e2 0B010000 		.4byte	0x10b
+ 684 00e6 0A       		.uleb128 0xa
+ 685 00e7 6B657900 		.ascii	"key\000"
+ 686 00eb 05       		.byte	0x5
+ 687 00ec 10       		.byte	0x10
+ 688 00ed 0B010000 		.4byte	0x10b
+ 689 00f1 00       		.byte	0
+ 690 00f2 0B       		.uleb128 0xb
+ 691 00f3 14010000 		.4byte	.LASF19
+ 692 00f7 05       		.byte	0x5
+ 693 00f8 11       		.byte	0x11
+ 694 00f9 0B010000 		.4byte	0x10b
+ 695 00fd 14       		.byte	0x14
+ 696 00fe 0B       		.uleb128 0xb
+ 697 00ff 5B010000 		.4byte	.LASF20
+ 698 0103 05       		.byte	0x5
+ 699 0104 12       		.byte	0x12
+ 700 0105 99000000 		.4byte	0x99
+ 701 0109 28       		.byte	0x28
+ 702 010a 00       		.byte	0
+ 703 010b 07       		.uleb128 0x7
+ 704 010c B3000000 		.4byte	0xb3
+ 705 0110 1B010000 		.4byte	0x11b
+ 706 0114 08       		.uleb128 0x8
+ 707 0115 C1000000 		.4byte	0xc1
+ 708 0119 13       		.byte	0x13
+ 709 011a 00       		.byte	0
+ 710 011b 03       		.uleb128 0x3
+ 711 011c 32020000 		.4byte	.LASF21
+ 712 0120 05       		.byte	0x5
+ 713 0121 13       		.byte	0x13
+ 714 0122 DE000000 		.4byte	0xde
+ 715 0126 09       		.uleb128 0x9
+ 716 0127 3C       		.byte	0x3c
+ 717 0128 06       		.byte	0x6
+ 718 0129 2C       		.byte	0x2c
+ 719 012a 53010000 		.4byte	0x153
+ 720 012e 0B       		.uleb128 0xb
+ 721 012f 1B000000 		.4byte	.LASF22
+ 722 0133 06       		.byte	0x6
+ 723 0134 2D       		.byte	0x2d
+ 724 0135 0B010000 		.4byte	0x10b
+ 725 0139 00       		.byte	0
+ 726 013a 0B       		.uleb128 0xb
+ 727 013b 08000000 		.4byte	.LASF23
+ 728 013f 06       		.byte	0x6
+ 729 0140 2E       		.byte	0x2e
+ 730 0141 0B010000 		.4byte	0x10b
+ 731 0145 14       		.byte	0x14
+ 732 0146 0B       		.uleb128 0xb
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 16
 
 
- 734 017f 9C       		.byte	0x9c
- 735 0180 11       		.uleb128 0x11
- 736 0181 06020000 		.4byte	.LASF44
- 737 0185 01       		.byte	0x1
- 738 0186 34       		.byte	0x34
- 739 0187 00000000 		.4byte	.LFB67
- 740 018b 60000000 		.4byte	.LFE67-.LFB67
- 741 018f 01       		.uleb128 0x1
- 742 0190 9C       		.byte	0x9c
- 743 0191 AC010000 		.4byte	0x1ac
- 744 0195 12       		.uleb128 0x12
- 745 0196 06000000 		.4byte	.LBB2
- 746 019a 42000000 		.4byte	.LBE2-.LBB2
- 747 019e 13       		.uleb128 0x13
- 748 019f 6900     		.ascii	"i\000"
- 749 01a1 01       		.byte	0x1
- 750 01a2 36       		.byte	0x36
- 751 01a3 8D000000 		.4byte	0x8d
- 752 01a7 02       		.uleb128 0x2
- 753 01a8 91       		.byte	0x91
- 754 01a9 76       		.sleb128 -10
- 755 01aa 00       		.byte	0
- 756 01ab 00       		.byte	0
- 757 01ac 0F       		.uleb128 0xf
- 758 01ad BA010000 		.4byte	.LASF24
- 759 01b1 01       		.byte	0x1
- 760 01b2 3F       		.byte	0x3f
- 761 01b3 8D000000 		.4byte	0x8d
- 762 01b7 00000000 		.4byte	.LFB68
- 763 01bb 14000000 		.4byte	.LFE68-.LFB68
- 764 01bf 01       		.uleb128 0x1
- 765 01c0 9C       		.byte	0x9c
- 766 01c1 14       		.uleb128 0x14
- 767 01c2 E3000000 		.4byte	.LASF45
- 768 01c6 01       		.byte	0x1
- 769 01c7 45       		.byte	0x45
- 770 01c8 00000000 		.4byte	.LFB69
- 771 01cc D8000000 		.4byte	.LFE69-.LFB69
- 772 01d0 01       		.uleb128 0x1
- 773 01d1 9C       		.byte	0x9c
- 774 01d2 63020000 		.4byte	0x263
- 775 01d6 0E       		.uleb128 0xe
- 776 01d7 B5000000 		.4byte	.LASF25
- 777 01db 01       		.byte	0x1
- 778 01dc 45       		.byte	0x45
- 779 01dd C8000000 		.4byte	0xc8
- 780 01e1 02       		.uleb128 0x2
- 781 01e2 91       		.byte	0x91
- 782 01e3 74       		.sleb128 -12
- 783 01e4 0E       		.uleb128 0xe
- 784 01e5 7F010000 		.4byte	.LASF26
- 785 01e9 01       		.byte	0x1
- 786 01ea 45       		.byte	0x45
- 787 01eb C8000000 		.4byte	0xc8
- 788 01ef 02       		.uleb128 0x2
- 789 01f0 91       		.byte	0x91
- 790 01f1 70       		.sleb128 -16
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 17
+ 733 0147 B0020000 		.4byte	.LASF24
+ 734 014b 06       		.byte	0x6
+ 735 014c 2F       		.byte	0x2f
+ 736 014d 0B010000 		.4byte	0x10b
+ 737 0151 28       		.byte	0x28
+ 738 0152 00       		.byte	0
+ 739 0153 03       		.uleb128 0x3
+ 740 0154 7E010000 		.4byte	.LASF25
+ 741 0158 06       		.byte	0x6
+ 742 0159 30       		.byte	0x30
+ 743 015a 26010000 		.4byte	0x126
+ 744 015e 09       		.uleb128 0x9
+ 745 015f 0C       		.byte	0xc
+ 746 0160 06       		.byte	0x6
+ 747 0161 32       		.byte	0x32
+ 748 0162 96010000 		.4byte	0x196
+ 749 0166 0B       		.uleb128 0xb
+ 750 0167 D5030000 		.4byte	.LASF26
+ 751 016b 06       		.byte	0x6
+ 752 016c 33       		.byte	0x33
+ 753 016d 81000000 		.4byte	0x81
+ 754 0171 00       		.byte	0
+ 755 0172 0A       		.uleb128 0xa
+ 756 0173 737100   		.ascii	"sq\000"
+ 757 0176 06       		.byte	0x6
+ 758 0177 34       		.byte	0x34
+ 759 0178 81000000 		.4byte	0x81
+ 760 017c 01       		.byte	0x1
+ 761 017d 0B       		.uleb128 0xb
+ 762 017e 79020000 		.4byte	.LASF27
+ 763 0182 06       		.byte	0x6
+ 764 0183 35       		.byte	0x35
+ 765 0184 68000000 		.4byte	0x68
+ 766 0188 04       		.byte	0x4
+ 767 0189 0B       		.uleb128 0xb
+ 768 018a 9D020000 		.4byte	.LASF28
+ 769 018e 06       		.byte	0x6
+ 770 018f 36       		.byte	0x36
+ 771 0190 68000000 		.4byte	0x68
+ 772 0194 08       		.byte	0x8
+ 773 0195 00       		.byte	0
+ 774 0196 03       		.uleb128 0x3
+ 775 0197 BD020000 		.4byte	.LASF29
+ 776 019b 06       		.byte	0x6
+ 777 019c 37       		.byte	0x37
+ 778 019d 5E010000 		.4byte	0x15e
+ 779 01a1 09       		.uleb128 0x9
+ 780 01a2 1C       		.byte	0x1c
+ 781 01a3 07       		.byte	0x7
+ 782 01a4 37       		.byte	0x37
+ 783 01a5 C2010000 		.4byte	0x1c2
+ 784 01a9 0B       		.uleb128 0xb
+ 785 01aa 94010000 		.4byte	.LASF30
+ 786 01ae 07       		.byte	0x7
+ 787 01af 39       		.byte	0x39
+ 788 01b0 C2010000 		.4byte	0x1c2
+ 789 01b4 00       		.byte	0
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 17
 
 
- 791 01f2 0E       		.uleb128 0xe
- 792 01f3 0D010000 		.4byte	.LASF27
- 793 01f7 01       		.byte	0x1
- 794 01f8 45       		.byte	0x45
- 795 01f9 C8000000 		.4byte	0xc8
- 796 01fd 02       		.uleb128 0x2
- 797 01fe 91       		.byte	0x91
- 798 01ff 6C       		.sleb128 -20
- 799 0200 0E       		.uleb128 0xe
- 800 0201 E9010000 		.4byte	.LASF28
- 801 0205 01       		.byte	0x1
- 802 0206 45       		.byte	0x45
- 803 0207 C8000000 		.4byte	0xc8
- 804 020b 02       		.uleb128 0x2
- 805 020c 91       		.byte	0x91
- 806 020d 68       		.sleb128 -24
- 807 020e 0E       		.uleb128 0xe
- 808 020f 23020000 		.4byte	.LASF29
- 809 0213 01       		.byte	0x1
- 810 0214 46       		.byte	0x46
- 811 0215 68000000 		.4byte	0x68
- 812 0219 02       		.uleb128 0x2
- 813 021a 91       		.byte	0x91
- 814 021b 00       		.sleb128 0
- 815 021c 0E       		.uleb128 0xe
- 816 021d 91020000 		.4byte	.LASF30
- 817 0221 01       		.byte	0x1
- 818 0222 46       		.byte	0x46
- 819 0223 C8000000 		.4byte	0xc8
- 820 0227 02       		.uleb128 0x2
- 821 0228 91       		.byte	0x91
- 822 0229 04       		.sleb128 4
- 823 022a 0E       		.uleb128 0xe
- 824 022b D3000000 		.4byte	.LASF31
- 825 022f 01       		.byte	0x1
- 826 0230 46       		.byte	0x46
- 827 0231 C8000000 		.4byte	0xc8
- 828 0235 02       		.uleb128 0x2
- 829 0236 91       		.byte	0x91
- 830 0237 08       		.sleb128 8
- 831 0238 0E       		.uleb128 0xe
- 832 0239 2A010000 		.4byte	.LASF32
- 833 023d 01       		.byte	0x1
- 834 023e 47       		.byte	0x47
- 835 023f C8000000 		.4byte	0xc8
- 836 0243 02       		.uleb128 0x2
- 837 0244 91       		.byte	0x91
- 838 0245 0C       		.sleb128 12
- 839 0246 0E       		.uleb128 0xe
- 840 0247 38020000 		.4byte	.LASF33
- 841 024b 01       		.byte	0x1
- 842 024c 47       		.byte	0x47
- 843 024d 68000000 		.4byte	0x68
- 844 0251 02       		.uleb128 0x2
- 845 0252 91       		.byte	0x91
- 846 0253 10       		.sleb128 16
- 847 0254 0E       		.uleb128 0xe
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 18
+ 790 01b5 0B       		.uleb128 0xb
+ 791 01b6 F6000000 		.4byte	.LASF31
+ 792 01ba 07       		.byte	0x7
+ 793 01bb 3A       		.byte	0x3a
+ 794 01bc CE000000 		.4byte	0xce
+ 795 01c0 04       		.byte	0x4
+ 796 01c1 00       		.byte	0
+ 797 01c2 06       		.uleb128 0x6
+ 798 01c3 04       		.byte	0x4
+ 799 01c4 53010000 		.4byte	0x153
+ 800 01c8 03       		.uleb128 0x3
+ 801 01c9 5B020000 		.4byte	.LASF32
+ 802 01cd 07       		.byte	0x7
+ 803 01ce 3C       		.byte	0x3c
+ 804 01cf A1010000 		.4byte	0x1a1
+ 805 01d3 0C       		.uleb128 0xc
+ 806 01d4 4401     		.2byte	0x144
+ 807 01d6 07       		.byte	0x7
+ 808 01d7 3F       		.byte	0x3f
+ 809 01d8 26020000 		.4byte	0x226
+ 810 01dc 0B       		.uleb128 0xb
+ 811 01dd 28030000 		.4byte	.LASF33
+ 812 01e1 07       		.byte	0x7
+ 813 01e2 42       		.byte	0x42
+ 814 01e3 0B010000 		.4byte	0x10b
+ 815 01e7 00       		.byte	0
+ 816 01e8 0B       		.uleb128 0xb
+ 817 01e9 4B000000 		.4byte	.LASF34
+ 818 01ed 07       		.byte	0x7
+ 819 01ee 44       		.byte	0x44
+ 820 01ef 26020000 		.4byte	0x226
+ 821 01f3 14       		.byte	0x14
+ 822 01f4 0B       		.uleb128 0xb
+ 823 01f5 75030000 		.4byte	.LASF35
+ 824 01f9 07       		.byte	0x7
+ 825 01fa 45       		.byte	0x45
+ 826 01fb 68000000 		.4byte	0x68
+ 827 01ff 78       		.byte	0x78
+ 828 0200 0B       		.uleb128 0xb
+ 829 0201 53010000 		.4byte	.LASF36
+ 830 0205 07       		.byte	0x7
+ 831 0206 46       		.byte	0x46
+ 832 0207 36020000 		.4byte	0x236
+ 833 020b 7C       		.byte	0x7c
+ 834 020c 0B       		.uleb128 0xb
+ 835 020d E5020000 		.4byte	.LASF37
+ 836 0211 07       		.byte	0x7
+ 837 0212 47       		.byte	0x47
+ 838 0213 26020000 		.4byte	0x226
+ 839 0217 AE       		.byte	0xae
+ 840 0218 0D       		.uleb128 0xd
+ 841 0219 47010000 		.4byte	.LASF38
+ 842 021d 07       		.byte	0x7
+ 843 021e 48       		.byte	0x48
+ 844 021f 36020000 		.4byte	0x236
+ 845 0223 1201     		.2byte	0x112
+ 846 0225 00       		.byte	0
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 18
 
 
- 848 0255 9F010000 		.4byte	.LASF34
- 849 0259 01       		.byte	0x1
- 850 025a 47       		.byte	0x47
- 851 025b C8000000 		.4byte	0xc8
- 852 025f 02       		.uleb128 0x2
- 853 0260 91       		.byte	0x91
- 854 0261 14       		.sleb128 20
- 855 0262 00       		.byte	0
- 856 0263 15       		.uleb128 0x15
- 857 0264 92010000 		.4byte	.LASF35
- 858 0268 06       		.byte	0x6
- 859 0269 1207     		.2byte	0x712
- 860 026b 6F020000 		.4byte	0x26f
- 861 026f 16       		.uleb128 0x16
- 862 0270 76000000 		.4byte	0x76
- 863 0274 0A       		.uleb128 0xa
- 864 0275 B3000000 		.4byte	0xb3
- 865 0279 84020000 		.4byte	0x284
- 866 027d 0B       		.uleb128 0xb
- 867 027e C1000000 		.4byte	0xc1
- 868 0282 63       		.byte	0x63
- 869 0283 00       		.byte	0
- 870 0284 17       		.uleb128 0x17
- 871 0285 98000000 		.4byte	.LASF36
- 872 0289 07       		.byte	0x7
- 873 028a 17       		.byte	0x17
- 874 028b 74020000 		.4byte	0x274
- 875 028f 05       		.uleb128 0x5
- 876 0290 03       		.byte	0x3
- 877 0291 00000000 		.4byte	debug_string
- 878 0295 17       		.uleb128 0x17
- 879 0296 50010000 		.4byte	.LASF37
- 880 029a 05       		.byte	0x5
- 881 029b 19       		.byte	0x19
- 882 029c 8D000000 		.4byte	0x8d
- 883 02a0 05       		.uleb128 0x5
- 884 02a1 03       		.byte	0x3
- 885 02a2 00000000 		.4byte	dataPointsInStack
- 886 02a6 0A       		.uleb128 0xa
- 887 02a7 0B010000 		.4byte	0x10b
- 888 02ab B6020000 		.4byte	0x2b6
- 889 02af 0B       		.uleb128 0xb
- 890 02b0 C1000000 		.4byte	0xc1
- 891 02b4 63       		.byte	0x63
- 892 02b5 00       		.byte	0
- 893 02b6 17       		.uleb128 0x17
- 894 02b7 08010000 		.4byte	.LASF38
- 895 02bb 05       		.byte	0x5
- 896 02bc 1A       		.byte	0x1a
- 897 02bd A6020000 		.4byte	0x2a6
- 898 02c1 05       		.uleb128 0x5
- 899 02c2 03       		.byte	0x3
- 900 02c3 00000000 		.4byte	data
- 901 02c7 00       		.byte	0
- 902              		.section	.debug_abbrev,"",%progbits
- 903              	.Ldebug_abbrev0:
- 904 0000 01       		.uleb128 0x1
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 19
+ 847 0226 07       		.uleb128 0x7
+ 848 0227 B3000000 		.4byte	0xb3
+ 849 022b 36020000 		.4byte	0x236
+ 850 022f 08       		.uleb128 0x8
+ 851 0230 C1000000 		.4byte	0xc1
+ 852 0234 63       		.byte	0x63
+ 853 0235 00       		.byte	0
+ 854 0236 07       		.uleb128 0x7
+ 855 0237 B3000000 		.4byte	0xb3
+ 856 023b 46020000 		.4byte	0x246
+ 857 023f 08       		.uleb128 0x8
+ 858 0240 C1000000 		.4byte	0xc1
+ 859 0244 31       		.byte	0x31
+ 860 0245 00       		.byte	0
+ 861 0246 03       		.uleb128 0x3
+ 862 0247 29000000 		.4byte	.LASF39
+ 863 024b 07       		.byte	0x7
+ 864 024c 4B       		.byte	0x4b
+ 865 024d D3010000 		.4byte	0x1d3
+ 866 0251 0E       		.uleb128 0xe
+ 867 0252 4A020000 		.4byte	.LASF67
+ 868 0256 01       		.byte	0x1
+ 869 0257 11       		.byte	0x11
+ 870 0258 81000000 		.4byte	0x81
+ 871 025c 00000000 		.4byte	.LFB64
+ 872 0260 9C000000 		.4byte	.LFE64-.LFB64
+ 873 0264 01       		.uleb128 0x1
+ 874 0265 9C       		.byte	0x9c
+ 875 0266 95020000 		.4byte	0x295
+ 876 026a 0F       		.uleb128 0xf
+ 877 026b 6B657900 		.ascii	"key\000"
+ 878 026f 01       		.byte	0x1
+ 879 0270 11       		.byte	0x11
+ 880 0271 C8000000 		.4byte	0xc8
+ 881 0275 02       		.uleb128 0x2
+ 882 0276 91       		.byte	0x91
+ 883 0277 74       		.sleb128 -12
+ 884 0278 10       		.uleb128 0x10
+ 885 0279 14010000 		.4byte	.LASF19
+ 886 027d 01       		.byte	0x1
+ 887 027e 11       		.byte	0x11
+ 888 027f C8000000 		.4byte	0xc8
+ 889 0283 02       		.uleb128 0x2
+ 890 0284 91       		.byte	0x91
+ 891 0285 70       		.sleb128 -16
+ 892 0286 10       		.uleb128 0x10
+ 893 0287 11000000 		.4byte	.LASF40
+ 894 028b 01       		.byte	0x1
+ 895 028c 11       		.byte	0x11
+ 896 028d 99000000 		.4byte	0x99
+ 897 0291 02       		.uleb128 0x2
+ 898 0292 91       		.byte	0x91
+ 899 0293 6C       		.sleb128 -20
+ 900 0294 00       		.byte	0
+ 901 0295 11       		.uleb128 0x11
+ 902 0296 00000000 		.4byte	.LASF41
+ 903 029a 01       		.byte	0x1
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 19
 
 
- 905 0001 11       		.uleb128 0x11
- 906 0002 01       		.byte	0x1
- 907 0003 25       		.uleb128 0x25
- 908 0004 0E       		.uleb128 0xe
- 909 0005 13       		.uleb128 0x13
- 910 0006 0B       		.uleb128 0xb
- 911 0007 03       		.uleb128 0x3
- 912 0008 0E       		.uleb128 0xe
- 913 0009 1B       		.uleb128 0x1b
- 914 000a 0E       		.uleb128 0xe
- 915 000b 55       		.uleb128 0x55
- 916 000c 17       		.uleb128 0x17
- 917 000d 11       		.uleb128 0x11
- 918 000e 01       		.uleb128 0x1
- 919 000f 10       		.uleb128 0x10
- 920 0010 17       		.uleb128 0x17
- 921 0011 00       		.byte	0
- 922 0012 00       		.byte	0
- 923 0013 02       		.uleb128 0x2
- 924 0014 24       		.uleb128 0x24
- 925 0015 00       		.byte	0
- 926 0016 0B       		.uleb128 0xb
- 927 0017 0B       		.uleb128 0xb
- 928 0018 3E       		.uleb128 0x3e
- 929 0019 0B       		.uleb128 0xb
- 930 001a 03       		.uleb128 0x3
- 931 001b 0E       		.uleb128 0xe
- 932 001c 00       		.byte	0
- 933 001d 00       		.byte	0
- 934 001e 03       		.uleb128 0x3
- 935 001f 16       		.uleb128 0x16
- 936 0020 00       		.byte	0
- 937 0021 03       		.uleb128 0x3
- 938 0022 0E       		.uleb128 0xe
- 939 0023 3A       		.uleb128 0x3a
- 940 0024 0B       		.uleb128 0xb
- 941 0025 3B       		.uleb128 0x3b
- 942 0026 0B       		.uleb128 0xb
- 943 0027 49       		.uleb128 0x49
- 944 0028 13       		.uleb128 0x13
- 945 0029 00       		.byte	0
- 946 002a 00       		.byte	0
- 947 002b 04       		.uleb128 0x4
- 948 002c 24       		.uleb128 0x24
- 949 002d 00       		.byte	0
- 950 002e 0B       		.uleb128 0xb
- 951 002f 0B       		.uleb128 0xb
- 952 0030 3E       		.uleb128 0x3e
- 953 0031 0B       		.uleb128 0xb
- 954 0032 03       		.uleb128 0x3
- 955 0033 08       		.uleb128 0x8
- 956 0034 00       		.byte	0
- 957 0035 00       		.byte	0
- 958 0036 05       		.uleb128 0x5
- 959 0037 16       		.uleb128 0x16
- 960 0038 00       		.byte	0
- 961 0039 03       		.uleb128 0x3
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 20
+ 904 029b 25       		.byte	0x25
+ 905 029c 1B010000 		.4byte	0x11b
+ 906 02a0 00000000 		.4byte	.LFB65
+ 907 02a4 74000000 		.4byte	.LFE65-.LFB65
+ 908 02a8 01       		.uleb128 0x1
+ 909 02a9 9C       		.byte	0x9c
+ 910 02aa 12       		.uleb128 0x12
+ 911 02ab 40030000 		.4byte	.LASF68
+ 912 02af 01       		.byte	0x1
+ 913 02b0 31       		.byte	0x31
+ 914 02b1 00000000 		.4byte	.LFB66
+ 915 02b5 0C000000 		.4byte	.LFE66-.LFB66
+ 916 02b9 01       		.uleb128 0x1
+ 917 02ba 9C       		.byte	0x9c
+ 918 02bb 13       		.uleb128 0x13
+ 919 02bc CE010000 		.4byte	.LASF69
+ 920 02c0 01       		.byte	0x1
+ 921 02c1 35       		.byte	0x35
+ 922 02c2 00000000 		.4byte	.LFB67
+ 923 02c6 60000000 		.4byte	.LFE67-.LFB67
+ 924 02ca 01       		.uleb128 0x1
+ 925 02cb 9C       		.byte	0x9c
+ 926 02cc E7020000 		.4byte	0x2e7
+ 927 02d0 14       		.uleb128 0x14
+ 928 02d1 06000000 		.4byte	.LBB2
+ 929 02d5 42000000 		.4byte	.LBE2-.LBB2
+ 930 02d9 15       		.uleb128 0x15
+ 931 02da 6900     		.ascii	"i\000"
+ 932 02dc 01       		.byte	0x1
+ 933 02dd 37       		.byte	0x37
+ 934 02de 8D000000 		.4byte	0x8d
+ 935 02e2 02       		.uleb128 0x2
+ 936 02e3 91       		.byte	0x91
+ 937 02e4 76       		.sleb128 -10
+ 938 02e5 00       		.byte	0
+ 939 02e6 00       		.byte	0
+ 940 02e7 11       		.uleb128 0x11
+ 941 02e8 DA030000 		.4byte	.LASF42
+ 942 02ec 01       		.byte	0x1
+ 943 02ed 40       		.byte	0x40
+ 944 02ee 8D000000 		.4byte	0x8d
+ 945 02f2 00000000 		.4byte	.LFB68
+ 946 02f6 14000000 		.4byte	.LFE68-.LFB68
+ 947 02fa 01       		.uleb128 0x1
+ 948 02fb 9C       		.byte	0x9c
+ 949 02fc 16       		.uleb128 0x16
+ 950 02fd 56030000 		.4byte	.LASF70
+ 951 0301 01       		.byte	0x1
+ 952 0302 46       		.byte	0x46
+ 953 0303 00000000 		.4byte	.LFB69
+ 954 0307 F8000000 		.4byte	.LFE69-.LFB69
+ 955 030b 01       		.uleb128 0x1
+ 956 030c 9C       		.byte	0x9c
+ 957 030d 9E030000 		.4byte	0x39e
+ 958 0311 10       		.uleb128 0x10
+ 959 0312 53020000 		.4byte	.LASF43
+ 960 0316 01       		.byte	0x1
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 20
 
 
- 962 003a 0E       		.uleb128 0xe
- 963 003b 3A       		.uleb128 0x3a
- 964 003c 0B       		.uleb128 0xb
- 965 003d 3B       		.uleb128 0x3b
- 966 003e 05       		.uleb128 0x5
- 967 003f 49       		.uleb128 0x49
- 968 0040 13       		.uleb128 0x13
- 969 0041 00       		.byte	0
- 970 0042 00       		.byte	0
- 971 0043 06       		.uleb128 0x6
- 972 0044 0F       		.uleb128 0xf
- 973 0045 00       		.byte	0
- 974 0046 0B       		.uleb128 0xb
- 975 0047 0B       		.uleb128 0xb
- 976 0048 49       		.uleb128 0x49
- 977 0049 13       		.uleb128 0x13
- 978 004a 00       		.byte	0
- 979 004b 00       		.byte	0
- 980 004c 07       		.uleb128 0x7
- 981 004d 13       		.uleb128 0x13
- 982 004e 01       		.byte	0x1
- 983 004f 0B       		.uleb128 0xb
- 984 0050 0B       		.uleb128 0xb
- 985 0051 3A       		.uleb128 0x3a
- 986 0052 0B       		.uleb128 0xb
- 987 0053 3B       		.uleb128 0x3b
- 988 0054 0B       		.uleb128 0xb
- 989 0055 01       		.uleb128 0x1
- 990 0056 13       		.uleb128 0x13
- 991 0057 00       		.byte	0
- 992 0058 00       		.byte	0
- 993 0059 08       		.uleb128 0x8
- 994 005a 0D       		.uleb128 0xd
- 995 005b 00       		.byte	0
- 996 005c 03       		.uleb128 0x3
- 997 005d 08       		.uleb128 0x8
- 998 005e 3A       		.uleb128 0x3a
- 999 005f 0B       		.uleb128 0xb
- 1000 0060 3B       		.uleb128 0x3b
- 1001 0061 0B       		.uleb128 0xb
- 1002 0062 49       		.uleb128 0x49
- 1003 0063 13       		.uleb128 0x13
- 1004 0064 38       		.uleb128 0x38
- 1005 0065 0B       		.uleb128 0xb
- 1006 0066 00       		.byte	0
- 1007 0067 00       		.byte	0
- 1008 0068 09       		.uleb128 0x9
- 1009 0069 0D       		.uleb128 0xd
- 1010 006a 00       		.byte	0
- 1011 006b 03       		.uleb128 0x3
- 1012 006c 0E       		.uleb128 0xe
- 1013 006d 3A       		.uleb128 0x3a
- 1014 006e 0B       		.uleb128 0xb
- 1015 006f 3B       		.uleb128 0x3b
- 1016 0070 0B       		.uleb128 0xb
- 1017 0071 49       		.uleb128 0x49
- 1018 0072 13       		.uleb128 0x13
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 21
+ 961 0317 46       		.byte	0x46
+ 962 0318 C8000000 		.4byte	0xc8
+ 963 031c 02       		.uleb128 0x2
+ 964 031d 91       		.byte	0x91
+ 965 031e 74       		.sleb128 -12
+ 966 031f 10       		.uleb128 0x10
+ 967 0320 9F010000 		.4byte	.LASF44
+ 968 0324 01       		.byte	0x1
+ 969 0325 46       		.byte	0x46
+ 970 0326 C8000000 		.4byte	0xc8
+ 971 032a 02       		.uleb128 0x2
+ 972 032b 91       		.byte	0x91
+ 973 032c 70       		.sleb128 -16
+ 974 032d 10       		.uleb128 0x10
+ 975 032e 7D030000 		.4byte	.LASF45
+ 976 0332 01       		.byte	0x1
+ 977 0333 46       		.byte	0x46
+ 978 0334 C8000000 		.4byte	0xc8
+ 979 0338 02       		.uleb128 0x2
+ 980 0339 91       		.byte	0x91
+ 981 033a 6C       		.sleb128 -20
+ 982 033b 10       		.uleb128 0x10
+ 983 033c A4010000 		.4byte	.LASF46
+ 984 0340 01       		.byte	0x1
+ 985 0341 46       		.byte	0x46
+ 986 0342 C8000000 		.4byte	0xc8
+ 987 0346 02       		.uleb128 0x2
+ 988 0347 91       		.byte	0x91
+ 989 0348 68       		.sleb128 -24
+ 990 0349 10       		.uleb128 0x10
+ 991 034a ED020000 		.4byte	.LASF47
+ 992 034e 01       		.byte	0x1
+ 993 034f 47       		.byte	0x47
+ 994 0350 68000000 		.4byte	0x68
+ 995 0354 02       		.uleb128 0x2
+ 996 0355 91       		.byte	0x91
+ 997 0356 00       		.sleb128 0
+ 998 0357 10       		.uleb128 0x10
+ 999 0358 22000000 		.4byte	.LASF48
+ 1000 035c 01       		.byte	0x1
+ 1001 035d 47       		.byte	0x47
+ 1002 035e C8000000 		.4byte	0xc8
+ 1003 0362 02       		.uleb128 0x2
+ 1004 0363 91       		.byte	0x91
+ 1005 0364 04       		.sleb128 4
+ 1006 0365 10       		.uleb128 0x10
+ 1007 0366 30030000 		.4byte	.LASF49
+ 1008 036a 01       		.byte	0x1
+ 1009 036b 47       		.byte	0x47
+ 1010 036c C8000000 		.4byte	0xc8
+ 1011 0370 02       		.uleb128 0x2
+ 1012 0371 91       		.byte	0x91
+ 1013 0372 08       		.sleb128 8
+ 1014 0373 10       		.uleb128 0x10
+ 1015 0374 39010000 		.4byte	.LASF50
+ 1016 0378 01       		.byte	0x1
+ 1017 0379 48       		.byte	0x48
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 21
 
 
- 1019 0073 38       		.uleb128 0x38
- 1020 0074 0B       		.uleb128 0xb
- 1021 0075 00       		.byte	0
- 1022 0076 00       		.byte	0
- 1023 0077 0A       		.uleb128 0xa
- 1024 0078 01       		.uleb128 0x1
- 1025 0079 01       		.byte	0x1
- 1026 007a 49       		.uleb128 0x49
- 1027 007b 13       		.uleb128 0x13
- 1028 007c 01       		.uleb128 0x1
- 1029 007d 13       		.uleb128 0x13
- 1030 007e 00       		.byte	0
- 1031 007f 00       		.byte	0
- 1032 0080 0B       		.uleb128 0xb
- 1033 0081 21       		.uleb128 0x21
- 1034 0082 00       		.byte	0
- 1035 0083 49       		.uleb128 0x49
- 1036 0084 13       		.uleb128 0x13
- 1037 0085 2F       		.uleb128 0x2f
- 1038 0086 0B       		.uleb128 0xb
- 1039 0087 00       		.byte	0
- 1040 0088 00       		.byte	0
- 1041 0089 0C       		.uleb128 0xc
- 1042 008a 2E       		.uleb128 0x2e
- 1043 008b 01       		.byte	0x1
- 1044 008c 3F       		.uleb128 0x3f
- 1045 008d 19       		.uleb128 0x19
- 1046 008e 03       		.uleb128 0x3
- 1047 008f 0E       		.uleb128 0xe
- 1048 0090 3A       		.uleb128 0x3a
- 1049 0091 0B       		.uleb128 0xb
- 1050 0092 3B       		.uleb128 0x3b
- 1051 0093 0B       		.uleb128 0xb
- 1052 0094 27       		.uleb128 0x27
- 1053 0095 19       		.uleb128 0x19
- 1054 0096 49       		.uleb128 0x49
- 1055 0097 13       		.uleb128 0x13
- 1056 0098 11       		.uleb128 0x11
- 1057 0099 01       		.uleb128 0x1
- 1058 009a 12       		.uleb128 0x12
- 1059 009b 06       		.uleb128 0x6
- 1060 009c 40       		.uleb128 0x40
- 1061 009d 18       		.uleb128 0x18
- 1062 009e 9642     		.uleb128 0x2116
- 1063 00a0 19       		.uleb128 0x19
- 1064 00a1 01       		.uleb128 0x1
- 1065 00a2 13       		.uleb128 0x13
- 1066 00a3 00       		.byte	0
- 1067 00a4 00       		.byte	0
- 1068 00a5 0D       		.uleb128 0xd
- 1069 00a6 05       		.uleb128 0x5
- 1070 00a7 00       		.byte	0
- 1071 00a8 03       		.uleb128 0x3
- 1072 00a9 08       		.uleb128 0x8
- 1073 00aa 3A       		.uleb128 0x3a
- 1074 00ab 0B       		.uleb128 0xb
- 1075 00ac 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 22
+ 1018 037a C8000000 		.4byte	0xc8
+ 1019 037e 02       		.uleb128 0x2
+ 1020 037f 91       		.byte	0x91
+ 1021 0380 0C       		.sleb128 12
+ 1022 0381 10       		.uleb128 0x10
+ 1023 0382 CB020000 		.4byte	.LASF51
+ 1024 0386 01       		.byte	0x1
+ 1025 0387 48       		.byte	0x48
+ 1026 0388 68000000 		.4byte	0x68
+ 1027 038c 02       		.uleb128 0x2
+ 1028 038d 91       		.byte	0x91
+ 1029 038e 10       		.sleb128 16
+ 1030 038f 10       		.uleb128 0x10
+ 1031 0390 E8000000 		.4byte	.LASF52
+ 1032 0394 01       		.byte	0x1
+ 1033 0395 48       		.byte	0x48
+ 1034 0396 C8000000 		.4byte	0xc8
+ 1035 039a 02       		.uleb128 0x2
+ 1036 039b 91       		.byte	0x91
+ 1037 039c 14       		.sleb128 20
+ 1038 039d 00       		.byte	0
+ 1039 039e 17       		.uleb128 0x17
+ 1040 039f 11030000 		.4byte	.LASF53
+ 1041 03a3 08       		.byte	0x8
+ 1042 03a4 1207     		.2byte	0x712
+ 1043 03a6 AA030000 		.4byte	0x3aa
+ 1044 03aa 18       		.uleb128 0x18
+ 1045 03ab 76000000 		.4byte	0x76
+ 1046 03af 19       		.uleb128 0x19
+ 1047 03b0 21010000 		.4byte	.LASF54
+ 1048 03b4 05       		.byte	0x5
+ 1049 03b5 1D       		.byte	0x1d
+ 1050 03b6 8D000000 		.4byte	0x8d
+ 1051 03ba 05       		.uleb128 0x5
+ 1052 03bb 03       		.byte	0x3
+ 1053 03bc 00000000 		.4byte	dataPointsInStack
+ 1054 03c0 07       		.uleb128 0x7
+ 1055 03c1 1B010000 		.4byte	0x11b
+ 1056 03c5 D0030000 		.4byte	0x3d0
+ 1057 03c9 08       		.uleb128 0x8
+ 1058 03ca C1000000 		.4byte	0xc1
+ 1059 03ce 63       		.byte	0x63
+ 1060 03cf 00       		.byte	0
+ 1061 03d0 19       		.uleb128 0x19
+ 1062 03d1 D5020000 		.4byte	.LASF55
+ 1063 03d5 05       		.byte	0x5
+ 1064 03d6 1E       		.byte	0x1e
+ 1065 03d7 C0030000 		.4byte	0x3c0
+ 1066 03db 05       		.uleb128 0x5
+ 1067 03dc 03       		.byte	0x3
+ 1068 03dd 00000000 		.4byte	data
+ 1069 03e1 19       		.uleb128 0x19
+ 1070 03e2 F6010000 		.4byte	.LASF56
+ 1071 03e6 06       		.byte	0x6
+ 1072 03e7 15       		.byte	0x15
+ 1073 03e8 81000000 		.4byte	0x81
+ 1074 03ec 05       		.uleb128 0x5
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 22
 
 
- 1076 00ad 0B       		.uleb128 0xb
- 1077 00ae 49       		.uleb128 0x49
- 1078 00af 13       		.uleb128 0x13
- 1079 00b0 02       		.uleb128 0x2
- 1080 00b1 18       		.uleb128 0x18
- 1081 00b2 00       		.byte	0
- 1082 00b3 00       		.byte	0
- 1083 00b4 0E       		.uleb128 0xe
- 1084 00b5 05       		.uleb128 0x5
- 1085 00b6 00       		.byte	0
- 1086 00b7 03       		.uleb128 0x3
- 1087 00b8 0E       		.uleb128 0xe
- 1088 00b9 3A       		.uleb128 0x3a
- 1089 00ba 0B       		.uleb128 0xb
- 1090 00bb 3B       		.uleb128 0x3b
- 1091 00bc 0B       		.uleb128 0xb
- 1092 00bd 49       		.uleb128 0x49
- 1093 00be 13       		.uleb128 0x13
- 1094 00bf 02       		.uleb128 0x2
- 1095 00c0 18       		.uleb128 0x18
- 1096 00c1 00       		.byte	0
- 1097 00c2 00       		.byte	0
- 1098 00c3 0F       		.uleb128 0xf
- 1099 00c4 2E       		.uleb128 0x2e
- 1100 00c5 00       		.byte	0
- 1101 00c6 3F       		.uleb128 0x3f
- 1102 00c7 19       		.uleb128 0x19
- 1103 00c8 03       		.uleb128 0x3
- 1104 00c9 0E       		.uleb128 0xe
- 1105 00ca 3A       		.uleb128 0x3a
- 1106 00cb 0B       		.uleb128 0xb
- 1107 00cc 3B       		.uleb128 0x3b
- 1108 00cd 0B       		.uleb128 0xb
- 1109 00ce 49       		.uleb128 0x49
- 1110 00cf 13       		.uleb128 0x13
- 1111 00d0 11       		.uleb128 0x11
- 1112 00d1 01       		.uleb128 0x1
- 1113 00d2 12       		.uleb128 0x12
- 1114 00d3 06       		.uleb128 0x6
- 1115 00d4 40       		.uleb128 0x40
- 1116 00d5 18       		.uleb128 0x18
- 1117 00d6 9742     		.uleb128 0x2117
- 1118 00d8 19       		.uleb128 0x19
- 1119 00d9 00       		.byte	0
- 1120 00da 00       		.byte	0
- 1121 00db 10       		.uleb128 0x10
- 1122 00dc 2E       		.uleb128 0x2e
- 1123 00dd 00       		.byte	0
- 1124 00de 3F       		.uleb128 0x3f
- 1125 00df 19       		.uleb128 0x19
- 1126 00e0 03       		.uleb128 0x3
- 1127 00e1 0E       		.uleb128 0xe
- 1128 00e2 3A       		.uleb128 0x3a
- 1129 00e3 0B       		.uleb128 0xb
- 1130 00e4 3B       		.uleb128 0x3b
- 1131 00e5 0B       		.uleb128 0xb
- 1132 00e6 11       		.uleb128 0x11
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 23
+ 1075 03ed 03       		.byte	0x3
+ 1076 03ee 00000000 		.4byte	modem_state
+ 1077 03f2 19       		.uleb128 0x19
+ 1078 03f3 DF010000 		.4byte	.LASF57
+ 1079 03f7 06       		.byte	0x6
+ 1080 03f8 45       		.byte	0x45
+ 1081 03f9 99000000 		.4byte	0x99
+ 1082 03fd 05       		.uleb128 0x5
+ 1083 03fe 03       		.byte	0x3
+ 1084 03ff 00000000 		.4byte	modem_start_time_stamp
+ 1085 0403 19       		.uleb128 0x19
+ 1086 0404 94010000 		.4byte	.LASF30
+ 1087 0408 06       		.byte	0x6
+ 1088 0409 46       		.byte	0x46
+ 1089 040a 53010000 		.4byte	0x153
+ 1090 040e 05       		.uleb128 0x5
+ 1091 040f 03       		.byte	0x3
+ 1092 0410 00000000 		.4byte	modem_info
+ 1093 0414 19       		.uleb128 0x19
+ 1094 0415 3E020000 		.4byte	.LASF58
+ 1095 0419 06       		.byte	0x6
+ 1096 041a 47       		.byte	0x47
+ 1097 041b 96010000 		.4byte	0x196
+ 1098 041f 05       		.uleb128 0x5
+ 1099 0420 03       		.byte	0x3
+ 1100 0421 00000000 		.4byte	modem_stats
+ 1101 0425 07       		.uleb128 0x7
+ 1102 0426 B3000000 		.4byte	0xb3
+ 1103 042a 36040000 		.4byte	0x436
+ 1104 042e 1A       		.uleb128 0x1a
+ 1105 042f C1000000 		.4byte	0xc1
+ 1106 0433 E703     		.2byte	0x3e7
+ 1107 0435 00       		.byte	0
+ 1108 0436 19       		.uleb128 0x19
+ 1109 0437 C8030000 		.4byte	.LASF59
+ 1110 043b 07       		.byte	0x7
+ 1111 043c 16       		.byte	0x16
+ 1112 043d 25040000 		.4byte	0x425
+ 1113 0441 05       		.uleb128 0x5
+ 1114 0442 03       		.byte	0x3
+ 1115 0443 00000000 		.4byte	http_request
+ 1116 0447 07       		.uleb128 0x7
+ 1117 0448 B3000000 		.4byte	0xb3
+ 1118 044c 58040000 		.4byte	0x458
+ 1119 0450 1A       		.uleb128 0x1a
+ 1120 0451 C1000000 		.4byte	0xc1
+ 1121 0455 571B     		.2byte	0x1b57
+ 1122 0457 00       		.byte	0
+ 1123 0458 19       		.uleb128 0x19
+ 1124 0459 AA010000 		.4byte	.LASF60
+ 1125 045d 07       		.byte	0x7
+ 1126 045e 17       		.byte	0x17
+ 1127 045f 47040000 		.4byte	0x447
+ 1128 0463 05       		.uleb128 0x5
+ 1129 0464 03       		.byte	0x3
+ 1130 0465 00000000 		.4byte	http_body
+ 1131 0469 07       		.uleb128 0x7
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 23
 
 
- 1133 00e7 01       		.uleb128 0x1
- 1134 00e8 12       		.uleb128 0x12
- 1135 00e9 06       		.uleb128 0x6
- 1136 00ea 40       		.uleb128 0x40
- 1137 00eb 18       		.uleb128 0x18
- 1138 00ec 9642     		.uleb128 0x2116
- 1139 00ee 19       		.uleb128 0x19
- 1140 00ef 00       		.byte	0
- 1141 00f0 00       		.byte	0
- 1142 00f1 11       		.uleb128 0x11
- 1143 00f2 2E       		.uleb128 0x2e
- 1144 00f3 01       		.byte	0x1
- 1145 00f4 3F       		.uleb128 0x3f
- 1146 00f5 19       		.uleb128 0x19
- 1147 00f6 03       		.uleb128 0x3
- 1148 00f7 0E       		.uleb128 0xe
- 1149 00f8 3A       		.uleb128 0x3a
- 1150 00f9 0B       		.uleb128 0xb
- 1151 00fa 3B       		.uleb128 0x3b
- 1152 00fb 0B       		.uleb128 0xb
- 1153 00fc 11       		.uleb128 0x11
- 1154 00fd 01       		.uleb128 0x1
- 1155 00fe 12       		.uleb128 0x12
- 1156 00ff 06       		.uleb128 0x6
- 1157 0100 40       		.uleb128 0x40
- 1158 0101 18       		.uleb128 0x18
- 1159 0102 9742     		.uleb128 0x2117
- 1160 0104 19       		.uleb128 0x19
- 1161 0105 01       		.uleb128 0x1
- 1162 0106 13       		.uleb128 0x13
- 1163 0107 00       		.byte	0
- 1164 0108 00       		.byte	0
- 1165 0109 12       		.uleb128 0x12
- 1166 010a 0B       		.uleb128 0xb
- 1167 010b 01       		.byte	0x1
- 1168 010c 11       		.uleb128 0x11
- 1169 010d 01       		.uleb128 0x1
- 1170 010e 12       		.uleb128 0x12
- 1171 010f 06       		.uleb128 0x6
- 1172 0110 00       		.byte	0
- 1173 0111 00       		.byte	0
- 1174 0112 13       		.uleb128 0x13
- 1175 0113 34       		.uleb128 0x34
- 1176 0114 00       		.byte	0
- 1177 0115 03       		.uleb128 0x3
- 1178 0116 08       		.uleb128 0x8
- 1179 0117 3A       		.uleb128 0x3a
- 1180 0118 0B       		.uleb128 0xb
- 1181 0119 3B       		.uleb128 0x3b
- 1182 011a 0B       		.uleb128 0xb
- 1183 011b 49       		.uleb128 0x49
- 1184 011c 13       		.uleb128 0x13
- 1185 011d 02       		.uleb128 0x2
- 1186 011e 18       		.uleb128 0x18
- 1187 011f 00       		.byte	0
- 1188 0120 00       		.byte	0
- 1189 0121 14       		.uleb128 0x14
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 24
+ 1132 046a B3000000 		.4byte	0xb3
+ 1133 046e 79040000 		.4byte	0x479
+ 1134 0472 08       		.uleb128 0x8
+ 1135 0473 C1000000 		.4byte	0xc1
+ 1136 0477 C7       		.byte	0xc7
+ 1137 0478 00       		.byte	0
+ 1138 0479 19       		.uleb128 0x19
+ 1139 047a DA020000 		.4byte	.LASF61
+ 1140 047e 07       		.byte	0x7
+ 1141 047f 18       		.byte	0x18
+ 1142 0480 69040000 		.4byte	0x469
+ 1143 0484 05       		.uleb128 0x5
+ 1144 0485 03       		.byte	0x3
+ 1145 0486 00000000 		.4byte	http_route
+ 1146 048a 19       		.uleb128 0x19
+ 1147 048b 91020000 		.4byte	.LASF62
+ 1148 048f 07       		.byte	0x7
+ 1149 0490 3D       		.byte	0x3d
+ 1150 0491 C8010000 		.4byte	0x1c8
+ 1151 0495 05       		.uleb128 0x5
+ 1152 0496 03       		.byte	0x3
+ 1153 0497 00000000 		.4byte	system_info
+ 1154 049b 19       		.uleb128 0x19
+ 1155 049c 04010000 		.4byte	.LASF63
+ 1156 04a0 07       		.byte	0x7
+ 1157 04a1 4C       		.byte	0x4c
+ 1158 04a2 46020000 		.4byte	0x246
+ 1159 04a6 05       		.uleb128 0x5
+ 1160 04a7 03       		.byte	0x3
+ 1161 04a8 00000000 		.4byte	system_settings
+ 1162 04ac 00       		.byte	0
+ 1163              		.section	.debug_abbrev,"",%progbits
+ 1164              	.Ldebug_abbrev0:
+ 1165 0000 01       		.uleb128 0x1
+ 1166 0001 11       		.uleb128 0x11
+ 1167 0002 01       		.byte	0x1
+ 1168 0003 25       		.uleb128 0x25
+ 1169 0004 0E       		.uleb128 0xe
+ 1170 0005 13       		.uleb128 0x13
+ 1171 0006 0B       		.uleb128 0xb
+ 1172 0007 03       		.uleb128 0x3
+ 1173 0008 0E       		.uleb128 0xe
+ 1174 0009 1B       		.uleb128 0x1b
+ 1175 000a 0E       		.uleb128 0xe
+ 1176 000b 55       		.uleb128 0x55
+ 1177 000c 17       		.uleb128 0x17
+ 1178 000d 11       		.uleb128 0x11
+ 1179 000e 01       		.uleb128 0x1
+ 1180 000f 10       		.uleb128 0x10
+ 1181 0010 17       		.uleb128 0x17
+ 1182 0011 00       		.byte	0
+ 1183 0012 00       		.byte	0
+ 1184 0013 02       		.uleb128 0x2
+ 1185 0014 24       		.uleb128 0x24
+ 1186 0015 00       		.byte	0
+ 1187 0016 0B       		.uleb128 0xb
+ 1188 0017 0B       		.uleb128 0xb
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 24
 
 
- 1190 0122 2E       		.uleb128 0x2e
- 1191 0123 01       		.byte	0x1
- 1192 0124 3F       		.uleb128 0x3f
- 1193 0125 19       		.uleb128 0x19
- 1194 0126 03       		.uleb128 0x3
- 1195 0127 0E       		.uleb128 0xe
- 1196 0128 3A       		.uleb128 0x3a
- 1197 0129 0B       		.uleb128 0xb
- 1198 012a 3B       		.uleb128 0x3b
- 1199 012b 0B       		.uleb128 0xb
- 1200 012c 27       		.uleb128 0x27
- 1201 012d 19       		.uleb128 0x19
- 1202 012e 11       		.uleb128 0x11
- 1203 012f 01       		.uleb128 0x1
- 1204 0130 12       		.uleb128 0x12
- 1205 0131 06       		.uleb128 0x6
- 1206 0132 40       		.uleb128 0x40
- 1207 0133 18       		.uleb128 0x18
- 1208 0134 9642     		.uleb128 0x2116
- 1209 0136 19       		.uleb128 0x19
- 1210 0137 01       		.uleb128 0x1
- 1211 0138 13       		.uleb128 0x13
- 1212 0139 00       		.byte	0
- 1213 013a 00       		.byte	0
- 1214 013b 15       		.uleb128 0x15
- 1215 013c 34       		.uleb128 0x34
- 1216 013d 00       		.byte	0
- 1217 013e 03       		.uleb128 0x3
- 1218 013f 0E       		.uleb128 0xe
- 1219 0140 3A       		.uleb128 0x3a
- 1220 0141 0B       		.uleb128 0xb
- 1221 0142 3B       		.uleb128 0x3b
- 1222 0143 05       		.uleb128 0x5
- 1223 0144 49       		.uleb128 0x49
- 1224 0145 13       		.uleb128 0x13
- 1225 0146 3F       		.uleb128 0x3f
- 1226 0147 19       		.uleb128 0x19
- 1227 0148 3C       		.uleb128 0x3c
- 1228 0149 19       		.uleb128 0x19
- 1229 014a 00       		.byte	0
- 1230 014b 00       		.byte	0
- 1231 014c 16       		.uleb128 0x16
- 1232 014d 35       		.uleb128 0x35
- 1233 014e 00       		.byte	0
- 1234 014f 49       		.uleb128 0x49
- 1235 0150 13       		.uleb128 0x13
- 1236 0151 00       		.byte	0
- 1237 0152 00       		.byte	0
- 1238 0153 17       		.uleb128 0x17
- 1239 0154 34       		.uleb128 0x34
- 1240 0155 00       		.byte	0
- 1241 0156 03       		.uleb128 0x3
- 1242 0157 0E       		.uleb128 0xe
- 1243 0158 3A       		.uleb128 0x3a
- 1244 0159 0B       		.uleb128 0xb
- 1245 015a 3B       		.uleb128 0x3b
- 1246 015b 0B       		.uleb128 0xb
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 25
+ 1189 0018 3E       		.uleb128 0x3e
+ 1190 0019 0B       		.uleb128 0xb
+ 1191 001a 03       		.uleb128 0x3
+ 1192 001b 0E       		.uleb128 0xe
+ 1193 001c 00       		.byte	0
+ 1194 001d 00       		.byte	0
+ 1195 001e 03       		.uleb128 0x3
+ 1196 001f 16       		.uleb128 0x16
+ 1197 0020 00       		.byte	0
+ 1198 0021 03       		.uleb128 0x3
+ 1199 0022 0E       		.uleb128 0xe
+ 1200 0023 3A       		.uleb128 0x3a
+ 1201 0024 0B       		.uleb128 0xb
+ 1202 0025 3B       		.uleb128 0x3b
+ 1203 0026 0B       		.uleb128 0xb
+ 1204 0027 49       		.uleb128 0x49
+ 1205 0028 13       		.uleb128 0x13
+ 1206 0029 00       		.byte	0
+ 1207 002a 00       		.byte	0
+ 1208 002b 04       		.uleb128 0x4
+ 1209 002c 24       		.uleb128 0x24
+ 1210 002d 00       		.byte	0
+ 1211 002e 0B       		.uleb128 0xb
+ 1212 002f 0B       		.uleb128 0xb
+ 1213 0030 3E       		.uleb128 0x3e
+ 1214 0031 0B       		.uleb128 0xb
+ 1215 0032 03       		.uleb128 0x3
+ 1216 0033 08       		.uleb128 0x8
+ 1217 0034 00       		.byte	0
+ 1218 0035 00       		.byte	0
+ 1219 0036 05       		.uleb128 0x5
+ 1220 0037 16       		.uleb128 0x16
+ 1221 0038 00       		.byte	0
+ 1222 0039 03       		.uleb128 0x3
+ 1223 003a 0E       		.uleb128 0xe
+ 1224 003b 3A       		.uleb128 0x3a
+ 1225 003c 0B       		.uleb128 0xb
+ 1226 003d 3B       		.uleb128 0x3b
+ 1227 003e 05       		.uleb128 0x5
+ 1228 003f 49       		.uleb128 0x49
+ 1229 0040 13       		.uleb128 0x13
+ 1230 0041 00       		.byte	0
+ 1231 0042 00       		.byte	0
+ 1232 0043 06       		.uleb128 0x6
+ 1233 0044 0F       		.uleb128 0xf
+ 1234 0045 00       		.byte	0
+ 1235 0046 0B       		.uleb128 0xb
+ 1236 0047 0B       		.uleb128 0xb
+ 1237 0048 49       		.uleb128 0x49
+ 1238 0049 13       		.uleb128 0x13
+ 1239 004a 00       		.byte	0
+ 1240 004b 00       		.byte	0
+ 1241 004c 07       		.uleb128 0x7
+ 1242 004d 01       		.uleb128 0x1
+ 1243 004e 01       		.byte	0x1
+ 1244 004f 49       		.uleb128 0x49
+ 1245 0050 13       		.uleb128 0x13
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 25
 
 
- 1247 015c 49       		.uleb128 0x49
- 1248 015d 13       		.uleb128 0x13
- 1249 015e 3F       		.uleb128 0x3f
- 1250 015f 19       		.uleb128 0x19
- 1251 0160 02       		.uleb128 0x2
- 1252 0161 18       		.uleb128 0x18
- 1253 0162 00       		.byte	0
- 1254 0163 00       		.byte	0
- 1255 0164 00       		.byte	0
- 1256              		.section	.debug_aranges,"",%progbits
- 1257 0000 44000000 		.4byte	0x44
- 1258 0004 0200     		.2byte	0x2
- 1259 0006 00000000 		.4byte	.Ldebug_info0
- 1260 000a 04       		.byte	0x4
- 1261 000b 00       		.byte	0
- 1262 000c 0000     		.2byte	0
- 1263 000e 0000     		.2byte	0
- 1264 0010 00000000 		.4byte	.LFB64
- 1265 0014 94000000 		.4byte	.LFE64-.LFB64
- 1266 0018 00000000 		.4byte	.LFB65
- 1267 001c 74000000 		.4byte	.LFE65-.LFB65
- 1268 0020 00000000 		.4byte	.LFB66
- 1269 0024 0C000000 		.4byte	.LFE66-.LFB66
- 1270 0028 00000000 		.4byte	.LFB67
- 1271 002c 60000000 		.4byte	.LFE67-.LFB67
- 1272 0030 00000000 		.4byte	.LFB68
- 1273 0034 14000000 		.4byte	.LFE68-.LFB68
- 1274 0038 00000000 		.4byte	.LFB69
- 1275 003c D8000000 		.4byte	.LFE69-.LFB69
- 1276 0040 00000000 		.4byte	0
- 1277 0044 00000000 		.4byte	0
- 1278              		.section	.debug_ranges,"",%progbits
- 1279              	.Ldebug_ranges0:
- 1280 0000 00000000 		.4byte	.LFB64
- 1281 0004 94000000 		.4byte	.LFE64
- 1282 0008 00000000 		.4byte	.LFB65
- 1283 000c 74000000 		.4byte	.LFE65
- 1284 0010 00000000 		.4byte	.LFB66
- 1285 0014 0C000000 		.4byte	.LFE66
- 1286 0018 00000000 		.4byte	.LFB67
- 1287 001c 60000000 		.4byte	.LFE67
- 1288 0020 00000000 		.4byte	.LFB68
- 1289 0024 14000000 		.4byte	.LFE68
- 1290 0028 00000000 		.4byte	.LFB69
- 1291 002c D8000000 		.4byte	.LFE69
- 1292 0030 00000000 		.4byte	0
- 1293 0034 00000000 		.4byte	0
- 1294              		.section	.debug_line,"",%progbits
- 1295              	.Ldebug_line0:
- 1296 0000 06020000 		.section	.debug_str,"MS",%progbits,1
- 1296      02006101 
- 1296      00000201 
- 1296      FB0E0D00 
- 1296      01010101 
- 1297              	.LASF22:
- 1298 0000 74696D65 		.ascii	"timestamp\000"
- 1298      7374616D 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 26
+ 1246 0051 01       		.uleb128 0x1
+ 1247 0052 13       		.uleb128 0x13
+ 1248 0053 00       		.byte	0
+ 1249 0054 00       		.byte	0
+ 1250 0055 08       		.uleb128 0x8
+ 1251 0056 21       		.uleb128 0x21
+ 1252 0057 00       		.byte	0
+ 1253 0058 49       		.uleb128 0x49
+ 1254 0059 13       		.uleb128 0x13
+ 1255 005a 2F       		.uleb128 0x2f
+ 1256 005b 0B       		.uleb128 0xb
+ 1257 005c 00       		.byte	0
+ 1258 005d 00       		.byte	0
+ 1259 005e 09       		.uleb128 0x9
+ 1260 005f 13       		.uleb128 0x13
+ 1261 0060 01       		.byte	0x1
+ 1262 0061 0B       		.uleb128 0xb
+ 1263 0062 0B       		.uleb128 0xb
+ 1264 0063 3A       		.uleb128 0x3a
+ 1265 0064 0B       		.uleb128 0xb
+ 1266 0065 3B       		.uleb128 0x3b
+ 1267 0066 0B       		.uleb128 0xb
+ 1268 0067 01       		.uleb128 0x1
+ 1269 0068 13       		.uleb128 0x13
+ 1270 0069 00       		.byte	0
+ 1271 006a 00       		.byte	0
+ 1272 006b 0A       		.uleb128 0xa
+ 1273 006c 0D       		.uleb128 0xd
+ 1274 006d 00       		.byte	0
+ 1275 006e 03       		.uleb128 0x3
+ 1276 006f 08       		.uleb128 0x8
+ 1277 0070 3A       		.uleb128 0x3a
+ 1278 0071 0B       		.uleb128 0xb
+ 1279 0072 3B       		.uleb128 0x3b
+ 1280 0073 0B       		.uleb128 0xb
+ 1281 0074 49       		.uleb128 0x49
+ 1282 0075 13       		.uleb128 0x13
+ 1283 0076 38       		.uleb128 0x38
+ 1284 0077 0B       		.uleb128 0xb
+ 1285 0078 00       		.byte	0
+ 1286 0079 00       		.byte	0
+ 1287 007a 0B       		.uleb128 0xb
+ 1288 007b 0D       		.uleb128 0xd
+ 1289 007c 00       		.byte	0
+ 1290 007d 03       		.uleb128 0x3
+ 1291 007e 0E       		.uleb128 0xe
+ 1292 007f 3A       		.uleb128 0x3a
+ 1293 0080 0B       		.uleb128 0xb
+ 1294 0081 3B       		.uleb128 0x3b
+ 1295 0082 0B       		.uleb128 0xb
+ 1296 0083 49       		.uleb128 0x49
+ 1297 0084 13       		.uleb128 0x13
+ 1298 0085 38       		.uleb128 0x38
+ 1299 0086 0B       		.uleb128 0xb
+ 1300 0087 00       		.byte	0
+ 1301 0088 00       		.byte	0
+ 1302 0089 0C       		.uleb128 0xc
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 26
 
 
- 1298      7000
- 1299              	.LASF39:
- 1300 000a 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1300      43313120 
- 1300      352E342E 
- 1300      31203230 
- 1300      31363036 
- 1301 003d 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1301      20726576 
- 1301      6973696F 
- 1301      6E203233 
- 1301      37373135 
- 1302 0070 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1302      66756E63 
- 1302      74696F6E 
- 1302      2D736563 
- 1302      74696F6E 
- 1303              	.LASF36:
- 1304 0098 64656275 		.ascii	"debug_string\000"
- 1304      675F7374 
- 1304      72696E67 
- 1304      00
- 1305              	.LASF19:
- 1306 00a5 76616C75 		.ascii	"value\000"
- 1306      6500
- 1307              	.LASF9:
- 1308 00ab 5F5F696E 		.ascii	"__int32_t\000"
- 1308      7433325F 
- 1308      7400
- 1309              	.LASF25:
- 1310 00b5 72657175 		.ascii	"request\000"
- 1310      65737400 
- 1311              	.LASF43:
- 1312 00bd 496E6974 		.ascii	"Initialize_Data_Stack\000"
- 1312      69616C69 
- 1312      7A655F44 
- 1312      6174615F 
- 1312      53746163 
- 1313              	.LASF31:
- 1314 00d3 636F6E6E 		.ascii	"connection_type\000"
- 1314      65637469 
- 1314      6F6E5F74 
- 1314      79706500 
- 1315              	.LASF45:
- 1316 00e3 636F6E73 		.ascii	"construct_generic_HTTP_request\000"
- 1316      74727563 
- 1316      745F6765 
- 1316      6E657269 
- 1316      635F4854 
- 1317              	.LASF14:
- 1318 0102 666C6F61 		.ascii	"float\000"
- 1318      7400
- 1319              	.LASF38:
- 1320 0108 64617461 		.ascii	"data\000"
- 1320      00
- 1321              	.LASF27:
- 1322 010d 686F7374 		.ascii	"host\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 27
+ 1303 008a 13       		.uleb128 0x13
+ 1304 008b 01       		.byte	0x1
+ 1305 008c 0B       		.uleb128 0xb
+ 1306 008d 05       		.uleb128 0x5
+ 1307 008e 3A       		.uleb128 0x3a
+ 1308 008f 0B       		.uleb128 0xb
+ 1309 0090 3B       		.uleb128 0x3b
+ 1310 0091 0B       		.uleb128 0xb
+ 1311 0092 01       		.uleb128 0x1
+ 1312 0093 13       		.uleb128 0x13
+ 1313 0094 00       		.byte	0
+ 1314 0095 00       		.byte	0
+ 1315 0096 0D       		.uleb128 0xd
+ 1316 0097 0D       		.uleb128 0xd
+ 1317 0098 00       		.byte	0
+ 1318 0099 03       		.uleb128 0x3
+ 1319 009a 0E       		.uleb128 0xe
+ 1320 009b 3A       		.uleb128 0x3a
+ 1321 009c 0B       		.uleb128 0xb
+ 1322 009d 3B       		.uleb128 0x3b
+ 1323 009e 0B       		.uleb128 0xb
+ 1324 009f 49       		.uleb128 0x49
+ 1325 00a0 13       		.uleb128 0x13
+ 1326 00a1 38       		.uleb128 0x38
+ 1327 00a2 05       		.uleb128 0x5
+ 1328 00a3 00       		.byte	0
+ 1329 00a4 00       		.byte	0
+ 1330 00a5 0E       		.uleb128 0xe
+ 1331 00a6 2E       		.uleb128 0x2e
+ 1332 00a7 01       		.byte	0x1
+ 1333 00a8 3F       		.uleb128 0x3f
+ 1334 00a9 19       		.uleb128 0x19
+ 1335 00aa 03       		.uleb128 0x3
+ 1336 00ab 0E       		.uleb128 0xe
+ 1337 00ac 3A       		.uleb128 0x3a
+ 1338 00ad 0B       		.uleb128 0xb
+ 1339 00ae 3B       		.uleb128 0x3b
+ 1340 00af 0B       		.uleb128 0xb
+ 1341 00b0 27       		.uleb128 0x27
+ 1342 00b1 19       		.uleb128 0x19
+ 1343 00b2 49       		.uleb128 0x49
+ 1344 00b3 13       		.uleb128 0x13
+ 1345 00b4 11       		.uleb128 0x11
+ 1346 00b5 01       		.uleb128 0x1
+ 1347 00b6 12       		.uleb128 0x12
+ 1348 00b7 06       		.uleb128 0x6
+ 1349 00b8 40       		.uleb128 0x40
+ 1350 00b9 18       		.uleb128 0x18
+ 1351 00ba 9642     		.uleb128 0x2116
+ 1352 00bc 19       		.uleb128 0x19
+ 1353 00bd 01       		.uleb128 0x1
+ 1354 00be 13       		.uleb128 0x13
+ 1355 00bf 00       		.byte	0
+ 1356 00c0 00       		.byte	0
+ 1357 00c1 0F       		.uleb128 0xf
+ 1358 00c2 05       		.uleb128 0x5
+ 1359 00c3 00       		.byte	0
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 27
 
 
- 1322      00
- 1323              	.LASF1:
- 1324 0112 756E7369 		.ascii	"unsigned char\000"
- 1324      676E6564 
- 1324      20636861 
- 1324      7200
- 1325              	.LASF20:
- 1326 0120 74696D65 		.ascii	"timeStamp\000"
- 1326      5374616D 
- 1326      7000
- 1327              	.LASF32:
- 1328 012a 65787472 		.ascii	"extra_headers\000"
- 1328      615F6865 
- 1328      61646572 
- 1328      7300
- 1329              	.LASF5:
- 1330 0138 6C6F6E67 		.ascii	"long unsigned int\000"
- 1330      20756E73 
- 1330      69676E65 
- 1330      6420696E 
- 1330      7400
- 1331              	.LASF13:
- 1332 014a 696E7433 		.ascii	"int32\000"
- 1332      3200
- 1333              	.LASF37:
- 1334 0150 64617461 		.ascii	"dataPointsInStack\000"
- 1334      506F696E 
- 1334      7473496E 
- 1334      53746163 
- 1334      6B00
- 1335              	.LASF42:
- 1336 0162 70757368 		.ascii	"pushData\000"
- 1336      44617461 
- 1336      00
- 1337              	.LASF21:
- 1338 016b 6B65795F 		.ascii	"key_value_t\000"
- 1338      76616C75 
- 1338      655F7400 
- 1339              	.LASF23:
- 1340 0177 706F7044 		.ascii	"popData\000"
- 1340      61746100 
- 1341              	.LASF26:
- 1342 017f 626F6479 		.ascii	"body\000"
- 1342      00
- 1343              	.LASF15:
- 1344 0184 646F7562 		.ascii	"double\000"
- 1344      6C6500
- 1345              	.LASF12:
- 1346 018b 75696E74 		.ascii	"uint16\000"
- 1346      313600
- 1347              	.LASF35:
- 1348 0192 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1348      52784275 
- 1348      66666572 
- 1348      00
- 1349              	.LASF34:
- 1350 019f 68747470 		.ascii	"http_protocol\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 28
+ 1360 00c4 03       		.uleb128 0x3
+ 1361 00c5 08       		.uleb128 0x8
+ 1362 00c6 3A       		.uleb128 0x3a
+ 1363 00c7 0B       		.uleb128 0xb
+ 1364 00c8 3B       		.uleb128 0x3b
+ 1365 00c9 0B       		.uleb128 0xb
+ 1366 00ca 49       		.uleb128 0x49
+ 1367 00cb 13       		.uleb128 0x13
+ 1368 00cc 02       		.uleb128 0x2
+ 1369 00cd 18       		.uleb128 0x18
+ 1370 00ce 00       		.byte	0
+ 1371 00cf 00       		.byte	0
+ 1372 00d0 10       		.uleb128 0x10
+ 1373 00d1 05       		.uleb128 0x5
+ 1374 00d2 00       		.byte	0
+ 1375 00d3 03       		.uleb128 0x3
+ 1376 00d4 0E       		.uleb128 0xe
+ 1377 00d5 3A       		.uleb128 0x3a
+ 1378 00d6 0B       		.uleb128 0xb
+ 1379 00d7 3B       		.uleb128 0x3b
+ 1380 00d8 0B       		.uleb128 0xb
+ 1381 00d9 49       		.uleb128 0x49
+ 1382 00da 13       		.uleb128 0x13
+ 1383 00db 02       		.uleb128 0x2
+ 1384 00dc 18       		.uleb128 0x18
+ 1385 00dd 00       		.byte	0
+ 1386 00de 00       		.byte	0
+ 1387 00df 11       		.uleb128 0x11
+ 1388 00e0 2E       		.uleb128 0x2e
+ 1389 00e1 00       		.byte	0
+ 1390 00e2 3F       		.uleb128 0x3f
+ 1391 00e3 19       		.uleb128 0x19
+ 1392 00e4 03       		.uleb128 0x3
+ 1393 00e5 0E       		.uleb128 0xe
+ 1394 00e6 3A       		.uleb128 0x3a
+ 1395 00e7 0B       		.uleb128 0xb
+ 1396 00e8 3B       		.uleb128 0x3b
+ 1397 00e9 0B       		.uleb128 0xb
+ 1398 00ea 49       		.uleb128 0x49
+ 1399 00eb 13       		.uleb128 0x13
+ 1400 00ec 11       		.uleb128 0x11
+ 1401 00ed 01       		.uleb128 0x1
+ 1402 00ee 12       		.uleb128 0x12
+ 1403 00ef 06       		.uleb128 0x6
+ 1404 00f0 40       		.uleb128 0x40
+ 1405 00f1 18       		.uleb128 0x18
+ 1406 00f2 9742     		.uleb128 0x2117
+ 1407 00f4 19       		.uleb128 0x19
+ 1408 00f5 00       		.byte	0
+ 1409 00f6 00       		.byte	0
+ 1410 00f7 12       		.uleb128 0x12
+ 1411 00f8 2E       		.uleb128 0x2e
+ 1412 00f9 00       		.byte	0
+ 1413 00fa 3F       		.uleb128 0x3f
+ 1414 00fb 19       		.uleb128 0x19
+ 1415 00fc 03       		.uleb128 0x3
+ 1416 00fd 0E       		.uleb128 0xe
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 28
 
 
- 1350      5F70726F 
- 1350      746F636F 
- 1350      6C00
- 1351              	.LASF8:
- 1352 01ad 756E7369 		.ascii	"unsigned int\000"
- 1352      676E6564 
- 1352      20696E74 
- 1352      00
- 1353              	.LASF24:
- 1354 01ba 73697A65 		.ascii	"sizeOfDataStack\000"
- 1354      4F664461 
- 1354      74615374 
- 1354      61636B00 
- 1355              	.LASF7:
- 1356 01ca 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1356      206C6F6E 
- 1356      6720756E 
- 1356      7369676E 
- 1356      65642069 
- 1357              	.LASF10:
- 1358 01e1 696E7433 		.ascii	"int32_t\000"
- 1358      325F7400 
- 1359              	.LASF28:
- 1360 01e9 726F7574 		.ascii	"route\000"
- 1360      6500
- 1361              	.LASF18:
- 1362 01ef 73697A65 		.ascii	"sizetype\000"
- 1362      74797065 
- 1362      00
- 1363              	.LASF6:
- 1364 01f8 6C6F6E67 		.ascii	"long long int\000"
- 1364      206C6F6E 
- 1364      6720696E 
- 1364      7400
- 1365              	.LASF44:
- 1366 0206 436C6561 		.ascii	"Clear_Data_Stack\000"
- 1366      725F4461 
- 1366      74615F53 
- 1366      7461636B 
- 1366      00
- 1367              	.LASF16:
- 1368 0217 63686172 		.ascii	"char\000"
- 1368      00
- 1369              	.LASF40:
- 1370 021c 64617461 		.ascii	"data.c\000"
- 1370      2E6300
- 1371              	.LASF29:
- 1372 0223 706F7274 		.ascii	"port\000"
- 1372      00
- 1373              	.LASF2:
- 1374 0228 73686F72 		.ascii	"short int\000"
- 1374      7420696E 
- 1374      7400
- 1375              	.LASF11:
- 1376 0232 75696E74 		.ascii	"uint8\000"
- 1376      3800
- 1377              	.LASF33:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccRajosi.s 			page 29
+ 1417 00fe 3A       		.uleb128 0x3a
+ 1418 00ff 0B       		.uleb128 0xb
+ 1419 0100 3B       		.uleb128 0x3b
+ 1420 0101 0B       		.uleb128 0xb
+ 1421 0102 11       		.uleb128 0x11
+ 1422 0103 01       		.uleb128 0x1
+ 1423 0104 12       		.uleb128 0x12
+ 1424 0105 06       		.uleb128 0x6
+ 1425 0106 40       		.uleb128 0x40
+ 1426 0107 18       		.uleb128 0x18
+ 1427 0108 9642     		.uleb128 0x2116
+ 1428 010a 19       		.uleb128 0x19
+ 1429 010b 00       		.byte	0
+ 1430 010c 00       		.byte	0
+ 1431 010d 13       		.uleb128 0x13
+ 1432 010e 2E       		.uleb128 0x2e
+ 1433 010f 01       		.byte	0x1
+ 1434 0110 3F       		.uleb128 0x3f
+ 1435 0111 19       		.uleb128 0x19
+ 1436 0112 03       		.uleb128 0x3
+ 1437 0113 0E       		.uleb128 0xe
+ 1438 0114 3A       		.uleb128 0x3a
+ 1439 0115 0B       		.uleb128 0xb
+ 1440 0116 3B       		.uleb128 0x3b
+ 1441 0117 0B       		.uleb128 0xb
+ 1442 0118 11       		.uleb128 0x11
+ 1443 0119 01       		.uleb128 0x1
+ 1444 011a 12       		.uleb128 0x12
+ 1445 011b 06       		.uleb128 0x6
+ 1446 011c 40       		.uleb128 0x40
+ 1447 011d 18       		.uleb128 0x18
+ 1448 011e 9742     		.uleb128 0x2117
+ 1449 0120 19       		.uleb128 0x19
+ 1450 0121 01       		.uleb128 0x1
+ 1451 0122 13       		.uleb128 0x13
+ 1452 0123 00       		.byte	0
+ 1453 0124 00       		.byte	0
+ 1454 0125 14       		.uleb128 0x14
+ 1455 0126 0B       		.uleb128 0xb
+ 1456 0127 01       		.byte	0x1
+ 1457 0128 11       		.uleb128 0x11
+ 1458 0129 01       		.uleb128 0x1
+ 1459 012a 12       		.uleb128 0x12
+ 1460 012b 06       		.uleb128 0x6
+ 1461 012c 00       		.byte	0
+ 1462 012d 00       		.byte	0
+ 1463 012e 15       		.uleb128 0x15
+ 1464 012f 34       		.uleb128 0x34
+ 1465 0130 00       		.byte	0
+ 1466 0131 03       		.uleb128 0x3
+ 1467 0132 08       		.uleb128 0x8
+ 1468 0133 3A       		.uleb128 0x3a
+ 1469 0134 0B       		.uleb128 0xb
+ 1470 0135 3B       		.uleb128 0x3b
+ 1471 0136 0B       		.uleb128 0xb
+ 1472 0137 49       		.uleb128 0x49
+ 1473 0138 13       		.uleb128 0x13
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 29
 
 
- 1378 0238 65787472 		.ascii	"extra_len\000"
- 1378      615F6C65 
- 1378      6E00
- 1379              	.LASF4:
- 1380 0242 6C6F6E67 		.ascii	"long int\000"
- 1380      20696E74 
- 1380      00
- 1381              	.LASF41:
- 1382 024b 433A5C55 		.ascii	"C:\\Users\\hyfi_admin\\Documents\\GitHub\\notoriOS\\"
- 1382      73657273 
- 1382      5C687966 
- 1382      695F6164 
- 1382      6D696E5C 
- 1383 0279 6E6F746F 		.ascii	"notoriOS\\notoriOS.cydsn\000"
- 1383      72694F53 
- 1383      5C6E6F74 
- 1383      6F72694F 
- 1383      532E6379 
- 1384              	.LASF30:
- 1385 0291 6D657468 		.ascii	"method\000"
- 1385      6F6400
- 1386              	.LASF17:
- 1387 0298 6C6F6E67 		.ascii	"long double\000"
- 1387      20646F75 
- 1387      626C6500 
- 1388              	.LASF0:
- 1389 02a4 7369676E 		.ascii	"signed char\000"
- 1389      65642063 
- 1389      68617200 
- 1390              	.LASF3:
- 1391 02b0 73686F72 		.ascii	"short unsigned int\000"
- 1391      7420756E 
- 1391      7369676E 
- 1391      65642069 
- 1391      6E7400
- 1392              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 1474 0139 02       		.uleb128 0x2
+ 1475 013a 18       		.uleb128 0x18
+ 1476 013b 00       		.byte	0
+ 1477 013c 00       		.byte	0
+ 1478 013d 16       		.uleb128 0x16
+ 1479 013e 2E       		.uleb128 0x2e
+ 1480 013f 01       		.byte	0x1
+ 1481 0140 3F       		.uleb128 0x3f
+ 1482 0141 19       		.uleb128 0x19
+ 1483 0142 03       		.uleb128 0x3
+ 1484 0143 0E       		.uleb128 0xe
+ 1485 0144 3A       		.uleb128 0x3a
+ 1486 0145 0B       		.uleb128 0xb
+ 1487 0146 3B       		.uleb128 0x3b
+ 1488 0147 0B       		.uleb128 0xb
+ 1489 0148 27       		.uleb128 0x27
+ 1490 0149 19       		.uleb128 0x19
+ 1491 014a 11       		.uleb128 0x11
+ 1492 014b 01       		.uleb128 0x1
+ 1493 014c 12       		.uleb128 0x12
+ 1494 014d 06       		.uleb128 0x6
+ 1495 014e 40       		.uleb128 0x40
+ 1496 014f 18       		.uleb128 0x18
+ 1497 0150 9642     		.uleb128 0x2116
+ 1498 0152 19       		.uleb128 0x19
+ 1499 0153 01       		.uleb128 0x1
+ 1500 0154 13       		.uleb128 0x13
+ 1501 0155 00       		.byte	0
+ 1502 0156 00       		.byte	0
+ 1503 0157 17       		.uleb128 0x17
+ 1504 0158 34       		.uleb128 0x34
+ 1505 0159 00       		.byte	0
+ 1506 015a 03       		.uleb128 0x3
+ 1507 015b 0E       		.uleb128 0xe
+ 1508 015c 3A       		.uleb128 0x3a
+ 1509 015d 0B       		.uleb128 0xb
+ 1510 015e 3B       		.uleb128 0x3b
+ 1511 015f 05       		.uleb128 0x5
+ 1512 0160 49       		.uleb128 0x49
+ 1513 0161 13       		.uleb128 0x13
+ 1514 0162 3F       		.uleb128 0x3f
+ 1515 0163 19       		.uleb128 0x19
+ 1516 0164 3C       		.uleb128 0x3c
+ 1517 0165 19       		.uleb128 0x19
+ 1518 0166 00       		.byte	0
+ 1519 0167 00       		.byte	0
+ 1520 0168 18       		.uleb128 0x18
+ 1521 0169 35       		.uleb128 0x35
+ 1522 016a 00       		.byte	0
+ 1523 016b 49       		.uleb128 0x49
+ 1524 016c 13       		.uleb128 0x13
+ 1525 016d 00       		.byte	0
+ 1526 016e 00       		.byte	0
+ 1527 016f 19       		.uleb128 0x19
+ 1528 0170 34       		.uleb128 0x34
+ 1529 0171 00       		.byte	0
+ 1530 0172 03       		.uleb128 0x3
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 30
+
+
+ 1531 0173 0E       		.uleb128 0xe
+ 1532 0174 3A       		.uleb128 0x3a
+ 1533 0175 0B       		.uleb128 0xb
+ 1534 0176 3B       		.uleb128 0x3b
+ 1535 0177 0B       		.uleb128 0xb
+ 1536 0178 49       		.uleb128 0x49
+ 1537 0179 13       		.uleb128 0x13
+ 1538 017a 3F       		.uleb128 0x3f
+ 1539 017b 19       		.uleb128 0x19
+ 1540 017c 02       		.uleb128 0x2
+ 1541 017d 18       		.uleb128 0x18
+ 1542 017e 00       		.byte	0
+ 1543 017f 00       		.byte	0
+ 1544 0180 1A       		.uleb128 0x1a
+ 1545 0181 21       		.uleb128 0x21
+ 1546 0182 00       		.byte	0
+ 1547 0183 49       		.uleb128 0x49
+ 1548 0184 13       		.uleb128 0x13
+ 1549 0185 2F       		.uleb128 0x2f
+ 1550 0186 05       		.uleb128 0x5
+ 1551 0187 00       		.byte	0
+ 1552 0188 00       		.byte	0
+ 1553 0189 00       		.byte	0
+ 1554              		.section	.debug_aranges,"",%progbits
+ 1555 0000 44000000 		.4byte	0x44
+ 1556 0004 0200     		.2byte	0x2
+ 1557 0006 00000000 		.4byte	.Ldebug_info0
+ 1558 000a 04       		.byte	0x4
+ 1559 000b 00       		.byte	0
+ 1560 000c 0000     		.2byte	0
+ 1561 000e 0000     		.2byte	0
+ 1562 0010 00000000 		.4byte	.LFB64
+ 1563 0014 9C000000 		.4byte	.LFE64-.LFB64
+ 1564 0018 00000000 		.4byte	.LFB65
+ 1565 001c 74000000 		.4byte	.LFE65-.LFB65
+ 1566 0020 00000000 		.4byte	.LFB66
+ 1567 0024 0C000000 		.4byte	.LFE66-.LFB66
+ 1568 0028 00000000 		.4byte	.LFB67
+ 1569 002c 60000000 		.4byte	.LFE67-.LFB67
+ 1570 0030 00000000 		.4byte	.LFB68
+ 1571 0034 14000000 		.4byte	.LFE68-.LFB68
+ 1572 0038 00000000 		.4byte	.LFB69
+ 1573 003c F8000000 		.4byte	.LFE69-.LFB69
+ 1574 0040 00000000 		.4byte	0
+ 1575 0044 00000000 		.4byte	0
+ 1576              		.section	.debug_ranges,"",%progbits
+ 1577              	.Ldebug_ranges0:
+ 1578 0000 00000000 		.4byte	.LFB64
+ 1579 0004 9C000000 		.4byte	.LFE64
+ 1580 0008 00000000 		.4byte	.LFB65
+ 1581 000c 74000000 		.4byte	.LFE65
+ 1582 0010 00000000 		.4byte	.LFB66
+ 1583 0014 0C000000 		.4byte	.LFE66
+ 1584 0018 00000000 		.4byte	.LFB67
+ 1585 001c 60000000 		.4byte	.LFE67
+ 1586 0020 00000000 		.4byte	.LFB68
+ 1587 0024 14000000 		.4byte	.LFE68
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 31
+
+
+ 1588 0028 00000000 		.4byte	.LFB69
+ 1589 002c F8000000 		.4byte	.LFE69
+ 1590 0030 00000000 		.4byte	0
+ 1591 0034 00000000 		.4byte	0
+ 1592              		.section	.debug_line,"",%progbits
+ 1593              	.Ldebug_line0:
+ 1594 0000 14020000 		.section	.debug_str,"MS",%progbits,1
+ 1594      02006F01 
+ 1594      00000201 
+ 1594      FB0E0D00 
+ 1594      01010101 
+ 1595              	.LASF41:
+ 1596 0000 706F7044 		.ascii	"popData\000"
+ 1596      61746100 
+ 1597              	.LASF23:
+ 1598 0008 6D6F6465 		.ascii	"model_id\000"
+ 1598      6C5F6964 
+ 1598      00
+ 1599              	.LASF40:
+ 1600 0011 74696D65 		.ascii	"timestamp\000"
+ 1600      7374616D 
+ 1600      7000
+ 1601              	.LASF22:
+ 1602 001b 73696D5F 		.ascii	"sim_id\000"
+ 1602      696400
+ 1603              	.LASF48:
+ 1604 0022 6D657468 		.ascii	"method\000"
+ 1604      6F6400
+ 1605              	.LASF39:
+ 1606 0029 7379735F 		.ascii	"sys_settings_t\000"
+ 1606      73657474 
+ 1606      696E6773 
+ 1606      5F7400
+ 1607              	.LASF2:
+ 1608 0038 73686F72 		.ascii	"short int\000"
+ 1608      7420696E 
+ 1608      7400
+ 1609              	.LASF18:
+ 1610 0042 73697A65 		.ascii	"sizetype\000"
+ 1610      74797065 
+ 1610      00
+ 1611              	.LASF34:
+ 1612 004b 65705F68 		.ascii	"ep_host\000"
+ 1612      6F737400 
+ 1613              	.LASF64:
+ 1614 0053 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1614      43313120 
+ 1614      352E342E 
+ 1614      31203230 
+ 1614      31363036 
+ 1615 0086 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1615      20726576 
+ 1615      6973696F 
+ 1615      6E203233 
+ 1615      37373135 
+ 1616 00b9 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1616      66756E63 
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 32
+
+
+ 1616      74696F6E 
+ 1616      2D736563 
+ 1616      74696F6E 
+ 1617              	.LASF65:
+ 1618 00e1 64617461 		.ascii	"data.c\000"
+ 1618      2E6300
+ 1619              	.LASF52:
+ 1620 00e8 68747470 		.ascii	"http_protocol\000"
+ 1620      5F70726F 
+ 1620      746F636F 
+ 1620      6C00
+ 1621              	.LASF31:
+ 1622 00f6 63686970 		.ascii	"chip_uniqueId\000"
+ 1622      5F756E69 
+ 1622      71756549 
+ 1622      6400
+ 1623              	.LASF63:
+ 1624 0104 73797374 		.ascii	"system_settings\000"
+ 1624      656D5F73 
+ 1624      65747469 
+ 1624      6E677300 
+ 1625              	.LASF19:
+ 1626 0114 76616C75 		.ascii	"value\000"
+ 1626      6500
+ 1627              	.LASF12:
+ 1628 011a 75696E74 		.ascii	"uint16\000"
+ 1628      313600
+ 1629              	.LASF54:
+ 1630 0121 64617461 		.ascii	"dataPointsInStack\000"
+ 1630      506F696E 
+ 1630      7473496E 
+ 1630      53746163 
+ 1630      6B00
+ 1631              	.LASF11:
+ 1632 0133 75696E74 		.ascii	"uint8\000"
+ 1632      3800
+ 1633              	.LASF50:
+ 1634 0139 65787472 		.ascii	"extra_headers\000"
+ 1634      615F6865 
+ 1634      61646572 
+ 1634      7300
+ 1635              	.LASF38:
+ 1636 0147 65705F64 		.ascii	"ep_database\000"
+ 1636      61746162 
+ 1636      61736500 
+ 1637              	.LASF36:
+ 1638 0153 65705F75 		.ascii	"ep_user\000"
+ 1638      73657200 
+ 1639              	.LASF20:
+ 1640 015b 74696D65 		.ascii	"timeStamp\000"
+ 1640      5374616D 
+ 1640      7000
+ 1641              	.LASF14:
+ 1642 0165 666C6F61 		.ascii	"float\000"
+ 1642      7400
+ 1643              	.LASF6:
+ 1644 016b 6C6F6E67 		.ascii	"long long int\000"
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 33
+
+
+ 1644      206C6F6E 
+ 1644      6720696E 
+ 1644      7400
+ 1645              	.LASF16:
+ 1646 0179 63686172 		.ascii	"char\000"
+ 1646      00
+ 1647              	.LASF25:
+ 1648 017e 6D6F6465 		.ascii	"modem_info_t\000"
+ 1648      6D5F696E 
+ 1648      666F5F74 
+ 1648      00
+ 1649              	.LASF4:
+ 1650 018b 6C6F6E67 		.ascii	"long int\000"
+ 1650      20696E74 
+ 1650      00
+ 1651              	.LASF30:
+ 1652 0194 6D6F6465 		.ascii	"modem_info\000"
+ 1652      6D5F696E 
+ 1652      666F00
+ 1653              	.LASF44:
+ 1654 019f 626F6479 		.ascii	"body\000"
+ 1654      00
+ 1655              	.LASF46:
+ 1656 01a4 726F7574 		.ascii	"route\000"
+ 1656      6500
+ 1657              	.LASF60:
+ 1658 01aa 68747470 		.ascii	"http_body\000"
+ 1658      5F626F64 
+ 1658      7900
+ 1659              	.LASF17:
+ 1660 01b4 6C6F6E67 		.ascii	"long double\000"
+ 1660      20646F75 
+ 1660      626C6500 
+ 1661              	.LASF1:
+ 1662 01c0 756E7369 		.ascii	"unsigned char\000"
+ 1662      676E6564 
+ 1662      20636861 
+ 1662      7200
+ 1663              	.LASF69:
+ 1664 01ce 436C6561 		.ascii	"Clear_Data_Stack\000"
+ 1664      725F4461 
+ 1664      74615F53 
+ 1664      7461636B 
+ 1664      00
+ 1665              	.LASF57:
+ 1666 01df 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 1666      6D5F7374 
+ 1666      6172745F 
+ 1666      74696D65 
+ 1666      5F737461 
+ 1667              	.LASF56:
+ 1668 01f6 6D6F6465 		.ascii	"modem_state\000"
+ 1668      6D5F7374 
+ 1668      61746500 
+ 1669              	.LASF0:
+ 1670 0202 7369676E 		.ascii	"signed char\000"
+ 1670      65642063 
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 34
+
+
+ 1670      68617200 
+ 1671              	.LASF7:
+ 1672 020e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1672      206C6F6E 
+ 1672      6720756E 
+ 1672      7369676E 
+ 1672      65642069 
+ 1673              	.LASF8:
+ 1674 0225 756E7369 		.ascii	"unsigned int\000"
+ 1674      676E6564 
+ 1674      20696E74 
+ 1674      00
+ 1675              	.LASF21:
+ 1676 0232 6B65795F 		.ascii	"key_value_t\000"
+ 1676      76616C75 
+ 1676      655F7400 
+ 1677              	.LASF58:
+ 1678 023e 6D6F6465 		.ascii	"modem_stats\000"
+ 1678      6D5F7374 
+ 1678      61747300 
+ 1679              	.LASF67:
+ 1680 024a 70757368 		.ascii	"pushData\000"
+ 1680      44617461 
+ 1680      00
+ 1681              	.LASF43:
+ 1682 0253 72657175 		.ascii	"request\000"
+ 1682      65737400 
+ 1683              	.LASF32:
+ 1684 025b 7379735F 		.ascii	"sys_info_t\000"
+ 1684      696E666F 
+ 1684      5F7400
+ 1685              	.LASF3:
+ 1686 0266 73686F72 		.ascii	"short unsigned int\000"
+ 1686      7420756E 
+ 1686      7369676E 
+ 1686      65642069 
+ 1686      6E7400
+ 1687              	.LASF27:
+ 1688 0279 74696D65 		.ascii	"time_to_network_connect\000"
+ 1688      5F746F5F 
+ 1688      6E657477 
+ 1688      6F726B5F 
+ 1688      636F6E6E 
+ 1689              	.LASF62:
+ 1690 0291 73797374 		.ascii	"system_info\000"
+ 1690      656D5F69 
+ 1690      6E666F00 
+ 1691              	.LASF28:
+ 1692 029d 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1692      5F746F5F 
+ 1692      61637175 
+ 1692      6972655F 
+ 1692      697000
+ 1693              	.LASF24:
+ 1694 02b0 696D6569 		.ascii	"imei\000"
+ 1694      00
+ 1695              	.LASF10:
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 35
+
+
+ 1696 02b5 696E7433 		.ascii	"int32_t\000"
+ 1696      325F7400 
+ 1697              	.LASF29:
+ 1698 02bd 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1698      6D5F7374 
+ 1698      6174735F 
+ 1698      7400
+ 1699              	.LASF51:
+ 1700 02cb 65787472 		.ascii	"extra_len\000"
+ 1700      615F6C65 
+ 1700      6E00
+ 1701              	.LASF55:
+ 1702 02d5 64617461 		.ascii	"data\000"
+ 1702      00
+ 1703              	.LASF61:
+ 1704 02da 68747470 		.ascii	"http_route\000"
+ 1704      5F726F75 
+ 1704      746500
+ 1705              	.LASF37:
+ 1706 02e5 65705F70 		.ascii	"ep_pswd\000"
+ 1706      73776400 
+ 1707              	.LASF47:
+ 1708 02ed 706F7274 		.ascii	"port\000"
+ 1708      00
+ 1709              	.LASF5:
+ 1710 02f2 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1710      20756E73 
+ 1710      69676E65 
+ 1710      6420696E 
+ 1710      7400
+ 1711              	.LASF13:
+ 1712 0304 696E7433 		.ascii	"int32\000"
+ 1712      3200
+ 1713              	.LASF15:
+ 1714 030a 646F7562 		.ascii	"double\000"
+ 1714      6C6500
+ 1715              	.LASF53:
+ 1716 0311 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1716      52784275 
+ 1716      66666572 
+ 1716      00
+ 1717              	.LASF9:
+ 1718 031e 5F5F696E 		.ascii	"__int32_t\000"
+ 1718      7433325F 
+ 1718      7400
+ 1719              	.LASF33:
+ 1720 0328 6E6F6465 		.ascii	"node_id\000"
+ 1720      5F696400 
+ 1721              	.LASF49:
+ 1722 0330 636F6E6E 		.ascii	"connection_type\000"
+ 1722      65637469 
+ 1722      6F6E5F74 
+ 1722      79706500 
+ 1723              	.LASF68:
+ 1724 0340 496E6974 		.ascii	"Initialize_Data_Stack\000"
+ 1724      69616C69 
+ 1724      7A655F44 
+ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc1vZAg0.s 			page 36
+
+
+ 1724      6174615F 
+ 1724      53746163 
+ 1725              	.LASF70:
+ 1726 0356 636F6E73 		.ascii	"construct_generic_HTTP_request\000"
+ 1726      74727563 
+ 1726      745F6765 
+ 1726      6E657269 
+ 1726      635F4854 
+ 1727              	.LASF35:
+ 1728 0375 65705F70 		.ascii	"ep_port\000"
+ 1728      6F727400 
+ 1729              	.LASF45:
+ 1730 037d 686F7374 		.ascii	"host\000"
+ 1730      00
+ 1731              	.LASF66:
+ 1732 0382 433A5C55 		.ascii	"C:\\Users\\hyfi_admin\\Documents\\GitHub\\notoriOS\\"
+ 1732      73657273 
+ 1732      5C687966 
+ 1732      695F6164 
+ 1732      6D696E5C 
+ 1733 03b0 6E6F746F 		.ascii	"notoriOS\\notoriOS.cydsn\000"
+ 1733      72694F53 
+ 1733      5C6E6F74 
+ 1733      6F72694F 
+ 1733      532E6379 
+ 1734              	.LASF59:
+ 1735 03c8 68747470 		.ascii	"http_request\000"
+ 1735      5F726571 
+ 1735      75657374 
+ 1735      00
+ 1736              	.LASF26:
+ 1737 03d5 72737369 		.ascii	"rssi\000"
+ 1737      00
+ 1738              	.LASF42:
+ 1739 03da 73697A65 		.ascii	"sizeOfDataStack\000"
+ 1739      4F664461 
+ 1739      74615374 
+ 1739      61636B00 
+ 1740              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

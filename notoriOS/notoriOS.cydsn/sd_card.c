@@ -58,7 +58,7 @@ uint8 SD_mkdir(char* dir_name)
     // Wakeup the SD Card component
     SD_power_up();
     
-    sprintf(SD_dir,"%.8s",dir_name); 
+    snprintf(SD_dir,sizeof(SD_dir),"%.8s",dir_name); 
     status = (uint8) ( 1+FS_MkDir(SD_dir) );
     // The arithmetic makes it 0 if a failure, 1 if successful
     
@@ -203,7 +203,7 @@ void SD_power_down(){
 test_t SD_card_test(){
     //create a  file, write random number, read number from file, delete directory from file
     test_t test;
-    sprintf(test.test_name,"TEST_SD_CARD");
+    snprintf(test.test_name,sizeof(test.test_name),"TEST_SD_CARD");
     test.status = 0;
     
     char data[] = "TEST_FAIL";
@@ -215,9 +215,9 @@ test_t SD_card_test(){
     test.status = SD_rmfile(fileName);
     
     if(test.status == 1){
-        sprintf(test.reason,"SUCCESS WRITE READ DELETE FILE");
+        snprintf(test.reason,sizeof(test.reason),"SUCCESS WRITE READ DELETE FILE");
     }else{
-       sprintf(test.reason,"FAILED TO WRITE READ DELETE FILE"); 
+       snprintf(test.reason,sizeof(test.reason),"FAILED TO WRITE READ DELETE FILE"); 
     }
     
     return test;

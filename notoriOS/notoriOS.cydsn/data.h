@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include "debug.h"
 
+#ifndef DATA_H
+#define DATA_H
+    
+
 #define DATA_MAX_VALUES 100     //max vlaues that will ever be part of one node id. think of this as the numebr of senors
 #define DATA_MAX_KEY_LENGTH 20  
 
@@ -29,6 +33,6 @@ void construct_generic_HTTP_request(char* request, char* body, char* host, char*
                                int port, char* method, char* connection_type,
 	                           char *extra_headers, int extra_len, char* http_protocol);
 
-
+#endif
 
 

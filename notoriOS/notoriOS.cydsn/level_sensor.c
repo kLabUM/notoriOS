@@ -117,11 +117,11 @@ level_sensor_t level_sensor_take_reading(){
 test_t level_sensor_test(){
     test_t test;
     test.status = 0;
-    sprintf(test.test_name,"TEST_LEVEL_SENSOR");
+    snprintf(test.test_name,sizeof(test.test_name),"TEST_LEVEL_SENSOR");
 
     level_sensor_t sensor = level_sensor_take_reading();
     
-    sprintf(test.reason,"nWANTED=%d,nRECEIVED=%d,nVALID=%d,nMEDIAN=%d.",
+    snprintf(test.reason,sizeof(test.reason),"nWANTED=%d,nRECEIVED=%d,nVALID=%d,nMEDIAN=%d.",
         N_READINGS,
         sensor.num_valid_readings+sensor.num_invalid_readings,
         sensor.num_valid_readings,

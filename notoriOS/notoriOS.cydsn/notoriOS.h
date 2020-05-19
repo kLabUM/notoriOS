@@ -11,8 +11,17 @@
 #include "voltages.h"
 #include "debug.h"
 #include "modem.h"
+#include "data.h"
 #include "influx.h"
 
+
+
+//pre-allocate some memory for the HTTP requests
+#define MAX_HTTP_HEADER_LENGTH 1000
+#define MAX_ROUTE_LENGTH 200
+char http_request[MAX_HTTP_HEADER_LENGTH];
+char http_body[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
+char http_route[MAX_ROUTE_LENGTH];
 
 #define ALARM_TYPE_SECOND       0u
 #define ALARM_TYPE_MINUTE       1u
@@ -30,6 +39,8 @@
 
 #define MAX_NUM_ALARMS 5u
 //uised to create alarms, which fire when a tasks needs doing
+
+
 
 typedef struct
 {

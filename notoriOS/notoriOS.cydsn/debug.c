@@ -22,8 +22,8 @@ void debug_stop(){
 
 void debug_sleep(){
    #if USE_DEBUG
-    if (stillWriting)
-        CyDelay(1u);//need to delay for 1ms to allow printf to finish writing (it's non blocking)
+    //if (stillWriting)
+        //CyDelay(1u);//need to delay for 1ms to allow printf to finish writing (it's non blocking)
     Debug_UART_Sleep(); 
    #endif
    
@@ -32,7 +32,7 @@ void debug_sleep(){
 void debug_wakeup(){
     #if USE_DEBUG
         Debug_UART_Wakeup();
-        stillWriting = 0;
+        //stillWriting = 0;
     #endif
 }
 
@@ -41,6 +41,10 @@ void debug_wakeup(){
 //NOTE: For this to work HEAP size in "System" must be set to 0x300 or more
 #if USE_DEBUG
     
+    
+//this will allow you to use printf(), as you would in regulart c programs
+//careful though, printf() is sometimes not safe in embedded sytems
+// may want to use printd() function below
 int _write(int file, char *ptr, int len)
 {
     int i;
@@ -59,43 +63,45 @@ int _write(int file, char *ptr, int len)
 //use like printf, but this will add an depoch timestamp to the printput
 void printNotif(uint8 type, char* format, ...){
     #if USE_DEBUG
-    va_list argptr;
-    va_start(argptr, format);
+
 
     //basically, just hijack printf and inject the timestamp infront
-    printf("{ ");
-    printf("\"time\":\"%ld\" " , getTimeStamp());
+    printd("{ ");
+    printd("\"time\":\"%ld\" " , getTimeStamp());
     if(type == NOTIF_TYPE_EVENT){
-        printf("\"event\":\"notif\" \"value\":\"");
+        printd("\"event\":\"notif\" \"value\":\"");
     }else if(type == NOTIF_TYPE_WARNING){
-        printf("\"event\":\"warning\" \"value\":\"");
+        printd("\"event\":\"warning\" \"value\":\"");
     }else if(type == NOTIF_TYPE_ERROR){
-        printf("\"event\":\"error\" \"value\":\"");
+        printd("\"event\":\"error\" \"value\":\"");
     }else{
-       printf("\"event\":\"undefined\" \"value\":\""); 
+       printd("\"event\":\"undefined\" \"value\":\""); 
     }
    
     
-    vfprintf(stdout,format, argptr);
+    va_list argptr;
+    va_start(argptr, format);
+    char debug_string[MAX_DEBUG_STRING_LENGTH];
+    vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
+    Debug_UART_PutString(debug_string);
     va_end(argptr);
 
-    
-    printf("\"}\r\n");
+    printd("\"}\r\n");
     #endif
     
 }
 
 void printTestStatus(test_t test){
 #if USE_DEBUG
-    printf("{ ");
-    printf("\"time\":\"%ld\" " , getTimeStamp());
+    printd("{ ");
+    printd("\"time\":\"%ld\" " , getTimeStamp());
     
-    printf("\"event\":\"test\" ");
-    printf("\"name\":\"%s\" ", test.test_name);
-    printf("\"status\":\"%d\" ", test.status);
-    printf("\"reason\":\"%s\" ", test.reason);
+    printd("\"event\":\"test\" ");
+    printd("\"name\":\"%s\" ", test.test_name);
+    printd("\"status\":\"%d\" ", test.status);
+    printd("\"reason\":\"%s\" ", test.reason);
 
-    printf("}\r\n");
+    printd("}\r\n");
     #endif
    
 }
@@ -158,3 +164,17 @@ char *strextract(const char input_str[], char output_str[],
     return end;
 }
 
+//out attmpt at a safe (from buffer overflow) version of printf     
+void printd(char* format, ...){
+    
+    va_list argptr;
+    va_start(argptr, format);
+    
+    char debug_string[MAX_DEBUG_STRING_LENGTH];
+    vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
+    Debug_UART_PutString(debug_string);
+    
+    
+    va_end(argptr);
+    
+}

@@ -1,4 +1,5 @@
-#include "influx.h"                   
+#include "influx.h"  
+#include "notoriOS.h"
                         
 unsigned int construct_influx_write_body(char* body, char *node_id){
    
@@ -7,7 +8,7 @@ unsigned int construct_influx_write_body(char* body, char *node_id){
     //construct influx body
     for(uint16 i = 0;i<sizeOfDataStack();i++){
         //note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
-        sprintf(body, "%s%s,node_id=%s value=%s %ld000000000\n", body, data[i].key, node_id, data[i].value, data[i].timeStamp);
+        snprintf(body,sizeof(http_body), "%s%s,node_id=%s value=%s %ld000000000\n", body, data[i].key, node_id, data[i].value, data[i].timeStamp);
     }
     
     unsigned int request_len = strlen(body);
@@ -18,13 +19,13 @@ unsigned int construct_influx_write_body(char* body, char *node_id){
 
 void construct_influx_route(char* route, char* base, char* user, char* pass, char* database){
     route[0] = '\0';
-    sprintf(route, "%s%s?u=%s&p=%s&db=%s", route, base, user, pass, database); 
+    snprintf(route,sizeof(http_route), "%s%s?u=%s&p=%s&db=%s", route, base, user, pass, database); 
 }
 
 test_t influx_test(){
     test_t test;
     test.status = 0u;
-    sprintf(test.test_name,"INFLUX");
+    snprintf(test.test_name,sizeof(test.test_name),"INFLUX");
     
     //we'll create a few fake test, generate a string and compare it to a known value
     char *expected_string = "test_reading_1,node_id=XYZ10, value=000 12345\ntest_reading_2,node_id=XYZ10, value=111 67890\r\n";
@@ -40,9 +41,9 @@ test_t influx_test(){
     
     if(compare == 0){
         test.status = 1u;
-        sprintf(test.reason,"Influx body generated correctly.");
+        snprintf(test.reason,sizeof(test.reason),"Influx body generated correctly.");
     }else{
-        sprintf(test.reason,"Influx body could not be generated correctly.");
+        snprintf(test.reason,sizeof(test.reason),"Influx body could not be generated correctly.");
     }
     
     Clear_Data_Stack();
