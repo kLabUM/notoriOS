@@ -1,7 +1,6 @@
 //drivers for UART debug 
 
 #include "debug.h"
-uint8 stillWriting;
 #include <stdarg.h>
 
 
@@ -22,8 +21,12 @@ void debug_stop(){
 
 void debug_sleep(){
    #if USE_DEBUG
-    //if (stillWriting)
-        //CyDelay(1u);//need to delay for 1ms to allow printf to finish writing (it's non blocking)
+
+    //check if UART is busy writing and waiit, if needed
+    if(!(Debug_UART_ReadTxStatus() & Debug_UART_TX_STS_FIFO_EMPTY)){
+        CyDelay(1u);
+    }
+    
     Debug_UART_Sleep(); 
    #endif
    
@@ -32,7 +35,6 @@ void debug_sleep(){
 void debug_wakeup(){
     #if USE_DEBUG
         Debug_UART_Wakeup();
-        //stillWriting = 0;
     #endif
 }
 
@@ -54,7 +56,6 @@ int _write(int file, char *ptr, int len)
        Debug_UART_PutChar(*ptr++);
     }
     
-    stillWriting = 1;//flag ongoing write
     return (len);
 }
 
@@ -105,13 +106,6 @@ void printTestStatus(test_t test){
     #endif
    
 }
-
-
-
-
-
-    
-
 
 
 //returns local times in epoch seconds (seconds since Jan 1, 1970)

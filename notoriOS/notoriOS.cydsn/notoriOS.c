@@ -112,7 +112,7 @@ int WorkWorkWorkWorkWorkWork()
             timeToSync = syncData();
     }
     
-    printNotif(NOTIF_TYPE_EVENT,"Measure CNT %d, Sync CNT %d, Data Wheel CNT %d",alarmMeasure.currentCountDownValue,alarmSync.currentCountDownValue,sizeOfDataStack());
+    //printNotif(NOTIF_TYPE_EVENT,"Measure CNT %d, Sync CNT %d, Data Wheel CNT %d",alarmMeasure.currentCountDownValue,alarmSync.currentCountDownValue,sizeOfDataStack());
     
     
     //check modem state machine on every loop
