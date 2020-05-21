@@ -253,10 +253,10 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     printTestStatus(t_influx);
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     printTestStatus(t_level_sensor);
-    test_t t_sd_card = SD_card_test();
-    printTestStatus(t_sd_card);
     test_t t_voltages = voltages_test();
     printTestStatus(t_voltages);
+    test_t t_sd_card = SD_card_test();
+    printTestStatus(t_sd_card);
   
     //test modem
     //test SD card
@@ -314,6 +314,7 @@ uint8 syncData(){
      if(modem_get_state() == MODEM_STATE_OFF){
             
             modem_power_up();
+            //should put this on a max_try counter, so we don't just keep trying to connect over and over
             
       }else if(modem_get_state() == MODEM_STATE_READY){
             printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");

@@ -1,5 +1,5 @@
 -- Project:   C:\Users\hyfi_admin\Documents\GitHub\notoriOS\notoriOS\notoriOS.cydsn\notoriOS.cyprj
--- Generated: 05/19/2020 16:48:04
+-- Generated: 05/21/2020 18:58:46
 -- PSoC Creator  4.3
 
 ENTITY notoriOS IS
@@ -418,6 +418,7 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     ATTRIBUTE Location OF \emFile:SPI0:BSPIM:RxStsReg\ : LABEL IS "U(3,4)";
     ATTRIBUTE lib_model OF \emFile:SPI0:BSPIM:sR8:Dp:u0\ : LABEL IS "datapathcell2";
     ATTRIBUTE Location OF \emFile:SPI0:BSPIM:sR8:Dp:u0\ : LABEL IS "U(3,5)";
+    ATTRIBUTE Location OF autoVrefComparator_0 : LABEL IS "F(Comparator,0)";
     ATTRIBUTE Location OF \ADC:DSM\ : LABEL IS "F(DSM,0)";
     ATTRIBUTE Location OF \ADC:IRQ\ : LABEL IS "[IntrContainer=(0)][IntrId=(29)]";
     ATTRIBUTE Location OF \ADC:DEC\ : LABEL IS "F(Decimator,0)";
@@ -609,6 +610,12 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
             dclk_glb_ff_5 : OUT std_ulogic;
             dclk_glb_ff_6 : OUT std_ulogic;
             dclk_glb_ff_7 : OUT std_ulogic);
+    END COMPONENT;
+    COMPONENT comparatorcell
+        PORT (
+            out : OUT std_ulogic;
+            clk_udb : IN std_ulogic;
+            clock : IN std_ulogic);
     END COMPONENT;
     COMPONENT controlcell
         PORT (
@@ -913,14 +920,14 @@ BEGIN
             dclk_0 => \emFile:Net_19_local\,
             dclk_glb_1 => \ADC:Net_93\,
             dclk_1 => \ADC:Net_93_local\,
-            aclk_glb_0 => \ADC:Net_488\,
-            aclk_0 => \ADC:Net_488_local\,
-            clk_a_dig_glb_0 => \ADC:Net_488_adig\,
-            clk_a_dig_0 => \ADC:Net_488_adig_local\,
             dclk_glb_2 => \Debug_UART:Net_9\,
             dclk_2 => \Debug_UART:Net_9_local\,
             dclk_glb_3 => \UART_Telit:Net_9\,
             dclk_3 => \UART_Telit:Net_9_local\,
+            aclk_glb_0 => \ADC:Net_488\,
+            aclk_0 => \ADC:Net_488_local\,
+            clk_a_dig_glb_0 => \ADC:Net_488_adig\,
+            clk_a_dig_0 => \ADC:Net_488_adig_local\,
             dclk_glb_4 => Net_37,
             dclk_4 => Net_37_local,
             aclk_glb_ff_0 => \ClockBlock.aclk_glb_ff_0__sig\);
@@ -3451,10 +3458,14 @@ BEGIN
             f1_blk_stat_comb => \emFile:SPI0:BSPIM:rx_status_4\,
             busclk => ClockBlock_BUS_CLK);
 
+    autoVrefComparator_0:comparatorcell
+        PORT MAP(
+            clock => open);
+
     \ADC:DSM\:dsmodcell
         GENERIC MAP(
             cy_registers => "",
-            resolution => 20)
+            resolution => 16)
         PORT MAP(
             aclock => \ClockBlock.aclk_glb_ff_0__sig\,
             modbitin_udb => open,

@@ -96,15 +96,27 @@ uint8 modem_power_up(){
     //turn off ECHO command
     uint8 at_ready = 0;
     uint8 attemps = 0;
+    long boot_time = getTimeStamp();
     
-    for(uint8 attemps = 0; attemps<3; attemps++){
-        if(at_write_command("ATE0\r","OK",DEFAULT_AT_TIMEOUT)){
-            at_ready = 1;
+    //it takes the 4G modem 10+secs (max 20) to boot up, so keep hitting it with AT commands until it responds
+    for(uint8 attempts = 0; attempts<3; attempts++){
+        
+        for(uint8 pwr_check = 0; pwr_check<20; pwr_check++){
+            if(at_write_command("ATE0\r","OK",1000u)){
+                at_ready = 1;
+                break;
+            }
+        }
+            
+        if(at_ready == 1){
             break;
         }else{
             modem_soft_power_cycle();
         }
     }
+    
+    boot_time = getTimeStamp() - boot_time;
+    printNotif(NOTIF_TYPE_EVENT,"Modem booot time: %d",boot_time);
     
     if(at_ready == 1){
         printNotif(NOTIF_TYPE_EVENT,"Modem ready for AT commands after %d attempt(s).",attemps);

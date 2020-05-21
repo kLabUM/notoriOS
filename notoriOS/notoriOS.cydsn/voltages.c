@@ -12,18 +12,23 @@ voltage_t voltage_take_readings(){
 	Battery_Voltage_Enable_Write(ON);
 	CyDelay(10u);	
     
+    ADC_RestoreConfig();//have to call this and save (See below). Otherwise ADC won't work through sleep mode
 	/* Start the ADC */
 	ADC_Start(); 
+   
+    ADC_StartConvert();
     AMux_Start();
     
+    //read ADCvoltage offset 1st (relative to GND)
+    float v_offset = 0;
     
     float channels[AMux_CHANNELS];
     //sweep the MUX Channels
-    for(uint8 c = 0; c< AMux_CHANNELS; c++)
+    for(uint8 c = 0; c< AMux_CHANNELS + 1; c++)
     {
         int32 readings[N_SAMPLES];
         AMux_Select(c);
-        for(uint8 i=0; i< N_SAMPLES; i++){
+        for(uint16 i=0; i< N_SAMPLES; i++){
             readings[i] = ADC_Read32();
         }
         channels[c] = ADC_CountsTo_Volts(find_median32(readings,N_SAMPLES));//get median of readings and return that
@@ -31,12 +36,14 @@ voltage_t voltage_take_readings(){
     }
     
     AMux_Stop();
+    ADC_StopConvert();
+    ADC_SaveConfig();
     ADC_Stop();
     
     Battery_Voltage_Enable_Write(OFF);
-    
-    voltage.voltage_battery = channels[ADC_MUX_VBAT] * 11; //voltage divider is (1/10) ratio, so multiply by 11
-    voltage.voltage_solar = channels[ADC_MUX_VSOL]; //just want voltage here
+    float offset = channels[0] - 1.024;//should be 1.024 exaclty
+    voltage.voltage_battery = (channels[ADC_MUX_VBAT] * 11) - offset; //voltage divider is (1/10) ratio, so multiply by 11
+    voltage.voltage_solar = channels[ADC_MUX_VSOL] - offset; //just want voltage here
     //votage across sense resistor gives 100mV drop for max current, which is 800mA
     //voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
     
