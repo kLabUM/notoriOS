@@ -2,6 +2,8 @@
 #include "modem.h"
 #include "notoriOS.h"
 #include "debug.h"
+#include <math.h>
+#include <stdio.h>
 
 char uart_received_string[1024];
 uint8_t uart_string_index=0;
@@ -507,7 +509,7 @@ gps_t modem_get_gps_coordinates(){
     
     long lock_time = getTimeStamp();
     
-    /*enable this for thr LTER module
+    //Eenable this for thr LTER module
     //enable GPS Low-Dropout Regulator
     at_write_command("AT#GPIO=5,1,1,0\r","OK",DEFAULT_AT_TIMEOUT);
     
@@ -515,7 +517,7 @@ gps_t modem_get_gps_coordinates(){
     at_write_command("AT$SUPLSEC=1\r","OK",DEFAULT_AT_TIMEOUT);
     
     //use SUPL2.0
-    at_write_command("AT$SUPLV2=1\r","OK",DEFAULT_AT_TIMEOUT);
+    at_write_command("AT$SUPLV=2\r","OK",DEFAULT_AT_TIMEOUT);
     
     //enable AGPS service
     at_write_command("AT$AGPSEN=1\r","OK",DEFAULT_AT_TIMEOUT);
@@ -525,8 +527,18 @@ gps_t modem_get_gps_coordinates(){
     
     //pdp context has to be lockeed to carrier for this to work
     
+    //unlcok context since it needs to be used by modem
+    at_write_command("AT#SGACT=1,0\r\n", "OK",DEFAULT_AT_TIMEOUT);
+    
     at_write_command("AT$LCSLK=1,1\r","OK",DEFAULT_AT_TIMEOUT);//ATT
     //at_write_command("AT$LCSLK=1,3\r","OK",DEFAULT_AT_TIMEOUT);//Verizon
+    
+    //relock the context
+    at_write_command("AT#SGACT=1,1\r\n", "OK",10000u);
+    
+    //start AGPS service
+    at_write_command("AT$GPSSLSR=1,1,,,,,2\r","OK",DEFAULT_AT_TIMEOUT); 
+    
     
     //start the AGPS service
     //will keep receiving a buynch of commas without numbers, until GPS locks
@@ -546,14 +558,34 @@ gps_t modem_get_gps_coordinates(){
     
     //parse data here
     
+    //example $GPSACP: 210926.000,4217.8003N,08341.3158W,2.3,258.2,3,17.8,4.8,2.6,220520,05,00
+    float lat;
+    float lon;
+    float alt;
+    
+    char *s1 = strstr(uart_received_string,"$GPSACP: ");
+    int match = sscanf(s1,"$GPSACP: %*f,%fN,%fW,%*f,%f,%*s",&lat,&lon,&alt);
+    if(match >= 3){
+        lat = floorf(lat/100) + fmod(lat,100)/60;
+        lon = -(floorf(lon/100) + fmod(lon,100)/60);
+        gps.altitude = alt;
+        gps.latitude = lat;
+        gps.longitude = lon;
+        gps.valid = 1;
+    }
+  
+    
     //disable LDO, just in case
     at_write_command("AT#GPIO=5,0,1,0\r","OK",DEFAULT_AT_TIMEOUT);
     
     //flush modem's GPS data, just in case
     at_write_command("AT$GPSR=0\r","OK",DEFAULT_AT_TIMEOUT);
     
-    */
     
+    
+    
+    
+    /*relevant to 3g modem, can ignore
     
     //Setthe GPS Quality of Servicep arameters. Inorder,theyare<horiz_accuracy(inmeters)>,<vertical_accuracy(inmeters)>,<response_time(inseconds)>,<age_of_location_info (in seconds)>:
     //AT$GPSQOS=50,50,100,0
@@ -599,11 +631,12 @@ gps_t modem_get_gps_coordinates(){
     //AT$GPSP=0
     at_write_command("AT$GPSP=0\r","OK",DEFAULT_AT_TIMEOUT);
     
-    
+    */
 
     
     lock_time = getTimeStamp() - lock_time;
     gps.time_to_lock = lock_time;
+    printNotif(NOTIF_TYPE_EVENT,"Time to lock GPS: %d", gps.time_to_lock);
     
     return gps;
     

@@ -411,7 +411,7 @@ uint8 configureRemoteParams(){
         }
         
         //get GPS coordinates
-        //gps_t gps = modem_get_gps_coordinates();
+        gps_t gps = modem_get_gps_coordinates();
         
        modem_power_down();
         return 0u;

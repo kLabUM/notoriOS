@@ -14,16 +14,17 @@ TODO:
     X fix string header length constant
     X implement 4G modem
     X implement a backup timer, so sync shuts down if it can't get a signal with network
-    - Throw eeeor if string lengfth exceeds size
-    - fix battery voltage reading
-    - GPS lock
+    X fix battery voltage reading
+    - Throw error if string length exceeds size
+    X GPS lock implementation 
     - start alarm on 0 (on the hour), rather then arbitrary time
-    - watchdog -- built-in is too short (2sec), so may need to build one using a timer
     - test power
-    - write data to SD card
     - bootloader
+    - implement modem backup timer and make it so that the modem spends time in sleep mode
     - Read form influx anbd parse  Meta DB
     - test power
+    - write data to SD card
+    - watchdog -- built-in is too short (2sec), so may need to build one using a timer
 
 */
 
