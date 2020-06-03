@@ -19,7 +19,7 @@
 //pre-allocate some memory for the HTTP requests
 #define MAX_HTTP_HEADER_LENGTH 1000
 #define MAX_ROUTE_LENGTH 200
-char http_request[MAX_HTTP_HEADER_LENGTH];
+char http_request[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
 char http_body[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
 char http_route[MAX_ROUTE_LENGTH];
 
@@ -96,6 +96,7 @@ int  WorkWorkWorkWorkWorkWork();
 void LayBack();
 void AyoItsTime(uint8 alarmType);
 void ChickityCheckYourselfBeforeYouWreckYourself();
+uint8 upgraded(char *host, int port,char *route);
 
 
 

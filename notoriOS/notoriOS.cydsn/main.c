@@ -18,6 +18,8 @@ TODO:
     - Throw error if string length exceeds size
     X GPS lock implementation 
     - start alarm on 0 (on the hour), rather then arbitrary time
+    - Implement backup protocol. Fallback from AT#SD and reset context, Fall back to AT#SD using AT#SH=1? if nothing received from server
+    - Sizing oh HTTP/heard/body could be fixed. Uses a lot of memory now. 
     - test power
     - bootloader
     - implement modem backup timer and make it so that the modem spends time in sleep mode

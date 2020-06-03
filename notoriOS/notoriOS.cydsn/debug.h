@@ -14,7 +14,7 @@ long getTimeStamp();
 
 //set to 1 if debug data will be written to UART
 #define USE_DEBUG 1
-#define MAX_DEBUG_STRING_LENGTH 500
+#define MAX_DEBUG_STRING_LENGTH 2048
 
 #define NOTIF_TYPE_EVENT 0u
 #define NOTIF_TYPE_WARNING 1u

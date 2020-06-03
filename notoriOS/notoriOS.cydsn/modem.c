@@ -326,7 +326,7 @@ void set_up_internet_connection(){
     //at_write_command("AT#SCFG=1,3,300,90,600,50\r", "OK",DEFAULT_AT_TIMEOUT); //LTE modem relevant
     // <cid>,<stat>
    
-    at_write_command("AT#SGACT=1,1\r\n", "OK",NO_AT_TIMEOUT);
+    at_write_command("AT#SGACT=1,1\r\n", "OK",1000u);
 
     
 

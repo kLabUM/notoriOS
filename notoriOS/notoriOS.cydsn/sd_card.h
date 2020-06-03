@@ -51,6 +51,15 @@ uint8 SD_mkdir(char* dir_name);
  */
 uint8 SD_write(const char * fileName, const char * pMode, const void * pData);
 
+/**
+ * @brief deletes file
+ *
+ * @param fileName is the name of the file to write to
+ *
+ * @return 1u on success, 0u otherwise
+ */
+uint8 SD_rmfile(const char * fileName);
+
 
 //tsting 
 test_t SD_card_test();

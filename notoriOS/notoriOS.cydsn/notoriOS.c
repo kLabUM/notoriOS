@@ -325,6 +325,11 @@ uint8 syncData(){
             http_route[0] = '\0';
             char *base = "write";
        
+            //get size of data stack
+            uint16 data_stack_count = sizeOfDataStack();
+            char c_data_stack_count[20];
+            snprintf(c_data_stack_count,sizeof(c_data_stack_count),"%d",data_stack_count);
+            pushData("data_stack_count",c_data_stack_count,getTimeStamp());
             
             
             //construct HTPP request
@@ -339,21 +344,21 @@ uint8 syncData(){
             construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,http_route,system_settings.ep_port,"POST","Close","",0,"1.1");
             printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
             
-            
-            
-            
            
             //push request to modem and escaope with <ctrl+z> escape sequence
             //open port and begin command line sequence
             char portConfig[200];
             uint8 status = 0u;
+            
             snprintf(portConfig,sizeof(portConfig),"AT#SD=1,0,%d,\"%s\",0,0,1\r",system_settings.ep_port,system_settings.ep_host);
             printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
             status = at_write_command(portConfig,"OK",10000u);
+            
             status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
             //append <ctrl+z> escape sequence to http_request to exit modem command line
             strncat(http_request, "\032", 1); 
-            status = at_write_command(http_request, "NO CARRIER", 5000u);
+          
+            status = at_write_command(http_request, "SRING", 5000u);
             
             //read recevied buyffe
             //a good write will return code "204 No Content"
@@ -411,7 +416,7 @@ uint8 configureRemoteParams(){
         }
         
         //get GPS coordinates
-        gps_t gps = modem_get_gps_coordinates();
+        //gps_t gps = modem_get_gps_coordinates();
         
        modem_power_down();
         return 0u;
@@ -442,7 +447,8 @@ uint8 makeMeasurements(){
         printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
         pushData("maxbotix_depth",value,timeStamp);
     }else{
-        pushData("maxbotix_depth","error",timeStamp);
+        printNotif(NOTIF_TYPE_ERROR,"Could not get valide readings from Maxbotix.");
+        //pushData("maxbotix_depth","error",timeStamp);
     }
     
     
@@ -452,7 +458,8 @@ uint8 makeMeasurements(){
         printNotif(NOTIF_TYPE_EVENT,"v_bat=%s",value);
         pushData("v_bat",value,timeStamp);
     }else{
-        pushData("v_bat","error",timeStamp);
+        //pushData("v_bat","error",timeStamp);
+        printNotif(NOTIF_TYPE_ERROR,"Could not get valide readings from ADC.");
     }
     
     return 0u;
@@ -481,6 +488,54 @@ uint8 setTime(long timeStamp){
     RTC_WriteTime(&localTime);
    
     return 1;
+}
+
+//downloads and stores files on SD card
+
+
+
+// ==============================================
+// Will they love it, will they hate it
+// Never fade it, I evade it
+// Cause I never really want to complicate it
+//      - Logic, Upgraded (2015)
+//
+// downloads new firmware, stores it on SD card, and reboots the system to allow bootloader 
+// returns 0 if modem is connected, 1 if the file downlaod failed, and does not return otherwise (because it reboots)
+// ==============================================
+
+uint8 upgraded(char *host, int port,  char *route){
+    
+    uint8 upgrade_status = 0;
+    
+   //AGPS will only work if we're connected to network, so don't call this fuction otherwise
+    if(modem_state != MODEM_STATE_READY){
+        return upgrade_status;//where valid = 0
+    }
+    
+    char fileName[] = "upgrade.hex";
+    //delete file, if one exisits already
+    SD_rmfile(fileName);
+    
+    
+    construct_generic_HTTP_request(http_request,http_body,host,route,port,"POST","Close","",0,"1.1");
+    printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
+    
+    char portConfig[200];
+    snprintf(portConfig,sizeof(portConfig),"AT#SD=1,0,%d,\"%s\",0,0,1\r",port,host);
+    printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
+    upgrade_status = at_write_command(portConfig,"OK",10000u);
+    upgrade_status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
+    //append <ctrl+z> escape sequence to http_request to exit modem command line
+    strncat(http_request, "\032", 1); 
+    upgrade_status = at_write_command(http_request, "OK", 5000u);
+   
+    upgrade_status = at_write_command("AT#SRECV=1,1000\r","204 No Content",5000u);
+    //SD_write(fileName,"w+",uart_received_string);
+    
+    
+    return upgrade_status;
+    
 }
 
 
