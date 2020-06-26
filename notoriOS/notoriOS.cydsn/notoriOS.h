@@ -14,6 +14,8 @@
 #include "data.h"
 #include "influx.h"
 
+#define HASH_KEY "BK6-24-MANUAL"
+
 
 
 //pre-allocate some memory for the HTTP requests

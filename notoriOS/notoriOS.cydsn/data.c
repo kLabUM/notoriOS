@@ -89,6 +89,28 @@ void construct_generic_HTTP_request(char* request, char* body, char* host, char*
 	snprintf(request,sizeof(http_request), "%s%s\r\n", request, body); 
     
 }
+                            
+                            
+unsigned int construct_malcom_body(char* body){
+   
+    body[0] = '\0';
+ 
+    //construct influx body
+    for(uint16 i = 0;i<sizeOfDataStack();i++){
+        //note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+        snprintf(body,sizeof(http_body), "%s%s, value=%s %ld000000000\n", body, data[i].key, data[i].value, data[i].timeStamp);
+    }
+    
+    unsigned int request_len = strlen(body);
+   
+
+    return request_len;
+}
+
+void construct_malcom_route(char* route, char* base, char* device, char* hash){
+    route[0] = '\0';
+    snprintf(route,sizeof(http_route), "%s%s?d=%s&h=%s", route, base, device, hash); 
+}
     
 
 

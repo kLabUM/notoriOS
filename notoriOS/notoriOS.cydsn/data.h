@@ -33,6 +33,9 @@ void construct_generic_HTTP_request(char* request, char* body, char* host, char*
                                int port, char* method, char* connection_type,
 	                           char *extra_headers, int extra_len, char* http_protocol);
 
+unsigned int construct_malcom_body(char* body);
+void construct_malcom_route(char* route, char* base, char* device, char* hash);
+
 #endif
 
 

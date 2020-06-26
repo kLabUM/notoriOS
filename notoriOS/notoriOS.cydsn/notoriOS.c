@@ -66,8 +66,9 @@ void ReadyOrNot()
     system_info.modem_info = &modem_info;
     
     //configure server endpoints -- these should obviosuly be provided  remotely by the meta data-base server
-    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","data.open-storm.org");
-    system_settings.ep_port = 8086;
+    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","ec2co-ecsel-sx2mg1u7m55t-1020078396.us-east-2.elb.amazonaws.com");//data.open-storm.org
+   
+    system_settings.ep_port = 5000;//use 8086 fopr influx
     snprintf(system_settings.ep_user,sizeof(system_settings.ep_user),"%s","generic_node");
     snprintf(system_settings.ep_pswd,sizeof(system_settings.ep_pswd),"%s","MakeFloodsCurrents");
     snprintf(system_settings.ep_database,sizeof(system_settings.ep_database),"%s","ARB");
@@ -75,13 +76,13 @@ void ReadyOrNot()
         
     
     
-    alarmMeasure = CreateAlarm(1u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    alarmMeasure = CreateAlarm(10u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 1u;
     
-    alarmSync = CreateAlarm(5u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    alarmSync = CreateAlarm(60u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToSync = 1u;
     
-    timeToSycnRemoteParams = 1u;
+    timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
     //alarmMeasure2 = CreateAlarm(10,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     //timeToMeasure = 0;
     
@@ -248,15 +249,23 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 void ChickityCheckYourselfBeforeYouWreckYourself(){
 
     
-    // test_t t_modem = modem_test();
-    test_t t_influx = influx_test();
-    printTestStatus(t_influx);
+    //test_t t_modem = modem_test();
+    //test_t t_influx = influx_test();
+    //printTestStatus(t_influx);
+    
+    test_t t_modem = modem_test();
+    printNotif(NOTIF_TYPE_EVENT,"-------------BEGIN TESTS---------------\n\n");
+    printNotif(NOTIF_TYPE_EVENT,"MEID=%s, SIMID=%s, DEVICEID=%s\n",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
+    printTestStatus(t_modem);
+    
     test_t t_level_sensor = level_sensor_test();//test level sensor  
     printTestStatus(t_level_sensor);
     test_t t_voltages = voltages_test();
     printTestStatus(t_voltages);
     test_t t_sd_card = SD_card_test();
     printTestStatus(t_sd_card);
+    
+    printNotif(NOTIF_TYPE_EVENT,"\n\n-------------END TESTS---------------\n\n");
   
     //test modem
     //test SD card
@@ -335,13 +344,18 @@ uint8 syncData(){
             //construct HTPP request
             printNotif(NOTIF_TYPE_EVENT,"Begin HTTP post.");
             
-            construct_influx_route(http_route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
+            //old influx API
+            //construct_influx_route(http_route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
+            construct_malcom_route(http_route,"api/v1/write",modem_info.imei,HASH_KEY);
+            
             printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", http_route);
             
-            construct_influx_write_body(http_body,system_settings.node_id);
-            
-            
+            //OLD INFLUX APIE
+            //construct_influx_write_body(http_body,system_settings.node_id);
+            construct_malcom_body(http_body);
+       
             construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,http_route,system_settings.ep_port,"POST","Close","",0,"1.1");
+            
             printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
             
            
@@ -362,7 +376,7 @@ uint8 syncData(){
             
             //read recevied buyffe
             //a good write will return code "204 No Content"
-            status = at_write_command("AT#SRECV=1,1000\r","204 No Content",5000u);
+            status = at_write_command("AT#SRECV=1,1000\r","204 NO CONTENT",5000u);
             //printNotif(NOTIF_TYPE_EVENT,"Received SRECV: %s",uart_received_string);
            
       

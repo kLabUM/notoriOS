@@ -195,9 +195,42 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
 test_t modem_test(){
     
     test_t test;
-    modem_power_up();
-    //tbd 
-    modem_power_down();
+    test.status = 0;
+    snprintf(test.test_name,sizeof(test.test_name),"TEST_MODEM");
+    snprintf(test.reason,sizeof(test.reason),"No reponse from modem.");
+   
+    //try the modem 60*100 (60 secs)
+    for(int i = 0; i< 60; i++){
+        
+      modem_process_tasks();
+         
+      if(modem_get_state() == MODEM_STATE_OFF){
+            
+            modem_power_up();
+            //should put this on a max_try counter, so we don't just keep trying to connect over and over
+            
+      }else if(modem_get_state() == MODEM_STATE_READY){
+        
+        
+        //get time, and if it looks good, set the RTC with it
+        long network_time = modem_get_network_time();
+        if(network_time != 0){
+               setTime(network_time);
+        }
+            
+        snprintf(test.reason,sizeof(test.reason),"Modem connected to network.");
+        test.status = 1;
+        modem_power_down();
+        break;
+        
+      }
+    
+        CyDelay(100u);
+        
+    }
+    
+    
+    return test;
     
     
     return test;
