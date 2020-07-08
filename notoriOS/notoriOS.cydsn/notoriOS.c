@@ -86,7 +86,6 @@ void ReadyOrNot()
     
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
     
-    
 }
 
 
@@ -190,23 +189,35 @@ void AyoItsTime(uint8 alarmType)
     }
     
 }
-        
+
+
+// ==============================================
+// Determines when an alarm is ready to trigger, which will be handeled by another cutions
+// ==============================================
 uint8 AlarmReady(alarm * alarmToBeUpdated, uint8 alarmType)
 {
+    // if the countDownType matches the alarmType
     if(alarmToBeUpdated->countDownType == alarmType){
        
-       alarmToBeUpdated->currentCountDownValue--;
-       if(alarmToBeUpdated->currentCountDownValue <= 0){
+        // In the Post-decrement old value is first used in a expression and then old value will be decrement by 1.
+        // Decrement the count down value by 1
+        alarmToBeUpdated->currentCountDownValue--;
+        // If the current count is 0, then reset the alarm
+        if(alarmToBeUpdated->currentCountDownValue <= 0){
             ResetAlarm(alarmToBeUpdated);
             return 1u;
         } 
     }
     
-    return 0u;
+    return 0u; // Otherwise return 0
 }
 
+// ==============================================
+// Resets an alarm, which will be handeled by other executions
+// ==============================================
 void ResetAlarm(alarm * alarmToBeReset)
 {
+    // resets the alarm when the current count down value equals the set alarm count down value
     alarmToBeReset->currentCountDownValue = alarmToBeReset->countDownValue;
 }
 

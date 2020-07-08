@@ -18,7 +18,7 @@ char    SD_filemode[5]  = "a+";
 void SD_power_up();
 void SD_power_down();
 
-///NOTE -- IF SD CARD is not plugged it, the board will drawe more power.
+///NOTE -- IF SD CARD is not plugged it, the board will draw more power.
 
 
 /** SD_init()
