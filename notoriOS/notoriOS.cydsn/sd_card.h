@@ -24,44 +24,36 @@
 
 /**
  * @brief Initialize the file system for the SD card
- *
  * @param Null
- *
  * @return void
  */
 void SD_init();
 
 /**
  * @brief Make a directory on the SD card
- *
  * @param dir_name is the name of the directory to create
- *
  * @return 1u on success, 0u otherwise
  */
 uint8 SD_mkdir(char* dir_name);
 
 /**
  * @brief Write data to the SD card
- *
  * @param fileName is the name of the file to write to
  * @param pMode is the write mode
  * @param pData is the data to be written
- *
  * @return 1u on success, 0u otherwise
  */
 uint8 SD_write(const char * fileName, const char * pMode, const void * pData);
 
 /**
  * @brief deletes file
- *
  * @param fileName is the name of the file to write to
- *
  * @return 1u on success, 0u otherwise
  */
 uint8 SD_rmfile(const char * fileName);
 
 
-//tsting 
+// testing the SD card
 test_t SD_card_test();
 
 #endif

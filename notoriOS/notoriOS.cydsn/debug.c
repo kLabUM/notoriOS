@@ -1,11 +1,12 @@
 //drivers for UART debug 
 
 #include "debug.h"
-#include <stdarg.h>
+#include <stdarg.h> // handles variable argument list
 
 
-
+// function to start UART debug
 void debug_start(){
+    // if debug flag = 1 then start UART
     #if USE_DEBUG
        Debug_UART_Start();
        //setvbuf(stdout, NULL, _IOFBF, Debug_UART_TX_BUFFER_SIZE);//this sets the printf() bufefr to zero, so there are not delays
@@ -13,39 +14,49 @@ void debug_start(){
     #endif
 }
 
+// function to stop UART debug
 void debug_stop(){
+    // if debug flag = 1 then stop UART
     #if USE_DEBUG
         Debug_UART_Stop();
     #endif
 }
 
+// function to sleep UART debug
 void debug_sleep(){
-   #if USE_DEBUG
+    // if debug flag = 1 and printf still writing, sleep UART
+    #if USE_DEBUG
 
-    //check if UART is busy writing and waiit, if needed
-    if(!(Debug_UART_ReadTxStatus() & Debug_UART_TX_STS_FIFO_EMPTY)){
-        CyDelay(1u);
-    }
-    
+        // Check if UART is busy writing and waiit, if needed
+        // Debug_UART_ReadTxStatus() reads the status register for the TX portion of the UART.
+        if(!(Debug_UART_ReadTxStatus() & Debug_UART_TX_STS_FIFO_EMPTY)){
+            CyDelay(1u);
+        }
+    // This is the preferred API to prepare the component for sleep. 
+    // The Debug_UART_Sleep() API saves the current component state. Then it calls the Debug_UART_Stop() function and calls Debug_UART_SaveConfig() to save the hardware configuration.
     Debug_UART_Sleep(); 
    #endif
    
 }
 
+// function to wakeup UART debug
 void debug_wakeup(){
+    // if debug flag = 1, wakeup UART debug and turn off stillWriting flag
     #if USE_DEBUG
         Debug_UART_Wakeup();
     #endif
 }
 
-/* For GCC compiler revise _write() function for printf functionality */
-//this makes it so that when we call printf() it will write to UART
-//NOTE: For this to work HEAP size in "System" must be set to 0x300 or more
+// if debug flag = 1, and using the GCC compiler, revise the _write() function so that when we call printf() it will write to UART
+// NOTE: For this to work HEAP size in "System" must be set to 0x300 or more
+// Stack and heap are both a part of memory. Stack holds functions, variables, etc. Heap sits on top of the stack.
+// If heap is too small, then you get a stack overflow. FOr printing, need to have a bigger heap. BK played around until got correct size.
+// If have memory problems, play around with heap size.
 #if USE_DEBUG
     
     
-//this will allow you to use printf(), as you would in regulart c programs
-//careful though, printf() is sometimes not safe in embedded sytems
+// This will allow you to use printf(), as you would in regulart c programs
+// careful though, printf() is sometimes not safe in embedded sytems
 // may want to use printd() function below
 int _write(int file, char *ptr, int len)
 {
@@ -53,7 +64,8 @@ int _write(int file, char *ptr, int len)
     file = file;
     for (i = 0; i < len; i++)
     {   
-       Debug_UART_PutChar(*ptr++);
+        // Puts a byte of data into the transmit buffer to be sent when the bus is available.
+        Debug_UART_PutChar(*ptr++);
     }
     
     return (len);
@@ -61,8 +73,12 @@ int _write(int file, char *ptr, int len)
 
 #endif
 
-//use like printf, but this will add an depoch timestamp to the printput
+// Create function to hijack printf to add an epoch timestamp to print output
+// Whenever a function is declared to have an indeterminate number of arguments, in place of the last argument use "..."
+// to tell the compiler the function should accept however many arguments that the programmer uses, as long as it is equal 
+// to at least the number of variables declared. 
 void printNotif(uint8 type, char* format, ...){
+    // if debug flag = 1
     #if USE_DEBUG
 
 
@@ -80,43 +96,47 @@ void printNotif(uint8 type, char* format, ...){
     }
    
     
-    va_list argptr;
-    va_start(argptr, format);
+    va_list argptr; // create variable argprt of the type va_list from stdarg.h
+    va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize ap to the beginning of the list before any calls to va_arg().
     char debug_string[MAX_DEBUG_STRING_LENGTH];
     vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
     Debug_UART_PutString(debug_string);
-    va_end(argptr);
+    va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unless va_start() or va_copy() is invoked again).
 
     printd("\"}\r\n");
     #endif
     
 }
 
+// Print debug test status
 void printTestStatus(test_t test){
-#if USE_DEBUG
-    printd("{ ");
-    printd("\"time\":\"%ld\" " , getTimeStamp());
-    
-    printd("\"event\":\"test\" ");
-    printd("\"name\":\"%s\" ", test.test_name);
-    printd("\"status\":\"%d\" ", test.status);
-    printd("\"reason\":\"%s\" ", test.reason);
+    // if debug flag = 1
+    #if USE_DEBUG
+        printd("{ ");
+        printd("\"time\":\"%ld\" " , getTimeStamp());
+        
+        printd("\"event\":\"test\" ");
+        printd("\"name\":\"%s\" ", test.test_name);
+        printd("\"status\":\"%d\" ", test.status);
+        printd("\"reason\":\"%s\" ", test.reason);
 
-    printd("}\r\n");
+        printd("}\r\n");
     #endif
    
 }
 
 
-//returns local times in epoch seconds (seconds since Jan 1, 1970)
-//can also cast this to a t_of_day struct
+// Returns local times in epoch seconds (seconds since Jan 1, 1970)
+// Can also cast this to a t_of_day struct
 long getTimeStamp(){
-    
+    // RTC_TIME_DATE * RTC_ReadTime(void) Description: Reads the current time and date. Parameters: None. Return Value: Pointer to the RTC_TIME_DATE.
+    // Creates a variable named localTime that is a pointer to RTC_TIME_DATE. It saves the time and date into the variable localTime.
     RTC_TIME_DATE *localTime = RTC_ReadTime();
    
-    struct tm t;
+    struct tm t; // creates variable t of struct tm
     time_t t_of_day;
 
+    // sets each variable to the correct time 
     t.tm_sec = localTime->Sec;
     t.tm_min = localTime->Min;
     t.tm_hour = localTime->Hour;
@@ -125,12 +145,16 @@ long getTimeStamp(){
     t.tm_mday = localTime->DayOfMonth;          // Day of the month
     t.tm_isdst = 0;        // Is Daylight Savings on? 1 = yes, 0 = no, -1 = unknown
     
-    t_of_day = mktime(&t);
+    // the mktime() function converts a broken-down local time (pointed to by timeptr) and returns a pointer to a calendar time.
+    // the syntax for the mktime function in the C Language is: time_t mktime(struct tm *timeptr);
+    // creates variable t_of_day of type time_t
+    t_of_day = mktime(&t); // determines a calendar time
 
     return (long) t_of_day;
 }
 
-
+// The C library function char *strchr(const char *str, int c) searches for the first occurrence of the character c (an unsigned char) in the string pointed to by the argument str.
+// Format for strchr() function: char *strchr(const char *str, int c).
 void stripEscapeCharacters(char *string){
 
   char * pch;
@@ -142,14 +166,18 @@ void stripEscapeCharacters(char *string){
   }
 }
 
+// Extract
 char *strextract(const char input_str[], char output_str[],
                  const char search_start[], const char search_end[]) {
     if (input_str == NULL) return NULL;
     char *begin, *end = NULL;
 
+    // strstr(): char *strstr(const char *haystack, const char *needle). haystack - main C string to be scanned. needle - the small string to be searched with-in haystack string.
     if ((begin = strstr(input_str, search_start))) {
+        // The strlen() function calculates the length of a given string. The strlen() function takes a string as an argument and returns its length. The returned value is of type long int. It is defined in the <string.h> header file.
         begin += strlen(search_start);
         if ((end = strstr(begin, search_end))) {
+            // strncpy(: char *strncpy(char *dest, const char *src, size_t n). dest -  pointer to the destination array where the contents is to be copied. scr - the string to be copied. n - # of characters to be copied from source.
             strncpy(output_str, begin, end - begin);
             output_str[end - begin] = '\0';
         }
@@ -161,14 +189,16 @@ char *strextract(const char input_str[], char output_str[],
 //out attmpt at a safe (from buffer overflow) version of printf     
 void printd(char* format, ...){
     
-    va_list argptr;
-    va_start(argptr, format);
+    va_list argptr; // Create variable argptr of data structure va_list
+    va_start(argptr, format); // void va_start(va_list ap, last_arg) initializes ap variable to be used with the va_arg and va_end macros.
     
+    // Create character array debug_string of size MAX_DEBUG_STRING_LENGTH
     char debug_string[MAX_DEBUG_STRING_LENGTH];
+    // The vsnprintf() used to write a formatted string to a string buffer.vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
     vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
+    // Sends a NULL terminated string to the TX buffer for transmission.
     Debug_UART_PutString(debug_string);
     
-    
-    va_end(argptr);
+    va_end(argptr); // macro void va_end(va_list ap) allows a function with variable arguments which used the va_start macro to return. 
     
 }

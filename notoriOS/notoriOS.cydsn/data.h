@@ -1,7 +1,7 @@
+#include <string.h> //defines one variable type, one macro, and various functions for manipulating arrays of characters.
+#include <stdlib.h> // defines four variable types, several macros, and various functions for performing general functions.
+#include <stdio.h> //defines three variable types, several macros, and various functions for performing input and output.
 #include "project.h"
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include "debug.h"
 
 #ifndef DATA_H

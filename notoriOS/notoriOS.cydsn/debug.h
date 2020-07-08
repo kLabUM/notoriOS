@@ -1,19 +1,19 @@
 
-
+// If I haven't defined my file, then define it, if it is defined, then don't try to do it again (stops infinte loop of the compiler).
 #ifndef _DEBUG_H
 #define _DEBUG_H
  
 #include "project.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <stdio.h> //defines three variable types, several macros, and various functions for performing input and output.
+#include <stdlib.h> // defines four variable types, several macros, and various functions for performing general functions.
+#include <time.h> // defines four variable types, two macro and various functions for manipulating date and time.
 #include "testing.h"
     
-    
+// function to get timestamp  
 long getTimeStamp();
 
-//set to 1 if debug data will be written to UART
-#define USE_DEBUG 1
+// Define variables for UART debug
+#define USE_DEBUG 1 //set to 1 if debug data will be written to UART
 #define MAX_DEBUG_STRING_LENGTH 2048
 
 #define NOTIF_TYPE_EVENT 0u
@@ -28,11 +28,14 @@ the usage of floating point conversion specifier */
     asm (".global _printf_float");
 #endif
 
-void printd(char* format, ...);
+// functions to start, stop, sleep and wakeup UART debug
 void debug_start();
 void debug_stop();
 void debug_sleep();
 void debug_wakeup();
+
+// functions needed for UART debugging
+void printd(char* format, ...);
 void printNotif(uint8 type, char* format, ...);
 void printTestStatus(test_t test);
 void stripEscapeCharacters(char *string);

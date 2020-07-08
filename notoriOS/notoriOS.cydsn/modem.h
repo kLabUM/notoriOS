@@ -3,10 +3,10 @@
 #define MODEM_H   
     
 #include <project.h>  
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <stdio.h> //defines three variable types, several macros, and various functions for performing input and output.
+#include <stdlib.h> // defines four variable types, several macros, and various functions for performing general functions.
+#include <string.h> //defines one variable type, one macro, and various functions for manipulating arrays of characters.
+#include <time.h> // defines four variable types, two macro and various functions for manipulating date and time.
 #include "testing.h"
     
     

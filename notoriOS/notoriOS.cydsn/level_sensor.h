@@ -7,7 +7,7 @@
     
     
 #define N_READINGS 11
-#define READING_INVALID 9999   //this should to be set to 5000 if we're using a short-range sensor
+#define READING_INVALID 9999   // This should to be set to 5000 if we're using a short-range sensor
     
 typedef struct { 
     int16 all_level_readings[N_READINGS];
@@ -16,7 +16,7 @@ typedef struct {
     uint8 num_invalid_readings;
 } level_sensor_t;
     
-
+//ISR: Interrupt Service Routine. The macro CY_ISR_PROTO declares an ISR function prototype.
 CY_ISR_PROTO(Level_Sensor_ISR);
 const char *uart_string(void);
 uint8_t uart_len(void);

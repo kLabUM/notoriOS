@@ -15,25 +15,27 @@
 // This pushes data onto the stack
 // ==============================================
 uint8 pushData(char * key, char *value, int32 timestamp){
-    
+    // Print data key, value and timestamp
     snprintf(data[dataPointsInStack].key,sizeof(data[dataPointsInStack].key), "%s", key);
     snprintf(data[dataPointsInStack].value,sizeof(data[dataPointsInStack].value), "%s", value);
     data[dataPointsInStack].timeStamp = timestamp;
   
+    // Increment the data points in the stack
     dataPointsInStack++;
     
-    //cricular buffer
-    //if stack is full, loop around and delete first point
-    //this should be fixed to store the overwritte data onto SD card
+    // Circular buffer
+    // If stack is full, loop around and delete first point
+    // This should be fixed to store the overwritte data onto SD card
     if(dataPointsInStack >= DATA_MAX_VALUES){
         dataPointsInStack = 0;
         printNotif(NOTIF_TYPE_ERROR,"Data stack full. Begin overwrite of circular buffer.");
-        return 0;
+        return 0; // If stack full, and points need to be deleted, return 0
     }
     
-    return 1;
+    return 1; // If data pushed successfully, return 1
 }
 
+// "Pop" key, value, and timestamp from each slot of the data wheel and save into the variable data
 key_value_t popData(){
     
     if(dataPointsInStack>0){
@@ -45,13 +47,13 @@ key_value_t popData(){
     }
 }
 
-
+// Initalize Data Stack
 void Initialize_Data_Stack(){
-    Clear_Data_Stack();
+    Clear_Data_Stack(); // Clear out whatever data was in the stack.
 }
 
+// Clear the data stack
 void Clear_Data_Stack(){
-    
     for(uint16 i;i<DATA_MAX_VALUES;i++){
         data[i].key[0] = '\0';
         data[i].value[0] = '\0';
@@ -61,12 +63,13 @@ void Clear_Data_Stack(){
    
 }
 
+// Return the number points in the stack
 uint16 sizeOfDataStack(){
     return dataPointsInStack;
 }
 
 
-//thsi function could really use a test
+// This function could really use a test
 void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
                                int port, char* method, char* connection_type,
 	                           char *extra_headers, int extra_len, char* http_protocol){
@@ -90,23 +93,23 @@ void construct_generic_HTTP_request(char* request, char* body, char* host, char*
     
 }
                             
-                            
+// Construct middle layer called Malcom (aka Malcom in the Middle)                                                        
 unsigned int construct_malcom_body(char* body){
    
     body[0] = '\0';
  
-    //construct influx body
+    // Construct influx body
     for(uint16 i = 0;i<sizeOfDataStack();i++){
-        //note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+        // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
         snprintf(body,sizeof(http_body), "%s%s, value=%s %ld000000000\n", body, data[i].key, data[i].value, data[i].timeStamp);
     }
-    
+    // Get the length of the influx body and save to request_len
     unsigned int request_len = strlen(body);
    
-
-    return request_len;
+    return request_len; // Return the length of the influx body
 }
 
+// Construct the route (to or from?) the Malcom middle layer
 void construct_malcom_route(char* route, char* base, char* device, char* hash){
     route[0] = '\0';
     snprintf(route,sizeof(http_route), "%s%s?d=%s&h=%s", route, base, device, hash); 
