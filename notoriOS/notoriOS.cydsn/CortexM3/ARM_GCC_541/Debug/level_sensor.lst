@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
   51              	pattern:
   52 0108 00000000 		.space	4
   53              		.section	.text.uart_string,"ax",%progbits
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 2
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 2
 
 
   54              		.align	2
@@ -70,11 +70,11 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
   60              	.LFB64:
   61              		.file 1 "level_sensor.c"
    1:level_sensor.c **** #include "level_sensor.h"
-   2:level_sensor.c **** #include <assert.h>
-   3:level_sensor.c **** #include <stdint.h>
-   4:level_sensor.c **** #include <stdbool.h>
-   5:level_sensor.c **** #include <math.h>
-   6:level_sensor.c **** #include <stdio.h>
+   2:level_sensor.c **** #include <assert.h>     // Implements a runtime assertion, which can be used to verify assumptions 
+   3:level_sensor.c **** #include <stdint.h>     // Defines a set of integral type aliases with specific width requirements,
+   4:level_sensor.c **** #include <stdbool.h>    // Contains four macros for a Boolean data type.
+   5:level_sensor.c **** #include <math.h>       // Designed for basic mathematical operations. Most of the functions involv
+   6:level_sensor.c **** #include <stdio.h>      // Defines three variable types, several macros, and various functions for 
    7:level_sensor.c **** #include "level_sensor.h"
    8:level_sensor.c **** #include "notoriOS.h"
    9:level_sensor.c **** #include "project.h"
@@ -87,18 +87,21 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
   16:level_sensor.c **** 
   17:level_sensor.c **** 
   18:level_sensor.c **** 
-  19:level_sensor.c **** /* Circular buffer of recently received chars */
-  20:level_sensor.c **** static char uart_chars[257] = {0};
-  21:level_sensor.c **** static uint8_t num_chars = 0;
-  22:level_sensor.c **** 
-  23:level_sensor.c **** static const char *line = uart_chars;
-  24:level_sensor.c **** static const char *match = NULL;
-  25:level_sensor.c **** static const char *pattern = NULL;
-  26:level_sensor.c **** 
-  27:level_sensor.c **** 
-  28:level_sensor.c **** 
-  29:level_sensor.c **** const char *uart_string(void) {
-  62              		.loc 1 29 0
+  19:level_sensor.c **** // Circular buffer of recently received chars.
+  20:level_sensor.c **** // Initialize all the members of the array uart_chars to 0. 
+  21:level_sensor.c **** static char uart_chars[257] = {0};
+  22:level_sensor.c **** static uint8_t num_chars = 0;
+  23:level_sensor.c **** 
+  24:level_sensor.c **** static const char *line = uart_chars;
+  25:level_sensor.c **** // Only pointers can be null, where null is a special address used to signify that the pointer is n
+  26:level_sensor.c **** // Pointers are not initialized to null by default, you must do so if you want them initialized.
+  27:level_sensor.c **** static const char *match = NULL;
+  28:level_sensor.c **** static const char *pattern = NULL;
+  29:level_sensor.c **** 
+  30:level_sensor.c **** 
+  31:level_sensor.c **** // This is only defined in c file so this function will return the location in memory where that va
+  32:level_sensor.c **** const char *uart_string(void) {
+  62              		.loc 1 32 0
   63              		.cfi_startproc
   64              		@ args = 0, pretend = 0, frame = 0
   65              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -108,19 +111,21 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
   69              		.cfi_offset 7, -4
   70 0002 00AF     		add	r7, sp, #0
   71              		.cfi_def_cfa_register 7
-  30:level_sensor.c ****   return (char*)uart_chars;
-  72              		.loc 1 30 0
+  33:level_sensor.c ****     // Variables in front of a variable is casting 
+  34:level_sensor.c ****     // uart_chars may be a different variable type, make sure to cast it as a char
+  35:level_sensor.c ****   return (char*)uart_chars;
+  72              		.loc 1 35 0
   73 0004 024B     		ldr	r3, .L3
-  31:level_sensor.c **** }
-  74              		.loc 1 31 0
+  36:level_sensor.c **** }
+  74              		.loc 1 36 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 3
+
+
   75 0006 1846     		mov	r0, r3
   76 0008 BD46     		mov	sp, r7
   77              		.cfi_def_cfa_register 13
   78              		@ sp needed
   79 000a 80BC     		pop	{r7}
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 3
-
-
   80              		.cfi_restore 7
   81              		.cfi_def_cfa_offset 0
   82 000c 7047     		bx	lr
@@ -139,9 +144,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
   95              		.type	uart_len, %function
   96              	uart_len:
   97              	.LFB65:
-  32:level_sensor.c **** 
-  33:level_sensor.c **** uint8_t uart_len(void) {
-  98              		.loc 1 33 0
+  37:level_sensor.c **** 
+  38:level_sensor.c **** // Return the number of characters of the level sensor reading
+  39:level_sensor.c **** uint8_t uart_len(void) {
+  98              		.loc 1 39 0
   99              		.cfi_startproc
  100              		@ args = 0, pretend = 0, frame = 0
  101              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -151,12 +157,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  105              		.cfi_offset 7, -4
  106 0002 00AF     		add	r7, sp, #0
  107              		.cfi_def_cfa_register 7
-  34:level_sensor.c ****   return num_chars;
- 108              		.loc 1 34 0
+  40:level_sensor.c ****   return num_chars;
+ 108              		.loc 1 40 0
  109 0004 024B     		ldr	r3, .L7
  110 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  35:level_sensor.c **** }
- 111              		.loc 1 35 0
+  41:level_sensor.c **** }
+ 111              		.loc 1 41 0
  112 0008 1846     		mov	r0, r3
  113 000a BD46     		mov	sp, r7
  114              		.cfi_def_cfa_register 13
@@ -172,20 +178,21 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  124              		.cfi_endproc
  125              	.LFE65:
  126              		.size	uart_len, .-uart_len
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 4
+
+
  127              		.section	.text.uart_clear,"ax",%progbits
  128              		.align	2
  129              		.global	uart_clear
  130              		.thumb
  131              		.thumb_func
  132              		.type	uart_clear, %function
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 4
-
-
  133              	uart_clear:
  134              	.LFB66:
-  36:level_sensor.c **** 
-  37:level_sensor.c **** void uart_clear(void) {
- 135              		.loc 1 37 0
+  42:level_sensor.c **** 
+  43:level_sensor.c **** // Clears the sensor data 
+  44:level_sensor.c **** void uart_clear(void) {
+ 135              		.loc 1 44 0
  136              		.cfi_startproc
  137              		@ args = 0, pretend = 0, frame = 0
  138              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -195,22 +202,26 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  142              		.cfi_offset 14, -4
  143 0002 00AF     		add	r7, sp, #0
  144              		.cfi_def_cfa_register 7
-  38:level_sensor.c ****   Level_Sensor_UART_ClearRxBuffer();
- 145              		.loc 1 38 0
+  45:level_sensor.c ****   // UART_ClearRxBuffer(): Clears the receiver memory buffer and hardware RX FIFO of all received d
+  46:level_sensor.c ****   Level_Sensor_UART_ClearRxBuffer();
+ 145              		.loc 1 46 0
  146 0004 FFF7FEFF 		bl	Level_Sensor_UART_ClearRxBuffer
-  39:level_sensor.c ****   memset((void*)uart_chars, 0, 256);
- 147              		.loc 1 39 0
+  47:level_sensor.c ****   // void *memset(void *str, int c, size_t n) where str is a pointer to the block of memory to fill
+  48:level_sensor.c ****   // The value is passed as an int, but the function fills the block of memory using the unsigned c
+  49:level_sensor.c ****   // n is the number of bytes to be set to the value.
+  50:level_sensor.c ****   memset((void*)uart_chars, 0, 256);
+ 147              		.loc 1 50 0
  148 0008 4FF48072 		mov	r2, #256
  149 000c 0021     		movs	r1, #0
  150 000e 0448     		ldr	r0, .L10
  151 0010 FFF7FEFF 		bl	memset
-  40:level_sensor.c ****   num_chars = 0;
- 152              		.loc 1 40 0
+  51:level_sensor.c ****   num_chars = 0;
+ 152              		.loc 1 51 0
  153 0014 034B     		ldr	r3, .L10+4
  154 0016 0022     		movs	r2, #0
  155 0018 1A70     		strb	r2, [r3]
-  41:level_sensor.c **** }
- 156              		.loc 1 41 0
+  52:level_sensor.c **** }
+ 156              		.loc 1 52 0
  157 001a 00BF     		nop
  158 001c 80BD     		pop	{r7, pc}
  159              	.L11:
@@ -227,37 +238,41 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  170              		.thumb
  171              		.thumb_func
  172              		.type	Level_Sensor_ISR, %function
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 5
+
+
  173              	Level_Sensor_ISR:
  174              	.LFB67:
-  42:level_sensor.c **** 
-  43:level_sensor.c **** CY_ISR(Level_Sensor_ISR) {
- 175              		.loc 1 43 0
+  53:level_sensor.c **** 
+  54:level_sensor.c **** // ISR: Interrupt Service Routine
+  55:level_sensor.c **** CY_ISR(Level_Sensor_ISR) {
+ 175              		.loc 1 55 0
  176              		.cfi_startproc
  177              		@ args = 0, pretend = 0, frame = 8
  178              		@ frame_needed = 1, uses_anonymous_args = 0
  179 0000 80B5     		push	{r7, lr}
  180              		.cfi_def_cfa_offset 8
  181              		.cfi_offset 7, -8
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 5
-
-
  182              		.cfi_offset 14, -4
  183 0002 82B0     		sub	sp, sp, #8
  184              		.cfi_def_cfa_offset 16
  185 0004 00AF     		add	r7, sp, #0
  186              		.cfi_def_cfa_register 7
-  44:level_sensor.c ****   /* Store received char in uart_chars */
-  45:level_sensor.c ****   char rx_char = Level_Sensor_UART_GetChar();
- 187              		.loc 1 45 0
+  56:level_sensor.c ****     /* Store received char in uart_chars.
+  57:level_sensor.c ****     Returns the last received byte of data. Level_Sensor_UART_GetChar() is designed for ASCII chara
+  58:level_sensor.c ****     1 to 255 are values for valid characters and 0 indicats an error occurred or no data is present
+  59:level_sensor.c ****     char rx_char = Level_Sensor_UART_GetChar();
+ 187              		.loc 1 59 0
  188 0006 FFF7FEFF 		bl	Level_Sensor_UART_GetChar
  189 000a 0346     		mov	r3, r0
  190 000c FB71     		strb	r3, [r7, #7]
-  46:level_sensor.c ****   if (rx_char) uart_chars[num_chars++] = rx_char;
- 191              		.loc 1 46 0
+  60:level_sensor.c ****     // UART_GetChar() returns data, then set the entire uart_chars array to rx_char.
+  61:level_sensor.c ****     if (rx_char) uart_chars[num_chars++] = rx_char;
+ 191              		.loc 1 61 0
  192 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
  193 0010 002B     		cmp	r3, #0
  194 0012 09D0     		beq	.L13
- 195              		.loc 1 46 0 is_stmt 0 discriminator 1
+ 195              		.loc 1 61 0 is_stmt 0 discriminator 1
  196 0014 114B     		ldr	r3, .L16
  197 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  198 0018 5A1C     		adds	r2, r3, #1
@@ -269,27 +284,31 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  204 0024 FB79     		ldrb	r3, [r7, #7]
  205 0026 5354     		strb	r3, [r2, r1]
  206              	.L13:
-  47:level_sensor.c **** 
-  48:level_sensor.c ****   /* Check pattern at end of line */
-  49:level_sensor.c ****   if (rx_char == '\r') {
- 207              		.loc 1 49 0 is_stmt 1
+  62:level_sensor.c **** 
+  63:level_sensor.c ****     /* Check pattern at end of line */
+  64:level_sensor.c ****     if (rx_char == '\r') {
+ 207              		.loc 1 64 0 is_stmt 1
  208 0028 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
  209 002a 0D2B     		cmp	r3, #13
  210 002c 11D1     		bne	.L15
-  50:level_sensor.c ****     match = strstr(line, pattern);
- 211              		.loc 1 50 0
+  65:level_sensor.c ****         // strstr(): char *strstr(const char *haystack, const char *needle). haystack - main C stri
+  66:level_sensor.c ****         match = strstr(line, pattern);
+ 211              		.loc 1 66 0
  212 002e 0D4B     		ldr	r3, .L16+8
  213 0030 1A68     		ldr	r2, [r3]
  214 0032 0D4B     		ldr	r3, .L16+12
  215 0034 1B68     		ldr	r3, [r3]
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 6
+
+
  216 0036 1946     		mov	r1, r3
  217 0038 1046     		mov	r0, r2
  218 003a FFF7FEFF 		bl	strstr
  219 003e 0246     		mov	r2, r0
  220 0040 0A4B     		ldr	r3, .L16+16
  221 0042 1A60     		str	r2, [r3]
-  51:level_sensor.c ****     line = uart_chars + num_chars;
- 222              		.loc 1 51 0
+  67:level_sensor.c ****         line = uart_chars + num_chars;
+ 222              		.loc 1 67 0
  223 0044 054B     		ldr	r3, .L16
  224 0046 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  225 0048 1A46     		mov	r2, r3
@@ -298,12 +317,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  228 004e 054A     		ldr	r2, .L16+8
  229 0050 1360     		str	r3, [r2]
  230              	.L15:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 6
-
-
-  52:level_sensor.c ****   }
-  53:level_sensor.c **** }
- 231              		.loc 1 53 0
+  68:level_sensor.c ****     }
+  69:level_sensor.c **** }
+ 231              		.loc 1 69 0
  232 0052 00BF     		nop
  233 0054 0837     		adds	r7, r7, #8
  234              		.cfi_def_cfa_offset 8
@@ -334,14 +350,17 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  259              		.type	level_sensor_take_reading, %function
  260              	level_sensor_take_reading:
  261              	.LFB68:
-  54:level_sensor.c **** 
-  55:level_sensor.c **** 
-  56:level_sensor.c **** level_sensor_t level_sensor_take_reading(){
- 262              		.loc 1 56 0
+  70:level_sensor.c **** 
+  71:level_sensor.c **** // takes level sensor measurements and calculates average level sensor reading
+  72:level_sensor.c **** level_sensor_t level_sensor_take_reading(){
+ 262              		.loc 1 72 0
  263              		.cfi_startproc
  264              		@ args = 0, pretend = 0, frame = 40
  265              		@ frame_needed = 1, uses_anonymous_args = 0
  266 0000 B0B5     		push	{r4, r5, r7, lr}
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 7
+
+
  267              		.cfi_def_cfa_offset 16
  268              		.cfi_offset 4, -16
  269              		.cfi_offset 5, -12
@@ -352,95 +371,99 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  274 0004 00AF     		add	r7, sp, #0
  275              		.cfi_def_cfa_register 7
  276 0006 7860     		str	r0, [r7, #4]
-  57:level_sensor.c ****     
-  58:level_sensor.c ****     
-  59:level_sensor.c ****     level_sensor_t level_sensor_output;
-  60:level_sensor.c ****     level_sensor_output.num_invalid_readings = 0;
- 277              		.loc 1 60 0
+  73:level_sensor.c ****     
+  74:level_sensor.c ****     // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type t
+  75:level_sensor.c ****     level_sensor_t level_sensor_output;
+  76:level_sensor.c ****     level_sensor_output.num_invalid_readings = 0;
+ 277              		.loc 1 76 0
  278 0008 0023     		movs	r3, #0
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 7
-
-
  279 000a 87F82130 		strb	r3, [r7, #33]
-  61:level_sensor.c ****     level_sensor_output.num_valid_readings = 0;
- 280              		.loc 1 61 0
+  77:level_sensor.c ****     level_sensor_output.num_valid_readings = 0;
+ 280              		.loc 1 77 0
  281 000e 0023     		movs	r3, #0
  282 0010 87F82030 		strb	r3, [r7, #32]
-  62:level_sensor.c ****     
-  63:level_sensor.c ****     uart_clear();
- 283              		.loc 1 63 0
+  78:level_sensor.c ****     
+  79:level_sensor.c ****     uart_clear();
+ 283              		.loc 1 79 0
  284 0014 FFF7FEFF 		bl	uart_clear
-  64:level_sensor.c ****     
-  65:level_sensor.c ****     //start sensor power, uart, and isr
-  66:level_sensor.c ****     Level_Sensor_Power_Write(ON);
- 285              		.loc 1 66 0
+  80:level_sensor.c ****     
+  81:level_sensor.c ****     // Start sensor power, uart, and isr
+  82:level_sensor.c ****     Level_Sensor_Power_Write(ON);   // Pulls Level Sensor power pin high (turns it on).
+ 285              		.loc 1 82 0
  286 0018 0120     		movs	r0, #1
  287 001a FFF7FEFF 		bl	Level_Sensor_Power_Write
-  67:level_sensor.c ****     CyDelay(200u);//sensor bootup sequence ~200ms -- senosor will spit out ID info, but we don't ne
- 288              		.loc 1 67 0
+  83:level_sensor.c ****     CyDelay(200u); // Sensor bootup sequence ~200ms -- senosor will spit out ID info, but we don't 
+ 288              		.loc 1 83 0
  289 001e C820     		movs	r0, #200
  290 0020 FFF7FEFF 		bl	CyDelay
-  68:level_sensor.c ****     Level_Sensor_RX_SetDriveMode(PIN_DM_DIG_HIZ);
- 291              		.loc 1 68 0
+  84:level_sensor.c ****     Level_Sensor_RX_SetDriveMode(PIN_DM_DIG_HIZ); // RX_SetDriveMode(): Sets the drive mode for eac
+ 291              		.loc 1 84 0
  292 0024 0220     		movs	r0, #2
  293 0026 FFF7FEFF 		bl	Level_Sensor_RX_SetDriveMode
-  69:level_sensor.c ****     Level_Sensor_UART_Start();
- 294              		.loc 1 69 0
+  85:level_sensor.c ****     Level_Sensor_UART_Start(); // Level_Sensor_UART_Start() sets the initVar variable, calls the Le
+ 294              		.loc 1 85 0
  295 002a FFF7FEFF 		bl	Level_Sensor_UART_Start
-  70:level_sensor.c ****     Level_Sensor_ISR_StartEx(Level_Sensor_ISR);
- 296              		.loc 1 70 0
+  86:level_sensor.c ****     Level_Sensor_ISR_StartEx(Level_Sensor_ISR); // Sets up the interrupt and enables it.
+ 296              		.loc 1 86 0
  297 002e 3848     		ldr	r0, .L27
  298 0030 FFF7FEFF 		bl	Level_Sensor_ISR_StartEx
-  71:level_sensor.c ****     
-  72:level_sensor.c ****     //wait to take  reading
-  73:level_sensor.c ****     //sensor will take ~200ms to send first reading, and 200ms for subsequent readings
-  74:level_sensor.c ****     CyDelay(2000u);//take a few seconds to get readings, 2 secs ~10 readings
- 299              		.loc 1 74 0
+  87:level_sensor.c ****     
+  88:level_sensor.c ****     // Wait to take  reading
+  89:level_sensor.c ****     // Sensor will take ~200ms to send first reading, and 200ms for subsequent readings
+  90:level_sensor.c ****     CyDelay(2000u); // Take a few seconds to get readings, 2 secs ~10 readings
+ 299              		.loc 1 90 0
  300 0034 4FF4FA60 		mov	r0, #2000
  301 0038 FFF7FEFF 		bl	CyDelay
-  75:level_sensor.c ****     
-  76:level_sensor.c ****     //stop all sensor processes
-  77:level_sensor.c ****     Level_Sensor_UART_Stop();
- 302              		.loc 1 77 0
+  91:level_sensor.c ****     
+  92:level_sensor.c ****     //stop all sensor processes
+  93:level_sensor.c ****     Level_Sensor_UART_Stop(); // Disables the UART operation.
+ 302              		.loc 1 93 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 8
+
+
  303 003c FFF7FEFF 		bl	Level_Sensor_UART_Stop
-  78:level_sensor.c ****     Level_Sensor_ISR_Stop();
- 304              		.loc 1 78 0
+  94:level_sensor.c ****     Level_Sensor_ISR_Stop(); // Disables and removes the interrupt.
+ 304              		.loc 1 94 0
  305 0040 FFF7FEFF 		bl	Level_Sensor_ISR_Stop
-  79:level_sensor.c ****     Level_Sensor_Power_Write(OFF);
- 306              		.loc 1 79 0
+  95:level_sensor.c ****     Level_Sensor_Power_Write(OFF); // Pulls Level Sensor Power pin low (turns it off).
+ 306              		.loc 1 95 0
  307 0044 0020     		movs	r0, #0
  308 0046 FFF7FEFF 		bl	Level_Sensor_Power_Write
-  80:level_sensor.c ****     Level_Sensor_RX_SetDriveMode(PIN_DM_STRONG);
- 309              		.loc 1 80 0
+  96:level_sensor.c ****     // RX_SetDriveMode(): Sets the drive mode for each of the Pins component's pins.
+  97:level_sensor.c ****     // String Drive Mode means it will only be outputting a voltage (don't send any data) when pull
+  98:level_sensor.c ****     // UART in PSOC starts high. Then pulls low to get data. When turn sensor off, still using powe
+  99:level_sensor.c ****     // So turning it to Strong Drive has it stay low.
+ 100:level_sensor.c ****     Level_Sensor_RX_SetDriveMode(PIN_DM_STRONG);
+ 309              		.loc 1 100 0
  310 004a 0C20     		movs	r0, #12
  311 004c FFF7FEFF 		bl	Level_Sensor_RX_SetDriveMode
-  81:level_sensor.c ****     Level_Sensor_RX_Write(OFF);
- 312              		.loc 1 81 0
+ 101:level_sensor.c ****     // Stops writing the value to the physical port.
+ 102:level_sensor.c ****     // Just because turn power of sensor off, pin could still be high and getting power. This ensur
+ 103:level_sensor.c ****     Level_Sensor_RX_Write(OFF);
+ 312              		.loc 1 103 0
  313 0050 0020     		movs	r0, #0
  314 0052 FFF7FEFF 		bl	Level_Sensor_RX_Write
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 8
-
-
-  82:level_sensor.c **** 
-  83:level_sensor.c ****     /* Return parsed reading */
-  84:level_sensor.c ****     //parse string and put all values into array
-  85:level_sensor.c ****     //the sensor will power on and do a few things, after which the readigs will follow with the se
-  86:level_sensor.c ****     //readings are stashed between "R" and "\000"
-  87:level_sensor.c ****     char *token;
-  88:level_sensor.c ****     token = strtok(uart_chars, "R");
- 315              		.loc 1 88 0
+ 104:level_sensor.c **** 
+ 105:level_sensor.c ****     /* Return parsed reading */
+ 106:level_sensor.c ****     // Parse string and put all values into array
+ 107:level_sensor.c ****     // The sensor will power on and do a few things, after which the readigs will follow with the s
+ 108:level_sensor.c ****     // Readings are stashed between "R" and "\000"
+ 109:level_sensor.c ****     char *token;
+ 110:level_sensor.c ****     // strtok(): breaks uart_chars into smaller string when sees "R".
+ 111:level_sensor.c ****     token = strtok(uart_chars, "R");
+ 315              		.loc 1 111 0
  316 0056 2F49     		ldr	r1, .L27+4
  317 0058 2F48     		ldr	r0, .L27+8
  318 005a FFF7FEFF 		bl	strtok
  319 005e 7862     		str	r0, [r7, #36]
-  89:level_sensor.c ****     /* walk through other tokens */
-  90:level_sensor.c ****    while( token != NULL ) 
- 320              		.loc 1 90 0
+ 112:level_sensor.c ****     /* walk through other tokens */
+ 113:level_sensor.c ****    while( token != NULL ) 
+ 320              		.loc 1 113 0
  321 0060 33E0     		b	.L19
  322              	.L24:
-  91:level_sensor.c ****    {
-  92:level_sensor.c ****       if(strstr(token, "\r") != NULL){//full reading is delimieted by "R" + reading + "\r"
- 323              		.loc 1 92 0
+ 114:level_sensor.c ****    {
+ 115:level_sensor.c ****       if(strstr(token, "\r") != NULL){ // Full reading is delimieted by "R" + reading + "\r"
+ 323              		.loc 1 115 0
  324 0062 0D21     		movs	r1, #13
  325 0064 786A     		ldr	r0, [r7, #36]
  326 0066 FFF7FEFF 		bl	strchr
@@ -448,87 +471,94 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  328 006c 002B     		cmp	r3, #0
  329 006e 27D0     		beq	.L20
  330              	.LBB2:
-  93:level_sensor.c ****         uint16 reading = atoi(token);
- 331              		.loc 1 93 0
+ 116:level_sensor.c ****         // int atoi(const char *str) converts the string argument str to an integer (type int).
+ 117:level_sensor.c ****         uint16 reading = atoi(token);
+ 331              		.loc 1 117 0
  332 0070 786A     		ldr	r0, [r7, #36]
  333 0072 FFF7FEFF 		bl	atoi
  334 0076 0346     		mov	r3, r0
  335 0078 7B84     		strh	r3, [r7, #34]	@ movhi
-  94:level_sensor.c ****         if(reading != 0){
- 336              		.loc 1 94 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 9
+
+
+ 118:level_sensor.c ****         if(reading != 0){
+ 336              		.loc 1 118 0
  337 007a 7B8C     		ldrh	r3, [r7, #34]
  338 007c 002B     		cmp	r3, #0
  339 007e 1FD0     		beq	.L20
-  95:level_sensor.c ****             if(reading != READING_INVALID){//invald readings by maxbotix
- 340              		.loc 1 95 0
+ 119:level_sensor.c ****             if(reading != READING_INVALID){ // Invald readings by maxbotix
+ 340              		.loc 1 119 0
  341 0080 7B8C     		ldrh	r3, [r7, #34]
  342 0082 42F20F72 		movw	r2, #9999
  343 0086 9342     		cmp	r3, r2
  344 0088 14D0     		beq	.L21
-  96:level_sensor.c ****                 level_sensor_output.all_level_readings[level_sensor_output.num_valid_readings] = re
- 345              		.loc 1 96 0
+ 120:level_sensor.c ****                 // Set the level readings array of the length of number of valid readings equal to 
+ 121:level_sensor.c ****                 level_sensor_output.all_level_readings[level_sensor_output.num_valid_readings] = re
+ 345              		.loc 1 121 0
  346 008a 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
  347 008e B7F92220 		ldrsh	r2, [r7, #34]
  348 0092 5B00     		lsls	r3, r3, #1
  349 0094 07F12801 		add	r1, r7, #40
  350 0098 0B44     		add	r3, r3, r1
  351 009a 23F8202C 		strh	r2, [r3, #-32]	@ movhi
-  97:level_sensor.c ****                 if(level_sensor_output.num_valid_readings < N_READINGS){
- 352              		.loc 1 97 0
+ 122:level_sensor.c ****                 // If number of valid readings less than 11 total readings, increase the count of v
+ 123:level_sensor.c ****                 if(level_sensor_output.num_valid_readings < N_READINGS){
+ 352              		.loc 1 123 0
  353 009e 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
  354 00a2 0A2B     		cmp	r3, #10
  355 00a4 15D8     		bhi	.L26
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 9
-
-
-  98:level_sensor.c ****                     level_sensor_output.num_valid_readings++;
- 356              		.loc 1 98 0
+ 124:level_sensor.c ****                     level_sensor_output.num_valid_readings++;
+ 356              		.loc 1 124 0
  357 00a6 97F82030 		ldrb	r3, [r7, #32]	@ zero_extendqisi2
  358 00aa 0133     		adds	r3, r3, #1
  359 00ac DBB2     		uxtb	r3, r3
  360 00ae 87F82030 		strb	r3, [r7, #32]
  361 00b2 05E0     		b	.L20
  362              	.L21:
-  99:level_sensor.c ****                 }else{
- 100:level_sensor.c ****                  break;   
- 101:level_sensor.c ****                 }
- 102:level_sensor.c ****                 
- 103:level_sensor.c ****             }else{
- 104:level_sensor.c ****                 level_sensor_output.num_invalid_readings++;
- 363              		.loc 1 104 0
+ 125:level_sensor.c ****                 }else{
+ 126:level_sensor.c ****                  break;   
+ 127:level_sensor.c ****                 }
+ 128:level_sensor.c ****                 
+ 129:level_sensor.c ****             }else{
+ 130:level_sensor.c ****                 // Otherwise increase the count of invalid readings
+ 131:level_sensor.c ****                 level_sensor_output.num_invalid_readings++;
+ 363              		.loc 1 131 0
  364 00b4 97F82130 		ldrb	r3, [r7, #33]	@ zero_extendqisi2
  365 00b8 0133     		adds	r3, r3, #1
  366 00ba DBB2     		uxtb	r3, r3
  367 00bc 87F82130 		strb	r3, [r7, #33]
  368              	.L20:
  369              	.LBE2:
- 105:level_sensor.c ****             }
- 106:level_sensor.c ****         }
- 107:level_sensor.c ****       }
- 108:level_sensor.c ****       token = strtok(NULL, "R");
- 370              		.loc 1 108 0
+ 132:level_sensor.c ****             }
+ 133:level_sensor.c ****         }
+ 134:level_sensor.c ****       }
+ 135:level_sensor.c ****       token = strtok(NULL, "R"); // This "NULL" says to continue where you left off last time.
+ 370              		.loc 1 135 0
  371 00c0 1449     		ldr	r1, .L27+4
  372 00c2 0020     		movs	r0, #0
  373 00c4 FFF7FEFF 		bl	strtok
  374 00c8 7862     		str	r0, [r7, #36]
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 10
+
+
  375              	.L19:
-  90:level_sensor.c ****    {
- 376              		.loc 1 90 0
+ 113:level_sensor.c ****    {
+ 376              		.loc 1 113 0
  377 00ca 7B6A     		ldr	r3, [r7, #36]
  378 00cc 002B     		cmp	r3, #0
  379 00ce C8D1     		bne	.L24
  380 00d0 00E0     		b	.L23
  381              	.L26:
  382              	.LBB3:
- 100:level_sensor.c ****                 }
- 383              		.loc 1 100 0
+ 126:level_sensor.c ****                 }
+ 383              		.loc 1 126 0
  384 00d2 00BF     		nop
  385              	.L23:
  386              	.LBE3:
- 109:level_sensor.c ****    }
- 110:level_sensor.c ****     //calculate median
- 111:level_sensor.c ****     level_sensor_output.level_reading = find_median(level_sensor_output.all_level_readings,level_se
- 387              		.loc 1 111 0
+ 136:level_sensor.c ****    }
+ 137:level_sensor.c ****     // Calculate median level reading
+ 138:level_sensor.c ****     level_sensor_output.level_reading = find_median(level_sensor_output.all_level_readings,level_se
+ 387              		.loc 1 138 0
  388 00d4 97F82020 		ldrb	r2, [r7, #32]	@ zero_extendqisi2
  389 00d8 07F10803 		add	r3, r7, #8
  390 00dc 1146     		mov	r1, r2
@@ -537,12 +567,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  393 00e4 0346     		mov	r3, r0
  394 00e6 1BB2     		sxth	r3, r3
  395 00e8 FB83     		strh	r3, [r7, #30]	@ movhi
- 112:level_sensor.c ****  
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 10
-
-
- 113:level_sensor.c ****     return level_sensor_output;
- 396              		.loc 1 113 0
+ 139:level_sensor.c ****     
+ 140:level_sensor.c ****     return level_sensor_output;
+ 396              		.loc 1 140 0
  397 00ea 7B68     		ldr	r3, [r7, #4]
  398 00ec 1D46     		mov	r5, r3
  399 00ee 07F10804 		add	r4, r7, #8
@@ -556,8 +583,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  407 0100 6961     		str	r1, [r5, #20]	@ unaligned
  408 0102 2388     		ldrh	r3, [r4]	@ unaligned
  409 0104 2B83     		strh	r3, [r5, #24]	@ unaligned
- 114:level_sensor.c **** }
- 410              		.loc 1 114 0
+ 141:level_sensor.c **** }
+ 410              		.loc 1 141 0
  411 0106 7868     		ldr	r0, [r7, #4]
  412 0108 2837     		adds	r7, r7, #40
  413              		.cfi_def_cfa_offset 16
@@ -571,6 +598,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  421 0110 00000000 		.word	Level_Sensor_ISR
  422 0114 00000000 		.word	.LC0
  423 0118 00000000 		.word	uart_chars
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 11
+
+
  424              		.cfi_endproc
  425              	.LFE68:
  426              		.size	level_sensor_take_reading, .-level_sensor_take_reading
@@ -597,13 +627,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  439              		.type	level_sensor_test, %function
  440              	level_sensor_test:
  441              	.LFB69:
- 115:level_sensor.c **** 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 11
-
-
- 116:level_sensor.c **** 
- 117:level_sensor.c **** test_t level_sensor_test(){
- 442              		.loc 1 117 0
+ 142:level_sensor.c **** 
+ 143:level_sensor.c **** // Level sensor test
+ 144:level_sensor.c **** test_t level_sensor_test(){
+ 442              		.loc 1 144 0
  443              		.cfi_startproc
  444              		@ args = 0, pretend = 0, frame = 424
  445              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -619,60 +646,63 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  455              		.cfi_def_cfa 7, 440
  456 0006 3B1D     		adds	r3, r7, #4
  457 0008 1860     		str	r0, [r3]
- 118:level_sensor.c ****     test_t test;
- 119:level_sensor.c ****     test.status = 0;
- 458              		.loc 1 119 0
+ 145:level_sensor.c ****     
+ 146:level_sensor.c ****     test_t test; // test_t is a new data type we defined in test.h. We then use that data type to d
+ 147:level_sensor.c ****     test.status = 0; // set test status to zero
+ 458              		.loc 1 147 0
  459 000a 07F12403 		add	r3, r7, #36
  460 000e 0022     		movs	r2, #0
  461 0010 83F88020 		strb	r2, [r3, #128]
- 120:level_sensor.c ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_LEVEL_SENSOR");
- 462              		.loc 1 120 0
+ 148:level_sensor.c ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_LEVEL_SENSOR");
+ 462              		.loc 1 148 0
  463 0014 07F12403 		add	r3, r7, #36
  464 0018 2A4A     		ldr	r2, .L33
  465 001a 1C46     		mov	r4, r3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 12
+
+
  466 001c 1546     		mov	r5, r2
  467 001e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
  468 0020 0FC4     		stmia	r4!, {r0, r1, r2, r3}
  469 0022 2B68     		ldr	r3, [r5]
  470 0024 2380     		strh	r3, [r4]	@ movhi
- 121:level_sensor.c **** 
- 122:level_sensor.c ****     level_sensor_t sensor = level_sensor_take_reading();
- 471              		.loc 1 122 0
+ 149:level_sensor.c **** 
+ 150:level_sensor.c ****     // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type t
+ 151:level_sensor.c ****     level_sensor_t sensor = level_sensor_take_reading();
+ 471              		.loc 1 151 0
  472 0026 07F10803 		add	r3, r7, #8
  473 002a 1846     		mov	r0, r3
  474 002c FFF7FEFF 		bl	level_sensor_take_reading
- 123:level_sensor.c ****     
- 124:level_sensor.c ****     snprintf(test.reason,sizeof(test.reason),"nWANTED=%d,nRECEIVED=%d,nVALID=%d,nMEDIAN=%d.",
- 125:level_sensor.c ****         N_READINGS,
- 126:level_sensor.c ****         sensor.num_valid_readings+sensor.num_invalid_readings,
- 475              		.loc 1 126 0
+ 152:level_sensor.c ****     
+ 153:level_sensor.c ****     // print the max number of readings (11), the number of actual readings, the number of valid re
+ 154:level_sensor.c ****     snprintf(test.reason,sizeof(test.reason),"nWANTED=%d,nRECEIVED=%d,nVALID=%d,nMEDIAN=%d.",
+ 155:level_sensor.c ****         N_READINGS,
+ 156:level_sensor.c ****         sensor.num_valid_readings+sensor.num_invalid_readings,
+ 475              		.loc 1 156 0
  476 0030 07F10803 		add	r3, r7, #8
  477 0034 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
- 124:level_sensor.c ****         N_READINGS,
- 478              		.loc 1 124 0
+ 154:level_sensor.c ****         N_READINGS,
+ 478              		.loc 1 154 0
  479 0036 1A46     		mov	r2, r3
- 480              		.loc 1 126 0
+ 480              		.loc 1 156 0
  481 0038 07F10803 		add	r3, r7, #8
  482 003c 5B7E     		ldrb	r3, [r3, #25]	@ zero_extendqisi2
- 124:level_sensor.c ****         N_READINGS,
- 483              		.loc 1 124 0
+ 154:level_sensor.c ****         N_READINGS,
+ 483              		.loc 1 154 0
  484 003e 1344     		add	r3, r3, r2
- 127:level_sensor.c ****         sensor.num_valid_readings,
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 12
-
-
- 485              		.loc 1 127 0
+ 157:level_sensor.c ****         sensor.num_valid_readings,
+ 485              		.loc 1 157 0
  486 0040 07F10802 		add	r2, r7, #8
  487 0044 127E     		ldrb	r2, [r2, #24]	@ zero_extendqisi2
- 124:level_sensor.c ****         N_READINGS,
- 488              		.loc 1 124 0
+ 154:level_sensor.c ****         N_READINGS,
+ 488              		.loc 1 154 0
  489 0046 1146     		mov	r1, r2
- 128:level_sensor.c ****         sensor.level_reading
- 490              		.loc 1 128 0
+ 158:level_sensor.c ****         sensor.level_reading
+ 490              		.loc 1 158 0
  491 0048 07F10802 		add	r2, r7, #8
  492 004c B2F91620 		ldrsh	r2, [r2, #22]
- 124:level_sensor.c ****         N_READINGS,
- 493              		.loc 1 124 0
+ 154:level_sensor.c ****         N_READINGS,
+ 493              		.loc 1 154 0
  494 0050 1446     		mov	r4, r2
  495 0052 07F12402 		add	r2, r7, #36
  496 0056 02F18100 		add	r0, r2, #129
@@ -683,46 +713,47 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  501 0062 194A     		ldr	r2, .L33+4
  502 0064 4FF48071 		mov	r1, #256
  503 0068 FFF7FEFF 		bl	snprintf
- 129:level_sensor.c ****     );
- 130:level_sensor.c ****    
- 131:level_sensor.c ****     
- 132:level_sensor.c ****     if(sensor.num_valid_readings == N_READINGS){//pass
- 504              		.loc 1 132 0
+ 159:level_sensor.c ****     );
+ 160:level_sensor.c ****    
+ 161:level_sensor.c ****     // if the number valid readings is the max number of readings (11), then the test passes with t
+ 162:level_sensor.c ****     if(sensor.num_valid_readings == N_READINGS){//pass
+ 504              		.loc 1 162 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 13
+
+
  505 006c 07F10803 		add	r3, r7, #8
  506 0070 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
  507 0072 0B2B     		cmp	r3, #11
  508 0074 05D1     		bne	.L30
- 133:level_sensor.c ****         test.status = 1;
- 509              		.loc 1 133 0
+ 163:level_sensor.c ****         test.status = 1;
+ 509              		.loc 1 163 0
  510 0076 07F12403 		add	r3, r7, #36
  511 007a 0122     		movs	r2, #1
  512 007c 83F88020 		strb	r2, [r3, #128]
  513 0080 0EE0     		b	.L31
  514              	.L30:
- 134:level_sensor.c ****     }else if((sensor.num_valid_readings > 0) && (sensor.num_valid_readings < N_READINGS)){//pass
- 515              		.loc 1 134 0
+ 164:level_sensor.c ****     // if the number of valid readings is greater than zero and less than the max number of reading
+ 165:level_sensor.c ****     }else if((sensor.num_valid_readings > 0) && (sensor.num_valid_readings < N_READINGS)){//pass
+ 515              		.loc 1 165 0
  516 0082 07F10803 		add	r3, r7, #8
  517 0086 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
  518 0088 002B     		cmp	r3, #0
  519 008a 09D0     		beq	.L31
- 520              		.loc 1 134 0 is_stmt 0 discriminator 1
+ 520              		.loc 1 165 0 is_stmt 0 discriminator 1
  521 008c 07F10803 		add	r3, r7, #8
  522 0090 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
  523 0092 0A2B     		cmp	r3, #10
  524 0094 04D8     		bhi	.L31
- 135:level_sensor.c ****         test.status = 2;//not bad, since we got some OK readings
- 525              		.loc 1 135 0 is_stmt 1
+ 166:level_sensor.c ****         test.status = 2; //not bad, since we got some OK readings
+ 525              		.loc 1 166 0 is_stmt 1
  526 0096 07F12403 		add	r3, r7, #36
  527 009a 0222     		movs	r2, #2
  528 009c 83F88020 		strb	r2, [r3, #128]
  529              	.L31:
- 136:level_sensor.c ****     }
- 137:level_sensor.c ****         
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 13
-
-
- 138:level_sensor.c ****     return test;
- 530              		.loc 1 138 0
+ 167:level_sensor.c ****     }
+ 168:level_sensor.c ****         
+ 169:level_sensor.c ****     return test;
+ 530              		.loc 1 169 0
  531 00a0 3B1D     		adds	r3, r7, #4
  532 00a2 1A68     		ldr	r2, [r3]
  533 00a4 07F12403 		add	r3, r7, #36
@@ -731,8 +762,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  536 00ac 40F28113 		movw	r3, #385
  537 00b0 1A46     		mov	r2, r3
  538 00b2 FFF7FEFF 		bl	memcpy
- 139:level_sensor.c **** }
- 539              		.loc 1 139 0
+ 170:level_sensor.c **** }
+ 539              		.loc 1 170 0
  540 00b6 3B1D     		adds	r3, r7, #4
  541 00b8 1868     		ldr	r0, [r3]
  542 00ba 07F5D477 		add	r7, r7, #424
@@ -747,6 +778,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  551 00c4 04000000 		.word	.LC1
  552 00c8 18000000 		.word	.LC2
  553              		.cfi_endproc
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 14
+
+
  554              	.LFE69:
  555              		.size	level_sensor_test, .-level_sensor_test
  556              		.global	__aeabi_i2d
@@ -760,12 +794,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  564              		.type	find_median, %function
  565              	find_median:
  566              	.LFB70:
- 140:level_sensor.c **** 
- 141:level_sensor.c **** 
- 142:level_sensor.c **** // function to calculate the median of the array, after array is sorted
- 143:level_sensor.c **** uint16 find_median(int16 array[] , uint8 n)
- 144:level_sensor.c **** {
- 567              		.loc 1 144 0
+ 171:level_sensor.c **** 
+ 172:level_sensor.c **** 
+ 173:level_sensor.c **** // function to calculate the median of the array, after array is sorted
+ 174:level_sensor.c **** uint16 find_median(int16 array[] , uint8 n)
+ 175:level_sensor.c **** {
+ 567              		.loc 1 175 0
  568              		.cfi_startproc
  569              		@ args = 0, pretend = 0, frame = 16
  570              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -778,34 +812,35 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  577              		.cfi_def_cfa_offset 32
  578 0004 00AF     		add	r7, sp, #0
  579              		.cfi_def_cfa_register 7
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 14
-
-
  580 0006 7860     		str	r0, [r7, #4]
  581 0008 0B46     		mov	r3, r1
  582 000a FB70     		strb	r3, [r7, #3]
- 145:level_sensor.c ****     int16 median=0;
- 583              		.loc 1 145 0
+ 176:level_sensor.c ****     int16 median=0;
+ 583              		.loc 1 176 0
  584 000c 0023     		movs	r3, #0
  585 000e FB81     		strh	r3, [r7, #14]	@ movhi
- 146:level_sensor.c ****     sort(array,n);
- 586              		.loc 1 146 0
+ 177:level_sensor.c ****     sort(array,n);
+ 586              		.loc 1 177 0
  587 0010 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
  588 0012 1BB2     		sxth	r3, r3
  589 0014 1946     		mov	r1, r3
  590 0016 7868     		ldr	r0, [r7, #4]
  591 0018 FFF7FEFF 		bl	sort
- 147:level_sensor.c ****     
- 148:level_sensor.c ****     // if number of elements are even
- 149:level_sensor.c ****     if(n%2 == 0)
- 592              		.loc 1 149 0
+ 178:level_sensor.c ****     
+ 179:level_sensor.c ****     // if number of elements are even
+ 180:level_sensor.c ****     if(n%2 == 0)
+ 592              		.loc 1 180 0
  593 001c FB78     		ldrb	r3, [r7, #3]
  594 001e 03F00103 		and	r3, r3, #1
  595 0022 DBB2     		uxtb	r3, r3
  596 0024 002B     		cmp	r3, #0
  597 0026 25D1     		bne	.L36
- 150:level_sensor.c ****         median = (array[(n-1)/2] + array[n/2])/2.0;
- 598              		.loc 1 150 0
+ 181:level_sensor.c ****         // median is the average of the  two middle sorted numbers
+ 182:level_sensor.c ****         median = (array[(n-1)/2] + array[n/2])/2.0;
+ 598              		.loc 1 182 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 15
+
+
  599 0028 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
  600 002a 013B     		subs	r3, r3, #1
  601 002c DA0F     		lsrs	r2, r3, #31
@@ -838,13 +873,11 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  628 0070 FB81     		strh	r3, [r7, #14]	@ movhi
  629 0072 07E0     		b	.L37
  630              	.L36:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 15
-
-
- 151:level_sensor.c ****     // if number of elements are odd
- 152:level_sensor.c ****     else
- 153:level_sensor.c ****         median = array[n/2];
- 631              		.loc 1 153 0
+ 183:level_sensor.c ****     // if number of elements are odd
+ 184:level_sensor.c ****     else
+ 185:level_sensor.c ****         // median is the the middle sorted number 
+ 186:level_sensor.c ****         median = array[n/2];
+ 631              		.loc 1 186 0
  632 0074 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
  633 0076 5B08     		lsrs	r3, r3, #1
  634 0078 DBB2     		uxtb	r3, r3
@@ -854,17 +887,20 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  638 0080 1B88     		ldrh	r3, [r3]	@ movhi
  639 0082 FB81     		strh	r3, [r7, #14]	@ movhi
  640              	.L37:
- 154:level_sensor.c ****     
- 155:level_sensor.c ****     return median;
- 641              		.loc 1 155 0
+ 187:level_sensor.c ****     
+ 188:level_sensor.c ****     return median;
+ 641              		.loc 1 188 0
  642 0084 FB89     		ldrh	r3, [r7, #14]
- 156:level_sensor.c **** }
- 643              		.loc 1 156 0
+ 189:level_sensor.c **** }
+ 643              		.loc 1 189 0
  644 0086 1846     		mov	r0, r3
  645 0088 1437     		adds	r7, r7, #20
  646              		.cfi_def_cfa_offset 12
  647 008a BD46     		mov	sp, r7
  648              		.cfi_def_cfa_register 13
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 16
+
+
  649              		@ sp needed
  650 008c 90BD     		pop	{r4, r7, pc}
  651              		.cfi_endproc
@@ -878,10 +914,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  659              		.type	sort, %function
  660              	sort:
  661              	.LFB71:
- 157:level_sensor.c **** 
- 158:level_sensor.c **** 
- 159:level_sensor.c **** void sort(int16 a[],int16 n) { 
- 662              		.loc 1 159 0
+ 190:level_sensor.c **** 
+ 191:level_sensor.c **** // function to sort the elements in the level readings array
+ 192:level_sensor.c **** void sort(int16 a[],int16 n) { 
+ 662              		.loc 1 192 0
  663              		.cfi_startproc
  664              		@ args = 0, pretend = 0, frame = 16
  665              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -896,25 +932,22 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  674 0006 7860     		str	r0, [r7, #4]
  675 0008 0B46     		mov	r3, r1
  676 000a 7B80     		strh	r3, [r7, #2]	@ movhi
- 160:level_sensor.c ****    int16 i,j;
- 161:level_sensor.c **** 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 16
-
-
- 162:level_sensor.c ****    for(i = 0;i < n-1;i++) {
- 677              		.loc 1 162 0
+ 193:level_sensor.c ****    int16 i,j;
+ 194:level_sensor.c **** 
+ 195:level_sensor.c ****    for(i = 0;i < n-1;i++) {
+ 677              		.loc 1 195 0
  678 000c 0023     		movs	r3, #0
  679 000e FB81     		strh	r3, [r7, #14]	@ movhi
  680 0010 37E0     		b	.L40
  681              	.L44:
- 163:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
- 682              		.loc 1 163 0
+ 196:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 682              		.loc 1 196 0
  683 0012 0023     		movs	r3, #0
  684 0014 BB81     		strh	r3, [r7, #12]	@ movhi
  685 0016 24E0     		b	.L41
  686              	.L43:
- 164:level_sensor.c ****          if(a[j] > a[j+1])
- 687              		.loc 1 164 0
+ 197:level_sensor.c ****          if(a[j] > a[j+1])
+ 687              		.loc 1 197 0
  688 0018 B7F90C30 		ldrsh	r3, [r7, #12]
  689 001c 5B00     		lsls	r3, r3, #1
  690 001e 7A68     		ldr	r2, [r7, #4]
@@ -925,11 +958,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  695 002c 5B00     		lsls	r3, r3, #1
  696 002e 7968     		ldr	r1, [r7, #4]
  697 0030 0B44     		add	r3, r3, r1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 17
+
+
  698 0032 B3F90030 		ldrsh	r3, [r3]
  699 0036 9A42     		cmp	r2, r3
  700 0038 0DDD     		ble	.L42
- 165:level_sensor.c ****             swap(&a[j],&a[j+1]);
- 701              		.loc 1 165 0
+ 198:level_sensor.c ****             swap(&a[j],&a[j+1]); // swap the address of a[j] and a[j+1]
+ 701              		.loc 1 198 0
  702 003a B7F90C30 		ldrsh	r3, [r7, #12]
  703 003e 5B00     		lsls	r3, r3, #1
  704 0040 7A68     		ldr	r2, [r7, #4]
@@ -942,49 +978,49 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  711 0050 1946     		mov	r1, r3
  712 0052 FFF7FEFF 		bl	swap
  713              	.L42:
- 163:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
- 714              		.loc 1 163 0 discriminator 2
+ 196:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 714              		.loc 1 196 0 discriminator 2
  715 0056 B7F90C30 		ldrsh	r3, [r7, #12]
  716 005a 9BB2     		uxth	r3, r3
  717 005c 0133     		adds	r3, r3, #1
  718 005e 9BB2     		uxth	r3, r3
  719 0060 BB81     		strh	r3, [r7, #12]	@ movhi
  720              	.L41:
- 163:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
- 721              		.loc 1 163 0 is_stmt 0 discriminator 1
+ 196:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 721              		.loc 1 196 0 is_stmt 0 discriminator 1
  722 0062 B7F90C20 		ldrsh	r2, [r7, #12]
  723 0066 B7F90210 		ldrsh	r1, [r7, #2]
  724 006a B7F90E30 		ldrsh	r3, [r7, #14]
  725 006e CB1A     		subs	r3, r1, r3
  726 0070 013B     		subs	r3, r3, #1
  727 0072 9A42     		cmp	r2, r3
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 17
-
-
  728 0074 D0DB     		blt	.L43
- 162:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
- 729              		.loc 1 162 0 is_stmt 1 discriminator 2
+ 195:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 729              		.loc 1 195 0 is_stmt 1 discriminator 2
  730 0076 B7F90E30 		ldrsh	r3, [r7, #14]
  731 007a 9BB2     		uxth	r3, r3
  732 007c 0133     		adds	r3, r3, #1
  733 007e 9BB2     		uxth	r3, r3
  734 0080 FB81     		strh	r3, [r7, #14]	@ movhi
  735              	.L40:
- 162:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
- 736              		.loc 1 162 0 is_stmt 0 discriminator 1
+ 195:level_sensor.c ****       for(j = 0;j < n-i-1;j++) {
+ 736              		.loc 1 195 0 is_stmt 0 discriminator 1
  737 0082 B7F90E20 		ldrsh	r2, [r7, #14]
  738 0086 B7F90230 		ldrsh	r3, [r7, #2]
  739 008a 013B     		subs	r3, r3, #1
  740 008c 9A42     		cmp	r2, r3
  741 008e C0DB     		blt	.L44
- 166:level_sensor.c ****       }
- 167:level_sensor.c ****    }
- 168:level_sensor.c **** }
- 742              		.loc 1 168 0 is_stmt 1
+ 199:level_sensor.c ****       }
+ 200:level_sensor.c ****    }
+ 201:level_sensor.c **** }
+ 742              		.loc 1 201 0 is_stmt 1
  743 0090 00BF     		nop
  744 0092 1037     		adds	r7, r7, #16
  745              		.cfi_def_cfa_offset 8
  746 0094 BD46     		mov	sp, r7
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 18
+
+
  747              		.cfi_def_cfa_register 13
  748              		@ sp needed
  749 0096 80BD     		pop	{r7, pc}
@@ -999,9 +1035,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  758              		.type	swap, %function
  759              	swap:
  760              	.LFB72:
- 169:level_sensor.c **** 
- 170:level_sensor.c **** void swap(int16 *p,int16 *q) {
- 761              		.loc 1 170 0
+ 202:level_sensor.c **** 
+ 203:level_sensor.c **** // function to swap elements in the level readings array in order to sort them
+ 204:level_sensor.c **** void swap(int16 *p,int16 *q) {
+ 761              		.loc 1 204 0
  762              		.cfi_startproc
  763              		@ args = 0, pretend = 0, frame = 16
  764              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -1015,35 +1052,35 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  772              		.cfi_def_cfa_register 7
  773 0006 7860     		str	r0, [r7, #4]
  774 0008 3960     		str	r1, [r7]
- 171:level_sensor.c ****    int16 t;
- 172:level_sensor.c ****    
- 173:level_sensor.c ****    t=*p; 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 18
-
-
- 775              		.loc 1 173 0
+ 205:level_sensor.c ****    int16 t;
+ 206:level_sensor.c ****    
+ 207:level_sensor.c ****    t=*p; 
+ 775              		.loc 1 207 0
  776 000a 7B68     		ldr	r3, [r7, #4]
  777 000c 1B88     		ldrh	r3, [r3]	@ movhi
  778 000e FB81     		strh	r3, [r7, #14]	@ movhi
- 174:level_sensor.c ****    *p=*q; 
- 779              		.loc 1 174 0
+ 208:level_sensor.c ****    *p=*q; 
+ 779              		.loc 1 208 0
  780 0010 3B68     		ldr	r3, [r7]
  781 0012 B3F90020 		ldrsh	r2, [r3]
  782 0016 7B68     		ldr	r3, [r7, #4]
  783 0018 1A80     		strh	r2, [r3]	@ movhi
- 175:level_sensor.c ****    *q=t;
- 784              		.loc 1 175 0
+ 209:level_sensor.c ****    *q=t;
+ 784              		.loc 1 209 0
  785 001a 3B68     		ldr	r3, [r7]
  786 001c FA89     		ldrh	r2, [r7, #14]	@ movhi
  787 001e 1A80     		strh	r2, [r3]	@ movhi
- 176:level_sensor.c **** }
- 788              		.loc 1 176 0
+ 210:level_sensor.c **** }
+ 788              		.loc 1 210 0
  789 0020 00BF     		nop
  790 0022 1437     		adds	r7, r7, #20
  791              		.cfi_def_cfa_offset 4
  792 0024 BD46     		mov	sp, r7
  793              		.cfi_def_cfa_register 13
  794              		@ sp needed
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 19
+
+
  795 0026 80BC     		pop	{r7}
  796              		.cfi_restore 7
  797              		.cfi_def_cfa_offset 0
@@ -1053,8 +1090,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  801              		.size	swap, .-swap
  802 002a 00BF     		.text
  803              	.Letext0:
- 804              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 805              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 804              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
+ 805              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
  806              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
  807              		.file 5 "testing.h"
  808              		.file 6 "level_sensor.h"
@@ -1072,15 +1109,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  820 000c 79000000 		.4byte	.LASF83
  821 0010 0C       		.byte	0xc
  822 0011 95020000 		.4byte	.LASF84
- 823 0015 35040000 		.4byte	.LASF85
+ 823 0015 C9020000 		.4byte	.LASF85
  824 0019 18000000 		.4byte	.Ldebug_ranges0+0x18
  825 001d 00000000 		.4byte	0
  826 0021 00000000 		.4byte	.Ldebug_line0
  827 0025 02       		.uleb128 0x2
  828 0026 01       		.byte	0x1
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 19
-
-
  829 0027 06       		.byte	0x6
  830 0028 89020000 		.4byte	.LASF0
  831 002c 03       		.uleb128 0x3
@@ -1099,11 +1133,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  844 0045 02       		.uleb128 0x2
  845 0046 02       		.byte	0x2
  846 0047 07       		.byte	0x7
- 847 0048 D4020000 		.4byte	.LASF3
+ 847 0048 24030000 		.4byte	.LASF3
  848 004c 03       		.uleb128 0x3
- 849 004d 59030000 		.4byte	.LASF5
+ 849 004d A9030000 		.4byte	.LASF5
  850 0051 02       		.byte	0x2
  851 0052 3F       		.byte	0x3f
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 20
+
+
  852 0053 57000000 		.4byte	0x57
  853 0057 02       		.uleb128 0x2
  854 0058 04       		.byte	0x4
@@ -1112,7 +1149,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  857 005e 02       		.uleb128 0x2
  858 005f 04       		.byte	0x4
  859 0060 07       		.byte	0x7
- 860 0061 AA030000 		.4byte	.LASF7
+ 860 0061 FA030000 		.4byte	.LASF7
  861 0065 02       		.uleb128 0x2
  862 0066 08       		.byte	0x8
  863 0067 05       		.byte	0x5
@@ -1135,41 +1172,41 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  880 0087 18       		.byte	0x18
  881 0088 2C000000 		.4byte	0x2c
  882 008c 03       		.uleb128 0x3
- 883 008d 51030000 		.4byte	.LASF12
+ 883 008d A1030000 		.4byte	.LASF12
  884 0091 03       		.byte	0x3
  885 0092 2C       		.byte	0x2c
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 20
-
-
  886 0093 4C000000 		.4byte	0x4c
  887 0097 05       		.uleb128 0x5
  888 0098 76010000 		.4byte	.LASF13
  889 009c 04       		.byte	0x4
- 890 009d E401     		.2byte	0x1e4
+ 890 009d 9201     		.2byte	0x192
  891 009f 37000000 		.4byte	0x37
  892 00a3 05       		.uleb128 0x5
  893 00a4 55010000 		.4byte	.LASF14
  894 00a8 04       		.byte	0x4
- 895 00a9 E501     		.2byte	0x1e5
+ 895 00a9 9301     		.2byte	0x193
  896 00ab 45000000 		.4byte	0x45
  897 00af 05       		.uleb128 0x5
  898 00b0 D7010000 		.4byte	.LASF15
  899 00b4 04       		.byte	0x4
- 900 00b5 E801     		.2byte	0x1e8
+ 900 00b5 9601     		.2byte	0x196
  901 00b7 3E000000 		.4byte	0x3e
  902 00bb 05       		.uleb128 0x5
  903 00bc A5010000 		.4byte	.LASF16
  904 00c0 04       		.byte	0x4
- 905 00c1 E901     		.2byte	0x1e9
+ 905 00c1 9701     		.2byte	0x197
  906 00c3 57000000 		.4byte	0x57
  907 00c7 02       		.uleb128 0x2
  908 00c8 04       		.byte	0x4
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 21
+
+
  909 00c9 04       		.byte	0x4
  910 00ca 9F010000 		.4byte	.LASF17
  911 00ce 02       		.uleb128 0x2
  912 00cf 08       		.byte	0x8
  913 00d0 04       		.byte	0x4
- 914 00d1 D0030000 		.4byte	.LASF18
+ 914 00d1 20040000 		.4byte	.LASF18
  915 00d5 02       		.uleb128 0x2
  916 00d6 01       		.byte	0x1
  917 00d7 08       		.byte	0x8
@@ -1198,32 +1235,32 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  940 0109 17       		.byte	0x17
  941 010a 00       		.byte	0
  942 010b 0A       		.uleb128 0xa
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 21
-
-
  943 010c 8101     		.2byte	0x181
  944 010e 05       		.byte	0x5
  945 010f 0A       		.byte	0xa
  946 0110 39010000 		.4byte	0x139
  947 0114 0B       		.uleb128 0xb
- 948 0115 80030000 		.4byte	.LASF22
+ 948 0115 D0030000 		.4byte	.LASF22
  949 0119 05       		.byte	0x5
- 950 011a 0B       		.byte	0xb
+ 950 011a 0C       		.byte	0xc
  951 011b 39010000 		.4byte	0x139
  952 011f 00       		.byte	0
  953 0120 0B       		.uleb128 0xb
- 954 0121 FF020000 		.4byte	.LASF23
+ 954 0121 4F030000 		.4byte	.LASF23
  955 0125 05       		.byte	0x5
- 956 0126 0C       		.byte	0xc
+ 956 0126 0D       		.byte	0xd
  957 0127 97000000 		.4byte	0x97
  958 012b 80       		.byte	0x80
  959 012c 0B       		.uleb128 0xb
  960 012d EF010000 		.4byte	.LASF24
  961 0131 05       		.byte	0x5
- 962 0132 0D       		.byte	0xd
+ 962 0132 0F       		.byte	0xf
  963 0133 49010000 		.4byte	0x149
  964 0137 81       		.byte	0x81
  965 0138 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 22
+
+
  966 0139 08       		.uleb128 0x8
  967 013a D5000000 		.4byte	0xd5
  968 013e 49010000 		.4byte	0x149
@@ -1239,9 +1276,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  978 0157 FF       		.byte	0xff
  979 0158 00       		.byte	0
  980 0159 03       		.uleb128 0x3
- 981 015a FF030000 		.4byte	.LASF25
+ 981 015a 4F040000 		.4byte	.LASF25
  982 015e 05       		.byte	0x5
- 983 015f 0E       		.byte	0xe
+ 983 015f 10       		.byte	0x10
  984 0160 0B010000 		.4byte	0x10b
  985 0164 0C       		.uleb128 0xc
  986 0165 1A       		.byte	0x1a
@@ -1255,16 +1292,13 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  994 0173 9D010000 		.4byte	0x19d
  995 0177 00       		.byte	0
  996 0178 0B       		.uleb128 0xb
- 997 0179 DD030000 		.4byte	.LASF27
+ 997 0179 2D040000 		.4byte	.LASF27
  998 017d 06       		.byte	0x6
  999 017e 0E       		.byte	0xe
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 22
-
-
  1000 017f AF000000 		.4byte	0xaf
  1001 0183 16       		.byte	0x16
  1002 0184 0B       		.uleb128 0xb
- 1003 0185 22040000 		.4byte	.LASF28
+ 1003 0185 72040000 		.4byte	.LASF28
  1004 0189 06       		.byte	0x6
  1005 018a 0F       		.byte	0xf
  1006 018b 97000000 		.4byte	0x97
@@ -1284,7 +1318,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1020 01ab 0A       		.byte	0xa
  1021 01ac 00       		.byte	0
  1022 01ad 03       		.uleb128 0x3
- 1023 01ae 71030000 		.4byte	.LASF30
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 23
+
+
+ 1023 01ae C1030000 		.4byte	.LASF30
  1024 01b2 06       		.byte	0x6
  1025 01b3 11       		.byte	0x11
  1026 01b4 64010000 		.4byte	0x164
@@ -1306,7 +1343,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1042 01d3 E5010000 		.4byte	0x1e5
  1043 01d7 14       		.byte	0x14
  1044 01d8 0B       		.uleb128 0xb
- 1045 01d9 4C030000 		.4byte	.LASF33
+ 1045 01d9 9C030000 		.4byte	.LASF33
  1046 01dd 07       		.byte	0x7
  1047 01de 2F       		.byte	0x2f
  1048 01df E5010000 		.4byte	0x1e5
@@ -1318,9 +1355,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1054 01ee 09       		.uleb128 0x9
  1055 01ef E3000000 		.4byte	0xe3
  1056 01f3 13       		.byte	0x13
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 23
-
-
  1057 01f4 00       		.byte	0
  1058 01f5 03       		.uleb128 0x3
  1059 01f6 E2010000 		.4byte	.LASF34
@@ -1333,7 +1367,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1066 0203 32       		.byte	0x32
  1067 0204 38020000 		.4byte	0x238
  1068 0208 0B       		.uleb128 0xb
- 1069 0209 88040000 		.4byte	.LASF35
+ 1069 0209 92040000 		.4byte	.LASF35
  1070 020d 07       		.byte	0x7
  1071 020e 33       		.byte	0x33
  1072 020f 97000000 		.4byte	0x97
@@ -1344,21 +1378,24 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1077 0219 34       		.byte	0x34
  1078 021a 97000000 		.4byte	0x97
  1079 021e 01       		.byte	0x1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 24
+
+
  1080 021f 0B       		.uleb128 0xb
- 1081 0220 E7020000 		.4byte	.LASF36
+ 1081 0220 37030000 		.4byte	.LASF36
  1082 0224 07       		.byte	0x7
  1083 0225 35       		.byte	0x35
  1084 0226 73000000 		.4byte	0x73
  1085 022a 04       		.byte	0x4
  1086 022b 0B       		.uleb128 0xb
- 1087 022c 2C030000 		.4byte	.LASF37
+ 1087 022c 7C030000 		.4byte	.LASF37
  1088 0230 07       		.byte	0x7
  1089 0231 36       		.byte	0x36
  1090 0232 73000000 		.4byte	0x73
  1091 0236 08       		.byte	0x8
  1092 0237 00       		.byte	0
  1093 0238 03       		.uleb128 0x3
- 1094 0239 63030000 		.4byte	.LASF38
+ 1094 0239 B3030000 		.4byte	.LASF38
  1095 023d 07       		.byte	0x7
  1096 023e 37       		.byte	0x37
  1097 023f 00020000 		.4byte	0x200
@@ -1378,9 +1415,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1111 025c 08       		.byte	0x8
  1112 025d 11       		.byte	0x11
  1113 025e E5010000 		.4byte	0x1e5
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 24
-
-
  1114 0262 14       		.byte	0x14
  1115 0263 0B       		.uleb128 0xb
  1116 0264 95010000 		.4byte	.LASF40
@@ -1397,18 +1431,21 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1127 027b 0C       		.uleb128 0xc
  1128 027c 1C       		.byte	0x1c
  1129 027d 09       		.byte	0x9
- 1130 027e 39       		.byte	0x39
+ 1130 027e 37       		.byte	0x37
  1131 027f 9C020000 		.4byte	0x29c
  1132 0283 0B       		.uleb128 0xb
  1133 0284 FF010000 		.4byte	.LASF42
  1134 0288 09       		.byte	0x9
- 1135 0289 3B       		.byte	0x3b
+ 1135 0289 39       		.byte	0x39
  1136 028a 9C020000 		.4byte	0x29c
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 25
+
+
  1137 028e 00       		.byte	0
  1138 028f 0B       		.uleb128 0xb
  1139 0290 1F010000 		.4byte	.LASF43
  1140 0294 09       		.byte	0x9
- 1141 0295 3C       		.byte	0x3c
+ 1141 0295 3A       		.byte	0x3a
  1142 0296 FB000000 		.4byte	0xfb
  1143 029a 04       		.byte	0x4
  1144 029b 00       		.byte	0
@@ -1416,54 +1453,54 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1146 029d 04       		.byte	0x4
  1147 029e F5010000 		.4byte	0x1f5
  1148 02a2 03       		.uleb128 0x3
- 1149 02a3 C9020000 		.4byte	.LASF44
+ 1149 02a3 19030000 		.4byte	.LASF44
  1150 02a7 09       		.byte	0x9
- 1151 02a8 3E       		.byte	0x3e
+ 1151 02a8 3C       		.byte	0x3c
  1152 02a9 7B020000 		.4byte	0x27b
  1153 02ad 0A       		.uleb128 0xa
  1154 02ae 4401     		.2byte	0x144
  1155 02b0 09       		.byte	0x9
- 1156 02b1 41       		.byte	0x41
+ 1156 02b1 42       		.byte	0x42
  1157 02b2 00030000 		.4byte	0x300
  1158 02b6 0B       		.uleb128 0xb
- 1159 02b7 06040000 		.4byte	.LASF45
+ 1159 02b7 56040000 		.4byte	.LASF45
  1160 02bb 09       		.byte	0x9
- 1161 02bc 44       		.byte	0x44
+ 1161 02bc 45       		.byte	0x45
  1162 02bd E5010000 		.4byte	0x1e5
  1163 02c1 00       		.byte	0
  1164 02c2 0B       		.uleb128 0xb
  1165 02c3 71000000 		.4byte	.LASF46
  1166 02c7 09       		.byte	0x9
- 1167 02c8 46       		.byte	0x46
+ 1167 02c8 47       		.byte	0x47
  1168 02c9 00030000 		.4byte	0x300
  1169 02cd 14       		.byte	0x14
  1170 02ce 0B       		.uleb128 0xb
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 25
-
-
- 1171 02cf 1A040000 		.4byte	.LASF47
+ 1171 02cf 6A040000 		.4byte	.LASF47
  1172 02d3 09       		.byte	0x9
- 1173 02d4 47       		.byte	0x47
+ 1173 02d4 48       		.byte	0x48
  1174 02d5 73000000 		.4byte	0x73
  1175 02d9 78       		.byte	0x78
  1176 02da 0B       		.uleb128 0xb
  1177 02db 8D010000 		.4byte	.LASF48
  1178 02df 09       		.byte	0x9
- 1179 02e0 48       		.byte	0x48
+ 1179 02e0 49       		.byte	0x49
  1180 02e1 10030000 		.4byte	0x310
  1181 02e5 7C       		.byte	0x7c
  1182 02e6 0B       		.uleb128 0xb
- 1183 02e7 A2030000 		.4byte	.LASF49
+ 1183 02e7 F2030000 		.4byte	.LASF49
  1184 02eb 09       		.byte	0x9
- 1185 02ec 49       		.byte	0x49
+ 1185 02ec 4A       		.byte	0x4a
  1186 02ed 00030000 		.4byte	0x300
  1187 02f1 AE       		.byte	0xae
  1188 02f2 0E       		.uleb128 0xe
  1189 02f3 81010000 		.4byte	.LASF50
  1190 02f7 09       		.byte	0x9
- 1191 02f8 4A       		.byte	0x4a
+ 1191 02f8 4B       		.byte	0x4b
  1192 02f9 10030000 		.4byte	0x310
  1193 02fd 1201     		.2byte	0x112
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 26
+
+
  1194 02ff 00       		.byte	0
  1195 0300 08       		.uleb128 0x8
  1196 0301 D5000000 		.4byte	0xd5
@@ -1482,12 +1519,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1209 0320 03       		.uleb128 0x3
  1210 0321 2B000000 		.4byte	.LASF51
  1211 0325 09       		.byte	0x9
- 1212 0326 4D       		.byte	0x4d
+ 1212 0326 4E       		.byte	0x4e
  1213 0327 AD020000 		.4byte	0x2ad
  1214 032b 0F       		.uleb128 0xf
- 1215 032c 0E040000 		.4byte	.LASF52
+ 1215 032c 5E040000 		.4byte	.LASF52
  1216 0330 01       		.byte	0x1
- 1217 0331 1D       		.byte	0x1d
+ 1217 0331 20       		.byte	0x20
  1218 0332 F0000000 		.4byte	0xf0
  1219 0336 00000000 		.4byte	.LFB64
  1220 033a 14000000 		.4byte	.LFE64-.LFB64
@@ -1496,11 +1533,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1223 0340 0F       		.uleb128 0xf
  1224 0341 1C020000 		.4byte	.LASF53
  1225 0345 01       		.byte	0x1
- 1226 0346 21       		.byte	0x21
+ 1226 0346 27       		.byte	0x27
  1227 0347 81000000 		.4byte	0x81
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 26
-
-
  1228 034b 00000000 		.4byte	.LFB65
  1229 034f 14000000 		.4byte	.LFE65-.LFB65
  1230 0353 01       		.uleb128 0x1
@@ -1508,7 +1542,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1232 0355 10       		.uleb128 0x10
  1233 0356 20000000 		.4byte	.LASF86
  1234 035a 01       		.byte	0x1
- 1235 035b 25       		.byte	0x25
+ 1235 035b 2C       		.byte	0x2c
  1236 035c 00000000 		.4byte	.LFB66
  1237 0360 28000000 		.4byte	.LFE66-.LFB66
  1238 0364 01       		.uleb128 0x1
@@ -1516,25 +1550,28 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1240 0366 11       		.uleb128 0x11
  1241 0367 6C020000 		.4byte	.LASF54
  1242 036b 01       		.byte	0x1
- 1243 036c 2B       		.byte	0x2b
+ 1243 036c 37       		.byte	0x37
  1244 036d 00000000 		.4byte	.LFB67
  1245 0371 70000000 		.4byte	.LFE67-.LFB67
  1246 0375 01       		.uleb128 0x1
  1247 0376 9C       		.byte	0x9c
  1248 0377 8A030000 		.4byte	0x38a
  1249 037b 12       		.uleb128 0x12
- 1250 037c F1030000 		.4byte	.LASF56
+ 1250 037c 41040000 		.4byte	.LASF56
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 27
+
+
  1251 0380 01       		.byte	0x1
- 1252 0381 2D       		.byte	0x2d
+ 1252 0381 3B       		.byte	0x3b
  1253 0382 D5000000 		.4byte	0xd5
  1254 0386 02       		.uleb128 0x2
  1255 0387 91       		.byte	0x91
  1256 0388 77       		.sleb128 -9
  1257 0389 00       		.byte	0
  1258 038a 13       		.uleb128 0x13
- 1259 038b 06030000 		.4byte	.LASF55
+ 1259 038b 56030000 		.4byte	.LASF55
  1260 038f 01       		.byte	0x1
- 1261 0390 38       		.byte	0x38
+ 1261 0390 48       		.byte	0x48
  1262 0391 AD010000 		.4byte	0x1ad
  1263 0395 00000000 		.4byte	.LFB68
  1264 0399 1C010000 		.4byte	.LFE68-.LFB68
@@ -1542,30 +1579,27 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1266 039e 9C       		.byte	0x9c
  1267 039f D4030000 		.4byte	0x3d4
  1268 03a3 12       		.uleb128 0x12
- 1269 03a4 BC030000 		.4byte	.LASF57
+ 1269 03a4 0C040000 		.4byte	.LASF57
  1270 03a8 01       		.byte	0x1
- 1271 03a9 3B       		.byte	0x3b
+ 1271 03a9 4B       		.byte	0x4b
  1272 03aa AD010000 		.4byte	0x1ad
  1273 03ae 02       		.uleb128 0x2
  1274 03af 91       		.byte	0x91
  1275 03b0 50       		.sleb128 -48
  1276 03b1 12       		.uleb128 0x12
- 1277 03b2 F9030000 		.4byte	.LASF58
+ 1277 03b2 49040000 		.4byte	.LASF58
  1278 03b6 01       		.byte	0x1
- 1279 03b7 57       		.byte	0x57
+ 1279 03b7 6D       		.byte	0x6d
  1280 03b8 EA000000 		.4byte	0xea
  1281 03bc 02       		.uleb128 0x2
  1282 03bd 91       		.byte	0x91
  1283 03be 6C       		.sleb128 -20
  1284 03bf 14       		.uleb128 0x14
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 27
-
-
  1285 03c0 00000000 		.4byte	.Ldebug_ranges0+0
  1286 03c4 12       		.uleb128 0x12
- 1287 03c5 9A030000 		.4byte	.LASF59
+ 1287 03c5 EA030000 		.4byte	.LASF59
  1288 03c9 01       		.byte	0x1
- 1289 03ca 5D       		.byte	0x5d
+ 1289 03ca 75       		.byte	0x75
  1290 03cb A3000000 		.4byte	0xa3
  1291 03cf 02       		.uleb128 0x2
  1292 03d0 91       		.byte	0x91
@@ -1575,7 +1609,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1296 03d4 13       		.uleb128 0x13
  1297 03d5 43010000 		.4byte	.LASF60
  1298 03d9 01       		.byte	0x1
- 1299 03da 75       		.byte	0x75
+ 1299 03da 90       		.byte	0x90
  1300 03db 59010000 		.4byte	0x159
  1301 03df 00000000 		.4byte	.LFB69
  1302 03e3 CC000000 		.4byte	.LFE69-.LFB69
@@ -1583,17 +1617,20 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1304 03e8 9C       		.byte	0x9c
  1305 03e9 0C040000 		.4byte	0x40c
  1306 03ed 12       		.uleb128 0x12
- 1307 03ee 8A030000 		.4byte	.LASF61
+ 1307 03ee DA030000 		.4byte	.LASF61
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 28
+
+
  1308 03f2 01       		.byte	0x1
- 1309 03f3 76       		.byte	0x76
+ 1309 03f3 92       		.byte	0x92
  1310 03f4 59010000 		.4byte	0x159
  1311 03f8 03       		.uleb128 0x3
  1312 03f9 91       		.byte	0x91
  1313 03fa EC7C     		.sleb128 -404
  1314 03fc 12       		.uleb128 0x12
- 1315 03fd 8D040000 		.4byte	.LASF62
+ 1315 03fd 97040000 		.4byte	.LASF62
  1316 0401 01       		.byte	0x1
- 1317 0402 7A       		.byte	0x7a
+ 1317 0402 97       		.byte	0x97
  1318 0403 AD010000 		.4byte	0x1ad
  1319 0407 03       		.uleb128 0x3
  1320 0408 91       		.byte	0x91
@@ -1602,7 +1639,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1323 040c 15       		.uleb128 0x15
  1324 040d 2F020000 		.4byte	.LASF87
  1325 0411 01       		.byte	0x1
- 1326 0412 8F       		.byte	0x8f
+ 1326 0412 AE       		.byte	0xae
  1327 0413 A3000000 		.4byte	0xa3
  1328 0417 00000000 		.4byte	.LFB70
  1329 041b 8E000000 		.4byte	.LFE70-.LFB70
@@ -1610,20 +1647,17 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1331 0420 9C       		.byte	0x9c
  1332 0421 4E040000 		.4byte	0x44e
  1333 0425 16       		.uleb128 0x16
- 1334 0426 D7030000 		.4byte	.LASF63
+ 1334 0426 27040000 		.4byte	.LASF63
  1335 042a 01       		.byte	0x1
- 1336 042b 8F       		.byte	0x8f
+ 1336 042b AE       		.byte	0xae
  1337 042c 4E040000 		.4byte	0x44e
  1338 0430 02       		.uleb128 0x2
  1339 0431 91       		.byte	0x91
  1340 0432 64       		.sleb128 -28
  1341 0433 17       		.uleb128 0x17
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 28
-
-
  1342 0434 6E00     		.ascii	"n\000"
  1343 0436 01       		.byte	0x1
- 1344 0437 8F       		.byte	0x8f
+ 1344 0437 AE       		.byte	0xae
  1345 0438 97000000 		.4byte	0x97
  1346 043c 02       		.uleb128 0x2
  1347 043d 91       		.byte	0x91
@@ -1631,7 +1665,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1349 043f 12       		.uleb128 0x12
  1350 0440 3A000000 		.4byte	.LASF64
  1351 0444 01       		.byte	0x1
- 1352 0445 91       		.byte	0x91
+ 1352 0445 B0       		.byte	0xb0
  1353 0446 AF000000 		.4byte	0xaf
  1354 044a 02       		.uleb128 0x2
  1355 044b 91       		.byte	0x91
@@ -1643,7 +1677,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1361 0454 11       		.uleb128 0x11
  1362 0455 14000000 		.4byte	.LASF65
  1363 0459 01       		.byte	0x1
- 1364 045a 9F       		.byte	0x9f
+ 1364 045a C0       		.byte	0xc0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 29
+
+
  1365 045b 00000000 		.4byte	.LFB71
  1366 045f 98000000 		.4byte	.LFE71-.LFB71
  1367 0463 01       		.uleb128 0x1
@@ -1652,7 +1689,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1370 0469 17       		.uleb128 0x17
  1371 046a 6100     		.ascii	"a\000"
  1372 046c 01       		.byte	0x1
- 1373 046d 9F       		.byte	0x9f
+ 1373 046d C0       		.byte	0xc0
  1374 046e 4E040000 		.4byte	0x44e
  1375 0472 02       		.uleb128 0x2
  1376 0473 91       		.byte	0x91
@@ -1660,7 +1697,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1378 0475 17       		.uleb128 0x17
  1379 0476 6E00     		.ascii	"n\000"
  1380 0478 01       		.byte	0x1
- 1381 0479 9F       		.byte	0x9f
+ 1381 0479 C0       		.byte	0xc0
  1382 047a AF000000 		.4byte	0xaf
  1383 047e 02       		.uleb128 0x2
  1384 047f 91       		.byte	0x91
@@ -1668,7 +1705,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1386 0481 18       		.uleb128 0x18
  1387 0482 6900     		.ascii	"i\000"
  1388 0484 01       		.byte	0x1
- 1389 0485 A0       		.byte	0xa0
+ 1389 0485 C1       		.byte	0xc1
  1390 0486 AF000000 		.4byte	0xaf
  1391 048a 02       		.uleb128 0x2
  1392 048b 91       		.byte	0x91
@@ -1676,11 +1713,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1394 048d 18       		.uleb128 0x18
  1395 048e 6A00     		.ascii	"j\000"
  1396 0490 01       		.byte	0x1
- 1397 0491 A0       		.byte	0xa0
+ 1397 0491 C1       		.byte	0xc1
  1398 0492 AF000000 		.4byte	0xaf
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 29
-
-
  1399 0496 02       		.uleb128 0x2
  1400 0497 91       		.byte	0x91
  1401 0498 74       		.sleb128 -12
@@ -1688,7 +1722,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1403 049a 19       		.uleb128 0x19
  1404 049b 1A010000 		.4byte	.LASF66
  1405 049f 01       		.byte	0x1
- 1406 04a0 AA       		.byte	0xaa
+ 1406 04a0 CC       		.byte	0xcc
  1407 04a1 00000000 		.4byte	.LFB72
  1408 04a5 2A000000 		.4byte	.LFE72-.LFB72
  1409 04a9 01       		.uleb128 0x1
@@ -1697,15 +1731,18 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1412 04af 17       		.uleb128 0x17
  1413 04b0 7000     		.ascii	"p\000"
  1414 04b2 01       		.byte	0x1
- 1415 04b3 AA       		.byte	0xaa
+ 1415 04b3 CC       		.byte	0xcc
  1416 04b4 4E040000 		.4byte	0x44e
  1417 04b8 02       		.uleb128 0x2
  1418 04b9 91       		.byte	0x91
  1419 04ba 6C       		.sleb128 -20
  1420 04bb 17       		.uleb128 0x17
  1421 04bc 7100     		.ascii	"q\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 30
+
+
  1422 04be 01       		.byte	0x1
- 1423 04bf AA       		.byte	0xaa
+ 1423 04bf CC       		.byte	0xcc
  1424 04c0 4E040000 		.4byte	0x44e
  1425 04c4 02       		.uleb128 0x2
  1426 04c5 91       		.byte	0x91
@@ -1713,7 +1750,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1428 04c7 18       		.uleb128 0x18
  1429 04c8 7400     		.ascii	"t\000"
  1430 04ca 01       		.byte	0x1
- 1431 04cb AB       		.byte	0xab
+ 1431 04cb CD       		.byte	0xcd
  1432 04cc AF000000 		.4byte	0xaf
  1433 04d0 02       		.uleb128 0x2
  1434 04d1 91       		.byte	0x91
@@ -1729,7 +1766,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1444 04e5 12       		.uleb128 0x12
  1445 04e6 00000000 		.4byte	.LASF67
  1446 04ea 01       		.byte	0x1
- 1447 04eb 14       		.byte	0x14
+ 1447 04eb 15       		.byte	0x15
  1448 04ec D4040000 		.4byte	0x4d4
  1449 04f0 05       		.uleb128 0x5
  1450 04f1 03       		.byte	0x3
@@ -1737,10 +1774,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1452 04f6 12       		.uleb128 0x12
  1453 04f7 4B000000 		.4byte	.LASF68
  1454 04fb 01       		.byte	0x1
- 1455 04fc 15       		.byte	0x15
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 30
-
-
+ 1455 04fc 16       		.byte	0x16
  1456 04fd 81000000 		.4byte	0x81
  1457 0501 05       		.uleb128 0x5
  1458 0502 03       		.byte	0x3
@@ -1748,15 +1782,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1460 0507 12       		.uleb128 0x12
  1461 0508 7C010000 		.4byte	.LASF69
  1462 050c 01       		.byte	0x1
- 1463 050d 17       		.byte	0x17
+ 1463 050d 18       		.byte	0x18
  1464 050e F0000000 		.4byte	0xf0
  1465 0512 05       		.uleb128 0x5
  1466 0513 03       		.byte	0x3
  1467 0514 00000000 		.4byte	line
  1468 0518 12       		.uleb128 0x12
- 1469 0519 EB030000 		.4byte	.LASF70
+ 1469 0519 3B040000 		.4byte	.LASF70
  1470 051d 01       		.byte	0x1
- 1471 051e 18       		.byte	0x18
+ 1471 051e 1B       		.byte	0x1b
  1472 051f F0000000 		.4byte	0xf0
  1473 0523 05       		.uleb128 0x5
  1474 0524 03       		.byte	0x3
@@ -1764,13 +1798,16 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1476 0529 12       		.uleb128 0x12
  1477 052a 0A020000 		.4byte	.LASF71
  1478 052e 01       		.byte	0x1
- 1479 052f 19       		.byte	0x19
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 31
+
+
+ 1479 052f 1C       		.byte	0x1c
  1480 0530 F0000000 		.4byte	0xf0
  1481 0534 05       		.uleb128 0x5
  1482 0535 03       		.byte	0x3
  1483 0536 08010000 		.4byte	pattern
  1484 053a 1B       		.uleb128 0x1b
- 1485 053b 3F030000 		.4byte	.LASF72
+ 1485 053b 8F030000 		.4byte	.LASF72
  1486 053f 0A       		.byte	0xa
  1487 0540 1207     		.2byte	0x712
  1488 0542 46050000 		.4byte	0x546
@@ -1798,9 +1835,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1510 0573 46       		.byte	0x46
  1511 0574 F5010000 		.4byte	0x1f5
  1512 0578 05       		.uleb128 0x5
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 31
-
-
  1513 0579 03       		.byte	0x3
  1514 057a 00000000 		.4byte	modem_info
  1515 057e 1D       		.uleb128 0x1d
@@ -1824,6 +1858,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1533 05a5 B0050000 		.4byte	0x5b0
  1534 05a9 09       		.uleb128 0x9
  1535 05aa E3000000 		.4byte	0xe3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 32
+
+
  1536 05ae 31       		.byte	0x31
  1537 05af 00       		.byte	0
  1538 05b0 1D       		.uleb128 0x1d
@@ -1842,9 +1879,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1551 05cf 9F0F     		.2byte	0xf9f
  1552 05d1 00       		.byte	0
  1553 05d2 1D       		.uleb128 0x1d
- 1554 05d3 7B040000 		.4byte	.LASF78
+ 1554 05d3 85040000 		.4byte	.LASF78
  1555 05d7 09       		.byte	0x9
- 1556 05d8 18       		.byte	0x18
+ 1556 05d8 16       		.byte	0x16
  1557 05d9 C1050000 		.4byte	0x5c1
  1558 05dd 05       		.uleb128 0x5
  1559 05de 03       		.byte	0x3
@@ -1852,15 +1889,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1561 05e3 1D       		.uleb128 0x1d
  1562 05e4 25020000 		.4byte	.LASF79
  1563 05e8 09       		.byte	0x9
- 1564 05e9 19       		.byte	0x19
+ 1564 05e9 17       		.byte	0x17
  1565 05ea C1050000 		.4byte	0x5c1
  1566 05ee 05       		.uleb128 0x5
  1567 05ef 03       		.byte	0x3
  1568 05f0 00000000 		.4byte	http_body
  1569 05f4 08       		.uleb128 0x8
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 32
-
-
  1570 05f5 D5000000 		.4byte	0xd5
  1571 05f9 04060000 		.4byte	0x604
  1572 05fd 09       		.uleb128 0x9
@@ -1868,15 +1902,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1574 0602 C7       		.byte	0xc7
  1575 0603 00       		.byte	0
  1576 0604 1D       		.uleb128 0x1d
- 1577 0605 8F030000 		.4byte	.LASF80
+ 1577 0605 DF030000 		.4byte	.LASF80
  1578 0609 09       		.byte	0x9
- 1579 060a 1A       		.byte	0x1a
+ 1579 060a 18       		.byte	0x18
  1580 060b F4050000 		.4byte	0x5f4
  1581 060f 05       		.uleb128 0x5
  1582 0610 03       		.byte	0x3
  1583 0611 00000000 		.4byte	http_route
  1584 0615 1D       		.uleb128 0x1d
- 1585 0616 20030000 		.4byte	.LASF81
+ 1585 0616 70030000 		.4byte	.LASF81
  1586 061a 09       		.byte	0x9
  1587 061b 3F       		.byte	0x3f
  1588 061c A2020000 		.4byte	0x2a2
@@ -1884,9 +1918,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1590 0621 03       		.byte	0x3
  1591 0622 00000000 		.4byte	system_info
  1592 0626 1D       		.uleb128 0x1d
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 33
+
+
  1593 0627 2D010000 		.4byte	.LASF82
  1594 062b 09       		.byte	0x9
- 1595 062c 4E       		.byte	0x4e
+ 1595 062c 51       		.byte	0x51
  1596 062d 20030000 		.4byte	0x320
  1597 0631 05       		.uleb128 0x5
  1598 0632 03       		.byte	0x3
@@ -1918,9 +1955,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1624 0015 00       		.byte	0
  1625 0016 0B       		.uleb128 0xb
  1626 0017 0B       		.uleb128 0xb
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 33
-
-
  1627 0018 3E       		.uleb128 0x3e
  1628 0019 0B       		.uleb128 0xb
  1629 001a 03       		.uleb128 0x3
@@ -1944,6 +1978,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1647 002c 24       		.uleb128 0x24
  1648 002d 00       		.byte	0
  1649 002e 0B       		.uleb128 0xb
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 34
+
+
  1650 002f 0B       		.uleb128 0xb
  1651 0030 3E       		.uleb128 0x3e
  1652 0031 0B       		.uleb128 0xb
@@ -1978,9 +2015,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1681 004e 00       		.byte	0
  1682 004f 49       		.uleb128 0x49
  1683 0050 13       		.uleb128 0x13
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 34
-
-
  1684 0051 00       		.byte	0
  1685 0052 00       		.byte	0
  1686 0053 08       		.uleb128 0x8
@@ -2004,6 +2038,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1704 0065 0A       		.uleb128 0xa
  1705 0066 13       		.uleb128 0x13
  1706 0067 01       		.byte	0x1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 35
+
+
  1707 0068 0B       		.uleb128 0xb
  1708 0069 05       		.uleb128 0x5
  1709 006a 3A       		.uleb128 0x3a
@@ -2038,9 +2075,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1738 0087 0B       		.uleb128 0xb
  1739 0088 3B       		.uleb128 0x3b
  1740 0089 0B       		.uleb128 0xb
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 35
-
-
  1741 008a 01       		.uleb128 0x1
  1742 008b 13       		.uleb128 0x13
  1743 008c 00       		.byte	0
@@ -2064,6 +2098,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1761 009e 0D       		.uleb128 0xd
  1762 009f 00       		.byte	0
  1763 00a0 03       		.uleb128 0x3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 36
+
+
  1764 00a1 0E       		.uleb128 0xe
  1765 00a2 3A       		.uleb128 0x3a
  1766 00a3 0B       		.uleb128 0xb
@@ -2098,9 +2135,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1795 00c0 18       		.uleb128 0x18
  1796 00c1 9742     		.uleb128 0x2117
  1797 00c3 19       		.uleb128 0x19
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 36
-
-
  1798 00c4 00       		.byte	0
  1799 00c5 00       		.byte	0
  1800 00c6 10       		.uleb128 0x10
@@ -2124,6 +2158,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1818 00d8 18       		.uleb128 0x18
  1819 00d9 9642     		.uleb128 0x2116
  1820 00db 19       		.uleb128 0x19
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 37
+
+
  1821 00dc 00       		.byte	0
  1822 00dd 00       		.byte	0
  1823 00de 11       		.uleb128 0x11
@@ -2158,9 +2195,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1852 00fc 0E       		.uleb128 0xe
  1853 00fd 3A       		.uleb128 0x3a
  1854 00fe 0B       		.uleb128 0xb
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 37
-
-
  1855 00ff 3B       		.uleb128 0x3b
  1856 0100 0B       		.uleb128 0xb
  1857 0101 49       		.uleb128 0x49
@@ -2184,6 +2218,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1875 0113 13       		.uleb128 0x13
  1876 0114 11       		.uleb128 0x11
  1877 0115 01       		.uleb128 0x1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 38
+
+
  1878 0116 12       		.uleb128 0x12
  1879 0117 06       		.uleb128 0x6
  1880 0118 40       		.uleb128 0x40
@@ -2218,9 +2255,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1909 0136 13       		.uleb128 0x13
  1910 0137 11       		.uleb128 0x11
  1911 0138 01       		.uleb128 0x1
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 38
-
-
  1912 0139 12       		.uleb128 0x12
  1913 013a 06       		.uleb128 0x6
  1914 013b 40       		.uleb128 0x40
@@ -2244,6 +2278,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1932 014e 13       		.uleb128 0x13
  1933 014f 02       		.uleb128 0x2
  1934 0150 18       		.uleb128 0x18
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 39
+
+
  1935 0151 00       		.byte	0
  1936 0152 00       		.byte	0
  1937 0153 17       		.uleb128 0x17
@@ -2278,9 +2315,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1966 0170 00       		.byte	0
  1967 0171 19       		.uleb128 0x19
  1968 0172 2E       		.uleb128 0x2e
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 39
-
-
  1969 0173 01       		.byte	0x1
  1970 0174 3F       		.uleb128 0x3f
  1971 0175 19       		.uleb128 0x19
@@ -2304,6 +2338,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  1989 0188 13       		.uleb128 0x13
  1990 0189 00       		.byte	0
  1991 018a 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 40
+
+
  1992 018b 1A       		.uleb128 0x1a
  1993 018c 21       		.uleb128 0x21
  1994 018d 00       		.byte	0
@@ -2338,9 +2375,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2023 01aa 00       		.byte	0
  2024 01ab 00       		.byte	0
  2025 01ac 1D       		.uleb128 0x1d
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 40
-
-
  2026 01ad 34       		.uleb128 0x34
  2027 01ae 00       		.byte	0
  2028 01af 03       		.uleb128 0x3
@@ -2364,6 +2398,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2046 0006 00000000 		.4byte	.Ldebug_info0
  2047 000a 04       		.byte	0x4
  2048 000b 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 41
+
+
  2049 000c 0000     		.2byte	0
  2050 000e 0000     		.2byte	0
  2051 0010 00000000 		.4byte	.LFB64
@@ -2398,9 +2435,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2080 001c 14000000 		.4byte	.LFE64
  2081 0020 00000000 		.4byte	.LFB65
  2082 0024 14000000 		.4byte	.LFE65
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 41
-
-
  2083 0028 00000000 		.4byte	.LFB66
  2084 002c 28000000 		.4byte	.LFE66
  2085 0030 00000000 		.4byte	.LFB67
@@ -2419,11 +2453,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2098 0064 00000000 		.4byte	0
  2099              		.section	.debug_line,"",%progbits
  2100              	.Ldebug_line0:
- 2101 0000 A3020000 		.section	.debug_str,"MS",%progbits,1
+ 2101 0000 A4020000 		.section	.debug_str,"MS",%progbits,1
  2101      02009601 
  2101      00000201 
  2101      FB0E0D00 
  2101      01010101 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 42
+
+
  2102              	.LASF67:
  2103 0000 75617274 		.ascii	"uart_chars\000"
  2103      5F636861 
@@ -2458,9 +2495,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2119 004b 6E756D5F 		.ascii	"num_chars\000"
  2119      63686172 
  2119      7300
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 42
-
-
  2120              	.LASF26:
  2121 0055 616C6C5F 		.ascii	"all_level_readings\000"
  2121      6C657665 
@@ -2484,6 +2518,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2128      20726576 
  2128      6973696F 
  2128      6E203233 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 43
+
+
  2128      37373135 
  2129 00df 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
  2129      66756E63 
@@ -2518,9 +2555,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2143 0143 6C657665 		.ascii	"level_sensor_test\000"
  2143      6C5F7365 
  2143      6E736F72 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 43
-
-
  2143      5F746573 
  2143      7400
  2144              	.LASF14:
@@ -2544,6 +2578,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2154              	.LASF50:
  2155 0181 65705F64 		.ascii	"ep_database\000"
  2155      61746162 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 44
+
+
  2155      61736500 
  2156              	.LASF48:
  2157 018d 65705F75 		.ascii	"ep_user\000"
@@ -2578,9 +2615,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2171      00
  2172              	.LASF34:
  2173 01e2 6D6F6465 		.ascii	"modem_info_t\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 44
-
-
  2173      6D5F696E 
  2173      666F5F74 
  2173      00
@@ -2604,6 +2638,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2183      7400
  2184              	.LASF53:
  2185 021c 75617274 		.ascii	"uart_len\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 45
+
+
  2185      5F6C656E 
  2185      00
  2186              	.LASF79:
@@ -2638,9 +2675,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2198              	.LASF73:
  2199 027d 6D6F6465 		.ascii	"modem_state\000"
  2199      6D5F7374 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 45
-
-
  2199      61746500 
  2200              	.LASF0:
  2201 0289 7369676E 		.ascii	"signed char\000"
@@ -2664,163 +2698,163 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 1
  2209 02bd 6D6F6465 		.ascii	"modem_stats\000"
  2209      6D5F7374 
  2209      61747300 
- 2210              	.LASF44:
- 2211 02c9 7379735F 		.ascii	"sys_info_t\000"
- 2211      696E666F 
- 2211      5F7400
- 2212              	.LASF3:
- 2213 02d4 73686F72 		.ascii	"short unsigned int\000"
- 2213      7420756E 
- 2213      7369676E 
- 2213      65642069 
- 2213      6E7400
- 2214              	.LASF36:
- 2215 02e7 74696D65 		.ascii	"time_to_network_connect\000"
- 2215      5F746F5F 
- 2215      6E657477 
- 2215      6F726B5F 
- 2215      636F6E6E 
- 2216              	.LASF23:
- 2217 02ff 73746174 		.ascii	"status\000"
- 2217      757300
- 2218              	.LASF55:
- 2219 0306 6C657665 		.ascii	"level_sensor_take_reading\000"
- 2219      6C5F7365 
- 2219      6E736F72 
- 2219      5F74616B 
- 2219      655F7265 
- 2220              	.LASF81:
- 2221 0320 73797374 		.ascii	"system_info\000"
- 2221      656D5F69 
- 2221      6E666F00 
- 2222              	.LASF37:
- 2223 032c 74696D65 		.ascii	"time_to_acquire_ip\000"
- 2223      5F746F5F 
- 2223      61637175 
- 2223      6972655F 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 46
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 46
 
 
- 2223      697000
- 2224              	.LASF72:
- 2225 033f 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 2225      52784275 
- 2225      66666572 
- 2225      00
- 2226              	.LASF33:
- 2227 034c 696D6569 		.ascii	"imei\000"
- 2227      00
- 2228              	.LASF12:
- 2229 0351 696E7433 		.ascii	"int32_t\000"
- 2229      325F7400 
- 2230              	.LASF5:
- 2231 0359 5F5F696E 		.ascii	"__int32_t\000"
- 2231      7433325F 
- 2231      7400
- 2232              	.LASF38:
- 2233 0363 6D6F6465 		.ascii	"modem_stats_t\000"
- 2233      6D5F7374 
- 2233      6174735F 
- 2233      7400
- 2234              	.LASF30:
- 2235 0371 6C657665 		.ascii	"level_sensor_t\000"
- 2235      6C5F7365 
- 2235      6E736F72 
- 2235      5F7400
- 2236              	.LASF22:
- 2237 0380 74657374 		.ascii	"test_name\000"
- 2237      5F6E616D 
- 2237      6500
- 2238              	.LASF61:
- 2239 038a 74657374 		.ascii	"test\000"
- 2239      00
- 2240              	.LASF80:
- 2241 038f 68747470 		.ascii	"http_route\000"
- 2241      5F726F75 
- 2241      746500
- 2242              	.LASF59:
- 2243 039a 72656164 		.ascii	"reading\000"
- 2243      696E6700 
- 2244              	.LASF49:
- 2245 03a2 65705F70 		.ascii	"ep_pswd\000"
- 2245      73776400 
- 2246              	.LASF7:
- 2247 03aa 6C6F6E67 		.ascii	"long unsigned int\000"
- 2247      20756E73 
- 2247      69676E65 
- 2247      6420696E 
- 2247      7400
- 2248              	.LASF57:
- 2249 03bc 6C657665 		.ascii	"level_sensor_output\000"
- 2249      6C5F7365 
- 2249      6E736F72 
- 2249      5F6F7574 
- 2249      70757400 
- 2250              	.LASF18:
- 2251 03d0 646F7562 		.ascii	"double\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 47
+ 2210              	.LASF85:
+ 2211 02c9 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
+ 2211      73657273 
+ 2211      5C686169 
+ 2211      6C5C4465 
+ 2211      736B746F 
+ 2212 02f7 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS\\notoriOS.cydsn\000"
+ 2212      6F72694F 
+ 2212      535C6E6F 
+ 2212      746F7269 
+ 2212      4F535C6E 
+ 2213              	.LASF44:
+ 2214 0319 7379735F 		.ascii	"sys_info_t\000"
+ 2214      696E666F 
+ 2214      5F7400
+ 2215              	.LASF3:
+ 2216 0324 73686F72 		.ascii	"short unsigned int\000"
+ 2216      7420756E 
+ 2216      7369676E 
+ 2216      65642069 
+ 2216      6E7400
+ 2217              	.LASF36:
+ 2218 0337 74696D65 		.ascii	"time_to_network_connect\000"
+ 2218      5F746F5F 
+ 2218      6E657477 
+ 2218      6F726B5F 
+ 2218      636F6E6E 
+ 2219              	.LASF23:
+ 2220 034f 73746174 		.ascii	"status\000"
+ 2220      757300
+ 2221              	.LASF55:
+ 2222 0356 6C657665 		.ascii	"level_sensor_take_reading\000"
+ 2222      6C5F7365 
+ 2222      6E736F72 
+ 2222      5F74616B 
+ 2222      655F7265 
+ 2223              	.LASF81:
+ 2224 0370 73797374 		.ascii	"system_info\000"
+ 2224      656D5F69 
+ 2224      6E666F00 
+ 2225              	.LASF37:
+ 2226 037c 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 2226      5F746F5F 
+ 2226      61637175 
+ 2226      6972655F 
+ 2226      697000
+ 2227              	.LASF72:
+ 2228 038f 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2228      52784275 
+ 2228      66666572 
+ 2228      00
+ 2229              	.LASF33:
+ 2230 039c 696D6569 		.ascii	"imei\000"
+ 2230      00
+ 2231              	.LASF12:
+ 2232 03a1 696E7433 		.ascii	"int32_t\000"
+ 2232      325F7400 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 47
 
 
- 2251      6C6500
- 2252              	.LASF63:
- 2253 03d7 61727261 		.ascii	"array\000"
- 2253      7900
- 2254              	.LASF27:
- 2255 03dd 6C657665 		.ascii	"level_reading\000"
- 2255      6C5F7265 
- 2255      6164696E 
- 2255      6700
- 2256              	.LASF70:
- 2257 03eb 6D617463 		.ascii	"match\000"
- 2257      6800
- 2258              	.LASF56:
- 2259 03f1 72785F63 		.ascii	"rx_char\000"
- 2259      68617200 
- 2260              	.LASF58:
- 2261 03f9 746F6B65 		.ascii	"token\000"
- 2261      6E00
- 2262              	.LASF25:
- 2263 03ff 74657374 		.ascii	"test_t\000"
- 2263      5F7400
- 2264              	.LASF45:
- 2265 0406 6E6F6465 		.ascii	"node_id\000"
- 2265      5F696400 
- 2266              	.LASF52:
- 2267 040e 75617274 		.ascii	"uart_string\000"
- 2267      5F737472 
- 2267      696E6700 
- 2268              	.LASF47:
- 2269 041a 65705F70 		.ascii	"ep_port\000"
- 2269      6F727400 
- 2270              	.LASF28:
- 2271 0422 6E756D5F 		.ascii	"num_valid_readings\000"
- 2271      76616C69 
- 2271      645F7265 
- 2271      6164696E 
- 2271      677300
- 2272              	.LASF85:
- 2273 0435 433A5C55 		.ascii	"C:\\Users\\hyfi_admin\\Documents\\GitHub\\notoriOS\\"
- 2273      73657273 
- 2273      5C687966 
- 2273      695F6164 
- 2273      6D696E5C 
- 2274 0463 6E6F746F 		.ascii	"notoriOS\\notoriOS.cydsn\000"
- 2274      72694F53 
- 2274      5C6E6F74 
- 2274      6F72694F 
- 2274      532E6379 
+ 2233              	.LASF5:
+ 2234 03a9 5F5F696E 		.ascii	"__int32_t\000"
+ 2234      7433325F 
+ 2234      7400
+ 2235              	.LASF38:
+ 2236 03b3 6D6F6465 		.ascii	"modem_stats_t\000"
+ 2236      6D5F7374 
+ 2236      6174735F 
+ 2236      7400
+ 2237              	.LASF30:
+ 2238 03c1 6C657665 		.ascii	"level_sensor_t\000"
+ 2238      6C5F7365 
+ 2238      6E736F72 
+ 2238      5F7400
+ 2239              	.LASF22:
+ 2240 03d0 74657374 		.ascii	"test_name\000"
+ 2240      5F6E616D 
+ 2240      6500
+ 2241              	.LASF61:
+ 2242 03da 74657374 		.ascii	"test\000"
+ 2242      00
+ 2243              	.LASF80:
+ 2244 03df 68747470 		.ascii	"http_route\000"
+ 2244      5F726F75 
+ 2244      746500
+ 2245              	.LASF59:
+ 2246 03ea 72656164 		.ascii	"reading\000"
+ 2246      696E6700 
+ 2247              	.LASF49:
+ 2248 03f2 65705F70 		.ascii	"ep_pswd\000"
+ 2248      73776400 
+ 2249              	.LASF7:
+ 2250 03fa 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2250      20756E73 
+ 2250      69676E65 
+ 2250      6420696E 
+ 2250      7400
+ 2251              	.LASF57:
+ 2252 040c 6C657665 		.ascii	"level_sensor_output\000"
+ 2252      6C5F7365 
+ 2252      6E736F72 
+ 2252      5F6F7574 
+ 2252      70757400 
+ 2253              	.LASF18:
+ 2254 0420 646F7562 		.ascii	"double\000"
+ 2254      6C6500
+ 2255              	.LASF63:
+ 2256 0427 61727261 		.ascii	"array\000"
+ 2256      7900
+ 2257              	.LASF27:
+ 2258 042d 6C657665 		.ascii	"level_reading\000"
+ 2258      6C5F7265 
+ 2258      6164696E 
+ 2258      6700
+ 2259              	.LASF70:
+ 2260 043b 6D617463 		.ascii	"match\000"
+ 2260      6800
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccXXV46h.s 			page 48
+
+
+ 2261              	.LASF56:
+ 2262 0441 72785F63 		.ascii	"rx_char\000"
+ 2262      68617200 
+ 2263              	.LASF58:
+ 2264 0449 746F6B65 		.ascii	"token\000"
+ 2264      6E00
+ 2265              	.LASF25:
+ 2266 044f 74657374 		.ascii	"test_t\000"
+ 2266      5F7400
+ 2267              	.LASF45:
+ 2268 0456 6E6F6465 		.ascii	"node_id\000"
+ 2268      5F696400 
+ 2269              	.LASF52:
+ 2270 045e 75617274 		.ascii	"uart_string\000"
+ 2270      5F737472 
+ 2270      696E6700 
+ 2271              	.LASF47:
+ 2272 046a 65705F70 		.ascii	"ep_port\000"
+ 2272      6F727400 
+ 2273              	.LASF28:
+ 2274 0472 6E756D5F 		.ascii	"num_valid_readings\000"
+ 2274      76616C69 
+ 2274      645F7265 
+ 2274      6164696E 
+ 2274      677300
  2275              	.LASF78:
- 2276 047b 68747470 		.ascii	"http_request\000"
+ 2276 0485 68747470 		.ascii	"http_request\000"
  2276      5F726571 
  2276      75657374 
  2276      00
  2277              	.LASF35:
- 2278 0488 72737369 		.ascii	"rssi\000"
+ 2278 0492 72737369 		.ascii	"rssi\000"
  2278      00
  2279              	.LASF62:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccJf81Yb.s 			page 48
-
-
- 2280 048d 73656E73 		.ascii	"sensor\000"
+ 2280 0497 73656E73 		.ascii	"sensor\000"
  2280      6F7200
  2281              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

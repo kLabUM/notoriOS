@@ -2,12 +2,13 @@
 // If I haven't defined my file, then define it, if it is defined, then don't try to do it again (stops infinte loop of the compiler).
 #ifndef _DEBUG_H
 #define _DEBUG_H
- 
-#include "project.h"
+
 #include <stdio.h> //defines three variable types, several macros, and various functions for performing input and output.
 #include <stdlib.h> // defines four variable types, several macros, and various functions for performing general functions.
 #include <time.h> // defines four variable types, two macro and various functions for manipulating date and time.
 #include "testing.h"
+#include "project.h"
+#include "sd_card.h"
     
 // function to get timestamp  
 long getTimeStamp();

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
    8:voltages.c    **** voltage_t voltage_take_readings(){
   48              		.loc 1 8 0
   49              		.cfi_startproc
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 2
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 2
 
 
   50              		@ args = 0, pretend = 0, frame = 96
@@ -74,67 +74,71 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
   60              		.cfi_def_cfa_register 7
   61 0006 7860     		str	r0, [r7, #4]
    9:voltages.c    ****     
-  10:voltages.c    ****     voltage_t voltage;
-  11:voltages.c    ****     /* flip on the ADC pin */
-  12:voltages.c    **** 	Battery_Voltage_Enable_Write(ON);
+  10:voltages.c    ****     voltage_t voltage;  // Create variable voltage of data structure voltage_t.
+  11:voltages.c    ****     
+  12:voltages.c    **** 	Battery_Voltage_Enable_Write(ON);   // Flip on the ADC pin high (turns it on).
   62              		.loc 1 12 0
   63 0008 0120     		movs	r0, #1
   64 000a FFF7FEFF 		bl	Battery_Voltage_Enable_Write
-  13:voltages.c    **** 	CyDelay(10u);	
-  65              		.loc 1 13 0
+  13:voltages.c    ****     
+  14:voltages.c    **** 	CyDelay(10u);	    // 10 seconds delay to give time to flip on ADC pin.
+  65              		.loc 1 14 0
   66 000e 0A20     		movs	r0, #10
   67 0010 FFF7FEFF 		bl	CyDelay
-  14:voltages.c    ****     
-  15:voltages.c    ****     ADC_RestoreConfig();//have to call this and save (See below). Otherwise ADC won't work through 
-  68              		.loc 1 15 0
+  15:voltages.c    ****     
+  16:voltages.c    ****     ADC_RestoreConfig();// Have to call this and save (See below). Otherwise ADC won't work through
+  68              		.loc 1 16 0
   69 0014 FFF7FEFF 		bl	ADC_RestoreConfig
-  16:voltages.c    **** 	/* Start the ADC */
-  17:voltages.c    **** 	ADC_Start(); 
-  70              		.loc 1 17 0
+  17:voltages.c    **** 	
+  18:voltages.c    **** 	ADC_Start();        // Start the ADC
+  70              		.loc 1 18 0
   71 0018 FFF7FEFF 		bl	ADC_Start
-  18:voltages.c    ****    
-  19:voltages.c    ****     ADC_StartConvert();
-  72              		.loc 1 19 0
+  19:voltages.c    ****     
+  20:voltages.c    ****     ADC_StartConvert(); // Forces the ADC to initiate a conversion. If in the "Single Sample" mode,
+  72              		.loc 1 20 0
   73 001c FFF7FEFF 		bl	ADC_StartConvert
-  20:voltages.c    ****     AMux_Start();
-  74              		.loc 1 20 0
+  21:voltages.c    ****     AMux_Start();       // Start the Analog Multiplexer
+  74              		.loc 1 21 0
   75 0020 FFF7FEFF 		bl	AMux_Start
-  21:voltages.c    ****     
-  22:voltages.c    ****     //read ADCvoltage offset 1st (relative to GND)
-  23:voltages.c    ****     float v_offset = 0;
-  76              		.loc 1 23 0
+  22:voltages.c    ****     
+  23:voltages.c    ****     
+  24:voltages.c    ****     float v_offset = 0; //read ADCvoltage offset 1st (relative to GND).
+  76              		.loc 1 24 0
   77 0024 4FF00003 		mov	r3, #0
   78 0028 BB65     		str	r3, [r7, #88]	@ float
   79              	.LBB2:
-  24:voltages.c    ****     
-  25:voltages.c    ****     float channels[AMux_CHANNELS];
-  26:voltages.c    ****     //sweep the MUX Channels
-  27:voltages.c    ****     for(uint8 c = 0; c< AMux_CHANNELS + 1; c++)
-  80              		.loc 1 27 0
+  25:voltages.c    ****     
+  26:voltages.c    ****     float channels[AMux_CHANNELS];
+  27:voltages.c    ****     
+  28:voltages.c    ****     for(uint8 c = 0; c< AMux_CHANNELS + 1; c++) // Sweep the MUX Channels
+  80              		.loc 1 28 0
   81 002a 0023     		movs	r3, #0
   82 002c 87F85F30 		strb	r3, [r7, #95]
   83 0030 34E0     		b	.L2
   84              	.L5:
   85              	.LBB3:
-  28:voltages.c    ****     {
-  29:voltages.c    ****         int32 readings[N_SAMPLES];
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 3
+  29:voltages.c    ****     {
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 3
 
 
-  30:voltages.c    ****         AMux_Select(c);
-  86              		.loc 1 30 0
+  30:voltages.c    ****         
+  31:voltages.c    ****         int32 readings[N_SAMPLES];  // Creates new int32 array called readings of size N_SAMPLES = 
+  32:voltages.c    ****         
+  33:voltages.c    ****         AMux_Select(c); // This functions first disconnects all channels then connects the given ch
+  86              		.loc 1 33 0
   87 0032 97F85F30 		ldrb	r3, [r7, #95]	@ zero_extendqisi2
   88 0036 1846     		mov	r0, r3
   89 0038 FFF7FEFF 		bl	AMux_Select
   90              	.LBB4:
-  31:voltages.c    ****         for(uint16 i=0; i< N_SAMPLES; i++){
-  91              		.loc 1 31 0
+  34:voltages.c    ****         for(uint16 i=0; i< N_SAMPLES; i++){
+  91              		.loc 1 34 0
   92 003c 0023     		movs	r3, #0
   93 003e A7F85C30 		strh	r3, [r7, #92]	@ movhi
   94 0042 0FE0     		b	.L3
   95              	.L4:
-  32:voltages.c    ****             readings[i] = ADC_Read32();
-  96              		.loc 1 32 0 discriminator 3
+  35:voltages.c    ****             
+  36:voltages.c    ****             readings[i] = ADC_Read32(); // When called, it will start ADC conversions, wait for the
+  96              		.loc 1 36 0 discriminator 3
   97 0044 B7F85C40 		ldrh	r4, [r7, #92]
   98 0048 FFF7FEFF 		bl	ADC_Read32
   99 004c 0246     		mov	r2, r0
@@ -142,21 +146,23 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  101 0050 07F16001 		add	r1, r7, #96
  102 0054 0B44     		add	r3, r3, r1
  103 0056 43F8542C 		str	r2, [r3, #-84]
-  31:voltages.c    ****         for(uint16 i=0; i< N_SAMPLES; i++){
- 104              		.loc 1 31 0 discriminator 3
+  34:voltages.c    ****         for(uint16 i=0; i< N_SAMPLES; i++){
+ 104              		.loc 1 34 0 discriminator 3
  105 005a B7F85C30 		ldrh	r3, [r7, #92]
  106 005e 0133     		adds	r3, r3, #1
  107 0060 A7F85C30 		strh	r3, [r7, #92]	@ movhi
  108              	.L3:
-  31:voltages.c    ****         for(uint16 i=0; i< N_SAMPLES; i++){
- 109              		.loc 1 31 0 is_stmt 0 discriminator 1
+  34:voltages.c    ****         for(uint16 i=0; i< N_SAMPLES; i++){
+ 109              		.loc 1 34 0 is_stmt 0 discriminator 1
  110 0064 B7F85C30 		ldrh	r3, [r7, #92]
  111 0068 0A2B     		cmp	r3, #10
  112 006a EBD9     		bls	.L4
  113              	.LBE4:
-  33:voltages.c    ****         }
-  34:voltages.c    ****         channels[c] = ADC_CountsTo_Volts(find_median32(readings,N_SAMPLES));//get median of reading
- 114              		.loc 1 34 0 is_stmt 1 discriminator 2
+  37:voltages.c    ****         }
+  38:voltages.c    ****         // Converts the ADC output to Volts as a floating point number. 
+  39:voltages.c    ****         // Get the median of readings and return that.
+  40:voltages.c    ****         channels[c] = ADC_CountsTo_Volts(find_median32(readings,N_SAMPLES));    //get median of rea
+ 114              		.loc 1 40 0 is_stmt 1 discriminator 2
  115 006c 97F85F40 		ldrb	r4, [r7, #95]	@ zero_extendqisi2
  116 0070 07F10C03 		add	r3, r7, #12
  117 0074 0B21     		movs	r1, #11
@@ -171,43 +177,43 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  126 008c 0B44     		add	r3, r3, r1
  127 008e 43F8282C 		str	r2, [r3, #-40]	@ float
  128              	.LBE3:
-  27:voltages.c    ****     {
- 129              		.loc 1 27 0 discriminator 2
+  28:voltages.c    ****     {
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 4
+
+
+ 129              		.loc 1 28 0 discriminator 2
  130 0092 97F85F30 		ldrb	r3, [r7, #95]	@ zero_extendqisi2
  131 0096 0133     		adds	r3, r3, #1
  132 0098 87F85F30 		strb	r3, [r7, #95]
  133              	.L2:
-  27:voltages.c    ****     {
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 4
-
-
- 134              		.loc 1 27 0 is_stmt 0 discriminator 1
+  28:voltages.c    ****     {
+ 134              		.loc 1 28 0 is_stmt 0 discriminator 1
  135 009c 97F85F30 		ldrb	r3, [r7, #95]	@ zero_extendqisi2
  136 00a0 032B     		cmp	r3, #3
  137 00a2 C6D9     		bls	.L5
  138              	.LBE2:
-  35:voltages.c    ****         
-  36:voltages.c    ****     }
-  37:voltages.c    ****     
-  38:voltages.c    ****     AMux_Stop();
- 139              		.loc 1 38 0 is_stmt 1
+  41:voltages.c    ****         
+  42:voltages.c    ****     }
+  43:voltages.c    ****     
+  44:voltages.c    ****     AMux_Stop();        // Disconnects all Analog Multiplex channels.
+ 139              		.loc 1 44 0 is_stmt 1
  140 00a4 FFF7FEFF 		bl	AMux_Start
-  39:voltages.c    ****     ADC_StopConvert();
- 141              		.loc 1 39 0
+  45:voltages.c    ****     ADC_StopConvert();  // Forces the ADC to stop all conversions.
+ 141              		.loc 1 45 0
  142 00a8 FFF7FEFF 		bl	ADC_StopConvert
-  40:voltages.c    ****     ADC_SaveConfig();
- 143              		.loc 1 40 0
+  46:voltages.c    ****     ADC_SaveConfig();   // Save the register configuration which are not retention.
+ 143              		.loc 1 46 0
  144 00ac FFF7FEFF 		bl	ADC_SaveConfig
-  41:voltages.c    ****     ADC_Stop();
- 145              		.loc 1 41 0
+  47:voltages.c    ****     ADC_Stop();         // Stops and powers down the ADC component and the internal clock if the ex
+ 145              		.loc 1 47 0
  146 00b0 FFF7FEFF 		bl	ADC_Stop
-  42:voltages.c    ****     
-  43:voltages.c    ****     Battery_Voltage_Enable_Write(OFF);
- 147              		.loc 1 43 0
+  48:voltages.c    ****     
+  49:voltages.c    ****     Battery_Voltage_Enable_Write(OFF);  // Pulls ADC pin low (turns it off).
+ 147              		.loc 1 49 0
  148 00b4 0020     		movs	r0, #0
  149 00b6 FFF7FEFF 		bl	Battery_Voltage_Enable_Write
-  44:voltages.c    ****     float offset = channels[0] - 1.024;//should be 1.024 exaclty
- 150              		.loc 1 44 0
+  50:voltages.c    ****     float offset = channels[0] - 1.024; // Should be 1.024 exactly. BK saw an offset when measuring
+ 150              		.loc 1 50 0
  151 00ba BB6B     		ldr	r3, [r7, #56]	@ float
  152 00bc 1846     		mov	r0, r3
  153 00be FFF7FEFF 		bl	__aeabi_f2d
@@ -221,8 +227,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  161 00d4 FFF7FEFF 		bl	__aeabi_d2f
  162 00d8 0346     		mov	r3, r0
  163 00da 7B65     		str	r3, [r7, #84]	@ float
-  45:voltages.c    ****     voltage.voltage_battery = (channels[ADC_MUX_VBAT] * 11) - offset; //voltage divider is (1/10) r
- 164              		.loc 1 45 0
+  51:voltages.c    ****     voltage.voltage_battery = (channels[ADC_MUX_VBAT] * 11) - offset; // Voltage divider is (1/10) 
+ 164              		.loc 1 51 0
  165 00dc FB6B     		ldr	r3, [r7, #60]	@ float
  166 00de 1249     		ldr	r1, .L7+8
  167 00e0 1846     		mov	r0, r3
@@ -232,36 +238,35 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  171 00ea 1846     		mov	r0, r3
  172 00ec FFF7FEFF 		bl	__aeabi_fsub
  173 00f0 0346     		mov	r3, r0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 5
+
+
  174 00f2 7B64     		str	r3, [r7, #68]	@ float
-  46:voltages.c    ****     voltage.voltage_solar = channels[ADC_MUX_VSOL] - offset; //just want voltage here
- 175              		.loc 1 46 0
+  52:voltages.c    ****     voltage.voltage_solar = channels[ADC_MUX_VSOL] - offset; // Just want voltage here
+ 175              		.loc 1 52 0
  176 00f4 3B6C     		ldr	r3, [r7, #64]	@ float
  177 00f6 796D     		ldr	r1, [r7, #84]	@ float
  178 00f8 1846     		mov	r0, r3
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 5
-
-
  179 00fa FFF7FEFF 		bl	__aeabi_fsub
  180 00fe 0346     		mov	r3, r0
  181 0100 BB64     		str	r3, [r7, #72]	@ float
-  47:voltages.c    ****     //votage across sense resistor gives 100mV drop for max current, which is 800mA
-  48:voltages.c    ****     //voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
-  49:voltages.c    ****     
-  50:voltages.c    ****     voltage.valid = 1;
- 182              		.loc 1 50 0
+  53:voltages.c    ****     // Voltage across sensor resistor gives 100mV drop for max current, which is 800mA
+  54:voltages.c    ****     //voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
+  55:voltages.c    ****     
+  56:voltages.c    ****     voltage.valid = 1;
+ 182              		.loc 1 56 0
  183 0102 0123     		movs	r3, #1
  184 0104 87F85030 		strb	r3, [r7, #80]
-  51:voltages.c    ****     
-  52:voltages.c    ****     
-  53:voltages.c    ****     return voltage;
- 185              		.loc 1 53 0
+  57:voltages.c    ****     
+  58:voltages.c    ****     return voltage;
+ 185              		.loc 1 58 0
  186 0108 7B68     		ldr	r3, [r7, #4]
  187 010a 1C46     		mov	r4, r3
  188 010c 07F14403 		add	r3, r7, #68
  189 0110 0FCB     		ldmia	r3, {r0, r1, r2, r3}
  190 0112 84E80F00 		stmia	r4, {r0, r1, r2, r3}
-  54:voltages.c    **** }
- 191              		.loc 1 54 0
+  59:voltages.c    **** }
+ 191              		.loc 1 59 0
  192 0116 7868     		ldr	r0, [r7, #4]
  193 0118 6437     		adds	r7, r7, #100
  194              		.cfi_def_cfa_offset 12
@@ -286,42 +291,42 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  213              		.type	sort32, %function
  214              	sort32:
  215              	.LFB65:
-  55:voltages.c    **** 
-  56:voltages.c    **** 
-  57:voltages.c    **** void sort32(int32 a[],int32 n) { 
- 216              		.loc 1 57 0
+  60:voltages.c    **** 
+  61:voltages.c    **** // Function to sort the elements in the level readings array
+  62:voltages.c    **** void sort32(int32 a[],int32 n) { 
+ 216              		.loc 1 62 0
  217              		.cfi_startproc
  218              		@ args = 0, pretend = 0, frame = 16
  219              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 6
+
+
  220 0000 80B5     		push	{r7, lr}
  221              		.cfi_def_cfa_offset 8
  222              		.cfi_offset 7, -8
  223              		.cfi_offset 14, -4
  224 0002 84B0     		sub	sp, sp, #16
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 6
-
-
  225              		.cfi_def_cfa_offset 24
  226 0004 00AF     		add	r7, sp, #0
  227              		.cfi_def_cfa_register 7
  228 0006 7860     		str	r0, [r7, #4]
  229 0008 3960     		str	r1, [r7]
-  58:voltages.c    ****    int32 i,j;
-  59:voltages.c    **** 
-  60:voltages.c    ****    for(i = 0;i < n-1;i++) {
- 230              		.loc 1 60 0
+  63:voltages.c    ****    int32 i,j;
+  64:voltages.c    **** 
+  65:voltages.c    ****    for(i = 0;i < n-1;i++) {
+ 230              		.loc 1 65 0
  231 000a 0023     		movs	r3, #0
  232 000c FB60     		str	r3, [r7, #12]
  233 000e 28E0     		b	.L10
  234              	.L14:
-  61:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
- 235              		.loc 1 61 0
+  66:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 235              		.loc 1 66 0
  236 0010 0023     		movs	r3, #0
  237 0012 BB60     		str	r3, [r7, #8]
  238 0014 1BE0     		b	.L11
  239              	.L13:
-  62:voltages.c    ****          if(a[j] > a[j+1])
- 240              		.loc 1 62 0
+  67:voltages.c    ****          if(a[j] > a[j+1])
+ 240              		.loc 1 67 0
  241 0016 BB68     		ldr	r3, [r7, #8]
  242 0018 9B00     		lsls	r3, r3, #2
  243 001a 7A68     		ldr	r2, [r7, #4]
@@ -335,8 +340,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  251 002a 1B68     		ldr	r3, [r3]
  252 002c 9A42     		cmp	r2, r3
  253 002e 0BDD     		ble	.L12
-  63:voltages.c    ****             swap32(&a[j],&a[j+1]);
- 254              		.loc 1 63 0
+  68:voltages.c    ****             swap32(&a[j],&a[j+1]);  // Swap the address of a[j] and a[j+1]
+ 254              		.loc 1 68 0
  255 0030 BB68     		ldr	r3, [r7, #8]
  256 0032 9B00     		lsls	r3, r3, #2
  257 0034 7A68     		ldr	r2, [r7, #4]
@@ -349,41 +354,41 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  264 0042 1946     		mov	r1, r3
  265 0044 FFF7FEFF 		bl	swap32
  266              	.L12:
-  61:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
- 267              		.loc 1 61 0 discriminator 2
+  66:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 267              		.loc 1 66 0 discriminator 2
  268 0048 BB68     		ldr	r3, [r7, #8]
  269 004a 0133     		adds	r3, r3, #1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 7
+
+
  270 004c BB60     		str	r3, [r7, #8]
  271              	.L11:
-  61:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
- 272              		.loc 1 61 0 is_stmt 0 discriminator 1
+  66:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 272              		.loc 1 66 0 is_stmt 0 discriminator 1
  273 004e 3A68     		ldr	r2, [r7]
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 7
-
-
  274 0050 FB68     		ldr	r3, [r7, #12]
  275 0052 D31A     		subs	r3, r2, r3
  276 0054 5A1E     		subs	r2, r3, #1
  277 0056 BB68     		ldr	r3, [r7, #8]
  278 0058 9A42     		cmp	r2, r3
  279 005a DCDC     		bgt	.L13
-  60:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
- 280              		.loc 1 60 0 is_stmt 1 discriminator 2
+  65:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 280              		.loc 1 65 0 is_stmt 1 discriminator 2
  281 005c FB68     		ldr	r3, [r7, #12]
  282 005e 0133     		adds	r3, r3, #1
  283 0060 FB60     		str	r3, [r7, #12]
  284              	.L10:
-  60:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
- 285              		.loc 1 60 0 is_stmt 0 discriminator 1
+  65:voltages.c    ****       for(j = 0;j < n-i-1;j++) {
+ 285              		.loc 1 65 0 is_stmt 0 discriminator 1
  286 0062 3B68     		ldr	r3, [r7]
  287 0064 5A1E     		subs	r2, r3, #1
  288 0066 FB68     		ldr	r3, [r7, #12]
  289 0068 9A42     		cmp	r2, r3
  290 006a D1DC     		bgt	.L14
-  64:voltages.c    ****       }
-  65:voltages.c    ****    }
-  66:voltages.c    **** }
- 291              		.loc 1 66 0 is_stmt 1
+  69:voltages.c    ****       }
+  70:voltages.c    ****    }
+  71:voltages.c    **** }
+ 291              		.loc 1 71 0 is_stmt 1
  292 006c 00BF     		nop
  293 006e 1037     		adds	r7, r7, #16
  294              		.cfi_def_cfa_offset 8
@@ -402,9 +407,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  307              		.type	swap32, %function
  308              	swap32:
  309              	.LFB66:
-  67:voltages.c    **** 
-  68:voltages.c    **** void swap32(int32 *p,int32 *q){
- 310              		.loc 1 68 0
+  72:voltages.c    **** 
+  73:voltages.c    **** // Function to swap elements in the level readings array in order to sort them
+  74:voltages.c    **** void swap32(int32 *p,int32 *q){
+ 310              		.loc 1 74 0
  311              		.cfi_startproc
  312              		@ args = 0, pretend = 0, frame = 16
  313              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -412,35 +418,35 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  315 0000 80B4     		push	{r7}
  316              		.cfi_def_cfa_offset 4
  317              		.cfi_offset 7, -4
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 8
+
+
  318 0002 85B0     		sub	sp, sp, #20
  319              		.cfi_def_cfa_offset 24
  320 0004 00AF     		add	r7, sp, #0
  321              		.cfi_def_cfa_register 7
  322 0006 7860     		str	r0, [r7, #4]
  323 0008 3960     		str	r1, [r7]
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 8
-
-
-  69:voltages.c    ****    int32 t;
-  70:voltages.c    ****    
-  71:voltages.c    ****    t=*p; 
- 324              		.loc 1 71 0
+  75:voltages.c    ****    int32 t;
+  76:voltages.c    ****    
+  77:voltages.c    ****    t=*p; 
+ 324              		.loc 1 77 0
  325 000a 7B68     		ldr	r3, [r7, #4]
  326 000c 1B68     		ldr	r3, [r3]
  327 000e FB60     		str	r3, [r7, #12]
-  72:voltages.c    ****    *p=*q; 
- 328              		.loc 1 72 0
+  78:voltages.c    ****    *p=*q; 
+ 328              		.loc 1 78 0
  329 0010 3B68     		ldr	r3, [r7]
  330 0012 1A68     		ldr	r2, [r3]
  331 0014 7B68     		ldr	r3, [r7, #4]
  332 0016 1A60     		str	r2, [r3]
-  73:voltages.c    ****    *q=t;
- 333              		.loc 1 73 0
+  79:voltages.c    ****    *q=t;
+ 333              		.loc 1 79 0
  334 0018 3B68     		ldr	r3, [r7]
  335 001a FA68     		ldr	r2, [r7, #12]
  336 001c 1A60     		str	r2, [r3]
-  74:voltages.c    **** }
- 337              		.loc 1 74 0
+  80:voltages.c    **** }
+ 337              		.loc 1 80 0
  338 001e 00BF     		nop
  339 0020 1437     		adds	r7, r7, #20
  340              		.cfi_def_cfa_offset 4
@@ -465,47 +471,48 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  359              		.type	find_median32, %function
  360              	find_median32:
  361              	.LFB67:
-  75:voltages.c    **** 
-  76:voltages.c    **** // function to calculate the median of the array, after array is sorted
-  77:voltages.c    **** int32 find_median32(int32 array[] , int32 n)
-  78:voltages.c    **** {
- 362              		.loc 1 78 0
+  81:voltages.c    **** 
+  82:voltages.c    **** // Function to calculate the median of the array, after array is sorted
+  83:voltages.c    **** int32 find_median32(int32 array[] , int32 n)
+  84:voltages.c    **** {
+ 362              		.loc 1 84 0
  363              		.cfi_startproc
  364              		@ args = 0, pretend = 0, frame = 16
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 9
+
+
  365              		@ frame_needed = 1, uses_anonymous_args = 0
  366 0000 90B5     		push	{r4, r7, lr}
  367              		.cfi_def_cfa_offset 12
  368              		.cfi_offset 4, -12
  369              		.cfi_offset 7, -8
  370              		.cfi_offset 14, -4
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 9
-
-
  371 0002 85B0     		sub	sp, sp, #20
  372              		.cfi_def_cfa_offset 32
  373 0004 00AF     		add	r7, sp, #0
  374              		.cfi_def_cfa_register 7
  375 0006 7860     		str	r0, [r7, #4]
  376 0008 3960     		str	r1, [r7]
-  79:voltages.c    ****     int32 median=0;
- 377              		.loc 1 79 0
+  85:voltages.c    ****     int32 median=0;
+ 377              		.loc 1 85 0
  378 000a 0023     		movs	r3, #0
  379 000c FB60     		str	r3, [r7, #12]
-  80:voltages.c    ****     sort32(array,n);
- 380              		.loc 1 80 0
+  86:voltages.c    ****     sort32(array,n);
+ 380              		.loc 1 86 0
  381 000e 3968     		ldr	r1, [r7]
  382 0010 7868     		ldr	r0, [r7, #4]
  383 0012 FFF7FEFF 		bl	sort32
-  81:voltages.c    ****     
-  82:voltages.c    ****     // if number of elements are even
-  83:voltages.c    ****     if(n%2 == 0)
- 384              		.loc 1 83 0
+  87:voltages.c    ****     
+  88:voltages.c    ****     // If number of elements are even
+  89:voltages.c    ****     if(n%2 == 0)
+ 384              		.loc 1 89 0
  385 0016 3B68     		ldr	r3, [r7]
  386 0018 03F00103 		and	r3, r3, #1
  387 001c 002B     		cmp	r3, #0
  388 001e 23D1     		bne	.L17
-  84:voltages.c    ****         median = (array[(n-1)/2] + array[n/2])/2.0;
- 389              		.loc 1 84 0
+  90:voltages.c    ****         // Median is the average of the  two middle sorted numbers
+  91:voltages.c    ****         median = (array[(n-1)/2] + array[n/2])/2.0;
+ 389              		.loc 1 91 0
  390 0020 3B68     		ldr	r3, [r7]
  391 0022 013B     		subs	r3, r3, #1
  392 0024 DA0F     		lsrs	r2, r3, #31
@@ -531,6 +538,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  412 0052 FFF7FEFF 		bl	__aeabi_ddiv
  413 0056 0346     		mov	r3, r0
  414 0058 0C46     		mov	r4, r1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 10
+
+
  415 005a 1846     		mov	r0, r3
  416 005c 2146     		mov	r1, r4
  417 005e FFF7FEFF 		bl	__aeabi_d2iz
@@ -538,13 +548,11 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  419 0064 FB60     		str	r3, [r7, #12]
  420 0066 08E0     		b	.L18
  421              	.L17:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 10
-
-
-  85:voltages.c    ****     // if number of elements are odd
-  86:voltages.c    ****     else
-  87:voltages.c    ****         median = array[n/2];
- 422              		.loc 1 87 0
+  92:voltages.c    ****     // If number of elements are odd
+  93:voltages.c    ****     else
+  94:voltages.c    ****         // Median is the the middle sorted number. 
+  95:voltages.c    ****         median = array[n/2];
+ 422              		.loc 1 95 0
  423 0068 3B68     		ldr	r3, [r7]
  424 006a DA0F     		lsrs	r2, r3, #31
  425 006c 1344     		add	r3, r3, r2
@@ -555,12 +563,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  430 0076 1B68     		ldr	r3, [r3]
  431 0078 FB60     		str	r3, [r7, #12]
  432              	.L18:
-  88:voltages.c    ****     
-  89:voltages.c    ****     return median;
- 433              		.loc 1 89 0
+  96:voltages.c    ****     
+  97:voltages.c    ****     return median;
+ 433              		.loc 1 97 0
  434 007a FB68     		ldr	r3, [r7, #12]
-  90:voltages.c    **** }
- 435              		.loc 1 90 0
+  98:voltages.c    **** }
+ 435              		.loc 1 98 0
  436 007c 1846     		mov	r0, r3
  437 007e 1437     		adds	r7, r7, #20
  438              		.cfi_def_cfa_offset 12
@@ -590,17 +598,18 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  454              		.align	2
  455              		.global	voltages_test
  456              		.thumb
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 11
+
+
  457              		.thumb_func
  458              		.type	voltages_test, %function
  459              	voltages_test:
  460              	.LFB68:
-  91:voltages.c    **** 
-  92:voltages.c    **** test_t voltages_test(){
- 461              		.loc 1 92 0
+  99:voltages.c    **** 
+ 100:voltages.c    **** // Test the voltage readings
+ 101:voltages.c    **** test_t voltages_test(){
+ 461              		.loc 1 101 0
  462              		.cfi_startproc
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 11
-
-
  463              		@ args = 0, pretend = 0, frame = 416
  464              		@ frame_needed = 1, uses_anonymous_args = 0
  465 0000 2DE9B043 		push	{r4, r5, r7, r8, r9, lr}
@@ -617,15 +626,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  476              		.cfi_def_cfa 7, 440
  477 0008 3B1D     		adds	r3, r7, #4
  478 000a 1860     		str	r0, [r3]
-  93:voltages.c    ****     
-  94:voltages.c    ****     test_t test;
-  95:voltages.c    ****     test.status = 0;
- 479              		.loc 1 95 0
+ 102:voltages.c    ****     // Create variable test of the data structure test_t
+ 103:voltages.c    ****     test_t test;
+ 104:voltages.c    ****     test.status = 0;
+ 479              		.loc 1 104 0
  480 000c 07F11C03 		add	r3, r7, #28
  481 0010 0022     		movs	r2, #0
  482 0012 83F88020 		strb	r2, [r3, #128]
-  96:voltages.c    ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_ANALOG_VOLTAGES");
- 483              		.loc 1 96 0
+ 105:voltages.c    ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_ANALOG_VOLTAGES");
+ 483              		.loc 1 105 0
  484 0016 07F11C03 		add	r3, r7, #28
  485 001a 264A     		ldr	r2, .L22
  486 001c 1C46     		mov	r4, r3
@@ -636,46 +645,46 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  491 0028 2060     		str	r0, [r4]
  492 002a 0434     		adds	r4, r4, #4
  493 002c 2170     		strb	r1, [r4]
-  97:voltages.c    ****     
-  98:voltages.c    ****     voltage_t voltage = voltage_take_readings();
- 494              		.loc 1 98 0
+ 106:voltages.c    ****     
+ 107:voltages.c    ****     voltage_t voltage = voltage_take_readings();
+ 494              		.loc 1 107 0
  495 002e 07F10C03 		add	r3, r7, #12
  496 0032 1846     		mov	r0, r3
  497 0034 FFF7FEFF 		bl	voltage_take_readings
-  99:voltages.c    ****     
- 100:voltages.c    ****     //do some checks here if you want the test to meet some voltage requrement
- 101:voltages.c    ****     //poipoi
- 102:voltages.c    ****     
- 103:voltages.c    ****     snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f",
- 104:voltages.c    ****             voltage.voltage_battery,
- 498              		.loc 1 104 0
+ 108:voltages.c    ****     
+ 109:voltages.c    ****     //do some checks here if you want the test to meet some voltage requrement
+ 110:voltages.c    ****     //poipoi
+ 111:voltages.c    ****     
+ 112:voltages.c    ****     snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f",
+ 113:voltages.c    ****             voltage.voltage_battery,
+ 498              		.loc 1 113 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 12
+
+
  499 0038 07F10C03 		add	r3, r7, #12
  500 003c 1B68     		ldr	r3, [r3]	@ float
- 103:voltages.c    ****             voltage.voltage_battery,
- 501              		.loc 1 103 0
+ 112:voltages.c    ****             voltage.voltage_battery,
+ 501              		.loc 1 112 0
  502 003e 1846     		mov	r0, r3
  503 0040 FFF7FEFF 		bl	__aeabi_f2d
  504 0044 0446     		mov	r4, r0
  505 0046 0D46     		mov	r5, r1
- 105:voltages.c    ****             voltage.voltage_solar,
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 12
-
-
- 506              		.loc 1 105 0
+ 114:voltages.c    ****             voltage.voltage_solar,
+ 506              		.loc 1 114 0
  507 0048 07F10C03 		add	r3, r7, #12
  508 004c 5B68     		ldr	r3, [r3, #4]	@ float
- 103:voltages.c    ****             voltage.voltage_battery,
- 509              		.loc 1 103 0
+ 112:voltages.c    ****             voltage.voltage_battery,
+ 509              		.loc 1 112 0
  510 004e 1846     		mov	r0, r3
  511 0050 FFF7FEFF 		bl	__aeabi_f2d
  512 0054 8046     		mov	r8, r0
  513 0056 8946     		mov	r9, r1
- 106:voltages.c    ****             voltage.voltage_charge_current);
- 514              		.loc 1 106 0
+ 115:voltages.c    ****             voltage.voltage_charge_current);
+ 514              		.loc 1 115 0
  515 0058 07F10C03 		add	r3, r7, #12
  516 005c 9B68     		ldr	r3, [r3, #8]	@ float
- 103:voltages.c    ****             voltage.voltage_battery,
- 517              		.loc 1 103 0
+ 112:voltages.c    ****             voltage.voltage_battery,
+ 517              		.loc 1 112 0
  518 005e 1846     		mov	r0, r3
  519 0060 FFF7FEFF 		bl	__aeabi_f2d
  520 0064 0246     		mov	r2, r0
@@ -688,15 +697,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  527 007c 0E4A     		ldr	r2, .L22+4
  528 007e 4FF48071 		mov	r1, #256
  529 0082 FFF7FEFF 		bl	snprintf
- 107:voltages.c    ****     
- 108:voltages.c    ****     test.status = 1;
- 530              		.loc 1 108 0
+ 116:voltages.c    ****     
+ 117:voltages.c    ****     test.status = 1;
+ 530              		.loc 1 117 0
  531 0086 07F11C03 		add	r3, r7, #28
  532 008a 0122     		movs	r2, #1
  533 008c 83F88020 		strb	r2, [r3, #128]
- 109:voltages.c    ****         
- 110:voltages.c    ****     return test;
- 534              		.loc 1 110 0
+ 118:voltages.c    ****         
+ 119:voltages.c    ****     return test;
+ 534              		.loc 1 119 0
  535 0090 3B1D     		adds	r3, r7, #4
  536 0092 1A68     		ldr	r2, [r3]
  537 0094 07F11C03 		add	r3, r7, #28
@@ -705,10 +714,13 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  540 009c 40F28113 		movw	r3, #385
  541 00a0 1A46     		mov	r2, r3
  542 00a2 FFF7FEFF 		bl	memcpy
- 111:voltages.c    **** }
- 543              		.loc 1 111 0
+ 120:voltages.c    **** }
+ 543              		.loc 1 120 0
  544 00a6 3B1D     		adds	r3, r7, #4
  545 00a8 1868     		ldr	r0, [r3]
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 13
+
+
  546 00aa 07F5D077 		add	r7, r7, #416
  547              		.cfi_def_cfa_offset 24
  548 00ae BD46     		mov	sp, r7
@@ -718,9 +730,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  552              	.L23:
  553              		.align	2
  554              	.L22:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 13
-
-
  555 00b4 00000000 		.word	.LC0
  556 00b8 18000000 		.word	.LC1
  557              		.cfi_endproc
@@ -728,8 +737,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  559              		.size	voltages_test, .-voltages_test
  560              		.text
  561              	.Letext0:
- 562              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 563              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 562              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
+ 563              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
  564              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
  565              		.file 5 "testing.h"
  566              		.file 6 "voltages.h"
@@ -747,7 +756,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  578 000c 6A000000 		.4byte	.LASF72
  579 0010 0C       		.byte	0xc
  580 0011 FD000000 		.4byte	.LASF73
- 581 0015 98030000 		.4byte	.LASF74
+ 581 0015 85020000 		.4byte	.LASF74
  582 0019 00000000 		.4byte	.Ldebug_ranges0+0
  583 001d 00000000 		.4byte	0
  584 0021 00000000 		.4byte	.Ldebug_line0
@@ -766,9 +775,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  597 003a 02       		.uleb128 0x2
  598 003b 02       		.byte	0x2
  599 003c 07       		.byte	0x7
- 600 003d 90020000 		.4byte	.LASF3
+ 600 003d E0020000 		.4byte	.LASF3
  601 0041 03       		.uleb128 0x3
- 602 0042 67030000 		.4byte	.LASF9
+ 602 0042 B7030000 		.4byte	.LASF9
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 14
+
+
  603 0046 02       		.byte	0x2
  604 0047 3F       		.byte	0x3f
  605 0048 4C000000 		.4byte	0x4c
@@ -778,11 +790,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  609 004f CB010000 		.4byte	.LASF4
  610 0053 02       		.uleb128 0x2
  611 0054 04       		.byte	0x4
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 14
-
-
  612 0055 07       		.byte	0x7
- 613 0056 48030000 		.4byte	.LASF5
+ 613 0056 98030000 		.4byte	.LASF5
  614 005a 02       		.uleb128 0x2
  615 005b 08       		.byte	0x8
  616 005c 05       		.byte	0x5
@@ -800,24 +809,24 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  628 0071 07       		.byte	0x7
  629 0072 60020000 		.4byte	.LASF8
  630 0076 03       		.uleb128 0x3
- 631 0077 FD020000 		.4byte	.LASF10
+ 631 0077 4D030000 		.4byte	.LASF10
  632 007b 03       		.byte	0x3
  633 007c 2C       		.byte	0x2c
  634 007d 41000000 		.4byte	0x41
  635 0081 05       		.uleb128 0x5
  636 0082 49010000 		.4byte	.LASF11
  637 0086 04       		.byte	0x4
- 638 0087 E401     		.2byte	0x1e4
+ 638 0087 9201     		.2byte	0x192
  639 0089 2C000000 		.4byte	0x2c
  640 008d 05       		.uleb128 0x5
- 641 008e 2E030000 		.4byte	.LASF12
+ 641 008e 7E030000 		.4byte	.LASF12
  642 0092 04       		.byte	0x4
- 643 0093 E501     		.2byte	0x1e5
+ 643 0093 9301     		.2byte	0x193
  644 0095 3A000000 		.4byte	0x3a
  645 0099 05       		.uleb128 0x5
  646 009a 9E010000 		.4byte	.LASF13
  647 009e 04       		.byte	0x4
- 648 009f E901     		.2byte	0x1e9
+ 648 009f 9701     		.2byte	0x197
  649 00a1 4C000000 		.4byte	0x4c
  650 00a5 02       		.uleb128 0x2
  651 00a6 04       		.byte	0x4
@@ -826,9 +835,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  654 00ac 02       		.uleb128 0x2
  655 00ad 08       		.byte	0x8
  656 00ae 04       		.byte	0x4
- 657 00af 5A030000 		.4byte	.LASF15
+ 657 00af AA030000 		.4byte	.LASF15
  658 00b3 02       		.uleb128 0x2
  659 00b4 01       		.byte	0x1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 15
+
+
  660 00b5 08       		.byte	0x8
  661 00b6 B2010000 		.4byte	.LASF16
  662 00ba 02       		.uleb128 0x2
@@ -838,9 +850,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  666 00c1 02       		.uleb128 0x2
  667 00c2 04       		.byte	0x4
  668 00c3 07       		.byte	0x7
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 15
-
-
  669 00c4 59000000 		.4byte	.LASF18
  670 00c8 06       		.uleb128 0x6
  671 00c9 B3000000 		.4byte	0xb3
@@ -855,21 +864,21 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  680 00dc 0A       		.byte	0xa
  681 00dd 06010000 		.4byte	0x106
  682 00e1 09       		.uleb128 0x9
- 683 00e2 1F030000 		.4byte	.LASF19
+ 683 00e2 6F030000 		.4byte	.LASF19
  684 00e6 05       		.byte	0x5
- 685 00e7 0B       		.byte	0xb
+ 685 00e7 0C       		.byte	0xc
  686 00e8 06010000 		.4byte	0x106
  687 00ec 00       		.byte	0
  688 00ed 09       		.uleb128 0x9
- 689 00ee BB020000 		.4byte	.LASF20
+ 689 00ee 0B030000 		.4byte	.LASF20
  690 00f2 05       		.byte	0x5
- 691 00f3 0C       		.byte	0xc
+ 691 00f3 0D       		.byte	0xd
  692 00f4 81000000 		.4byte	0x81
  693 00f8 80       		.byte	0x80
  694 00f9 09       		.uleb128 0x9
  695 00fa C4010000 		.4byte	.LASF21
  696 00fe 05       		.byte	0x5
- 697 00ff 0D       		.byte	0xd
+ 697 00ff 0F       		.byte	0xf
  698 0100 16010000 		.4byte	0x116
  699 0104 81       		.byte	0x81
  700 0105 00       		.byte	0
@@ -888,9 +897,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  713 0124 FF       		.byte	0xff
  714 0125 00       		.byte	0
  715 0126 03       		.uleb128 0x3
- 716 0127 81030000 		.4byte	.LASF22
+ 716 0127 D1030000 		.4byte	.LASF22
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 16
+
+
  717 012b 05       		.byte	0x5
- 718 012c 0E       		.byte	0xe
+ 718 012c 10       		.byte	0x10
  719 012d D8000000 		.4byte	0xd8
  720 0131 0A       		.uleb128 0xa
  721 0132 10       		.byte	0x10
@@ -898,9 +910,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  723 0134 0F       		.byte	0xf
  724 0135 6A010000 		.4byte	0x16a
  725 0139 09       		.uleb128 0x9
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 16
-
-
  726 013a 27010000 		.4byte	.LASF23
  727 013e 06       		.byte	0x6
  728 013f 10       		.byte	0x10
@@ -913,7 +922,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  735 014c A5000000 		.4byte	0xa5
  736 0150 04       		.byte	0x4
  737 0151 09       		.uleb128 0x9
- 738 0152 DE030000 		.4byte	.LASF25
+ 738 0152 E8030000 		.4byte	.LASF25
  739 0156 06       		.byte	0x6
  740 0157 12       		.byte	0x12
  741 0158 A5000000 		.4byte	0xa5
@@ -926,7 +935,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  748 0168 0C       		.byte	0xc
  749 0169 00       		.byte	0
  750 016a 03       		.uleb128 0x3
- 751 016b F3020000 		.4byte	.LASF27
+ 751 016b 43030000 		.4byte	.LASF27
  752 016f 06       		.byte	0x6
  753 0170 14       		.byte	0x14
  754 0171 31010000 		.4byte	0x131
@@ -948,7 +957,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  770 0190 A2010000 		.4byte	0x1a2
  771 0194 14       		.byte	0x14
  772 0195 09       		.uleb128 0x9
- 773 0196 EE020000 		.4byte	.LASF30
+ 773 0196 3E030000 		.4byte	.LASF30
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 17
+
+
  774 019a 07       		.byte	0x7
  775 019b 2F       		.byte	0x2f
  776 019c A2010000 		.4byte	0x1a2
@@ -958,9 +970,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  780 01a3 B3000000 		.4byte	0xb3
  781 01a7 B2010000 		.4byte	0x1b2
  782 01ab 07       		.uleb128 0x7
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 17
-
-
  783 01ac C1000000 		.4byte	0xc1
  784 01b0 13       		.byte	0x13
  785 01b1 00       		.byte	0
@@ -975,7 +984,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  794 01c0 32       		.byte	0x32
  795 01c1 F5010000 		.4byte	0x1f5
  796 01c5 09       		.uleb128 0x9
- 797 01c6 F5030000 		.4byte	.LASF32
+ 797 01c6 FF030000 		.4byte	.LASF32
  798 01ca 07       		.byte	0x7
  799 01cb 33       		.byte	0x33
  800 01cc 81000000 		.4byte	0x81
@@ -987,20 +996,20 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  806 01d7 81000000 		.4byte	0x81
  807 01db 01       		.byte	0x1
  808 01dc 09       		.uleb128 0x9
- 809 01dd A3020000 		.4byte	.LASF33
+ 809 01dd F3020000 		.4byte	.LASF33
  810 01e1 07       		.byte	0x7
  811 01e2 35       		.byte	0x35
  812 01e3 68000000 		.4byte	0x68
  813 01e7 04       		.byte	0x4
  814 01e8 09       		.uleb128 0x9
- 815 01e9 CE020000 		.4byte	.LASF34
+ 815 01e9 1E030000 		.4byte	.LASF34
  816 01ed 07       		.byte	0x7
  817 01ee 36       		.byte	0x36
  818 01ef 68000000 		.4byte	0x68
  819 01f3 08       		.byte	0x8
  820 01f4 00       		.byte	0
  821 01f5 03       		.uleb128 0x3
- 822 01f6 05030000 		.4byte	.LASF35
+ 822 01f6 55030000 		.4byte	.LASF35
  823 01fa 07       		.byte	0x7
  824 01fb 37       		.byte	0x37
  825 01fc BD010000 		.4byte	0x1bd
@@ -1009,6 +1018,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  828 0202 08       		.byte	0x8
  829 0203 0F       		.byte	0xf
  830 0204 2D020000 		.4byte	0x22d
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 18
+
+
  831 0208 0B       		.uleb128 0xb
  832 0209 6B657900 		.ascii	"key\000"
  833 020d 08       		.byte	0x8
@@ -1018,9 +1030,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  837 0214 09       		.uleb128 0x9
  838 0215 21010000 		.4byte	.LASF36
  839 0219 08       		.byte	0x8
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 18
-
-
  840 021a 11       		.byte	0x11
  841 021b A2010000 		.4byte	0x1a2
  842 021f 14       		.byte	0x14
@@ -1039,18 +1048,18 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  855 0238 0A       		.uleb128 0xa
  856 0239 1C       		.byte	0x1c
  857 023a 09       		.byte	0x9
- 858 023b 39       		.byte	0x39
+ 858 023b 37       		.byte	0x37
  859 023c 59020000 		.4byte	0x259
  860 0240 09       		.uleb128 0x9
  861 0241 DC010000 		.4byte	.LASF39
  862 0245 09       		.byte	0x9
- 863 0246 3B       		.byte	0x3b
+ 863 0246 39       		.byte	0x39
  864 0247 59020000 		.4byte	0x259
  865 024b 00       		.byte	0
  866 024c 09       		.uleb128 0x9
  867 024d 34000000 		.4byte	.LASF40
  868 0251 09       		.byte	0x9
- 869 0252 3C       		.byte	0x3c
+ 869 0252 3A       		.byte	0x3a
  870 0253 C8000000 		.4byte	0xc8
  871 0257 04       		.byte	0x4
  872 0258 00       		.byte	0
@@ -1058,52 +1067,52 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  874 025a 04       		.byte	0x4
  875 025b B2010000 		.4byte	0x1b2
  876 025f 03       		.uleb128 0x3
- 877 0260 85020000 		.4byte	.LASF41
+ 877 0260 D5020000 		.4byte	.LASF41
  878 0264 09       		.byte	0x9
- 879 0265 3E       		.byte	0x3e
+ 879 0265 3C       		.byte	0x3c
  880 0266 38020000 		.4byte	0x238
  881 026a 08       		.uleb128 0x8
  882 026b 4401     		.2byte	0x144
  883 026d 09       		.byte	0x9
- 884 026e 41       		.byte	0x41
+ 884 026e 42       		.byte	0x42
  885 026f BD020000 		.4byte	0x2bd
  886 0273 09       		.uleb128 0x9
- 887 0274 88030000 		.4byte	.LASF42
+ 887 0274 D8030000 		.4byte	.LASF42
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 19
+
+
  888 0278 09       		.byte	0x9
- 889 0279 44       		.byte	0x44
+ 889 0279 45       		.byte	0x45
  890 027a A2010000 		.4byte	0x1a2
  891 027e 00       		.byte	0
  892 027f 09       		.uleb128 0x9
  893 0280 62000000 		.4byte	.LASF43
  894 0284 09       		.byte	0x9
- 895 0285 46       		.byte	0x46
+ 895 0285 47       		.byte	0x47
  896 0286 BD020000 		.4byte	0x2bd
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 19
-
-
  897 028a 14       		.byte	0x14
  898 028b 09       		.uleb128 0x9
- 899 028c 90030000 		.4byte	.LASF44
+ 899 028c E0030000 		.4byte	.LASF44
  900 0290 09       		.byte	0x9
- 901 0291 47       		.byte	0x47
+ 901 0291 48       		.byte	0x48
  902 0292 68000000 		.4byte	0x68
  903 0296 78       		.byte	0x78
  904 0297 09       		.uleb128 0x9
  905 0298 62010000 		.4byte	.LASF45
  906 029c 09       		.byte	0x9
- 907 029d 48       		.byte	0x48
+ 907 029d 49       		.byte	0x49
  908 029e CD020000 		.4byte	0x2cd
  909 02a2 7C       		.byte	0x7c
  910 02a3 09       		.uleb128 0x9
- 911 02a4 40030000 		.4byte	.LASF46
+ 911 02a4 90030000 		.4byte	.LASF46
  912 02a8 09       		.byte	0x9
- 913 02a9 49       		.byte	0x49
+ 913 02a9 4A       		.byte	0x4a
  914 02aa BD020000 		.4byte	0x2bd
  915 02ae AE       		.byte	0xae
  916 02af 0D       		.uleb128 0xd
  917 02b0 56010000 		.4byte	.LASF47
  918 02b4 09       		.byte	0x9
- 919 02b5 4A       		.byte	0x4a
+ 919 02b5 4B       		.byte	0x4b
  920 02b6 CD020000 		.4byte	0x2cd
  921 02ba 1201     		.2byte	0x112
  922 02bc 00       		.byte	0
@@ -1124,11 +1133,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  937 02dd 03       		.uleb128 0x3
  938 02de 1E000000 		.4byte	.LASF48
  939 02e2 09       		.byte	0x9
- 940 02e3 4D       		.byte	0x4d
+ 940 02e3 4E       		.byte	0x4e
  941 02e4 6A020000 		.4byte	0x26a
  942 02e8 0E       		.uleb128 0xe
  943 02e9 74010000 		.4byte	.LASF54
  944 02ed 01       		.byte	0x1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 20
+
+
  945 02ee 08       		.byte	0x8
  946 02ef 6A010000 		.4byte	0x16a
  947 02f3 00000000 		.4byte	.LFB64
@@ -1138,9 +1150,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  951 02fd 7F030000 		.4byte	0x37f
  952 0301 0F       		.uleb128 0xf
  953 0302 D4010000 		.4byte	.LASF49
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 20
-
-
  954 0306 01       		.byte	0x1
  955 0307 0A       		.byte	0xa
  956 0308 6A010000 		.4byte	0x16a
@@ -1148,9 +1157,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  958 030d 91       		.byte	0x91
  959 030e 54       		.sleb128 -44
  960 030f 0F       		.uleb128 0xf
- 961 0310 71030000 		.4byte	.LASF50
+ 961 0310 C1030000 		.4byte	.LASF50
  962 0314 01       		.byte	0x1
- 963 0315 17       		.byte	0x17
+ 963 0315 18       		.byte	0x18
  964 0316 A5000000 		.4byte	0xa5
  965 031a 02       		.uleb128 0x2
  966 031b 91       		.byte	0x91
@@ -1158,15 +1167,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  968 031d 0F       		.uleb128 0xf
  969 031e 08010000 		.4byte	.LASF51
  970 0322 01       		.byte	0x1
- 971 0323 19       		.byte	0x19
+ 971 0323 1A       		.byte	0x1a
  972 0324 7F030000 		.4byte	0x37f
  973 0328 02       		.uleb128 0x2
  974 0329 91       		.byte	0x91
  975 032a 48       		.sleb128 -56
  976 032b 0F       		.uleb128 0xf
- 977 032c 7A030000 		.4byte	.LASF52
+ 977 032c CA030000 		.4byte	.LASF52
  978 0330 01       		.byte	0x1
- 979 0331 2C       		.byte	0x2c
+ 979 0331 32       		.byte	0x32
  980 0332 A5000000 		.4byte	0xa5
  981 0336 02       		.uleb128 0x2
  982 0337 91       		.byte	0x91
@@ -1177,7 +1186,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  987 0342 11       		.uleb128 0x11
  988 0343 6300     		.ascii	"c\000"
  989 0345 01       		.byte	0x1
- 990 0346 1B       		.byte	0x1b
+ 990 0346 1C       		.byte	0x1c
  991 0347 81000000 		.4byte	0x81
  992 034b 02       		.uleb128 0x2
  993 034c 91       		.byte	0x91
@@ -1186,9 +1195,12 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  996 034f 32000000 		.4byte	.LBB3
  997 0353 60000000 		.4byte	.LBE3-.LBB3
  998 0357 0F       		.uleb128 0xf
- 999 0358 FA030000 		.4byte	.LASF53
+ 999 0358 04040000 		.4byte	.LASF53
  1000 035c 01       		.byte	0x1
- 1001 035d 1D       		.byte	0x1d
+ 1001 035d 1F       		.byte	0x1f
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 21
+
+
  1002 035e 8F030000 		.4byte	0x38f
  1003 0362 03       		.uleb128 0x3
  1004 0363 91       		.byte	0x91
@@ -1198,11 +1210,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1008 036b 30000000 		.4byte	.LBE4-.LBB4
  1009 036f 11       		.uleb128 0x11
  1010 0370 6900     		.ascii	"i\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 21
-
-
  1011 0372 01       		.byte	0x1
- 1012 0373 1F       		.byte	0x1f
+ 1012 0373 22       		.byte	0x22
  1013 0374 8D000000 		.4byte	0x8d
  1014 0378 02       		.uleb128 0x2
  1015 0379 91       		.byte	0x91
@@ -1228,7 +1237,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1035 039f 12       		.uleb128 0x12
  1036 03a0 E7010000 		.4byte	.LASF55
  1037 03a4 01       		.byte	0x1
- 1038 03a5 39       		.byte	0x39
+ 1038 03a5 3E       		.byte	0x3e
  1039 03a6 00000000 		.4byte	.LFB65
  1040 03aa 74000000 		.4byte	.LFE65-.LFB65
  1041 03ae 01       		.uleb128 0x1
@@ -1237,7 +1246,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1044 03b4 13       		.uleb128 0x13
  1045 03b5 6100     		.ascii	"a\000"
  1046 03b7 01       		.byte	0x1
- 1047 03b8 39       		.byte	0x39
+ 1047 03b8 3E       		.byte	0x3e
  1048 03b9 E5030000 		.4byte	0x3e5
  1049 03bd 02       		.uleb128 0x2
  1050 03be 91       		.byte	0x91
@@ -1245,26 +1254,26 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1052 03c0 13       		.uleb128 0x13
  1053 03c1 6E00     		.ascii	"n\000"
  1054 03c3 01       		.byte	0x1
- 1055 03c4 39       		.byte	0x39
+ 1055 03c4 3E       		.byte	0x3e
  1056 03c5 99000000 		.4byte	0x99
  1057 03c9 02       		.uleb128 0x2
  1058 03ca 91       		.byte	0x91
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 22
+
+
  1059 03cb 68       		.sleb128 -24
  1060 03cc 11       		.uleb128 0x11
  1061 03cd 6900     		.ascii	"i\000"
  1062 03cf 01       		.byte	0x1
- 1063 03d0 3A       		.byte	0x3a
+ 1063 03d0 3F       		.byte	0x3f
  1064 03d1 99000000 		.4byte	0x99
  1065 03d5 02       		.uleb128 0x2
  1066 03d6 91       		.byte	0x91
  1067 03d7 74       		.sleb128 -12
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 22
-
-
  1068 03d8 11       		.uleb128 0x11
  1069 03d9 6A00     		.ascii	"j\000"
  1070 03db 01       		.byte	0x1
- 1071 03dc 3A       		.byte	0x3a
+ 1071 03dc 3F       		.byte	0x3f
  1072 03dd 99000000 		.4byte	0x99
  1073 03e1 02       		.uleb128 0x2
  1074 03e2 91       		.byte	0x91
@@ -1276,7 +1285,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1080 03eb 14       		.uleb128 0x14
  1081 03ec 4F010000 		.4byte	.LASF56
  1082 03f0 01       		.byte	0x1
- 1083 03f1 44       		.byte	0x44
+ 1083 03f1 4A       		.byte	0x4a
  1084 03f2 00000000 		.4byte	.LFB66
  1085 03f6 28000000 		.4byte	.LFE66-.LFB66
  1086 03fa 01       		.uleb128 0x1
@@ -1285,7 +1294,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1089 0400 13       		.uleb128 0x13
  1090 0401 7000     		.ascii	"p\000"
  1091 0403 01       		.byte	0x1
- 1092 0404 44       		.byte	0x44
+ 1092 0404 4A       		.byte	0x4a
  1093 0405 E5030000 		.4byte	0x3e5
  1094 0409 02       		.uleb128 0x2
  1095 040a 91       		.byte	0x91
@@ -1293,7 +1302,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1097 040c 13       		.uleb128 0x13
  1098 040d 7100     		.ascii	"q\000"
  1099 040f 01       		.byte	0x1
- 1100 0410 44       		.byte	0x44
+ 1100 0410 4A       		.byte	0x4a
  1101 0411 E5030000 		.4byte	0x3e5
  1102 0415 02       		.uleb128 0x2
  1103 0416 91       		.byte	0x91
@@ -1301,7 +1310,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1105 0418 11       		.uleb128 0x11
  1106 0419 7400     		.ascii	"t\000"
  1107 041b 01       		.byte	0x1
- 1108 041c 45       		.byte	0x45
+ 1108 041c 4B       		.byte	0x4b
  1109 041d 99000000 		.4byte	0x99
  1110 0421 02       		.uleb128 0x2
  1111 0422 91       		.byte	0x91
@@ -1309,8 +1318,11 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1113 0424 00       		.byte	0
  1114 0425 15       		.uleb128 0x15
  1115 0426 2F020000 		.4byte	.LASF75
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 23
+
+
  1116 042a 01       		.byte	0x1
- 1117 042b 4D       		.byte	0x4d
+ 1117 042b 53       		.byte	0x53
  1118 042c 99000000 		.4byte	0x99
  1119 0430 00000000 		.4byte	.LFB67
  1120 0434 84000000 		.4byte	.LFE67-.LFB67
@@ -1318,12 +1330,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1122 0439 9C       		.byte	0x9c
  1123 043a 67040000 		.4byte	0x467
  1124 043e 16       		.uleb128 0x16
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 23
-
-
- 1125 043f 61030000 		.4byte	.LASF57
+ 1125 043f B1030000 		.4byte	.LASF57
  1126 0443 01       		.byte	0x1
- 1127 0444 4D       		.byte	0x4d
+ 1127 0444 53       		.byte	0x53
  1128 0445 E5030000 		.4byte	0x3e5
  1129 0449 02       		.uleb128 0x2
  1130 044a 91       		.byte	0x91
@@ -1331,7 +1340,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1132 044c 13       		.uleb128 0x13
  1133 044d 6E00     		.ascii	"n\000"
  1134 044f 01       		.byte	0x1
- 1135 0450 4D       		.byte	0x4d
+ 1135 0450 53       		.byte	0x53
  1136 0451 99000000 		.4byte	0x99
  1137 0455 02       		.uleb128 0x2
  1138 0456 91       		.byte	0x91
@@ -1339,7 +1348,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1140 0458 0F       		.uleb128 0xf
  1141 0459 2D000000 		.4byte	.LASF58
  1142 045d 01       		.byte	0x1
- 1143 045e 4F       		.byte	0x4f
+ 1143 045e 55       		.byte	0x55
  1144 045f 99000000 		.4byte	0x99
  1145 0463 02       		.uleb128 0x2
  1146 0464 91       		.byte	0x91
@@ -1348,7 +1357,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1149 0467 0E       		.uleb128 0xe
  1150 0468 90010000 		.4byte	.LASF59
  1151 046c 01       		.byte	0x1
- 1152 046d 5C       		.byte	0x5c
+ 1152 046d 65       		.byte	0x65
  1153 046e 26010000 		.4byte	0x126
  1154 0472 00000000 		.4byte	.LFB68
  1155 0476 BC000000 		.4byte	.LFE68-.LFB68
@@ -1356,9 +1365,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1157 047b 9C       		.byte	0x9c
  1158 047c 9F040000 		.4byte	0x49f
  1159 0480 0F       		.uleb128 0xf
- 1160 0481 29030000 		.4byte	.LASF60
+ 1160 0481 79030000 		.4byte	.LASF60
  1161 0485 01       		.byte	0x1
- 1162 0486 5E       		.byte	0x5e
+ 1162 0486 67       		.byte	0x67
  1163 0487 26010000 		.4byte	0x126
  1164 048b 03       		.uleb128 0x3
  1165 048c 91       		.byte	0x91
@@ -1366,24 +1375,24 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1167 048f 0F       		.uleb128 0xf
  1168 0490 D4010000 		.4byte	.LASF49
  1169 0494 01       		.byte	0x1
- 1170 0495 62       		.byte	0x62
+ 1170 0495 6B       		.byte	0x6b
  1171 0496 6A010000 		.4byte	0x16a
  1172 049a 03       		.uleb128 0x3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 24
+
+
  1173 049b 91       		.byte	0x91
  1174 049c D47C     		.sleb128 -428
  1175 049e 00       		.byte	0
  1176 049f 17       		.uleb128 0x17
- 1177 04a0 E1020000 		.4byte	.LASF61
+ 1177 04a0 31030000 		.4byte	.LASF61
  1178 04a4 0A       		.byte	0xa
  1179 04a5 1207     		.2byte	0x712
  1180 04a7 AB040000 		.4byte	0x4ab
  1181 04ab 18       		.uleb128 0x18
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 24
-
-
  1182 04ac 76000000 		.4byte	0x76
  1183 04b0 19       		.uleb128 0x19
- 1184 04b1 13030000 		.4byte	.LASF62
+ 1184 04b1 63030000 		.4byte	.LASF62
  1185 04b5 07       		.byte	0x7
  1186 04b6 15       		.byte	0x15
  1187 04b7 81000000 		.4byte	0x81
@@ -1429,6 +1438,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1227 050f C1000000 		.4byte	0xc1
  1228 0513 31       		.byte	0x31
  1229 0514 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 25
+
+
  1230 0515 19       		.uleb128 0x19
  1231 0516 F8000000 		.4byte	.LASF66
  1232 051a 08       		.byte	0x8
@@ -1438,9 +1450,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1236 0521 03       		.byte	0x3
  1237 0522 00000000 		.4byte	data
  1238 0526 06       		.uleb128 0x6
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 25
-
-
  1239 0527 B3000000 		.4byte	0xb3
  1240 052b 37050000 		.4byte	0x537
  1241 052f 1A       		.uleb128 0x1a
@@ -1450,7 +1459,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1245 0537 19       		.uleb128 0x19
  1246 0538 4C000000 		.4byte	.LASF67
  1247 053c 09       		.byte	0x9
- 1248 053d 18       		.byte	0x18
+ 1248 053d 16       		.byte	0x16
  1249 053e 26050000 		.4byte	0x526
  1250 0542 05       		.uleb128 0x5
  1251 0543 03       		.byte	0x3
@@ -1458,7 +1467,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1253 0548 19       		.uleb128 0x19
  1254 0549 EE010000 		.4byte	.LASF68
  1255 054d 09       		.byte	0x9
- 1256 054e 19       		.byte	0x19
+ 1256 054e 17       		.byte	0x17
  1257 054f 26050000 		.4byte	0x526
  1258 0553 05       		.uleb128 0x5
  1259 0554 03       		.byte	0x3
@@ -1471,15 +1480,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1266 0567 C7       		.byte	0xc7
  1267 0568 00       		.byte	0
  1268 0569 19       		.uleb128 0x19
- 1269 056a 35030000 		.4byte	.LASF69
+ 1269 056a 85030000 		.4byte	.LASF69
  1270 056e 09       		.byte	0x9
- 1271 056f 1A       		.byte	0x1a
+ 1271 056f 18       		.byte	0x18
  1272 0570 59050000 		.4byte	0x559
  1273 0574 05       		.uleb128 0x5
  1274 0575 03       		.byte	0x3
  1275 0576 00000000 		.4byte	http_route
  1276 057a 19       		.uleb128 0x19
- 1277 057b C2020000 		.4byte	.LASF70
+ 1277 057b 12030000 		.4byte	.LASF70
  1278 057f 09       		.byte	0x9
  1279 0580 3F       		.byte	0x3f
  1280 0581 5F020000 		.4byte	0x25f
@@ -1489,7 +1498,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1284 058b 19       		.uleb128 0x19
  1285 058c 11010000 		.4byte	.LASF71
  1286 0590 09       		.byte	0x9
- 1287 0591 4E       		.byte	0x4e
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 26
+
+
+ 1287 0591 51       		.byte	0x51
  1288 0592 DD020000 		.4byte	0x2dd
  1289 0596 05       		.uleb128 0x5
  1290 0597 03       		.byte	0x3
@@ -1498,9 +1510,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1293              		.section	.debug_abbrev,"",%progbits
  1294              	.Ldebug_abbrev0:
  1295 0000 01       		.uleb128 0x1
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 26
-
-
  1296 0001 11       		.uleb128 0x11
  1297 0002 01       		.byte	0x1
  1298 0003 25       		.uleb128 0x25
@@ -1549,6 +1558,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1341 002e 0B       		.uleb128 0xb
  1342 002f 0B       		.uleb128 0xb
  1343 0030 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 27
+
+
  1344 0031 0B       		.uleb128 0xb
  1345 0032 03       		.uleb128 0x3
  1346 0033 08       		.uleb128 0x8
@@ -1558,9 +1570,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1350 0037 16       		.uleb128 0x16
  1351 0038 00       		.byte	0
  1352 0039 03       		.uleb128 0x3
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 27
-
-
  1353 003a 0E       		.uleb128 0xe
  1354 003b 3A       		.uleb128 0x3a
  1355 003c 0B       		.uleb128 0xb
@@ -1609,6 +1618,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1398 0067 3A       		.uleb128 0x3a
  1399 0068 0B       		.uleb128 0xb
  1400 0069 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 28
+
+
  1401 006a 0B       		.uleb128 0xb
  1402 006b 49       		.uleb128 0x49
  1403 006c 13       		.uleb128 0x13
@@ -1618,9 +1630,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1407 0070 00       		.byte	0
  1408 0071 0A       		.uleb128 0xa
  1409 0072 13       		.uleb128 0x13
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 28
-
-
  1410 0073 01       		.byte	0x1
  1411 0074 0B       		.uleb128 0xb
  1412 0075 0B       		.uleb128 0xb
@@ -1669,6 +1678,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1455 00a0 13       		.uleb128 0x13
  1456 00a1 38       		.uleb128 0x38
  1457 00a2 05       		.uleb128 0x5
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 29
+
+
  1458 00a3 00       		.byte	0
  1459 00a4 00       		.byte	0
  1460 00a5 0E       		.uleb128 0xe
@@ -1678,9 +1690,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1464 00a9 19       		.uleb128 0x19
  1465 00aa 03       		.uleb128 0x3
  1466 00ab 0E       		.uleb128 0xe
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 29
-
-
  1467 00ac 3A       		.uleb128 0x3a
  1468 00ad 0B       		.uleb128 0xb
  1469 00ae 3B       		.uleb128 0x3b
@@ -1729,6 +1738,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1512 00da 03       		.uleb128 0x3
  1513 00db 08       		.uleb128 0x8
  1514 00dc 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 30
+
+
  1515 00dd 0B       		.uleb128 0xb
  1516 00de 3B       		.uleb128 0x3b
  1517 00df 0B       		.uleb128 0xb
@@ -1738,9 +1750,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1521 00e3 18       		.uleb128 0x18
  1522 00e4 00       		.byte	0
  1523 00e5 00       		.byte	0
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 30
-
-
  1524 00e6 12       		.uleb128 0x12
  1525 00e7 2E       		.uleb128 0x2e
  1526 00e8 01       		.byte	0x1
@@ -1789,6 +1798,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1569 0114 03       		.uleb128 0x3
  1570 0115 0E       		.uleb128 0xe
  1571 0116 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 31
+
+
  1572 0117 0B       		.uleb128 0xb
  1573 0118 3B       		.uleb128 0x3b
  1574 0119 0B       		.uleb128 0xb
@@ -1798,9 +1810,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1578 011d 01       		.uleb128 0x1
  1579 011e 12       		.uleb128 0x12
  1580 011f 06       		.uleb128 0x6
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 31
-
-
  1581 0120 40       		.uleb128 0x40
  1582 0121 18       		.uleb128 0x18
  1583 0122 9742     		.uleb128 0x2117
@@ -1849,6 +1858,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1626 014f 13       		.uleb128 0x13
  1627 0150 02       		.uleb128 0x2
  1628 0151 18       		.uleb128 0x18
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 32
+
+
  1629 0152 00       		.byte	0
  1630 0153 00       		.byte	0
  1631 0154 17       		.uleb128 0x17
@@ -1858,9 +1870,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1635 0158 0E       		.uleb128 0xe
  1636 0159 3A       		.uleb128 0x3a
  1637 015a 0B       		.uleb128 0xb
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 32
-
-
  1638 015b 3B       		.uleb128 0x3b
  1639 015c 05       		.uleb128 0x5
  1640 015d 49       		.uleb128 0x49
@@ -1909,6 +1918,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1683 0000 3C000000 		.4byte	0x3c
  1684 0004 0200     		.2byte	0x2
  1685 0006 00000000 		.4byte	.Ldebug_info0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 33
+
+
  1686 000a 04       		.byte	0x4
  1687 000b 00       		.byte	0
  1688 000c 0000     		.2byte	0
@@ -1918,9 +1930,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1692 0018 00000000 		.4byte	.LFB65
  1693 001c 74000000 		.4byte	.LFE65-.LFB65
  1694 0020 00000000 		.4byte	.LFB66
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 33
-
-
  1695 0024 28000000 		.4byte	.LFE66-.LFB66
  1696 0028 00000000 		.4byte	.LFB67
  1697 002c 84000000 		.4byte	.LFE67-.LFB67
@@ -1969,6 +1978,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1727              	.LASF58:
  1728 002d 6D656469 		.ascii	"median\000"
  1728      616E00
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 34
+
+
  1729              	.LASF40:
  1730 0034 63686970 		.ascii	"chip_uniqueId\000"
  1730      5F756E69 
@@ -1978,9 +1990,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1732 0042 73686F72 		.ascii	"short int\000"
  1732      7420696E 
  1732      7400
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 34
-
-
  1733              	.LASF67:
  1734 004c 68747470 		.ascii	"http_request\000"
  1734      5F726571 
@@ -2029,6 +2038,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1752 0121 76616C75 		.ascii	"value\000"
  1752      6500
  1753              	.LASF23:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 35
+
+
  1754 0127 766F6C74 		.ascii	"voltage_battery\000"
  1754      6167655F 
  1754      62617474 
@@ -2038,9 +2050,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1756      506F696E 
  1756      7473496E 
  1756      53746163 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 35
-
-
  1756      6B00
  1757              	.LASF11:
  1758 0149 75696E74 		.ascii	"uint8\000"
@@ -2089,6 +2098,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1780      6D5F696E 
  1780      666F5F74 
  1780      00
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 36
+
+
  1781              	.LASF21:
  1782 01c4 72656173 		.ascii	"reason\000"
  1782      6F6E00
@@ -2098,9 +2110,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1784      00
  1785              	.LASF49:
  1786 01d4 766F6C74 		.ascii	"voltage\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 36
-
-
  1786      61676500 
  1787              	.LASF39:
  1788 01dc 6D6F6465 		.ascii	"modem_info\000"
@@ -2149,6 +2158,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1807              	.LASF8:
  1808 0260 756E7369 		.ascii	"unsigned int\000"
  1808      676E6564 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 37
+
+
  1808      20696E74 
  1808      00
  1809              	.LASF38:
@@ -2158,140 +2170,137 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 1
  1811              	.LASF64:
  1812 0279 6D6F6465 		.ascii	"modem_stats\000"
  1812      6D5F7374 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 37
-
-
  1812      61747300 
- 1813              	.LASF41:
- 1814 0285 7379735F 		.ascii	"sys_info_t\000"
- 1814      696E666F 
- 1814      5F7400
- 1815              	.LASF3:
- 1816 0290 73686F72 		.ascii	"short unsigned int\000"
- 1816      7420756E 
- 1816      7369676E 
- 1816      65642069 
- 1816      6E7400
- 1817              	.LASF33:
- 1818 02a3 74696D65 		.ascii	"time_to_network_connect\000"
- 1818      5F746F5F 
- 1818      6E657477 
- 1818      6F726B5F 
- 1818      636F6E6E 
- 1819              	.LASF20:
- 1820 02bb 73746174 		.ascii	"status\000"
- 1820      757300
- 1821              	.LASF70:
- 1822 02c2 73797374 		.ascii	"system_info\000"
- 1822      656D5F69 
- 1822      6E666F00 
- 1823              	.LASF34:
- 1824 02ce 74696D65 		.ascii	"time_to_acquire_ip\000"
- 1824      5F746F5F 
- 1824      61637175 
- 1824      6972655F 
- 1824      697000
- 1825              	.LASF61:
- 1826 02e1 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1826      52784275 
- 1826      66666572 
- 1826      00
- 1827              	.LASF30:
- 1828 02ee 696D6569 		.ascii	"imei\000"
- 1828      00
- 1829              	.LASF27:
- 1830 02f3 766F6C74 		.ascii	"voltage_t\000"
- 1830      6167655F 
- 1830      7400
- 1831              	.LASF10:
- 1832 02fd 696E7433 		.ascii	"int32_t\000"
- 1832      325F7400 
- 1833              	.LASF35:
- 1834 0305 6D6F6465 		.ascii	"modem_stats_t\000"
- 1834      6D5F7374 
- 1834      6174735F 
- 1834      7400
- 1835              	.LASF62:
- 1836 0313 6D6F6465 		.ascii	"modem_state\000"
- 1836      6D5F7374 
- 1836      61746500 
- 1837              	.LASF19:
- 1838 031f 74657374 		.ascii	"test_name\000"
- 1838      5F6E616D 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 38
+ 1813              	.LASF74:
+ 1814 0285 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
+ 1814      73657273 
+ 1814      5C686169 
+ 1814      6C5C4465 
+ 1814      736B746F 
+ 1815 02b3 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS\\notoriOS.cydsn\000"
+ 1815      6F72694F 
+ 1815      535C6E6F 
+ 1815      746F7269 
+ 1815      4F535C6E 
+ 1816              	.LASF41:
+ 1817 02d5 7379735F 		.ascii	"sys_info_t\000"
+ 1817      696E666F 
+ 1817      5F7400
+ 1818              	.LASF3:
+ 1819 02e0 73686F72 		.ascii	"short unsigned int\000"
+ 1819      7420756E 
+ 1819      7369676E 
+ 1819      65642069 
+ 1819      6E7400
+ 1820              	.LASF33:
+ 1821 02f3 74696D65 		.ascii	"time_to_network_connect\000"
+ 1821      5F746F5F 
+ 1821      6E657477 
+ 1821      6F726B5F 
+ 1821      636F6E6E 
+ 1822              	.LASF20:
+ 1823 030b 73746174 		.ascii	"status\000"
+ 1823      757300
+ 1824              	.LASF70:
+ 1825 0312 73797374 		.ascii	"system_info\000"
+ 1825      656D5F69 
+ 1825      6E666F00 
+ 1826              	.LASF34:
+ 1827 031e 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1827      5F746F5F 
+ 1827      61637175 
+ 1827      6972655F 
+ 1827      697000
+ 1828              	.LASF61:
+ 1829 0331 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1829      52784275 
+ 1829      66666572 
+ 1829      00
+ 1830              	.LASF30:
+ 1831 033e 696D6569 		.ascii	"imei\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 38
 
 
- 1838      6500
- 1839              	.LASF60:
- 1840 0329 74657374 		.ascii	"test\000"
- 1840      00
- 1841              	.LASF12:
- 1842 032e 75696E74 		.ascii	"uint16\000"
- 1842      313600
- 1843              	.LASF69:
- 1844 0335 68747470 		.ascii	"http_route\000"
- 1844      5F726F75 
- 1844      746500
- 1845              	.LASF46:
- 1846 0340 65705F70 		.ascii	"ep_pswd\000"
- 1846      73776400 
- 1847              	.LASF5:
- 1848 0348 6C6F6E67 		.ascii	"long unsigned int\000"
- 1848      20756E73 
- 1848      69676E65 
- 1848      6420696E 
- 1848      7400
- 1849              	.LASF15:
- 1850 035a 646F7562 		.ascii	"double\000"
- 1850      6C6500
- 1851              	.LASF57:
- 1852 0361 61727261 		.ascii	"array\000"
- 1852      7900
- 1853              	.LASF9:
- 1854 0367 5F5F696E 		.ascii	"__int32_t\000"
- 1854      7433325F 
- 1854      7400
- 1855              	.LASF50:
- 1856 0371 765F6F66 		.ascii	"v_offset\000"
- 1856      66736574 
- 1856      00
- 1857              	.LASF52:
- 1858 037a 6F666673 		.ascii	"offset\000"
- 1858      657400
- 1859              	.LASF22:
- 1860 0381 74657374 		.ascii	"test_t\000"
- 1860      5F7400
- 1861              	.LASF42:
- 1862 0388 6E6F6465 		.ascii	"node_id\000"
- 1862      5F696400 
- 1863              	.LASF44:
- 1864 0390 65705F70 		.ascii	"ep_port\000"
- 1864      6F727400 
- 1865              	.LASF74:
- 1866 0398 433A5C55 		.ascii	"C:\\Users\\hyfi_admin\\Documents\\GitHub\\notoriOS\\"
- 1866      73657273 
- 1866      5C687966 
- 1866      695F6164 
- 1866      6D696E5C 
- 1867 03c6 6E6F746F 		.ascii	"notoriOS\\notoriOS.cydsn\000"
- 1867      72694F53 
- 1867      5C6E6F74 
- 1867      6F72694F 
- 1867      532E6379 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\cc28Pbxk.s 			page 39
+ 1831      00
+ 1832              	.LASF27:
+ 1833 0343 766F6C74 		.ascii	"voltage_t\000"
+ 1833      6167655F 
+ 1833      7400
+ 1834              	.LASF10:
+ 1835 034d 696E7433 		.ascii	"int32_t\000"
+ 1835      325F7400 
+ 1836              	.LASF35:
+ 1837 0355 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1837      6D5F7374 
+ 1837      6174735F 
+ 1837      7400
+ 1838              	.LASF62:
+ 1839 0363 6D6F6465 		.ascii	"modem_state\000"
+ 1839      6D5F7374 
+ 1839      61746500 
+ 1840              	.LASF19:
+ 1841 036f 74657374 		.ascii	"test_name\000"
+ 1841      5F6E616D 
+ 1841      6500
+ 1842              	.LASF60:
+ 1843 0379 74657374 		.ascii	"test\000"
+ 1843      00
+ 1844              	.LASF12:
+ 1845 037e 75696E74 		.ascii	"uint16\000"
+ 1845      313600
+ 1846              	.LASF69:
+ 1847 0385 68747470 		.ascii	"http_route\000"
+ 1847      5F726F75 
+ 1847      746500
+ 1848              	.LASF46:
+ 1849 0390 65705F70 		.ascii	"ep_pswd\000"
+ 1849      73776400 
+ 1850              	.LASF5:
+ 1851 0398 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1851      20756E73 
+ 1851      69676E65 
+ 1851      6420696E 
+ 1851      7400
+ 1852              	.LASF15:
+ 1853 03aa 646F7562 		.ascii	"double\000"
+ 1853      6C6500
+ 1854              	.LASF57:
+ 1855 03b1 61727261 		.ascii	"array\000"
+ 1855      7900
+ 1856              	.LASF9:
+ 1857 03b7 5F5F696E 		.ascii	"__int32_t\000"
+ 1857      7433325F 
+ 1857      7400
+ 1858              	.LASF50:
+ 1859 03c1 765F6F66 		.ascii	"v_offset\000"
+ 1859      66736574 
+ 1859      00
+ 1860              	.LASF52:
+ 1861 03ca 6F666673 		.ascii	"offset\000"
+ 1861      657400
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccoJIuOV.s 			page 39
 
 
+ 1862              	.LASF22:
+ 1863 03d1 74657374 		.ascii	"test_t\000"
+ 1863      5F7400
+ 1864              	.LASF42:
+ 1865 03d8 6E6F6465 		.ascii	"node_id\000"
+ 1865      5F696400 
+ 1866              	.LASF44:
+ 1867 03e0 65705F70 		.ascii	"ep_port\000"
+ 1867      6F727400 
  1868              	.LASF25:
- 1869 03de 766F6C74 		.ascii	"voltage_charge_current\000"
+ 1869 03e8 766F6C74 		.ascii	"voltage_charge_current\000"
  1869      6167655F 
  1869      63686172 
  1869      67655F63 
  1869      75727265 
  1870              	.LASF32:
- 1871 03f5 72737369 		.ascii	"rssi\000"
+ 1871 03ff 72737369 		.ascii	"rssi\000"
  1871      00
  1872              	.LASF53:
- 1873 03fa 72656164 		.ascii	"readings\000"
+ 1873 0404 72656164 		.ascii	"readings\000"
  1873      696E6773 
  1873      00
  1874              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

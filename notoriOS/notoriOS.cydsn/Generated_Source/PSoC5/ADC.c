@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC.c
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file provides the source code to the API for the Delta-Sigma ADC
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2017, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -49,7 +49,7 @@ volatile uint8 ADC_started = 0u;
 /* Flag to hold ADC config number. By default active config is 1. */
 volatile uint8 ADC_Config = 1u;
 
-volatile int32 ADC_Offset;
+volatile int32 ADC_Offset = 0;
 volatile int32 ADC_CountsPerVolt;
 
 
@@ -173,12 +173,14 @@ void ADC_Init(void)
 * Summary:
 *  Enables the ADC DelSig block operation.
 *
-*
 * Parameters:
 *  None
 *
 * Return:
 *  None
+*
+* Side Effects: 
+*  Enables internal interrupt.
 *
 *******************************************************************************/
 void ADC_Enable(void) 
@@ -324,6 +326,9 @@ void ADC_Enable(void)
 * Global variables:
 *  ADC_initVar:  Used to check the initial configuration,
 *  modified when this function is called for the first time.
+*
+* Side Effects: 
+*  Enables internal interrupt.
 *
 *******************************************************************************/
 void ADC_Start(void) 
@@ -1547,6 +1552,9 @@ static void ADC_InitConfig(uint8 config)
 *
 * Return:
 *  None
+*
+* Side Effects: 
+*  Enables internal interrupt.
 *
 *******************************************************************************/
 void ADC_SelectConfiguration(uint8 config, uint8 restart)

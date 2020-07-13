@@ -3,6 +3,7 @@
 #include "debug.h"
 #include <stdarg.h> // handles variable argument list
 
+char    BB_fileName[30] = "blackbox.txt";
 
 // function to start UART debug
 void debug_start(){
@@ -94,16 +95,19 @@ void printNotif(uint8 type, char* format, ...){
     }else{
        printd("\"event\":\"undefined\" \"value\":\""); 
     }
-   
     
     va_list argptr; // create variable argprt of the type va_list from stdarg.h
     va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize ap to the beginning of the list before any calls to va_arg().
     char debug_string[MAX_DEBUG_STRING_LENGTH];
     vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
+    // Sends a NULL terminated string to the TX buffer for transmission
     Debug_UART_PutString(debug_string);
     va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unless va_start() or va_copy() is invoked again).
 
     printd("\"}\r\n");
+    
+    SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card
+    
     #endif
     
 }

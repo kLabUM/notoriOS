@@ -262,7 +262,7 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     printTestStatus(t_modem);
     
     // Test level sensor
-    test_t t_level_sensor = level_sensor_test();//test level sensor  
+    test_t t_level_sensor = level_sensor_test();  
     printTestStatus(t_level_sensor);
     
     // Test voltages

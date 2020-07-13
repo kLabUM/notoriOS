@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 1
 
 
    1              		.syntax unified
@@ -54,13 +54,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
    1:influx.c      **** #include "influx.h"  
    2:influx.c      **** #include "notoriOS.h"
    3:influx.c      ****                         
-   4:influx.c      **** unsigned int construct_influx_write_body(char* body, char *node_id){
-  47              		.loc 1 4 0
+   4:influx.c      **** // Prepare data from data wheel to send to influx
+   5:influx.c      **** unsigned int construct_influx_write_body(char* body, char *node_id){
+  47              		.loc 1 5 0
   48              		.cfi_startproc
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 2
+
+
   49              		@ args = 0, pretend = 0, frame = 16
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 2
-
-
   50              		@ frame_needed = 1, uses_anonymous_args = 0
   51 0000 90B5     		push	{r4, r7, lr}
   52              		.cfi_def_cfa_offset 12
@@ -73,24 +74,24 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
   59              		.cfi_def_cfa 7, 32
   60 0006 7860     		str	r0, [r7, #4]
   61 0008 3960     		str	r1, [r7]
-   5:influx.c      ****    
-   6:influx.c      ****     body[0] = '\0';
-  62              		.loc 1 6 0
+   6:influx.c      ****    
+   7:influx.c      ****     body[0] = '\0'; // Set the array variable body to be 0
+  62              		.loc 1 7 0
   63 000a 7B68     		ldr	r3, [r7, #4]
   64 000c 0022     		movs	r2, #0
   65 000e 1A70     		strb	r2, [r3]
   66              	.LBB2:
-   7:influx.c      ****  
-   8:influx.c      ****     //construct influx body
-   9:influx.c      ****     for(uint16 i = 0;i<sizeOfDataStack();i++){
-  67              		.loc 1 9 0
+   8:influx.c      ****  
+   9:influx.c      ****     // Get data from the data stack and put into http body to send to influx
+  10:influx.c      ****     for(uint16 i = 0;i<sizeOfDataStack();i++){
+  67              		.loc 1 10 0
   68 0010 0023     		movs	r3, #0
   69 0012 FB81     		strh	r3, [r7, #14]	@ movhi
   70 0014 24E0     		b	.L2
   71              	.L3:
-  10:influx.c      ****         //note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
-  11:influx.c      ****         snprintf(body,sizeof(http_body), "%s%s,node_id=%s value=%s %ld000000000\n", body, data[i].k
-  72              		.loc 1 11 0 discriminator 3
+  11:influx.c      ****         // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+  12:influx.c      ****         snprintf(body,sizeof(http_body), "%s%s,node_id=%s value=%s %ld000000000\n", body, data[i].k
+  72              		.loc 1 12 0 discriminator 3
   73 0016 FB89     		ldrh	r3, [r7, #14]
   74 0018 2C22     		movs	r2, #44
   75 001a 02FB03F3 		mul	r3, r2, r3
@@ -117,20 +118,20 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
   96 004a 0093     		str	r3, [sp]
   97 004c 7B68     		ldr	r3, [r7, #4]
   98 004e 0D4A     		ldr	r2, .L5+4
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 3
+
+
   99 0050 4FF47A61 		mov	r1, #4000
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 3
-
-
  100 0054 7868     		ldr	r0, [r7, #4]
  101 0056 FFF7FEFF 		bl	snprintf
-   9:influx.c      ****         //note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
- 102              		.loc 1 9 0 discriminator 3
+  10:influx.c      ****         // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+ 102              		.loc 1 10 0 discriminator 3
  103 005a FB89     		ldrh	r3, [r7, #14]
  104 005c 0133     		adds	r3, r3, #1
  105 005e FB81     		strh	r3, [r7, #14]	@ movhi
  106              	.L2:
-   9:influx.c      ****         //note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
- 107              		.loc 1 9 0 is_stmt 0 discriminator 1
+  10:influx.c      ****         // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+ 107              		.loc 1 10 0 is_stmt 0 discriminator 1
  108 0060 FFF7FEFF 		bl	sizeOfDataStack
  109 0064 0346     		mov	r3, r0
  110 0066 1A46     		mov	r2, r3
@@ -138,20 +139,21 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  112 006a 9342     		cmp	r3, r2
  113 006c D3D3     		bcc	.L3
  114              	.LBE2:
-  12:influx.c      ****     }
-  13:influx.c      ****     
-  14:influx.c      ****     unsigned int request_len = strlen(body);
- 115              		.loc 1 14 0 is_stmt 1
+  13:influx.c      ****     }
+  14:influx.c      ****     
+  15:influx.c      ****     // The strlen() function calculates the length of a given string. The strlen() function takes a
+  16:influx.c      ****     unsigned int request_len = strlen(body);
+ 115              		.loc 1 16 0 is_stmt 1
  116 006e 7868     		ldr	r0, [r7, #4]
  117 0070 FFF7FEFF 		bl	strlen
  118 0074 B860     		str	r0, [r7, #8]
-  15:influx.c      ****    
-  16:influx.c      **** 
-  17:influx.c      ****     return request_len;
- 119              		.loc 1 17 0
+  17:influx.c      ****    
+  18:influx.c      **** 
+  19:influx.c      ****     return request_len;
+ 119              		.loc 1 19 0
  120 0076 BB68     		ldr	r3, [r7, #8]
-  18:influx.c      **** }
- 121              		.loc 1 18 0
+  20:influx.c      **** }
+ 121              		.loc 1 20 0
  122 0078 1846     		mov	r0, r3
  123 007a 1437     		adds	r7, r7, #20
  124              		.cfi_def_cfa_offset 12
@@ -176,19 +178,20 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  140      25732664 
  140      623D2573 
  141              		.section	.text.construct_influx_route,"ax",%progbits
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 4
+
+
  142              		.align	2
  143              		.global	construct_influx_route
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 4
-
-
  144              		.thumb
  145              		.thumb_func
  146              		.type	construct_influx_route, %function
  147              	construct_influx_route:
  148              	.LFB65:
-  19:influx.c      **** 
-  20:influx.c      **** void construct_influx_route(char* route, char* base, char* user, char* pass, char* database){
- 149              		.loc 1 20 0
+  21:influx.c      **** 
+  22:influx.c      **** // Create the route to connect to the influx database
+  23:influx.c      **** void construct_influx_route(char* route, char* base, char* user, char* pass, char* database){
+ 149              		.loc 1 23 0
  150              		.cfi_startproc
  151              		@ args = 4, pretend = 0, frame = 16
  152              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -204,13 +207,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  162 0008 B960     		str	r1, [r7, #8]
  163 000a 7A60     		str	r2, [r7, #4]
  164 000c 3B60     		str	r3, [r7]
-  21:influx.c      ****     route[0] = '\0';
- 165              		.loc 1 21 0
+  24:influx.c      ****     // Detting a string to \0 is an easy way to set the string to be 0 because \0 denotes the end o
+  25:influx.c      ****     route[0] = '\0';
+ 165              		.loc 1 25 0
  166 000e FB68     		ldr	r3, [r7, #12]
  167 0010 0022     		movs	r2, #0
  168 0012 1A70     		strb	r2, [r3]
-  22:influx.c      ****     snprintf(route,sizeof(http_route), "%s%s?u=%s&p=%s&db=%s", route, base, user, pass, database); 
- 169              		.loc 1 22 0
+  26:influx.c      ****     snprintf(route,sizeof(http_route), "%s%s?u=%s&p=%s&db=%s", route, base, user, pass, database); 
+ 169              		.loc 1 26 0
  170 0014 BB69     		ldr	r3, [r7, #24]
  171 0016 0393     		str	r3, [sp, #12]
  172 0018 3B68     		ldr	r3, [r7]
@@ -224,8 +228,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  180 0028 C821     		movs	r1, #200
  181 002a F868     		ldr	r0, [r7, #12]
  182 002c FFF7FEFF 		bl	snprintf
-  23:influx.c      **** }
- 183              		.loc 1 23 0
+  27:influx.c      **** }
+ 183              		.loc 1 27 0
  184 0030 00BF     		nop
  185 0032 1037     		adds	r7, r7, #16
  186              		.cfi_def_cfa_offset 8
@@ -234,13 +238,13 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  189              		@ sp needed
  190 0036 80BD     		pop	{r7, pc}
  191              	.L9:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 5
+
+
  192              		.align	2
  193              	.L8:
  194 0038 28000000 		.word	.LC1
  195              		.cfi_endproc
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 5
-
-
  196              	.LFE65:
  197              		.size	construct_influx_route, .-construct_influx_route
  198              		.section	.rodata
@@ -294,13 +298,13 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  226              	.LC10:
  227 00fc 496E666C 		.ascii	"Influx body could not be generated correctly.\000"
  227      75782062 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 6
+
+
  227      6F647920 
  227      636F756C 
  227      64206E6F 
  228              		.section	.text.influx_test,"ax",%progbits
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 6
-
-
  229              		.align	2
  230              		.global	influx_test
  231              		.thumb
@@ -308,9 +312,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  233              		.type	influx_test, %function
  234              	influx_test:
  235              	.LFB66:
-  24:influx.c      **** 
-  25:influx.c      **** test_t influx_test(){
- 236              		.loc 1 25 0
+  28:influx.c      **** 
+  29:influx.c      **** // Test the influx server
+  30:influx.c      **** test_t influx_test(){
+ 236              		.loc 1 30 0
  237              		.cfi_startproc
  238              		@ args = 0, pretend = 0, frame = 608
  239              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -327,14 +332,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  250              		.cfi_def_cfa_register 7
  251 0008 3B1D     		adds	r3, r7, #4
  252 000a 1860     		str	r0, [r3]
-  26:influx.c      ****     test_t test;
-  27:influx.c      ****     test.status = 0u;
- 253              		.loc 1 27 0
+  31:influx.c      ****     test_t test; // Create variable test of data structure test_t
+  32:influx.c      ****     test.status = 0u;
+ 253              		.loc 1 32 0
  254 000c 07F1D403 		add	r3, r7, #212
  255 0010 0022     		movs	r2, #0
  256 0012 83F88020 		strb	r2, [r3, #128]
-  28:influx.c      ****     snprintf(test.test_name,sizeof(test.test_name),"INFLUX");
- 257              		.loc 1 28 0
+  33:influx.c      ****     snprintf(test.test_name,sizeof(test.test_name),"INFLUX");
+ 257              		.loc 1 33 0
  258 0016 07F1D403 		add	r3, r7, #212
  259 001a 3C4A     		ldr	r2, .L16
  260 001c 92E80300 		ldmia	r2, {r0, r1}
@@ -344,60 +349,62 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  264 0026 0233     		adds	r3, r3, #2
  265 0028 0A0C     		lsrs	r2, r1, #16
  266 002a 1A70     		strb	r2, [r3]
-  29:influx.c      ****     
-  30:influx.c      ****     //we'll create a few fake test, generate a string and compare it to a known value
-  31:influx.c      ****     char *expected_string = "test_reading_1,node_id=XYZ10, value=000 12345\ntest_reading_2,node_id=
- 267              		.loc 1 31 0
+  34:influx.c      ****     
+  35:influx.c      ****     //we'll create a few fake test, generate a string and compare it to a known value
+  36:influx.c      ****     char *expected_string = "test_reading_1,node_id=XYZ10, value=000 12345\ntest_reading_2,node_id=
+ 267              		.loc 1 36 0
  268 002c 384B     		ldr	r3, .L16+4
  269 002e C7F85C32 		str	r3, [r7, #604]
-  32:influx.c      ****     
-  33:influx.c      ****     Clear_Data_Stack();
- 270              		.loc 1 33 0
+  37:influx.c      ****     
+  38:influx.c      ****     Clear_Data_Stack();
+ 270              		.loc 1 38 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 7
+
+
  271 0032 FFF7FEFF 		bl	Clear_Data_Stack
-  34:influx.c      ****     pushData("test_reading_1", "000", 12345);
- 272              		.loc 1 34 0
+  39:influx.c      ****     pushData("test_reading_1", "000", 12345);
+ 272              		.loc 1 39 0
  273 0036 43F23902 		movw	r2, #12345
  274 003a 3649     		ldr	r1, .L16+8
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 7
-
-
  275 003c 3648     		ldr	r0, .L16+12
  276 003e FFF7FEFF 		bl	pushData
-  35:influx.c      ****     pushData("test_reading_2", "111", 67890);
- 277              		.loc 1 35 0
+  40:influx.c      ****     pushData("test_reading_2", "111", 67890);
+ 277              		.loc 1 40 0
  278 0042 364A     		ldr	r2, .L16+16
  279 0044 3649     		ldr	r1, .L16+20
  280 0046 3748     		ldr	r0, .L16+24
  281 0048 FFF7FEFF 		bl	pushData
-  36:influx.c      ****     char test_write_body[200];
-  37:influx.c      ****     construct_influx_write_body(test_write_body, "XYZ10");
- 282              		.loc 1 37 0
+  41:influx.c      ****     char test_write_body[200];
+  42:influx.c      ****     construct_influx_write_body(test_write_body, "XYZ10");
+ 282              		.loc 1 42 0
  283 004c 07F10C03 		add	r3, r7, #12
  284 0050 3549     		ldr	r1, .L16+28
  285 0052 1846     		mov	r0, r3
  286 0054 FFF7FEFF 		bl	construct_influx_write_body
-  38:influx.c      ****     
-  39:influx.c      ****     //will return zero if strings are identical,
-  40:influx.c      ****     int compare = strcmp(test_write_body,expected_string);
- 287              		.loc 1 40 0
+  43:influx.c      ****     
+  44:influx.c      ****     // Will return zero if strings are identical.
+  45:influx.c      ****     // int strcmp(const char *str1, const char *str2) compares the string pointed to, by str1 to th
+  46:influx.c      ****     int compare = strcmp(test_write_body,expected_string);
+ 287              		.loc 1 46 0
  288 0058 07F10C03 		add	r3, r7, #12
  289 005c D7F85C12 		ldr	r1, [r7, #604]
  290 0060 1846     		mov	r0, r3
  291 0062 FFF7FEFF 		bl	strcmp
  292 0066 C7F85802 		str	r0, [r7, #600]
-  41:influx.c      ****     
-  42:influx.c      ****     if(compare == 0){
- 293              		.loc 1 42 0
+  47:influx.c      ****     
+  48:influx.c      ****     // If strings identical, change test status to 1
+  49:influx.c      ****     if(compare == 0){
+ 293              		.loc 1 49 0
  294 006a D7F85832 		ldr	r3, [r7, #600]
  295 006e 002B     		cmp	r3, #0
  296 0070 1DD1     		bne	.L11
-  43:influx.c      ****         test.status = 1u;
- 297              		.loc 1 43 0
+  50:influx.c      ****         test.status = 1u;
+ 297              		.loc 1 50 0
  298 0072 07F1D403 		add	r3, r7, #212
  299 0076 0122     		movs	r2, #1
  300 0078 83F88020 		strb	r2, [r3, #128]
-  44:influx.c      ****         snprintf(test.reason,sizeof(test.reason),"Influx body generated correctly.");
- 301              		.loc 1 44 0
+  51:influx.c      ****         snprintf(test.reason,sizeof(test.reason),"Influx body generated correctly.");
+ 301              		.loc 1 51 0
  302 007c 07F1D403 		add	r3, r7, #212
  303 0080 8133     		adds	r3, r3, #129
  304 0082 2A4A     		ldr	r2, .L16+32
@@ -411,6 +418,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  312 0092 2860     		str	r0, [r5]	@ unaligned
  313 0094 6960     		str	r1, [r5, #4]	@ unaligned
  314 0096 AA60     		str	r2, [r5, #8]	@ unaligned
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 8
+
+
  315 0098 EB60     		str	r3, [r5, #12]	@ unaligned
  316 009a 1034     		adds	r4, r4, #16
  317 009c 0EF1100E 		add	lr, lr, #16
@@ -418,16 +428,13 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  319 00a2 F3D1     		bne	.L12
  320 00a4 7346     		mov	r3, lr
  321 00a6 2246     		mov	r2, r4
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 8
-
-
  322 00a8 1278     		ldrb	r2, [r2]
  323 00aa 1A70     		strb	r2, [r3]
  324 00ac 1BE0     		b	.L13
  325              	.L11:
-  45:influx.c      ****     }else{
-  46:influx.c      ****         snprintf(test.reason,sizeof(test.reason),"Influx body could not be generated correctly.");
- 326              		.loc 1 46 0
+  52:influx.c      ****     }else{
+  53:influx.c      ****         snprintf(test.reason,sizeof(test.reason),"Influx body could not be generated correctly.");
+ 326              		.loc 1 53 0
  327 00ae 07F1D403 		add	r3, r7, #212
  328 00b2 8133     		adds	r3, r3, #129
  329 00b4 1E4A     		ldr	r2, .L16+36
@@ -455,14 +462,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  351 00e2 1B88     		ldrh	r3, [r3]	@ unaligned
  352 00e4 AB81     		strh	r3, [r5, #12]	@ unaligned
  353              	.L13:
-  47:influx.c      ****     }
-  48:influx.c      ****     
-  49:influx.c      ****     Clear_Data_Stack();
- 354              		.loc 1 49 0
+  54:influx.c      ****     }
+  55:influx.c      ****     
+  56:influx.c      ****     Clear_Data_Stack(); // Clear the data stack
+ 354              		.loc 1 56 0
  355 00e6 FFF7FEFF 		bl	Clear_Data_Stack
-  50:influx.c      ****     
-  51:influx.c      ****     return test;
- 356              		.loc 1 51 0
+  57:influx.c      ****     
+  58:influx.c      ****     return test;
+ 356              		.loc 1 58 0
  357 00ea 3B1D     		adds	r3, r7, #4
  358 00ec 1A68     		ldr	r2, [r3]
  359 00ee 07F1D403 		add	r3, r7, #212
@@ -471,16 +478,16 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  362 00f6 40F28113 		movw	r3, #385
  363 00fa 1A46     		mov	r2, r3
  364 00fc FFF7FEFF 		bl	memcpy
-  52:influx.c      **** }...
- 365              		.loc 1 52 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 9
+
+
+  59:influx.c      **** }...
+ 365              		.loc 1 59 0
  366 0100 3B1D     		adds	r3, r7, #4
  367 0102 1868     		ldr	r0, [r3]
  368 0104 07F51977 		add	r7, r7, #612
  369              		.cfi_def_cfa_offset 20
  370 0108 BD46     		mov	sp, r7
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 9
-
-
  371              		.cfi_def_cfa_register 13
  372              		@ sp needed
  373 010a F0BD     		pop	{r4, r5, r6, r7, pc}
@@ -502,8 +509,8 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  389              		.size	influx_test, .-influx_test
  390              		.text
  391              	.Letext0:
- 392              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 393              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 392              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
+ 393              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.1\\psoc creator\\import\\gnu\\arm\\5.4.
  394              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
  395              		.file 5 "testing.h"
  396              		.file 6 "data.h"
@@ -520,156 +527,156 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  407 000c 58000000 		.4byte	.LASF68
  408 0010 0C       		.byte	0xc
  409 0011 1D010000 		.4byte	.LASF69
- 410 0015 77030000 		.4byte	.LASF70
+ 410 0015 63020000 		.4byte	.LASF70
  411 0019 00000000 		.4byte	.Ldebug_ranges0+0
  412 001d 00000000 		.4byte	0
  413 0021 00000000 		.4byte	.Ldebug_line0
  414 0025 02       		.uleb128 0x2
- 415 0026 01       		.byte	0x1
- 416 0027 06       		.byte	0x6
- 417 0028 1B020000 		.4byte	.LASF0
- 418 002c 02       		.uleb128 0x2
- 419 002d 01       		.byte	0x1
- 420 002e 08       		.byte	0x8
- 421 002f EA010000 		.4byte	.LASF1
- 422 0033 02       		.uleb128 0x2
- 423 0034 02       		.byte	0x2
+ 415 0026 04       		.byte	0x4
+ 416 0027 05       		.byte	0x5
+ 417 0028 696E7400 		.ascii	"int\000"
+ 418 002c 03       		.uleb128 0x3
+ 419 002d 04       		.byte	0x4
+ 420 002e 07       		.byte	0x7
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 10
+
+
+ 421 002f 3E020000 		.4byte	.LASF0
+ 422 0033 03       		.uleb128 0x3
+ 423 0034 08       		.byte	0x8
  424 0035 05       		.byte	0x5
- 425 0036 3D000000 		.4byte	.LASF2
- 426 003a 02       		.uleb128 0x2
- 427 003b 02       		.byte	0x2
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 10
-
-
- 428 003c 07       		.byte	0x7
- 429 003d 73020000 		.4byte	.LASF3
+ 425 0036 89010000 		.4byte	.LASF1
+ 426 003a 03       		.uleb128 0x3
+ 427 003b 08       		.byte	0x8
+ 428 003c 04       		.byte	0x4
+ 429 003d DE010000 		.4byte	.LASF2
  430 0041 03       		.uleb128 0x3
- 431 0042 41030000 		.4byte	.LASF9
- 432 0046 02       		.byte	0x2
- 433 0047 3F       		.byte	0x3f
- 434 0048 4C000000 		.4byte	0x4c
- 435 004c 02       		.uleb128 0x2
- 436 004d 04       		.byte	0x4
- 437 004e 05       		.byte	0x5
- 438 004f B0010000 		.4byte	.LASF4
- 439 0053 02       		.uleb128 0x2
- 440 0054 04       		.byte	0x4
- 441 0055 07       		.byte	0x7
- 442 0056 0D030000 		.4byte	.LASF5
- 443 005a 02       		.uleb128 0x2
- 444 005b 08       		.byte	0x8
- 445 005c 05       		.byte	0x5
- 446 005d 89010000 		.4byte	.LASF6
- 447 0061 02       		.uleb128 0x2
- 448 0062 08       		.byte	0x8
- 449 0063 07       		.byte	0x7
- 450 0064 27020000 		.4byte	.LASF7
- 451 0068 04       		.uleb128 0x4
+ 431 0042 01       		.byte	0x1
+ 432 0043 06       		.byte	0x6
+ 433 0044 1B020000 		.4byte	.LASF3
+ 434 0048 03       		.uleb128 0x3
+ 435 0049 01       		.byte	0x1
+ 436 004a 08       		.byte	0x8
+ 437 004b EA010000 		.4byte	.LASF4
+ 438 004f 03       		.uleb128 0x3
+ 439 0050 02       		.byte	0x2
+ 440 0051 05       		.byte	0x5
+ 441 0052 3D000000 		.4byte	.LASF5
+ 442 0056 03       		.uleb128 0x3
+ 443 0057 02       		.byte	0x2
+ 444 0058 07       		.byte	0x7
+ 445 0059 C3020000 		.4byte	.LASF6
+ 446 005d 04       		.uleb128 0x4
+ 447 005e 91030000 		.4byte	.LASF12
+ 448 0062 02       		.byte	0x2
+ 449 0063 3F       		.byte	0x3f
+ 450 0064 68000000 		.4byte	0x68
+ 451 0068 03       		.uleb128 0x3
  452 0069 04       		.byte	0x4
  453 006a 05       		.byte	0x5
- 454 006b 696E7400 		.ascii	"int\000"
- 455 006f 02       		.uleb128 0x2
+ 454 006b B0010000 		.4byte	.LASF7
+ 455 006f 03       		.uleb128 0x3
  456 0070 04       		.byte	0x4
  457 0071 07       		.byte	0x7
- 458 0072 3E020000 		.4byte	.LASF8
+ 458 0072 5D030000 		.4byte	.LASF8
  459 0076 03       		.uleb128 0x3
- 460 0077 D5020000 		.4byte	.LASF10
- 461 007b 03       		.byte	0x3
- 462 007c 2C       		.byte	0x2c
- 463 007d 41000000 		.4byte	0x41
- 464 0081 05       		.uleb128 0x5
- 465 0082 54010000 		.4byte	.LASF11
- 466 0086 04       		.byte	0x4
- 467 0087 E401     		.2byte	0x1e4
- 468 0089 2C000000 		.4byte	0x2c
- 469 008d 05       		.uleb128 0x5
- 470 008e 16010000 		.4byte	.LASF12
- 471 0092 04       		.byte	0x4
- 472 0093 E501     		.2byte	0x1e5
- 473 0095 3A000000 		.4byte	0x3a
- 474 0099 05       		.uleb128 0x5
- 475 009a 1F030000 		.4byte	.LASF13
- 476 009e 04       		.byte	0x4
- 477 009f E901     		.2byte	0x1e9
- 478 00a1 4C000000 		.4byte	0x4c
- 479 00a5 02       		.uleb128 0x2
- 480 00a6 04       		.byte	0x4
- 481 00a7 04       		.byte	0x4
- 482 00a8 83010000 		.4byte	.LASF14
- 483 00ac 02       		.uleb128 0x2
- 484 00ad 08       		.byte	0x8
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 11
+ 460 0077 08       		.byte	0x8
+ 461 0078 07       		.byte	0x7
+ 462 0079 27020000 		.4byte	.LASF9
+ 463 007d 03       		.uleb128 0x3
+ 464 007e 04       		.byte	0x4
+ 465 007f 07       		.byte	0x7
+ 466 0080 47000000 		.4byte	.LASF10
+ 467 0084 05       		.uleb128 0x5
+ 468 0085 04       		.byte	0x4
+ 469 0086 8A000000 		.4byte	0x8a
+ 470 008a 03       		.uleb128 0x3
+ 471 008b 01       		.byte	0x1
+ 472 008c 08       		.byte	0x8
+ 473 008d 97010000 		.4byte	.LASF11
+ 474 0091 06       		.uleb128 0x6
+ 475 0092 8A000000 		.4byte	0x8a
+ 476 0096 A1000000 		.4byte	0xa1
+ 477 009a 07       		.uleb128 0x7
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 11
 
 
- 485 00ae 04       		.byte	0x4
- 486 00af 25030000 		.4byte	.LASF15
- 487 00b3 02       		.uleb128 0x2
- 488 00b4 01       		.byte	0x1
- 489 00b5 08       		.byte	0x8
- 490 00b6 97010000 		.4byte	.LASF16
- 491 00ba 02       		.uleb128 0x2
- 492 00bb 08       		.byte	0x8
- 493 00bc 04       		.byte	0x4
- 494 00bd DE010000 		.4byte	.LASF17
- 495 00c1 02       		.uleb128 0x2
- 496 00c2 04       		.byte	0x4
- 497 00c3 07       		.byte	0x7
- 498 00c4 47000000 		.4byte	.LASF18
- 499 00c8 06       		.uleb128 0x6
- 500 00c9 04       		.byte	0x4
- 501 00ca B3000000 		.4byte	0xb3
- 502 00ce 07       		.uleb128 0x7
- 503 00cf B3000000 		.4byte	0xb3
- 504 00d3 DE000000 		.4byte	0xde
- 505 00d7 08       		.uleb128 0x8
- 506 00d8 C1000000 		.4byte	0xc1
- 507 00dc 17       		.byte	0x17
- 508 00dd 00       		.byte	0
+ 478 009b 7D000000 		.4byte	0x7d
+ 479 009f 17       		.byte	0x17
+ 480 00a0 00       		.byte	0
+ 481 00a1 04       		.uleb128 0x4
+ 482 00a2 25030000 		.4byte	.LASF13
+ 483 00a6 03       		.byte	0x3
+ 484 00a7 2C       		.byte	0x2c
+ 485 00a8 5D000000 		.4byte	0x5d
+ 486 00ac 08       		.uleb128 0x8
+ 487 00ad 54010000 		.4byte	.LASF14
+ 488 00b1 04       		.byte	0x4
+ 489 00b2 9201     		.2byte	0x192
+ 490 00b4 48000000 		.4byte	0x48
+ 491 00b8 08       		.uleb128 0x8
+ 492 00b9 16010000 		.4byte	.LASF15
+ 493 00bd 04       		.byte	0x4
+ 494 00be 9301     		.2byte	0x193
+ 495 00c0 56000000 		.4byte	0x56
+ 496 00c4 08       		.uleb128 0x8
+ 497 00c5 6F030000 		.4byte	.LASF16
+ 498 00c9 04       		.byte	0x4
+ 499 00ca 9701     		.2byte	0x197
+ 500 00cc 68000000 		.4byte	0x68
+ 501 00d0 03       		.uleb128 0x3
+ 502 00d1 04       		.byte	0x4
+ 503 00d2 04       		.byte	0x4
+ 504 00d3 83010000 		.4byte	.LASF17
+ 505 00d7 03       		.uleb128 0x3
+ 506 00d8 08       		.byte	0x8
+ 507 00d9 04       		.byte	0x4
+ 508 00da 75030000 		.4byte	.LASF18
  509 00de 09       		.uleb128 0x9
  510 00df 8101     		.2byte	0x181
  511 00e1 05       		.byte	0x5
  512 00e2 0A       		.byte	0xa
  513 00e3 0C010000 		.4byte	0x10c
  514 00e7 0A       		.uleb128 0xa
- 515 00e8 EB020000 		.4byte	.LASF19
+ 515 00e8 3B030000 		.4byte	.LASF19
  516 00ec 05       		.byte	0x5
- 517 00ed 0B       		.byte	0xb
+ 517 00ed 0C       		.byte	0xc
  518 00ee 0C010000 		.4byte	0x10c
  519 00f2 00       		.byte	0
  520 00f3 0A       		.uleb128 0xa
- 521 00f4 9E020000 		.4byte	.LASF20
+ 521 00f4 EE020000 		.4byte	.LASF20
  522 00f8 05       		.byte	0x5
- 523 00f9 0C       		.byte	0xc
- 524 00fa 81000000 		.4byte	0x81
+ 523 00f9 0D       		.byte	0xd
+ 524 00fa AC000000 		.4byte	0xac
  525 00fe 80       		.byte	0x80
  526 00ff 0A       		.uleb128 0xa
  527 0100 A9010000 		.4byte	.LASF21
  528 0104 05       		.byte	0x5
- 529 0105 0D       		.byte	0xd
+ 529 0105 0F       		.byte	0xf
  530 0106 1C010000 		.4byte	0x11c
  531 010a 81       		.byte	0x81
  532 010b 00       		.byte	0
- 533 010c 07       		.uleb128 0x7
- 534 010d B3000000 		.4byte	0xb3
+ 533 010c 06       		.uleb128 0x6
+ 534 010d 8A000000 		.4byte	0x8a
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 12
+
+
  535 0111 1C010000 		.4byte	0x11c
- 536 0115 08       		.uleb128 0x8
- 537 0116 C1000000 		.4byte	0xc1
+ 536 0115 07       		.uleb128 0x7
+ 537 0116 7D000000 		.4byte	0x7d
  538 011a 7F       		.byte	0x7f
  539 011b 00       		.byte	0
- 540 011c 07       		.uleb128 0x7
- 541 011d B3000000 		.4byte	0xb3
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 12
-
-
+ 540 011c 06       		.uleb128 0x6
+ 541 011d 8A000000 		.4byte	0x8a
  542 0121 2C010000 		.4byte	0x12c
- 543 0125 08       		.uleb128 0x8
- 544 0126 C1000000 		.4byte	0xc1
+ 543 0125 07       		.uleb128 0x7
+ 544 0126 7D000000 		.4byte	0x7d
  545 012a FF       		.byte	0xff
  546 012b 00       		.byte	0
- 547 012c 03       		.uleb128 0x3
- 548 012d C9020000 		.4byte	.LASF22
+ 547 012c 04       		.uleb128 0x4
+ 548 012d 19030000 		.4byte	.LASF22
  549 0131 05       		.byte	0x5
- 550 0132 0E       		.byte	0xe
+ 550 0132 10       		.byte	0x10
  551 0133 DE000000 		.4byte	0xde
  552 0137 0B       		.uleb128 0xb
  553 0138 2C       		.byte	0x2c
@@ -692,17 +699,17 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  570 0158 79010000 		.4byte	.LASF24
  571 015c 06       		.byte	0x6
  572 015d 12       		.byte	0x12
- 573 015e 99000000 		.4byte	0x99
+ 573 015e C4000000 		.4byte	0xc4
  574 0162 28       		.byte	0x28
  575 0163 00       		.byte	0
- 576 0164 07       		.uleb128 0x7
- 577 0165 B3000000 		.4byte	0xb3
+ 576 0164 06       		.uleb128 0x6
+ 577 0165 8A000000 		.4byte	0x8a
  578 0169 74010000 		.4byte	0x174
- 579 016d 08       		.uleb128 0x8
- 580 016e C1000000 		.4byte	0xc1
+ 579 016d 07       		.uleb128 0x7
+ 580 016e 7D000000 		.4byte	0x7d
  581 0172 13       		.byte	0x13
  582 0173 00       		.byte	0
- 583 0174 03       		.uleb128 0x3
+ 583 0174 04       		.uleb128 0x4
  584 0175 4B020000 		.4byte	.LASF25
  585 0179 06       		.byte	0x6
  586 017a 13       		.byte	0x13
@@ -711,6 +718,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  589 0180 3C       		.byte	0x3c
  590 0181 07       		.byte	0x7
  591 0182 2C       		.byte	0x2c
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 13
+
+
  592 0183 AC010000 		.4byte	0x1ac
  593 0187 0A       		.uleb128 0xa
  594 0188 19000000 		.4byte	.LASF26
@@ -718,9 +728,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  596 018d 2D       		.byte	0x2d
  597 018e 64010000 		.4byte	0x164
  598 0192 00       		.byte	0
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 13
-
-
  599 0193 0A       		.uleb128 0xa
  600 0194 00000000 		.4byte	.LASF27
  601 0198 07       		.byte	0x7
@@ -728,13 +735,13 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  603 019a 64010000 		.4byte	0x164
  604 019e 14       		.byte	0x14
  605 019f 0A       		.uleb128 0xa
- 606 01a0 D0020000 		.4byte	.LASF28
+ 606 01a0 20030000 		.4byte	.LASF28
  607 01a4 07       		.byte	0x7
  608 01a5 2F       		.byte	0x2f
  609 01a6 64010000 		.4byte	0x164
  610 01aa 28       		.byte	0x28
  611 01ab 00       		.byte	0
- 612 01ac 03       		.uleb128 0x3
+ 612 01ac 04       		.uleb128 0x4
  613 01ad 9C010000 		.4byte	.LASF29
  614 01b1 07       		.byte	0x7
  615 01b2 30       		.byte	0x30
@@ -745,133 +752,133 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  620 01ba 32       		.byte	0x32
  621 01bb EF010000 		.4byte	0x1ef
  622 01bf 0A       		.uleb128 0xa
- 623 01c0 D6030000 		.4byte	.LASF30
+ 623 01c0 E0030000 		.4byte	.LASF30
  624 01c4 07       		.byte	0x7
  625 01c5 33       		.byte	0x33
- 626 01c6 81000000 		.4byte	0x81
+ 626 01c6 AC000000 		.4byte	0xac
  627 01ca 00       		.byte	0
  628 01cb 0C       		.uleb128 0xc
  629 01cc 737100   		.ascii	"sq\000"
  630 01cf 07       		.byte	0x7
  631 01d0 34       		.byte	0x34
- 632 01d1 81000000 		.4byte	0x81
+ 632 01d1 AC000000 		.4byte	0xac
  633 01d5 01       		.byte	0x1
  634 01d6 0A       		.uleb128 0xa
- 635 01d7 86020000 		.4byte	.LASF31
+ 635 01d7 D6020000 		.4byte	.LASF31
  636 01db 07       		.byte	0x7
  637 01dc 35       		.byte	0x35
- 638 01dd 68000000 		.4byte	0x68
+ 638 01dd 25000000 		.4byte	0x25
  639 01e1 04       		.byte	0x4
  640 01e2 0A       		.uleb128 0xa
- 641 01e3 B6020000 		.4byte	.LASF32
+ 641 01e3 06030000 		.4byte	.LASF32
  642 01e7 07       		.byte	0x7
  643 01e8 36       		.byte	0x36
- 644 01e9 68000000 		.4byte	0x68
+ 644 01e9 25000000 		.4byte	0x25
  645 01ed 08       		.byte	0x8
  646 01ee 00       		.byte	0
- 647 01ef 03       		.uleb128 0x3
- 648 01f0 DD020000 		.4byte	.LASF33
+ 647 01ef 04       		.uleb128 0x4
+ 648 01f0 2D030000 		.4byte	.LASF33
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 14
+
+
  649 01f4 07       		.byte	0x7
  650 01f5 37       		.byte	0x37
  651 01f6 B7010000 		.4byte	0x1b7
  652 01fa 0B       		.uleb128 0xb
  653 01fb 1C       		.byte	0x1c
  654 01fc 08       		.byte	0x8
- 655 01fd 39       		.byte	0x39
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 14
-
-
+ 655 01fd 37       		.byte	0x37
  656 01fe 1B020000 		.4byte	0x21b
  657 0202 0A       		.uleb128 0xa
  658 0203 5A010000 		.4byte	.LASF34
  659 0207 08       		.byte	0x8
- 660 0208 3B       		.byte	0x3b
+ 660 0208 39       		.byte	0x39
  661 0209 1B020000 		.4byte	0x21b
  662 020d 00       		.byte	0
  663 020e 0A       		.uleb128 0xa
  664 020f 2F000000 		.4byte	.LASF35
  665 0213 08       		.byte	0x8
- 666 0214 3C       		.byte	0x3c
- 667 0215 CE000000 		.4byte	0xce
+ 666 0214 3A       		.byte	0x3a
+ 667 0215 91000000 		.4byte	0x91
  668 0219 04       		.byte	0x4
  669 021a 00       		.byte	0
- 670 021b 06       		.uleb128 0x6
+ 670 021b 05       		.uleb128 0x5
  671 021c 04       		.byte	0x4
  672 021d AC010000 		.4byte	0x1ac
- 673 0221 03       		.uleb128 0x3
- 674 0222 63020000 		.4byte	.LASF36
+ 673 0221 04       		.uleb128 0x4
+ 674 0222 B3020000 		.4byte	.LASF36
  675 0226 08       		.byte	0x8
- 676 0227 3E       		.byte	0x3e
+ 676 0227 3C       		.byte	0x3c
  677 0228 FA010000 		.4byte	0x1fa
  678 022c 09       		.uleb128 0x9
  679 022d 4401     		.2byte	0x144
  680 022f 08       		.byte	0x8
- 681 0230 41       		.byte	0x41
+ 681 0230 42       		.byte	0x42
  682 0231 7F020000 		.4byte	0x27f
  683 0235 0A       		.uleb128 0xa
- 684 0236 62030000 		.4byte	.LASF37
+ 684 0236 B2030000 		.4byte	.LASF37
  685 023a 08       		.byte	0x8
- 686 023b 44       		.byte	0x44
+ 686 023b 45       		.byte	0x45
  687 023c 64010000 		.4byte	0x164
  688 0240 00       		.byte	0
  689 0241 0A       		.uleb128 0xa
  690 0242 50000000 		.4byte	.LASF38
  691 0246 08       		.byte	0x8
- 692 0247 46       		.byte	0x46
+ 692 0247 47       		.byte	0x47
  693 0248 7F020000 		.4byte	0x27f
  694 024c 14       		.byte	0x14
  695 024d 0A       		.uleb128 0xa
- 696 024e 6A030000 		.4byte	.LASF39
+ 696 024e BA030000 		.4byte	.LASF39
  697 0252 08       		.byte	0x8
- 698 0253 47       		.byte	0x47
- 699 0254 68000000 		.4byte	0x68
+ 698 0253 48       		.byte	0x48
+ 699 0254 25000000 		.4byte	0x25
  700 0258 78       		.byte	0x78
  701 0259 0A       		.uleb128 0xa
  702 025a 71010000 		.4byte	.LASF40
  703 025e 08       		.byte	0x8
- 704 025f 48       		.byte	0x48
+ 704 025f 49       		.byte	0x49
  705 0260 8F020000 		.4byte	0x28f
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 15
+
+
  706 0264 7C       		.byte	0x7c
  707 0265 0A       		.uleb128 0xa
- 708 0266 05030000 		.4byte	.LASF41
+ 708 0266 55030000 		.4byte	.LASF41
  709 026a 08       		.byte	0x8
- 710 026b 49       		.byte	0x49
+ 710 026b 4A       		.byte	0x4a
  711 026c 7F020000 		.4byte	0x27f
  712 0270 AE       		.byte	0xae
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 15
-
-
  713 0271 0D       		.uleb128 0xd
  714 0272 65010000 		.4byte	.LASF42
  715 0276 08       		.byte	0x8
- 716 0277 4A       		.byte	0x4a
+ 716 0277 4B       		.byte	0x4b
  717 0278 8F020000 		.4byte	0x28f
  718 027c 1201     		.2byte	0x112
  719 027e 00       		.byte	0
- 720 027f 07       		.uleb128 0x7
- 721 0280 B3000000 		.4byte	0xb3
+ 720 027f 06       		.uleb128 0x6
+ 721 0280 8A000000 		.4byte	0x8a
  722 0284 8F020000 		.4byte	0x28f
- 723 0288 08       		.uleb128 0x8
- 724 0289 C1000000 		.4byte	0xc1
+ 723 0288 07       		.uleb128 0x7
+ 724 0289 7D000000 		.4byte	0x7d
  725 028d 63       		.byte	0x63
  726 028e 00       		.byte	0
- 727 028f 07       		.uleb128 0x7
- 728 0290 B3000000 		.4byte	0xb3
+ 727 028f 06       		.uleb128 0x6
+ 728 0290 8A000000 		.4byte	0x8a
  729 0294 9F020000 		.4byte	0x29f
- 730 0298 08       		.uleb128 0x8
- 731 0299 C1000000 		.4byte	0xc1
+ 730 0298 07       		.uleb128 0x7
+ 731 0299 7D000000 		.4byte	0x7d
  732 029d 31       		.byte	0x31
  733 029e 00       		.byte	0
- 734 029f 03       		.uleb128 0x3
+ 734 029f 04       		.uleb128 0x4
  735 02a0 20000000 		.4byte	.LASF43
  736 02a4 08       		.byte	0x8
- 737 02a5 4D       		.byte	0x4d
+ 737 02a5 4E       		.byte	0x4e
  738 02a6 2C020000 		.4byte	0x22c
  739 02aa 0E       		.uleb128 0xe
  740 02ab 26010000 		.4byte	.LASF71
  741 02af 01       		.byte	0x1
- 742 02b0 04       		.byte	0x4
- 743 02b1 6F000000 		.4byte	0x6f
+ 742 02b0 05       		.byte	0x5
+ 743 02b1 2C000000 		.4byte	0x2c
  744 02b5 00000000 		.4byte	.LFB64
  745 02b9 88000000 		.4byte	.LFE64-.LFB64
  746 02bd 01       		.uleb128 0x1
@@ -880,27 +887,27 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  749 02c3 0F       		.uleb128 0xf
  750 02c4 C9010000 		.4byte	.LASF44
  751 02c8 01       		.byte	0x1
- 752 02c9 04       		.byte	0x4
- 753 02ca C8000000 		.4byte	0xc8
+ 752 02c9 05       		.byte	0x5
+ 753 02ca 84000000 		.4byte	0x84
  754 02ce 02       		.uleb128 0x2
  755 02cf 91       		.byte	0x91
  756 02d0 64       		.sleb128 -28
  757 02d1 0F       		.uleb128 0xf
- 758 02d2 62030000 		.4byte	.LASF37
+ 758 02d2 B2030000 		.4byte	.LASF37
  759 02d6 01       		.byte	0x1
- 760 02d7 04       		.byte	0x4
- 761 02d8 C8000000 		.4byte	0xc8
+ 760 02d7 05       		.byte	0x5
+ 761 02d8 84000000 		.4byte	0x84
  762 02dc 02       		.uleb128 0x2
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 16
+
+
  763 02dd 91       		.byte	0x91
  764 02de 60       		.sleb128 -32
  765 02df 10       		.uleb128 0x10
  766 02e0 F4000000 		.4byte	.LASF45
  767 02e4 01       		.byte	0x1
- 768 02e5 0E       		.byte	0xe
- 769 02e6 6F000000 		.4byte	0x6f
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 16
-
-
+ 768 02e5 10       		.byte	0x10
+ 769 02e6 2C000000 		.4byte	0x2c
  770 02ea 02       		.uleb128 0x2
  771 02eb 91       		.byte	0x91
  772 02ec 68       		.sleb128 -24
@@ -910,17 +917,17 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  776 02f6 12       		.uleb128 0x12
  777 02f7 6900     		.ascii	"i\000"
  778 02f9 01       		.byte	0x1
- 779 02fa 09       		.byte	0x9
- 780 02fb 8D000000 		.4byte	0x8d
+ 779 02fa 0A       		.byte	0xa
+ 780 02fb B8000000 		.4byte	0xb8
  781 02ff 02       		.uleb128 0x2
  782 0300 91       		.byte	0x91
  783 0301 6E       		.sleb128 -18
  784 0302 00       		.byte	0
  785 0303 00       		.byte	0
  786 0304 13       		.uleb128 0x13
- 787 0305 4B030000 		.4byte	.LASF51
+ 787 0305 9B030000 		.4byte	.LASF51
  788 0309 01       		.byte	0x1
- 789 030a 14       		.byte	0x14
+ 789 030a 17       		.byte	0x17
  790 030b 00000000 		.4byte	.LFB65
  791 030f 3C000000 		.4byte	.LFE65-.LFB65
  792 0313 01       		.uleb128 0x1
@@ -929,51 +936,51 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  795 0319 0F       		.uleb128 0xf
  796 031a CE010000 		.4byte	.LASF46
  797 031e 01       		.byte	0x1
- 798 031f 14       		.byte	0x14
- 799 0320 C8000000 		.4byte	0xc8
+ 798 031f 17       		.byte	0x17
+ 799 0320 84000000 		.4byte	0x84
  800 0324 02       		.uleb128 0x2
  801 0325 91       		.byte	0x91
  802 0326 74       		.sleb128 -12
  803 0327 0F       		.uleb128 0xf
- 804 0328 72030000 		.4byte	.LASF47
+ 804 0328 C2030000 		.4byte	.LASF47
  805 032c 01       		.byte	0x1
- 806 032d 14       		.byte	0x14
- 807 032e C8000000 		.4byte	0xc8
+ 806 032d 17       		.byte	0x17
+ 807 032e 84000000 		.4byte	0x84
  808 0332 02       		.uleb128 0x2
  809 0333 91       		.byte	0x91
  810 0334 70       		.sleb128 -16
  811 0335 0F       		.uleb128 0xf
- 812 0336 6E020000 		.4byte	.LASF48
+ 812 0336 BE020000 		.4byte	.LASF48
  813 033a 01       		.byte	0x1
- 814 033b 14       		.byte	0x14
- 815 033c C8000000 		.4byte	0xc8
+ 814 033b 17       		.byte	0x17
+ 815 033c 84000000 		.4byte	0x84
  816 0340 02       		.uleb128 0x2
  817 0341 91       		.byte	0x91
  818 0342 6C       		.sleb128 -20
  819 0343 0F       		.uleb128 0xf
- 820 0344 A5020000 		.4byte	.LASF49
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 17
+
+
+ 820 0344 F5020000 		.4byte	.LASF49
  821 0348 01       		.byte	0x1
- 822 0349 14       		.byte	0x14
- 823 034a C8000000 		.4byte	0xc8
+ 822 0349 17       		.byte	0x17
+ 823 034a 84000000 		.4byte	0x84
  824 034e 02       		.uleb128 0x2
  825 034f 91       		.byte	0x91
  826 0350 68       		.sleb128 -24
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 17
-
-
  827 0351 0F       		.uleb128 0xf
  828 0352 EB000000 		.4byte	.LASF50
  829 0356 01       		.byte	0x1
- 830 0357 14       		.byte	0x14
- 831 0358 C8000000 		.4byte	0xc8
+ 830 0357 17       		.byte	0x17
+ 831 0358 84000000 		.4byte	0x84
  832 035c 02       		.uleb128 0x2
  833 035d 91       		.byte	0x91
  834 035e 00       		.sleb128 0
  835 035f 00       		.byte	0
  836 0360 14       		.uleb128 0x14
- 837 0361 BD030000 		.4byte	.LASF52
+ 837 0361 C7030000 		.4byte	.LASF52
  838 0365 01       		.byte	0x1
- 839 0366 19       		.byte	0x19
+ 839 0366 1E       		.byte	0x1e
  840 0367 2C010000 		.4byte	0x12c
  841 036b 00000000 		.4byte	.LFB66
  842 036f 34010000 		.4byte	.LFE66-.LFB66
@@ -981,9 +988,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  844 0374 9C       		.byte	0x9c
  845 0375 B4030000 		.4byte	0x3b4
  846 0379 10       		.uleb128 0x10
- 847 037a F5020000 		.4byte	.LASF53
+ 847 037a 45030000 		.4byte	.LASF53
  848 037e 01       		.byte	0x1
- 849 037f 1A       		.byte	0x1a
+ 849 037f 1F       		.byte	0x1f
  850 0380 2C010000 		.4byte	0x12c
  851 0384 03       		.uleb128 0x3
  852 0385 91       		.byte	0x91
@@ -991,58 +998,58 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  854 0388 10       		.uleb128 0x10
  855 0389 09000000 		.4byte	.LASF54
  856 038d 01       		.byte	0x1
- 857 038e 1F       		.byte	0x1f
- 858 038f C8000000 		.4byte	0xc8
+ 857 038e 24       		.byte	0x24
+ 858 038f 84000000 		.4byte	0x84
  859 0393 02       		.uleb128 0x2
  860 0394 91       		.byte	0x91
  861 0395 64       		.sleb128 -28
  862 0396 10       		.uleb128 0x10
  863 0397 B9010000 		.4byte	.LASF55
  864 039b 01       		.byte	0x1
- 865 039c 24       		.byte	0x24
+ 865 039c 29       		.byte	0x29
  866 039d B4030000 		.4byte	0x3b4
  867 03a1 03       		.uleb128 0x3
  868 03a2 91       		.byte	0x91
  869 03a3 947B     		.sleb128 -620
  870 03a5 10       		.uleb128 0x10
- 871 03a6 39030000 		.4byte	.LASF56
+ 871 03a6 89030000 		.4byte	.LASF56
  872 03aa 01       		.byte	0x1
- 873 03ab 28       		.byte	0x28
- 874 03ac 68000000 		.4byte	0x68
+ 873 03ab 2E       		.byte	0x2e
+ 874 03ac 25000000 		.4byte	0x25
  875 03b0 02       		.uleb128 0x2
  876 03b1 91       		.byte	0x91
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 18
+
+
  877 03b2 60       		.sleb128 -32
  878 03b3 00       		.byte	0
- 879 03b4 07       		.uleb128 0x7
- 880 03b5 B3000000 		.4byte	0xb3
+ 879 03b4 06       		.uleb128 0x6
+ 880 03b5 8A000000 		.4byte	0x8a
  881 03b9 C4030000 		.4byte	0x3c4
- 882 03bd 08       		.uleb128 0x8
- 883 03be C1000000 		.4byte	0xc1
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 18
-
-
+ 882 03bd 07       		.uleb128 0x7
+ 883 03be 7D000000 		.4byte	0x7d
  884 03c2 C7       		.byte	0xc7
  885 03c3 00       		.byte	0
  886 03c4 15       		.uleb128 0x15
- 887 03c5 2C030000 		.4byte	.LASF57
+ 887 03c5 7C030000 		.4byte	.LASF57
  888 03c9 09       		.byte	0x9
  889 03ca 1207     		.2byte	0x712
  890 03cc D0030000 		.4byte	0x3d0
  891 03d0 16       		.uleb128 0x16
- 892 03d1 76000000 		.4byte	0x76
+ 892 03d1 A1000000 		.4byte	0xa1
  893 03d5 17       		.uleb128 0x17
  894 03d6 42010000 		.4byte	.LASF58
  895 03da 06       		.byte	0x6
  896 03db 1D       		.byte	0x1d
- 897 03dc 8D000000 		.4byte	0x8d
+ 897 03dc B8000000 		.4byte	0xb8
  898 03e0 05       		.uleb128 0x5
  899 03e1 03       		.byte	0x3
  900 03e2 00000000 		.4byte	dataPointsInStack
- 901 03e6 07       		.uleb128 0x7
+ 901 03e6 06       		.uleb128 0x6
  902 03e7 74010000 		.4byte	0x174
  903 03eb F6030000 		.4byte	0x3f6
- 904 03ef 08       		.uleb128 0x8
- 905 03f0 C1000000 		.4byte	0xc1
+ 904 03ef 07       		.uleb128 0x7
+ 905 03f0 7D000000 		.4byte	0x7d
  906 03f4 31       		.byte	0x31
  907 03f5 00       		.byte	0
  908 03f6 17       		.uleb128 0x17
@@ -1057,7 +1064,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  917 0408 0F020000 		.4byte	.LASF60
  918 040c 07       		.byte	0x7
  919 040d 15       		.byte	0x15
- 920 040e 81000000 		.4byte	0x81
+ 920 040e AC000000 		.4byte	0xac
  921 0412 05       		.uleb128 0x5
  922 0413 03       		.byte	0x3
  923 0414 00000000 		.4byte	modem_state
@@ -1065,12 +1072,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  925 0419 F8010000 		.4byte	.LASF61
  926 041d 07       		.byte	0x7
  927 041e 45       		.byte	0x45
- 928 041f 99000000 		.4byte	0x99
+ 928 041f C4000000 		.4byte	0xc4
  929 0423 05       		.uleb128 0x5
  930 0424 03       		.byte	0x3
  931 0425 00000000 		.4byte	modem_start_time_stamp
  932 0429 17       		.uleb128 0x17
  933 042a 5A010000 		.4byte	.LASF34
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 19
+
+
  934 042e 07       		.byte	0x7
  935 042f 46       		.byte	0x46
  936 0430 AC010000 		.4byte	0x1ac
@@ -1078,9 +1088,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  938 0435 03       		.byte	0x3
  939 0436 00000000 		.4byte	modem_info
  940 043a 17       		.uleb128 0x17
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 19
-
-
  941 043b 57020000 		.4byte	.LASF62
  942 043f 07       		.byte	0x7
  943 0440 47       		.byte	0x47
@@ -1088,17 +1095,17 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  945 0445 05       		.uleb128 0x5
  946 0446 03       		.byte	0x3
  947 0447 00000000 		.4byte	modem_stats
- 948 044b 07       		.uleb128 0x7
- 949 044c B3000000 		.4byte	0xb3
+ 948 044b 06       		.uleb128 0x6
+ 949 044c 8A000000 		.4byte	0x8a
  950 0450 5C040000 		.4byte	0x45c
  951 0454 18       		.uleb128 0x18
- 952 0455 C1000000 		.4byte	0xc1
+ 952 0455 7D000000 		.4byte	0x7d
  953 0459 9F0F     		.2byte	0xf9f
  954 045b 00       		.byte	0
  955 045c 17       		.uleb128 0x17
- 956 045d C9030000 		.4byte	.LASF63
+ 956 045d D3030000 		.4byte	.LASF63
  957 0461 08       		.byte	0x8
- 958 0462 18       		.byte	0x18
+ 958 0462 16       		.byte	0x16
  959 0463 4B040000 		.4byte	0x44b
  960 0467 05       		.uleb128 0x5
  961 0468 03       		.byte	0x3
@@ -1106,21 +1113,21 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  963 046d 17       		.uleb128 0x17
  964 046e D4010000 		.4byte	.LASF64
  965 0472 08       		.byte	0x8
- 966 0473 19       		.byte	0x19
+ 966 0473 17       		.byte	0x17
  967 0474 4B040000 		.4byte	0x44b
  968 0478 05       		.uleb128 0x5
  969 0479 03       		.byte	0x3
  970 047a 00000000 		.4byte	http_body
  971 047e 17       		.uleb128 0x17
- 972 047f FA020000 		.4byte	.LASF65
+ 972 047f 4A030000 		.4byte	.LASF65
  973 0483 08       		.byte	0x8
- 974 0484 1A       		.byte	0x1a
+ 974 0484 18       		.byte	0x18
  975 0485 B4030000 		.4byte	0x3b4
  976 0489 05       		.uleb128 0x5
  977 048a 03       		.byte	0x3
  978 048b 00000000 		.4byte	http_route
  979 048f 17       		.uleb128 0x17
- 980 0490 AA020000 		.4byte	.LASF66
+ 980 0490 FA020000 		.4byte	.LASF66
  981 0494 08       		.byte	0x8
  982 0495 3F       		.byte	0x3f
  983 0496 21020000 		.4byte	0x221
@@ -1130,7 +1137,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  987 04a0 17       		.uleb128 0x17
  988 04a1 00010000 		.4byte	.LASF67
  989 04a5 08       		.byte	0x8
- 990 04a6 4E       		.byte	0x4e
+ 990 04a6 51       		.byte	0x51
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 20
+
+
  991 04a7 9F020000 		.4byte	0x29f
  992 04ab 05       		.uleb128 0x5
  993 04ac 03       		.byte	0x3
@@ -1138,9 +1148,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  995 04b1 00       		.byte	0
  996              		.section	.debug_abbrev,"",%progbits
  997              	.Ldebug_abbrev0:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 20
-
-
  998 0000 01       		.uleb128 0x1
  999 0001 11       		.uleb128 0x11
  1000 0002 01       		.byte	0x1
@@ -1168,74 +1175,74 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1022 0018 3E       		.uleb128 0x3e
  1023 0019 0B       		.uleb128 0xb
  1024 001a 03       		.uleb128 0x3
- 1025 001b 0E       		.uleb128 0xe
+ 1025 001b 08       		.uleb128 0x8
  1026 001c 00       		.byte	0
  1027 001d 00       		.byte	0
  1028 001e 03       		.uleb128 0x3
- 1029 001f 16       		.uleb128 0x16
+ 1029 001f 24       		.uleb128 0x24
  1030 0020 00       		.byte	0
- 1031 0021 03       		.uleb128 0x3
- 1032 0022 0E       		.uleb128 0xe
- 1033 0023 3A       		.uleb128 0x3a
+ 1031 0021 0B       		.uleb128 0xb
+ 1032 0022 0B       		.uleb128 0xb
+ 1033 0023 3E       		.uleb128 0x3e
  1034 0024 0B       		.uleb128 0xb
- 1035 0025 3B       		.uleb128 0x3b
- 1036 0026 0B       		.uleb128 0xb
- 1037 0027 49       		.uleb128 0x49
- 1038 0028 13       		.uleb128 0x13
- 1039 0029 00       		.byte	0
- 1040 002a 00       		.byte	0
- 1041 002b 04       		.uleb128 0x4
- 1042 002c 24       		.uleb128 0x24
- 1043 002d 00       		.byte	0
- 1044 002e 0B       		.uleb128 0xb
+ 1035 0025 03       		.uleb128 0x3
+ 1036 0026 0E       		.uleb128 0xe
+ 1037 0027 00       		.byte	0
+ 1038 0028 00       		.byte	0
+ 1039 0029 04       		.uleb128 0x4
+ 1040 002a 16       		.uleb128 0x16
+ 1041 002b 00       		.byte	0
+ 1042 002c 03       		.uleb128 0x3
+ 1043 002d 0E       		.uleb128 0xe
+ 1044 002e 3A       		.uleb128 0x3a
  1045 002f 0B       		.uleb128 0xb
- 1046 0030 3E       		.uleb128 0x3e
+ 1046 0030 3B       		.uleb128 0x3b
  1047 0031 0B       		.uleb128 0xb
- 1048 0032 03       		.uleb128 0x3
- 1049 0033 08       		.uleb128 0x8
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 21
+
+
+ 1048 0032 49       		.uleb128 0x49
+ 1049 0033 13       		.uleb128 0x13
  1050 0034 00       		.byte	0
  1051 0035 00       		.byte	0
  1052 0036 05       		.uleb128 0x5
- 1053 0037 16       		.uleb128 0x16
+ 1053 0037 0F       		.uleb128 0xf
  1054 0038 00       		.byte	0
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 21
-
-
- 1055 0039 03       		.uleb128 0x3
- 1056 003a 0E       		.uleb128 0xe
- 1057 003b 3A       		.uleb128 0x3a
- 1058 003c 0B       		.uleb128 0xb
- 1059 003d 3B       		.uleb128 0x3b
- 1060 003e 05       		.uleb128 0x5
- 1061 003f 49       		.uleb128 0x49
- 1062 0040 13       		.uleb128 0x13
- 1063 0041 00       		.byte	0
- 1064 0042 00       		.byte	0
- 1065 0043 06       		.uleb128 0x6
- 1066 0044 0F       		.uleb128 0xf
- 1067 0045 00       		.byte	0
- 1068 0046 0B       		.uleb128 0xb
- 1069 0047 0B       		.uleb128 0xb
- 1070 0048 49       		.uleb128 0x49
- 1071 0049 13       		.uleb128 0x13
+ 1055 0039 0B       		.uleb128 0xb
+ 1056 003a 0B       		.uleb128 0xb
+ 1057 003b 49       		.uleb128 0x49
+ 1058 003c 13       		.uleb128 0x13
+ 1059 003d 00       		.byte	0
+ 1060 003e 00       		.byte	0
+ 1061 003f 06       		.uleb128 0x6
+ 1062 0040 01       		.uleb128 0x1
+ 1063 0041 01       		.byte	0x1
+ 1064 0042 49       		.uleb128 0x49
+ 1065 0043 13       		.uleb128 0x13
+ 1066 0044 01       		.uleb128 0x1
+ 1067 0045 13       		.uleb128 0x13
+ 1068 0046 00       		.byte	0
+ 1069 0047 00       		.byte	0
+ 1070 0048 07       		.uleb128 0x7
+ 1071 0049 21       		.uleb128 0x21
  1072 004a 00       		.byte	0
- 1073 004b 00       		.byte	0
- 1074 004c 07       		.uleb128 0x7
- 1075 004d 01       		.uleb128 0x1
- 1076 004e 01       		.byte	0x1
- 1077 004f 49       		.uleb128 0x49
- 1078 0050 13       		.uleb128 0x13
- 1079 0051 01       		.uleb128 0x1
- 1080 0052 13       		.uleb128 0x13
+ 1073 004b 49       		.uleb128 0x49
+ 1074 004c 13       		.uleb128 0x13
+ 1075 004d 2F       		.uleb128 0x2f
+ 1076 004e 0B       		.uleb128 0xb
+ 1077 004f 00       		.byte	0
+ 1078 0050 00       		.byte	0
+ 1079 0051 08       		.uleb128 0x8
+ 1080 0052 16       		.uleb128 0x16
  1081 0053 00       		.byte	0
- 1082 0054 00       		.byte	0
- 1083 0055 08       		.uleb128 0x8
- 1084 0056 21       		.uleb128 0x21
- 1085 0057 00       		.byte	0
- 1086 0058 49       		.uleb128 0x49
- 1087 0059 13       		.uleb128 0x13
- 1088 005a 2F       		.uleb128 0x2f
- 1089 005b 0B       		.uleb128 0xb
+ 1082 0054 03       		.uleb128 0x3
+ 1083 0055 0E       		.uleb128 0xe
+ 1084 0056 3A       		.uleb128 0x3a
+ 1085 0057 0B       		.uleb128 0xb
+ 1086 0058 3B       		.uleb128 0x3b
+ 1087 0059 05       		.uleb128 0x5
+ 1088 005a 49       		.uleb128 0x49
+ 1089 005b 13       		.uleb128 0x13
  1090 005c 00       		.byte	0
  1091 005d 00       		.byte	0
  1092 005e 09       		.uleb128 0x9
@@ -1251,6 +1258,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1102 0068 13       		.uleb128 0x13
  1103 0069 00       		.byte	0
  1104 006a 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 22
+
+
  1105 006b 0A       		.uleb128 0xa
  1106 006c 0D       		.uleb128 0xd
  1107 006d 00       		.byte	0
@@ -1258,9 +1268,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1109 006f 0E       		.uleb128 0xe
  1110 0070 3A       		.uleb128 0x3a
  1111 0071 0B       		.uleb128 0xb
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 22
-
-
  1112 0072 3B       		.uleb128 0x3b
  1113 0073 0B       		.uleb128 0xb
  1114 0074 49       		.uleb128 0x49
@@ -1311,6 +1318,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1159 00a1 38       		.uleb128 0x38
  1160 00a2 05       		.uleb128 0x5
  1161 00a3 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 23
+
+
  1162 00a4 00       		.byte	0
  1163 00a5 0E       		.uleb128 0xe
  1164 00a6 2E       		.uleb128 0x2e
@@ -1318,9 +1328,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1166 00a8 3F       		.uleb128 0x3f
  1167 00a9 19       		.uleb128 0x19
  1168 00aa 03       		.uleb128 0x3
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 23
-
-
  1169 00ab 0E       		.uleb128 0xe
  1170 00ac 3A       		.uleb128 0x3a
  1171 00ad 0B       		.uleb128 0xb
@@ -1371,6 +1378,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1216 00db 02       		.uleb128 0x2
  1217 00dc 18       		.uleb128 0x18
  1218 00dd 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 24
+
+
  1219 00de 00       		.byte	0
  1220 00df 11       		.uleb128 0x11
  1221 00e0 0B       		.uleb128 0xb
@@ -1378,9 +1388,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1223 00e2 11       		.uleb128 0x11
  1224 00e3 01       		.uleb128 0x1
  1225 00e4 12       		.uleb128 0x12
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 24
-
-
  1226 00e5 06       		.uleb128 0x6
  1227 00e6 00       		.byte	0
  1228 00e7 00       		.byte	0
@@ -1431,6 +1438,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1273 0115 19       		.uleb128 0x19
  1274 0116 03       		.uleb128 0x3
  1275 0117 0E       		.uleb128 0xe
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 25
+
+
  1276 0118 3A       		.uleb128 0x3a
  1277 0119 0B       		.uleb128 0xb
  1278 011a 3B       		.uleb128 0x3b
@@ -1438,9 +1448,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1280 011c 49       		.uleb128 0x49
  1281 011d 13       		.uleb128 0x13
  1282 011e 11       		.uleb128 0x11
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 25
-
-
  1283 011f 01       		.uleb128 0x1
  1284 0120 12       		.uleb128 0x12
  1285 0121 06       		.uleb128 0x6
@@ -1491,6 +1498,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1330 014f 19       		.uleb128 0x19
  1331 0150 02       		.uleb128 0x2
  1332 0151 18       		.uleb128 0x18
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 26
+
+
  1333 0152 00       		.byte	0
  1334 0153 00       		.byte	0
  1335 0154 18       		.uleb128 0x18
@@ -1498,9 +1508,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1337 0156 00       		.byte	0
  1338 0157 49       		.uleb128 0x49
  1339 0158 13       		.uleb128 0x13
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 26
-
-
  1340 0159 2F       		.uleb128 0x2f
  1341 015a 05       		.uleb128 0x5
  1342 015b 00       		.byte	0
@@ -1551,6 +1558,9 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1378              	.LASF26:
  1379 0019 73696D5F 		.ascii	"sim_id\000"
  1379      696400
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 27
+
+
  1380              	.LASF43:
  1381 0020 7379735F 		.ascii	"sys_settings_t\000"
  1381      73657474 
@@ -1558,17 +1568,14 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1381      5F7400
  1382              	.LASF35:
  1383 002f 63686970 		.ascii	"chip_uniqueId\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 27
-
-
  1383      5F756E69 
  1383      71756549 
  1383      6400
- 1384              	.LASF2:
+ 1384              	.LASF5:
  1385 003d 73686F72 		.ascii	"short int\000"
  1385      7420696E 
  1385      7400
- 1386              	.LASF18:
+ 1386              	.LASF10:
  1387 0047 73697A65 		.ascii	"sizetype\000"
  1387      74797065 
  1387      00
@@ -1610,7 +1617,10 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1402              	.LASF23:
  1403 0110 76616C75 		.ascii	"value\000"
  1403      6500
- 1404              	.LASF12:
+ 1404              	.LASF15:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 28
+
+
  1405 0116 75696E74 		.ascii	"uint16\000"
  1405      313600
  1406              	.LASF69:
@@ -1618,9 +1628,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1407      75782E63 
  1407      00
  1408              	.LASF71:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 28
-
-
  1409 0126 636F6E73 		.ascii	"construct_influx_write_body\000"
  1409      74727563 
  1409      745F696E 
@@ -1632,7 +1639,7 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1411      7473496E 
  1411      53746163 
  1411      6B00
- 1412              	.LASF11:
+ 1412              	.LASF14:
  1413 0154 75696E74 		.ascii	"uint8\000"
  1413      3800
  1414              	.LASF34:
@@ -1650,15 +1657,15 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1421 0179 74696D65 		.ascii	"timeStamp\000"
  1421      5374616D 
  1421      7000
- 1422              	.LASF14:
+ 1422              	.LASF17:
  1423 0183 666C6F61 		.ascii	"float\000"
  1423      7400
- 1424              	.LASF6:
+ 1424              	.LASF1:
  1425 0189 6C6F6E67 		.ascii	"long long int\000"
  1425      206C6F6E 
  1425      6720696E 
  1425      7400
- 1426              	.LASF16:
+ 1426              	.LASF11:
  1427 0197 63686172 		.ascii	"char\000"
  1427      00
  1428              	.LASF29:
@@ -1669,8 +1676,11 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1430              	.LASF21:
  1431 01a9 72656173 		.ascii	"reason\000"
  1431      6F6E00
- 1432              	.LASF4:
+ 1432              	.LASF7:
  1433 01b0 6C6F6E67 		.ascii	"long int\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 29
+
+
  1433      20696E74 
  1433      00
  1434              	.LASF55:
@@ -1678,9 +1688,6 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1435      5F777269 
  1435      74655F62 
  1435      6F647900 
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 29
-
-
  1436              	.LASF44:
  1437 01c9 626F6479 		.ascii	"body\000"
  1437      00
@@ -1691,11 +1698,11 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1441 01d4 68747470 		.ascii	"http_body\000"
  1441      5F626F64 
  1441      7900
- 1442              	.LASF17:
+ 1442              	.LASF2:
  1443 01de 6C6F6E67 		.ascii	"long double\000"
  1443      20646F75 
  1443      626C6500 
- 1444              	.LASF1:
+ 1444              	.LASF4:
  1445 01ea 756E7369 		.ascii	"unsigned char\000"
  1445      676E6564 
  1445      20636861 
@@ -1710,17 +1717,17 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1449 020f 6D6F6465 		.ascii	"modem_state\000"
  1449      6D5F7374 
  1449      61746500 
- 1450              	.LASF0:
+ 1450              	.LASF3:
  1451 021b 7369676E 		.ascii	"signed char\000"
  1451      65642063 
  1451      68617200 
- 1452              	.LASF7:
+ 1452              	.LASF9:
  1453 0227 6C6F6E67 		.ascii	"long long unsigned int\000"
  1453      206C6F6E 
  1453      6720756E 
  1453      7369676E 
  1453      65642069 
- 1454              	.LASF8:
+ 1454              	.LASF0:
  1455 023e 756E7369 		.ascii	"unsigned int\000"
  1455      676E6564 
  1455      20696E74 
@@ -1731,140 +1738,140 @@ ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 1
  1457      655F7400 
  1458              	.LASF62:
  1459 0257 6D6F6465 		.ascii	"modem_stats\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 30
+
+
  1459      6D5F7374 
  1459      61747300 
- 1460              	.LASF36:
- 1461 0263 7379735F 		.ascii	"sys_info_t\000"
- 1461      696E666F 
- 1461      5F7400
- 1462              	.LASF48:
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 30
+ 1460              	.LASF70:
+ 1461 0263 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
+ 1461      73657273 
+ 1461      5C686169 
+ 1461      6C5C4465 
+ 1461      736B746F 
+ 1462 0291 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS\\notoriOS.cydsn\000"
+ 1462      6F72694F 
+ 1462      535C6E6F 
+ 1462      746F7269 
+ 1462      4F535C6E 
+ 1463              	.LASF36:
+ 1464 02b3 7379735F 		.ascii	"sys_info_t\000"
+ 1464      696E666F 
+ 1464      5F7400
+ 1465              	.LASF48:
+ 1466 02be 75736572 		.ascii	"user\000"
+ 1466      00
+ 1467              	.LASF6:
+ 1468 02c3 73686F72 		.ascii	"short unsigned int\000"
+ 1468      7420756E 
+ 1468      7369676E 
+ 1468      65642069 
+ 1468      6E7400
+ 1469              	.LASF31:
+ 1470 02d6 74696D65 		.ascii	"time_to_network_connect\000"
+ 1470      5F746F5F 
+ 1470      6E657477 
+ 1470      6F726B5F 
+ 1470      636F6E6E 
+ 1471              	.LASF20:
+ 1472 02ee 73746174 		.ascii	"status\000"
+ 1472      757300
+ 1473              	.LASF49:
+ 1474 02f5 70617373 		.ascii	"pass\000"
+ 1474      00
+ 1475              	.LASF66:
+ 1476 02fa 73797374 		.ascii	"system_info\000"
+ 1476      656D5F69 
+ 1476      6E666F00 
+ 1477              	.LASF32:
+ 1478 0306 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1478      5F746F5F 
+ 1478      61637175 
+ 1478      6972655F 
+ 1478      697000
+ 1479              	.LASF22:
+ 1480 0319 74657374 		.ascii	"test_t\000"
+ 1480      5F7400
+ 1481              	.LASF28:
+ 1482 0320 696D6569 		.ascii	"imei\000"
+ 1482      00
+ 1483              	.LASF13:
+ 1484 0325 696E7433 		.ascii	"int32_t\000"
+ 1484      325F7400 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 31
 
 
- 1463 026e 75736572 		.ascii	"user\000"
- 1463      00
- 1464              	.LASF3:
- 1465 0273 73686F72 		.ascii	"short unsigned int\000"
- 1465      7420756E 
- 1465      7369676E 
- 1465      65642069 
- 1465      6E7400
- 1466              	.LASF31:
- 1467 0286 74696D65 		.ascii	"time_to_network_connect\000"
- 1467      5F746F5F 
- 1467      6E657477 
- 1467      6F726B5F 
- 1467      636F6E6E 
- 1468              	.LASF20:
- 1469 029e 73746174 		.ascii	"status\000"
- 1469      757300
- 1470              	.LASF49:
- 1471 02a5 70617373 		.ascii	"pass\000"
- 1471      00
- 1472              	.LASF66:
- 1473 02aa 73797374 		.ascii	"system_info\000"
- 1473      656D5F69 
- 1473      6E666F00 
- 1474              	.LASF32:
- 1475 02b6 74696D65 		.ascii	"time_to_acquire_ip\000"
- 1475      5F746F5F 
- 1475      61637175 
- 1475      6972655F 
- 1475      697000
- 1476              	.LASF22:
- 1477 02c9 74657374 		.ascii	"test_t\000"
- 1477      5F7400
- 1478              	.LASF28:
- 1479 02d0 696D6569 		.ascii	"imei\000"
- 1479      00
- 1480              	.LASF10:
- 1481 02d5 696E7433 		.ascii	"int32_t\000"
- 1481      325F7400 
- 1482              	.LASF33:
- 1483 02dd 6D6F6465 		.ascii	"modem_stats_t\000"
- 1483      6D5F7374 
- 1483      6174735F 
- 1483      7400
- 1484              	.LASF19:
- 1485 02eb 74657374 		.ascii	"test_name\000"
- 1485      5F6E616D 
- 1485      6500
- 1486              	.LASF53:
- 1487 02f5 74657374 		.ascii	"test\000"
- 1487      00
- 1488              	.LASF65:
- 1489 02fa 68747470 		.ascii	"http_route\000"
- 1489      5F726F75 
- 1489      746500
- 1490              	.LASF41:
- 1491 0305 65705F70 		.ascii	"ep_pswd\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 31
+ 1485              	.LASF33:
+ 1486 032d 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1486      6D5F7374 
+ 1486      6174735F 
+ 1486      7400
+ 1487              	.LASF19:
+ 1488 033b 74657374 		.ascii	"test_name\000"
+ 1488      5F6E616D 
+ 1488      6500
+ 1489              	.LASF53:
+ 1490 0345 74657374 		.ascii	"test\000"
+ 1490      00
+ 1491              	.LASF65:
+ 1492 034a 68747470 		.ascii	"http_route\000"
+ 1492      5F726F75 
+ 1492      746500
+ 1493              	.LASF41:
+ 1494 0355 65705F70 		.ascii	"ep_pswd\000"
+ 1494      73776400 
+ 1495              	.LASF8:
+ 1496 035d 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1496      20756E73 
+ 1496      69676E65 
+ 1496      6420696E 
+ 1496      7400
+ 1497              	.LASF16:
+ 1498 036f 696E7433 		.ascii	"int32\000"
+ 1498      3200
+ 1499              	.LASF18:
+ 1500 0375 646F7562 		.ascii	"double\000"
+ 1500      6C6500
+ 1501              	.LASF57:
+ 1502 037c 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1502      52784275 
+ 1502      66666572 
+ 1502      00
+ 1503              	.LASF56:
+ 1504 0389 636F6D70 		.ascii	"compare\000"
+ 1504      61726500 
+ 1505              	.LASF12:
+ 1506 0391 5F5F696E 		.ascii	"__int32_t\000"
+ 1506      7433325F 
+ 1506      7400
+ 1507              	.LASF51:
+ 1508 039b 636F6E73 		.ascii	"construct_influx_route\000"
+ 1508      74727563 
+ 1508      745F696E 
+ 1508      666C7578 
+ 1508      5F726F75 
+ 1509              	.LASF37:
+ 1510 03b2 6E6F6465 		.ascii	"node_id\000"
+ 1510      5F696400 
+ 1511              	.LASF39:
+ 1512 03ba 65705F70 		.ascii	"ep_port\000"
+ 1512      6F727400 
+ 1513              	.LASF47:
+ 1514 03c2 62617365 		.ascii	"base\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1AvIRC.s 			page 32
 
 
- 1491      73776400 
- 1492              	.LASF5:
- 1493 030d 6C6F6E67 		.ascii	"long unsigned int\000"
- 1493      20756E73 
- 1493      69676E65 
- 1493      6420696E 
- 1493      7400
- 1494              	.LASF13:
- 1495 031f 696E7433 		.ascii	"int32\000"
- 1495      3200
- 1496              	.LASF15:
- 1497 0325 646F7562 		.ascii	"double\000"
- 1497      6C6500
- 1498              	.LASF57:
- 1499 032c 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1499      52784275 
- 1499      66666572 
- 1499      00
- 1500              	.LASF56:
- 1501 0339 636F6D70 		.ascii	"compare\000"
- 1501      61726500 
- 1502              	.LASF9:
- 1503 0341 5F5F696E 		.ascii	"__int32_t\000"
- 1503      7433325F 
- 1503      7400
- 1504              	.LASF51:
- 1505 034b 636F6E73 		.ascii	"construct_influx_route\000"
- 1505      74727563 
- 1505      745F696E 
- 1505      666C7578 
- 1505      5F726F75 
- 1506              	.LASF37:
- 1507 0362 6E6F6465 		.ascii	"node_id\000"
- 1507      5F696400 
- 1508              	.LASF39:
- 1509 036a 65705F70 		.ascii	"ep_port\000"
- 1509      6F727400 
- 1510              	.LASF47:
- 1511 0372 62617365 		.ascii	"base\000"
- 1511      00
- 1512              	.LASF70:
- 1513 0377 433A5C55 		.ascii	"C:\\Users\\hyfi_admin\\Documents\\GitHub\\notoriOS\\"
- 1513      73657273 
- 1513      5C687966 
- 1513      695F6164 
- 1513      6D696E5C 
- 1514 03a5 6E6F746F 		.ascii	"notoriOS\\notoriOS.cydsn\000"
- 1514      72694F53 
- 1514      5C6E6F74 
- 1514      6F72694F 
- 1514      532E6379 
+ 1514      00
  1515              	.LASF52:
- 1516 03bd 696E666C 		.ascii	"influx_test\000"
+ 1516 03c7 696E666C 		.ascii	"influx_test\000"
  1516      75785F74 
  1516      65737400 
  1517              	.LASF63:
- 1518 03c9 68747470 		.ascii	"http_request\000"
-ARM GAS  C:\Users\HYFI_A~1\AppData\Local\Temp\ccaJLcrO.s 			page 32
-
-
+ 1518 03d3 68747470 		.ascii	"http_request\000"
  1518      5F726571 
  1518      75657374 
  1518      00
  1519              	.LASF30:
- 1520 03d6 72737369 		.ascii	"rssi\000"
+ 1520 03e0 72737369 		.ascii	"rssi\000"
  1520      00
  1521              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

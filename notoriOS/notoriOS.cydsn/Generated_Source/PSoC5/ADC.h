@@ -1,6 +1,6 @@
 /*******************************************************************************
 * File Name: ADC.h
-* Version 3.20
+* Version 3.30
 *
 * Description:
 *  This file contains the function prototypes and constants used in
@@ -9,7 +9,7 @@
 * Note:
 *
 ********************************************************************************
-* Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+* Copyright 2008-2017, Cypress Semiconductor Corporation.  All rights reserved.
 * You may use this file only in accordance with the license, terms, conditions,
 * disclaimers, and limitations in the end user license agreement accompanying
 * the software package with which this file was provided.
@@ -28,7 +28,7 @@
 /* They are defined starting with cy_boot v3.30 */
 /* CY_FLASH_PM_ACT_EEFLASH_REG define used to check cy_boot has v3.30 or later */    
 #if !defined (CY_FLASH_PM_ACT_EEFLASH_REG)
-    #error Component ADC_DelSig_v3_20 requires cy_boot v3.30 or later
+    #error Component ADC_DelSig_v3_30 requires cy_boot v3.30 or later
 #endif /* (CY_FLASH_PM_ACT_EEFLASH_REG) */
 
 
@@ -1396,7 +1396,7 @@ extern volatile int32 ADC_CountsPerVolt;
 #define ADC_CFG1_DSM_SW3            (0x40u)
 #define ADC_CFG1_CLOCKS_PER_SAMPLE  (0x0118u)
 #define ADC_CFG1_CLOCK_FREQ         (172480u)
-#define ADC_CFG1_CP_CLOCK_FREQ      (689920u)
+#define ADC_CFG1_CP_CLOCK_FREQ      (4000000u)
 #define ADC_CFG1_REFERENCE_VOLTAGE  (1.0240)
 #define ADC_CFG1_COUNTS_PER_VOLT    (64000)
 #define ADC_CFG1_IDEAL_DEC_GAIN     (0x90DAu)
@@ -1404,7 +1404,7 @@ extern volatile int32 ADC_CountsPerVolt;
 
 #define ADC_CFG1_ALIGNMENT          (0u)
 #define ADC_CFG1_ADC_CLK_DIVIDER    (138u)
-#define ADC_CFG1_CP_CLK_DIVIDER     (33u)
+#define ADC_CFG1_CP_CLK_DIVIDER     (5u)
 
 /* Input and DAC Cap values in pF */
 #define ADC_CFG1_IPCAP1VALUE        (0x0F30u)
@@ -1494,7 +1494,7 @@ extern volatile int32 ADC_CountsPerVolt;
 #define ADC_CFG2_SRATE              (10000u )
 #define ADC_CFG2_CLOCKS_PER_SAMPLE  (0x0040u)
 #define ADC_CFG2_CLOCK_FREQ         (640000u)
-#define ADC_CFG2_CP_CLOCK_FREQ      (2560000u)
+#define ADC_CFG2_CP_CLOCK_FREQ      (4000000u)
 #define ADC_CFG2_REFERENCE_VOLTAGE  (1.0240)
 #define ADC_CFG2_COUNTS_PER_VOLT    (64000)
 #define ADC_CFG2_RESOLUTION         (16u)
@@ -1507,7 +1507,7 @@ extern volatile int32 ADC_CountsPerVolt;
 #define ADC_CFG2_BUFFER_GAIN        (1u)
 #define ADC_CFG2_ALIGNMENT          (0u)
 #define ADC_CFG2_ADC_CLK_DIVIDER    (37u)
-#define ADC_CFG2_CP_CLK_DIVIDER     (8u)
+#define ADC_CFG2_CP_CLK_DIVIDER     (5u)
 
 /* Input and DAC Cap values in pF */
 #define ADC_CFG2_IPCAP1VALUE        (0x0F30u)
@@ -1598,7 +1598,7 @@ extern volatile int32 ADC_CountsPerVolt;
 #define ADC_CFG3_SRATE              (10000u)
 #define ADC_CFG3_CLOCKS_PER_SAMPLE  (0x0040u)
 #define ADC_CFG3_CLOCK_FREQ         (640000u)
-#define ADC_CFG3_CP_CLOCK_FREQ      (2560000u)
+#define ADC_CFG3_CP_CLOCK_FREQ      (4000000u)
 #define ADC_CFG3_REFERENCE_VOLTAGE  (1.0240)
 #define ADC_CFG3_COUNTS_PER_VOLT    (64000)
 #define ADC_CFG3_RESOLUTION         (16u)
@@ -1610,7 +1610,7 @@ extern volatile int32 ADC_CountsPerVolt;
 #define ADC_CFG3_INPUT_RANGE_VALUE  (1.024)
 #define ADC_CFG3_ALIGNMENT          (0u)
 #define ADC_CFG3_ADC_CLK_DIVIDER    (37u)
-#define ADC_CFG3_CP_CLK_DIVIDER     (8u)
+#define ADC_CFG3_CP_CLK_DIVIDER     (5u)
 
 /* Input and DAC Cap values in pF */
 #define ADC_CFG3_IPCAP1VALUE        (0x0F30u)
@@ -1701,7 +1701,7 @@ extern volatile int32 ADC_CountsPerVolt;
 #define ADC_CFG4_SRATE              (10000u)
 #define ADC_CFG4_CLOCKS_PER_SAMPLE  (0x0040u)
 #define ADC_CFG4_CLOCK_FREQ         (640000u)
-#define ADC_CFG4_CP_CLOCK_FREQ      (2560000u)
+#define ADC_CFG4_CP_CLOCK_FREQ      (4000000u)
 #define ADC_CFG4_REFERENCE_VOLTAGE  (1.0240)
 #define ADC_CFG4_COUNTS_PER_VOLT    (64000)
 #define ADC_CFG4_RESOLUTION         (16u)
@@ -1713,7 +1713,7 @@ extern volatile int32 ADC_CountsPerVolt;
 #define ADC_CFG4_INPUT_RANGE_VALUE  (1.024)
 #define ADC_CFG4_ALIGNMENT          (0u)
 #define ADC_CFG4_ADC_CLK_DIVIDER    (37u)
-#define ADC_CFG4_CP_CLK_DIVIDER     (8u)
+#define ADC_CFG4_CP_CLK_DIVIDER     (5u)
 
 /* Input cap and DAC Cap values in pF */
 #define ADC_CFG4_IPCAP1VALUE        (0x0F30u)
