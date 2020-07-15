@@ -88,7 +88,7 @@ void printNotif(uint8 type, char* format, ...){
     // if debug flag = 1
     #if USE_DEBUG
 
-        // if debug level = 1
+        // if debug level = 0
         #if DEBUG_LEVEL == 0
             //basically, just hijack printf and inject the timestamp infront
             printd("{ ");
@@ -102,6 +102,7 @@ void printNotif(uint8 type, char* format, ...){
             }else{
                printd("\"event\":\"undefined\" \"value\":\""); 
             }
+        // if debug level = 1
         #else
             printd("{ ");
             if(type == NOTIF_TYPE_WARNING){
