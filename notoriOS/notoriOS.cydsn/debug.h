@@ -14,7 +14,8 @@
 long getTimeStamp();
 
 // Define variables for UART debug
-#define USE_DEBUG 1 //set to 1 if debug data will be written to UART
+#define USE_DEBUG 1 // set to 1 if debug data will be written to UART
+#define DEBUG_LEVEL 1 // set to 1 if only want warnings & errors printed to serial & SD card
 #define MAX_DEBUG_STRING_LENGTH 2048
 
 #define NOTIF_TYPE_EVENT 0u

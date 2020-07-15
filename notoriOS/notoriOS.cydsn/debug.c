@@ -4,6 +4,7 @@
 #include <stdarg.h> // handles variable argument list
 
 char    BB_fileName[30] = "blackbox.txt";
+uint8   debug_level;
 
 // function to start UART debug
 void debug_start(){
@@ -79,23 +80,37 @@ int _write(int file, char *ptr, int len)
 // to tell the compiler the function should accept however many arguments that the programmer uses, as long as it is equal 
 // to at least the number of variables declared. 
 void printNotif(uint8 type, char* format, ...){
+    
+    // Set debug level based on what you want printed/ written to SD card
+    // 0u = all ; 1u = testing, warnings and errors
+    //debug_level = 1u; 
+    
     // if debug flag = 1
     #if USE_DEBUG
 
-
-    //basically, just hijack printf and inject the timestamp infront
-    printd("{ ");
-    printd("\"time\":\"%ld\" " , getTimeStamp());
-    if(type == NOTIF_TYPE_EVENT){
-        printd("\"event\":\"notif\" \"value\":\"");
-    }else if(type == NOTIF_TYPE_WARNING){
-        printd("\"event\":\"warning\" \"value\":\"");
-    }else if(type == NOTIF_TYPE_ERROR){
-        printd("\"event\":\"error\" \"value\":\"");
-    }else{
-       printd("\"event\":\"undefined\" \"value\":\""); 
-    }
-    
+        // if debug level = 1
+        #if DEBUG_LEVEL == 0
+            //basically, just hijack printf and inject the timestamp infront
+            printd("{ ");
+            printd("\"time\":\"%ld\" " , getTimeStamp());
+            if(type == NOTIF_TYPE_EVENT){
+                printd("\"event\":\"notif\" \"value\":\"");
+            }else if(type == NOTIF_TYPE_WARNING){
+                printd("\"event\":\"warning\" \"value\":\"");
+            }else if(type == NOTIF_TYPE_ERROR){
+                printd("\"event\":\"error\" \"value\":\"");
+            }else{
+               printd("\"event\":\"undefined\" \"value\":\""); 
+            }
+        #else
+            printd("{ ");
+            if(type == NOTIF_TYPE_WARNING){
+                printd("\"event\":\"warning\" \"value\":\"");
+            }else if(type == NOTIF_TYPE_ERROR){
+                printd("\"event\":\"error\" \"value\":\"");
+            }
+        #endif
+        
     va_list argptr; // create variable argprt of the type va_list from stdarg.h
     va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize ap to the beginning of the list before any calls to va_arg().
     char debug_string[MAX_DEBUG_STRING_LENGTH];
