@@ -408,7 +408,7 @@ uint8 is_connected_to_internet(){
 void get_cell_network_stats(){
     // Gets RSSI and FER values
     // RSSI (Received Signal Strength Indicator) is a measurement of how well your device can hear a signal from an access point or router. It’s a value that is useful for determining if you have enough signal to get a good wireless connection.
-    // FER (Frame Error Rate) is the ratio of data received with errors to total data received. Used to determine the quality of a signal connection. 
+    // RSRQ (Reference Signal Received Quality) (or SQ for short) gives the signal quality. 
     for(uint8 attempts =0; attempts <10; attempts++){
         // AT command CSQ checks Signal Quality
         at_write_command("AT+CSQ\r", "OK",DEFAULT_AT_TIMEOUT);

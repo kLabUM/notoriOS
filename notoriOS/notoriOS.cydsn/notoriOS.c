@@ -312,11 +312,12 @@ uint8 syncData(){
     check = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
     check = at_write_command("POST /write?db=ARB&u=generic_node&p=MakeFloodsCurrents HTTP/1.1\r\nHost: data.open-storm.org:8086\r\nConnection: Close\r\nContent-Length: 39\r\nContent-Type: plain/text\r\n\r\nmaxbotix_depth,node_id=GGB000 value=111\r\n\r\n\032", "NO CARRIER", 10000u);
     */
-    
+
     // Blink LED so we know it's about to sync data
     LED_Write(1u);
     CyDelay(100u);
     LED_Write(0u);
+
     
     // If there's no data, not need to do anything
     if(sizeOfDataStack() == 0){
@@ -341,7 +342,15 @@ uint8 syncData(){
             http_body[0] = '\0';
             http_route[0] = '\0';
             char *base = "write";
-       
+            
+            // Push cell strength data (RSSI:Received Signal Strength Indicator and SQ: Signal Quality) to stack
+            char s_rssi[DATA_MAX_KEY_LENGTH];
+            snprintf(s_rssi,sizeof(s_rssi),"%d",modem_stats.rssi);
+            pushData("rssi", s_rssi, getTimeStamp());
+            char s_sq[DATA_MAX_KEY_LENGTH];
+            snprintf(s_sq,sizeof(s_sq),"%d",modem_stats.sq);
+            pushData("sq", s_sq, getTimeStamp());
+            
             // Get size of data stack
             uint16 data_stack_count = sizeOfDataStack();
             char c_data_stack_count[20];
@@ -359,7 +368,7 @@ uint8 syncData(){
             
             printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", http_route);
             
-            //OLD INFLUX APIE
+            //OLD INFLUX API
             //construct_influx_write_body(http_body,system_settings.node_id);
             construct_malcom_body(http_body);
        
@@ -368,7 +377,7 @@ uint8 syncData(){
             printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
             
            
-            // Push request to modem and escaope with <ctrl+z> escape sequence
+            // Push request to modem and escape with <ctrl+z> escape sequence
             // Open port and begin command line sequence
             char portConfig[200];
             uint8 status = 0u;
