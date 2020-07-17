@@ -53,12 +53,12 @@ uint8 pushData(char * key, char *value, int32 timestamp){
     */
 }
 
-// Initalize Data Stack
+// Initalize Data Stack -- sets counter and pointer to zero
 void Initialize_Data_Stack(){
     Clear_Data_Stack(); // Clear out whatever data was in the stack.
 }
 
-// Clear the data stack and reset the pointer
+// Reset data stack and reset the pointer
 void Clear_Data_Stack(){
     for(uint16 i;i<DATA_MAX_VALUES;i++){
         data[i].key[0] = '\0';
