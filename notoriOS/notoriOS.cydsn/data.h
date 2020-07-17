@@ -8,7 +8,7 @@
 #define DATA_H
     
 
-#define DATA_MAX_VALUES 50     //max vlaues that will ever be part of one node id. think of this as the numebr of senors
+#define DATA_MAX_VALUES 50     // max values that will ever be part of one node id. think of this as the number of sensors. 
 #define DATA_MAX_KEY_LENGTH 20  
 
 
@@ -19,14 +19,13 @@ typedef struct{
 }key_value_t;
 
 uint8 pushData(char * key, char * value, int32 timestamp);
-key_value_t popData();
 uint16 sizeOfDataStack();
 
 void Initialize_Data_Stack();
 void Clear_Data_Stack();
 
-
 uint16 dataPointsInStack; 
+key_value_t *dataPointsInStackPointer;
 key_value_t data[DATA_MAX_VALUES];
 
 void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,

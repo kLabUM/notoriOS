@@ -19,32 +19,38 @@ uint8 pushData(char * key, char *value, int32 timestamp){
     snprintf(data[dataPointsInStack].key,sizeof(data[dataPointsInStack].key), "%s", key);
     snprintf(data[dataPointsInStack].value,sizeof(data[dataPointsInStack].value), "%s", value);
     data[dataPointsInStack].timeStamp = timestamp;
-  
-    // Increment the data points in the stack
+    
+    // point the pointer dataPointer to location of next data point
+    dataPointsInStackPointer = &data[dataPointsInStack];
+    
+    // Increment the data points and pointer in the stack
     dataPointsInStack++;
+    dataPointsInStackPointer++;
+    
+    
+    // Circular buffer
+    // If stack is full, loop around and rewrite over the first point (set pointer back to zero).
+    // Keep the counter increasing to track number of points.
+    // Both reset to zero once buffer is flushed ( see Clear_Data_Stack() ).
+    if((int)dataPointsInStackPointer >= DATA_MAX_VALUES){
+        dataPointsInStackPointer = 0;
+        printNotif(NOTIF_TYPE_ERROR,"Data stack full. Begin overwrite of circular buffer.");
+        return 0; // If stack full, and points need to be deleted, return 0 
+    }
+    
+    return 1; // If data pushed succesfully, return 1
     
     // Circular buffer
     // If stack is full, loop around and delete first point
-    // This should be fixed to store the overwritte data onto SD card
-    if(dataPointsInStack >= DATA_MAX_VALUES){
+    // This should be fixed to store the overwritten data onto SD card
+    /*if(dataPointsInStack >= DATA_MAX_VALUES){
         dataPointsInStack = 0;
         printNotif(NOTIF_TYPE_ERROR,"Data stack full. Begin overwrite of circular buffer.");
-        return 0; // If stack full, and points need to be deleted, return 0
+        return 0; // If stack full, and points need to be deleted, return 0 
     }
     
-    return 1; // If data pushed successfully, return 1
-}
-
-// "Pop" key, value, and timestamp from each slot of the data wheel and save into the variable data
-key_value_t popData(){
-    
-    if(dataPointsInStack>0){
-        dataPointsInStack--;
-        return data[dataPointsInStack];
-    }else{
-        dataPointsInStack = 0;
-        return data[0];   
-    }
+    return 1;  // If data pushed successfully, return 1
+    */
 }
 
 // Initalize Data Stack
@@ -52,7 +58,7 @@ void Initialize_Data_Stack(){
     Clear_Data_Stack(); // Clear out whatever data was in the stack.
 }
 
-// Clear the data stack
+// Clear the data stack and reset the pointer
 void Clear_Data_Stack(){
     for(uint16 i;i<DATA_MAX_VALUES;i++){
         data[i].key[0] = '\0';
@@ -60,6 +66,7 @@ void Clear_Data_Stack(){
         data[i].timeStamp = 0;
     }
     dataPointsInStack =0;
+    dataPointsInStackPointer = 0;
    
 }
 
@@ -109,7 +116,7 @@ unsigned int construct_malcom_body(char* body){
     return request_len; // Return the length of the influx body
 }
 
-// Construct the route (to or from?) the Malcom middle layer
+// Construct the route to the Malcom middle layer
 void construct_malcom_route(char* route, char* base, char* device, char* hash){
     route[0] = '\0';
     snprintf(route,sizeof(http_route), "%s%s?d=%s&h=%s", route, base, device, hash); 
