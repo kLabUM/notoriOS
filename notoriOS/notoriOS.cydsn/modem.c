@@ -103,7 +103,7 @@ uint8 modem_power_up(){
     
     // Turn off ECHO command (doesn't repeat your command back to you).
     uint8 at_ready = 0;
-    uint8 attemps = 0;
+    uint8 attempts = 0;
     // Create variable boot_time of the current time stamp.
     long boot_time = getTimeStamp();
     
@@ -130,7 +130,7 @@ uint8 modem_power_up(){
     printNotif(NOTIF_TYPE_EVENT,"Modem booot time: %d",boot_time);
     
     if(at_ready == 1){
-        printNotif(NOTIF_TYPE_EVENT,"Modem ready for AT commands after %d attempt(s).",attemps);
+        printNotif(NOTIF_TYPE_EVENT,"Modem ready for AT commands after %d attempt(s).",attempts);
         modem_state = MODEM_STATE_STARTUP;
     }else{
         printNotif(NOTIF_TYPE_ERROR,"No response from modem.");
