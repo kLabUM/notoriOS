@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 char uart_received_string[1024];
-uint8_t uart_string_index=0;
+int16 uart_string_index=0;
 
 #define DEFAULT_AT_TIMEOUT 2000u // Send command and wait 2000 ms
 #define NO_AT_TIMEOUT 0u // Send command, no timeout/ don't wait 
