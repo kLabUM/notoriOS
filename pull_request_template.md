@@ -10,7 +10,6 @@ Commit code changes to the appropriate “dev” branch (could be one you create
 
 Open a pull request and: 
 -[ ] Select a reviewer: bkerekz-umich and/or bemason
--[ ] Select an assignee: bkerekz-umich and/or bemason
 -[ ] Use the appropriate labels to describe the changes
 -[ ] Select the project: notoriOS
 -[ ] Select the issue that the changes address (if applicable)
