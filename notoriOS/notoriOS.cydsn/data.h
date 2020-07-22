@@ -1,6 +1,7 @@
-#include <string.h> //defines one variable type, one macro, and various functions for manipulating arrays of characters.
+#include <string.h> // defines one variable type, one macro, and various functions for manipulating arrays of characters.
 #include <stdlib.h> // defines four variable types, several macros, and various functions for performing general functions.
-#include <stdio.h> //defines three variable types, several macros, and various functions for performing input and output.
+#include <stdio.h>  // defines three variable types, several macros, and various functions for performing input and output.
+#include <math.h>   // designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 
 #include "project.h"
 #include "debug.h"
 
@@ -8,7 +9,7 @@
 #define DATA_H
     
 
-#define DATA_MAX_VALUES 50     // max values that will ever be part of one node id. think of this as the number of sensors. 
+#define DATA_MAX_VALUES 150     // max values that will ever be part of one node id. think of this as the number of sensors. 
 #define DATA_MAX_KEY_LENGTH 20  
 
 
@@ -20,12 +21,13 @@ typedef struct{
 
 uint8 pushData(char * key, char * value, int32 timestamp);
 uint16 sizeOfDataStack();
+uint16 sizeOfDataStackDesired();
 
 void Initialize_Data_Stack();
 void Clear_Data_Stack();
 
 uint16 dataPointsInStack; 
-key_value_t *dataPointsInStackPointer;
+uint16 dataPointsInStackDesired; 
 key_value_t data[DATA_MAX_VALUES];
 
 void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
