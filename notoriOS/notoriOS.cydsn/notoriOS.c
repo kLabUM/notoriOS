@@ -53,7 +53,6 @@ void ReadyOrNot()
     debug_start();                      // Start UART debug
     
     modem_initialize();                 // Initialize the modem
-    Initialize_Data_Stack();            // Initialize data stack
    
     
     // Collect system info and store in struct (modem ID, silicon ID, etc)
@@ -78,10 +77,10 @@ void ReadyOrNot()
     snprintf(system_settings.node_id,sizeof(system_settings.node_id),"%s","GGB000");
         
     
-    // Create a continuous alarm called alarmMeasure that triggers every 10 sec to take measurements
+    // Create a continuous alarm called alarmMeasure that triggers every 10 min to take measurements
     alarmMeasure = CreateAlarm(10u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 1u;
-    // Create a continuous alarm called alarmSync that triggers every 60 sec to sync the data to database
+    // Create a continuous alarm called alarmSync that triggers every 60 min to sync the data to database
     alarmSync = CreateAlarm(60u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToSync = 1u;
     
@@ -359,6 +358,7 @@ uint8 syncData(){
             pushData("data_count_sent",c_data_count_sent,getTimeStamp());
             uint16 data_count_desired = sizeOfDataStackDesired();
             char c_data_count_desired[20];
+            // subtract 1 to disclude data_count_sent so that it focuses only on the actual data
             snprintf(c_data_count_desired,sizeof(c_data_count_desired),"%d", data_count_desired-1);
             pushData("data_count_desired",c_data_count_desired,getTimeStamp());
             

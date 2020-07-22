@@ -34,7 +34,7 @@ void modem_initialize(){
     // Also make sure that the TX PIN is fully disabled
     pins_configure_inactive();
     modem_state = 0;
-    //initilize states
+    //initialize states
     modem_info.imei[0] = '\0';
     modem_info.model_id[0] = '\0';
     modem_info.sim_id[0] = '\0';

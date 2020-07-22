@@ -43,7 +43,7 @@ void Initialize_Data_Stack(){
     Clear_Data_Stack(); // Clear out whatever data was in the stack.
 }
 
-// Reset data stack and reset the pointer
+// Clear the data stack
 void Clear_Data_Stack(){
     for(uint16 i;i<DATA_MAX_VALUES;i++){
         data[i].key[0] = '\0';
