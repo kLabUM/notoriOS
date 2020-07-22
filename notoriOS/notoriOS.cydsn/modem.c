@@ -2,6 +2,7 @@
 #include "modem.h"
 #include "notoriOS.h"
 #include "debug.h"
+#include "data.h"
 #include <math.h>
 #include <stdio.h>
 
@@ -28,7 +29,7 @@ CY_ISR(isr_telit_rx){
 }
 
 // Initialize the modem
-void modem_intilize(){
+void modem_initialize(){
     // Don't do much except make sure that all the modem pins are pulled low
     // Also make sure that the TX PIN is fully disabled
     pins_configure_inactive();
@@ -37,7 +38,7 @@ void modem_intilize(){
     modem_info.imei[0] = '\0';
     modem_info.model_id[0] = '\0';
     modem_info.sim_id[0] = '\0';
-    modem_stats.sq = 0;
+    modem_stats.rsrq = 0;
     modem_stats.rssi = 0;
     modem_stats.time_to_acquire_ip = 0;
     modem_stats.time_to_network_connect = 0;
@@ -127,8 +128,8 @@ uint8 modem_power_up(){
     }
     // Calculate boot up time and save to variable boot_time.
     boot_time = getTimeStamp() - boot_time;
-    printNotif(NOTIF_TYPE_EVENT,"Modem booot time: %d",boot_time);
-    
+    printNotif(NOTIF_TYPE_EVENT,"Modem boot time: %d",boot_time);
+   
     if(at_ready == 1){
         printNotif(NOTIF_TYPE_EVENT,"Modem ready for AT commands after %d attempt(s).",attempts);
         modem_state = MODEM_STATE_STARTUP;
@@ -426,10 +427,9 @@ void get_cell_network_stats(){
         if(token != NULL){
             modem_stats.rssi = atoi(token);
         }
-        // This "NULL" says to continue where you left off last time.
         token = strtok(NULL,",");
         if(token != NULL){
-            modem_stats.sq = atoi(token);
+            modem_stats.rsrq = atoi(token);
         }
         // If rssi is not equal to 99 OR rssi is not equal to 0, then break.
         if(modem_stats.rssi != 99 || modem_stats.rssi !=0){

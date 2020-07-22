@@ -21,7 +21,7 @@
 uint8 modem_state;
 uint8 modem_process_tasks();
 
-void modem_intilize();
+void modem_initialize();
 uint8 modem_power_up();
 void modem_power_down();
 void modem_soft_power_cycle();
@@ -48,8 +48,8 @@ typedef struct {
 } modem_info_t;
 
 typedef struct { 
-    uint8 rssi;     //received signal strength indication
-    uint8 sq;       //signal quality, 
+    uint8 rssi;     // received signal strength indication
+    uint8 rsrq;     // referenced signal received quality
     int   time_to_network_connect; 
     int   time_to_acquire_ip;
 } modem_stats_t;
