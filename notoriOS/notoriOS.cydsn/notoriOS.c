@@ -48,11 +48,12 @@ void ReadyOrNot()
     isr_SleepTimer_StartEx(Wakeup_ISR); // Start Sleep ISR
     SleepTimer_Start();                 // Start SleepTimer Component
     
-    RTC_WriteIntervalMask(0b11111111);  // Configures what interval hanlers will be called from the RTC ISR (0b means binary #)
+    RTC_WriteIntervalMask(0b11111111);  // Configures what interval handlers will be called from the RTC ISR (0b means binary #)
     RTC_Start();                        // Enables the RTC component
     debug_start();                      // Start UART debug
     
-    modem_intilize();                   // Initialize the modem
+    modem_initialize();                 // Initialize the modem
+    Initialize_Data_Stack();            // Initialize data stack
    
     
     // Collect system info and store in struct (modem ID, silicon ID, etc)
@@ -113,7 +114,7 @@ int WorkWorkWorkWorkWorkWork()
     }else if(timeToSync){
             timeToSync = syncData();
     }
-    // Print the countdown o the next alarm
+    // Print the countdown to the next alarm
     //printNotif(NOTIF_TYPE_EVENT,"Measure CNT %d, Sync CNT %d, Data Wheel CNT %d",alarmMeasure.currentCountDownValue,alarmSync.currentCountDownValue,sizeOfDataStack());
     
     
@@ -347,17 +348,19 @@ uint8 syncData(){
             char s_rssi[DATA_MAX_KEY_LENGTH];
             snprintf(s_rssi,sizeof(s_rssi),"%d",modem_stats.rssi);
             pushData("rssi", s_rssi, getTimeStamp());
-            char s_sq[DATA_MAX_KEY_LENGTH];
-            snprintf(s_sq,sizeof(s_sq),"%d",modem_stats.sq);
-            pushData("sq", s_sq, getTimeStamp());
+            char s_rsrq[DATA_MAX_KEY_LENGTH];
+            snprintf(s_rsrq,sizeof(s_rsrq),"%d",modem_stats.rsrq);
+            pushData("rsrq", s_rsrq, getTimeStamp());
             
-            // Get size of data stack
-            uint16 data_stack_count = sizeOfDataStack();
-            char c_data_stack_count[20];
-            snprintf(c_data_stack_count,sizeof(c_data_stack_count),"%d",data_stack_count);
-            // Push data to the stack
-            pushData("data_stack_count",c_data_stack_count,getTimeStamp());
-            
+            // Get size of the actual and desired data stack count and push them to the stack
+            uint16 data_count_sent = sizeOfDataStack();
+            char c_data_count_sent[20];
+            snprintf(c_data_count_sent,sizeof(c_data_count_sent),"%d",data_count_sent);
+            pushData("data_count_sent",c_data_count_sent,getTimeStamp());
+            uint16 data_count_desired = sizeOfDataStackDesired();
+            char c_data_count_desired[20];
+            snprintf(c_data_count_desired,sizeof(c_data_count_desired),"%d", data_count_desired-1);
+            pushData("data_count_desired",c_data_count_desired,getTimeStamp());
             
             // Construct HTPP request
             printNotif(NOTIF_TYPE_EVENT,"Begin HTTP post.");
