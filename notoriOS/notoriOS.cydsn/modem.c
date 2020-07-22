@@ -261,11 +261,11 @@ uint8 extract_string(char* from, const char* beginMarker, const char* endMarker,
     
         char *a, *b;
   
-        // Expect the UART to contain something like "+CSQ: 17,99\r\n\r\nOK"
-        // - Search for "+CSQ: ".  Place the starting pointer, a, at the resulting index
+        // Expect the UART to contain something like "+CESQ: ##,##,##,##,##,##\r\n\r\nOK"
+        // - Search for "+CESQ: ".  Place the starting pointer, a, at the resulting index
         a = strstr(from,beginMarker);
         if (a == NULL) {
-            //puts("+CSQ: not found in uart_received_string");
+            //puts("+CESQ: not found in uart_received_string");
             a = from;
         }
         // The strlen() function calculates the length of a given string.
@@ -411,17 +411,17 @@ void get_cell_network_stats(){
     // RSSI (Received Signal Strength Indicator) is a measurement of how well your device can hear a signal from an access point or router. It’s a value that is useful for determining if you have enough signal to get a good wireless connection.
     // RSRQ (Reference Signal Received Quality) (or SQ for short) gives the signal quality. 
     for(uint8 attempts =0; attempts <10; attempts++){
-        // AT command CSQ checks Signal Quality
-        at_write_command("AT+CSQ\r", "OK",DEFAULT_AT_TIMEOUT);
+        // AT command CESQ checks Signal Quality
+        at_write_command("AT+CESQ\r", "OK",DEFAULT_AT_TIMEOUT);
         
-        char csq[10]; // Create a character array of length 10 called csq 
+        char cesq[10]; // Create a character array of length 10 called cesq 
         // Extract string from the UART
-        extract_string(uart_received_string,": ","\r",csq);
-        printNotif(NOTIF_TYPE_EVENT,"Network STts: %s",csq);
+        extract_string(uart_received_string,": ","\r",cesq);
+        printNotif(NOTIF_TYPE_EVENT,"Network STts: %s",cesq);
         
         char *token; // Create a character variable pointer
-        // strtok(): breaks "csq" into smaller string when sees ","
-        token = strtok(csq,",");
+        // strtok(): breaks "cesq" into smaller string when sees ","
+        token = strtok(cesq,",");
         // If token is not NULL then set modem_stats.rssi equal to the integer "token"
         // int atoi(const char *str) converts the string argument str to an integer (type int).
         if(token != NULL){
@@ -429,7 +429,27 @@ void get_cell_network_stats(){
         }
         token = strtok(NULL,",");
         if(token != NULL){
+            modem_stats.ber = atoi(token);
+        }
+        token = strtok(NULL,",");
+        if(token != NULL){
+            modem_stats.rscp = atoi(token);
+        }
+        token = strtok(NULL,",");
+        if(token != NULL){
+            modem_stats.ecno = atoi(token);
+        }
+        token = strtok(NULL,",");
+        if(token != NULL){
             modem_stats.rsrq = atoi(token);
+        }
+        token = strtok(NULL,",");
+        if(token != NULL){
+            modem_stats.rsrq = atoi(token);
+        }
+        token = strtok(NULL,",");
+        if(token != NULL){
+            modem_stats.rsrp = atoi(token);
         }
         // If rssi is not equal to 99 OR rssi is not equal to 0, then break.
         if(modem_stats.rssi != 99 || modem_stats.rssi !=0){

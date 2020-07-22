@@ -343,13 +343,10 @@ uint8 syncData(){
             http_route[0] = '\0';
             char *base = "write";
             
-            // Push cell strength data (RSSI:Received Signal Strength Indicator and SQ: Signal Quality) to stack
-            char s_rssi[DATA_MAX_KEY_LENGTH];
-            snprintf(s_rssi,sizeof(s_rssi),"%d",modem_stats.rssi);
-            pushData("rssi", s_rssi, getTimeStamp());
-            char s_rsrq[DATA_MAX_KEY_LENGTH];
-            snprintf(s_rsrq,sizeof(s_rsrq),"%d",modem_stats.rsrq);
-            pushData("rsrq", s_rsrq, getTimeStamp());
+            // Push cell strength data (RSRP: reference signal received power)
+            char s_rsrp[DATA_MAX_KEY_LENGTH];
+            snprintf(s_rsrp,sizeof(s_rsrp),"%d",modem_stats.rsrp);
+            pushData("rsrp", s_rsrp, getTimeStamp());
             
             // Get size of the actual and desired data stack count and push them to the stack
             uint16 data_count_sent = sizeOfDataStack();
