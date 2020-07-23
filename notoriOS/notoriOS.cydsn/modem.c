@@ -38,8 +38,12 @@ void modem_initialize(){
     modem_info.imei[0] = '\0';
     modem_info.model_id[0] = '\0';
     modem_info.sim_id[0] = '\0';
-    modem_stats.rsrq = 0;
     modem_stats.rssi = 0;
+    modem_stats.ber = 0;
+    modem_stats.rscp = 0;
+    modem_stats.ecno = 0;
+    modem_stats.rsrq = 0;
+    modem_stats.rsrp = 0;
     modem_stats.time_to_acquire_ip = 0;
     modem_stats.time_to_network_connect = 0;
     // Disable the RX Pin interrupt, and only enable it during long timeouts
@@ -414,7 +418,7 @@ void get_cell_network_stats(){
         // AT command CESQ checks Signal Quality
         at_write_command("AT+CESQ\r", "OK",DEFAULT_AT_TIMEOUT);
         
-        char cesq[10]; // Create a character array of length 10 called cesq 
+        char cesq[30]; // Create a character array of length 30 called cesq 
         // Extract string from the UART
         extract_string(uart_received_string,": ","\r",cesq);
         printNotif(NOTIF_TYPE_EVENT,"Network STts: %s",cesq);
@@ -438,10 +442,6 @@ void get_cell_network_stats(){
         token = strtok(NULL,",");
         if(token != NULL){
             modem_stats.ecno = atoi(token);
-        }
-        token = strtok(NULL,",");
-        if(token != NULL){
-            modem_stats.rsrq = atoi(token);
         }
         token = strtok(NULL,",");
         if(token != NULL){

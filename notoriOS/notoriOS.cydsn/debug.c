@@ -7,7 +7,7 @@ char    BB_fileName[30] = "blackbox.txt";
 
 // Set debug level based on what you want printed/ written to SD card
 // 0u = errors and warnings, 1u = all
-uint8   debug_level = 1u;
+uint8   debug_level = 0u;
 
 // function to start UART debug
 void debug_start(){
