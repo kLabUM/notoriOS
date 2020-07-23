@@ -451,8 +451,8 @@ void get_cell_network_stats(){
         if(token != NULL){
             modem_stats.rsrp = atoi(token);
         }
-        // If rssi is not equal to 99 OR rssi is not equal to 0, then break.
-        if(modem_stats.rssi != 99 || modem_stats.rssi !=0){
+        // If rsrp is not equal to 255 then break.
+        if(modem_stats.rsrp != 255){
             break;
         }
     }
