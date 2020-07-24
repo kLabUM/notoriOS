@@ -88,13 +88,11 @@ void printNotif(uint8 type, char* format, ...){
     
     // if debug flag = 1, then print debug statements, otherwise don't print anything
     #if USE_DEBUG
-        
-        // print timestamp
-        printd("{ ");
-        printd("\"time\":\"%ld\" " , getTimeStamp());
-        
+       
         // if it is an error or warning and debug_level >= 0, then print the errors and warnings
         if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING) && debug_level >= 0){
+            printd("{ ");
+            printd("\"time\":\"%ld\" " , getTimeStamp());
             if (type == NOTIF_TYPE_ERROR){
                 printd("\"event\":\"error\" \"value\":\"");
             }else{
@@ -110,6 +108,8 @@ void printNotif(uint8 type, char* format, ...){
         
         // else if it is an event and debug level >= 1, then print events
         }else if (type == NOTIF_TYPE_EVENT && debug_level >= 1){
+            printd("{ ");
+            printd("\"time\":\"%ld\" " , getTimeStamp());
             printd("\"event\":\"notif\" \"value\":\"");
             va_list argptr; // create variable argprt of the type va_list from stdarg.h
             va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize ap to the beginning of the list before any calls to va_arg().
