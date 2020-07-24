@@ -7,7 +7,7 @@ char    BB_fileName[30] = "blackbox.txt";
 
 // Set debug level based on what you want printed/ written to SD card
 // 0u = errors and warnings, 1u = all
-uint8   debug_level = 0u;
+uint8   debug_level = 1u;
 
 // function to start UART debug
 void debug_start(){
@@ -88,41 +88,34 @@ void printNotif(uint8 type, char* format, ...){
     
     // if debug flag = 1, then print debug statements, otherwise don't print anything
     #if USE_DEBUG
-       
+        printd("{ ");
+        printd("\"time\":\"%ld\" " , getTimeStamp());
+        
         // if it is an error or warning and debug_level >= 0, then print the errors and warnings
         if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING) && debug_level >= 0){
-            printd("{ ");
-            printd("\"time\":\"%ld\" " , getTimeStamp());
+
             if (type == NOTIF_TYPE_ERROR){
                 printd("\"event\":\"error\" \"value\":\"");
             }else{
-            printd("\"event\":\"warning\" \"value\":\"");
+                printd("\"event\":\"warning\" \"value\":\"");
             }
-            va_list argptr; // create variable argprt of the type va_list from stdarg.h
-            va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize ap to the beginning of the list before any calls to va_arg().
-            vsnprintf(debug_string, MAX_DEBUG_STRING_LENGTH, format, argptr); // send text to buffer
-            Debug_UART_PutString(debug_string); // Sends a NULL terminated string to the TX buffer for transmission
-            va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unless va_start() or va_copy() is invoked again).
-            printd("\"}\r\n");
-            SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card 
         
         // else if it is an event and debug level >= 1, then print events
         }else if (type == NOTIF_TYPE_EVENT && debug_level >= 1){
-            printd("{ ");
-            printd("\"time\":\"%ld\" " , getTimeStamp());
             printd("\"event\":\"notif\" \"value\":\"");
-            va_list argptr; // create variable argprt of the type va_list from stdarg.h
-            va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize ap to the beginning of the list before any calls to va_arg().
-            vsnprintf(debug_string, MAX_DEBUG_STRING_LENGTH, format, argptr); // send text to buffer
-            Debug_UART_PutString(debug_string); // Sends a NULL terminated string to the TX buffer for transmission
-            va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unless va_start() or va_copy() is invoked again).
-            printd("\"}\r\n");
-            SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card  
 
         // else do not print and exit the function    
         }else{
             return;
         }
+        
+        va_list argptr; // create variable argprt of the type va_list from stdarg.h
+        va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize ap to the beginning of the list before any calls to va_arg().
+        vsnprintf(debug_string, MAX_DEBUG_STRING_LENGTH, format, argptr); // send text to buffer
+        Debug_UART_PutString(debug_string); // Sends a NULL terminated string to the TX buffer for transmission
+        va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unless va_start() or va_copy() is invoked again).
+        printd("\"}\r\n");
+        SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card  
 
     #endif 
 }
