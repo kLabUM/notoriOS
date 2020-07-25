@@ -7,7 +7,7 @@ char    BB_fileName[30] = "blackbox.txt";
 
 // Set debug level based on what you want printed/ written to SD card
 // 0u = errors and warnings, 1u = all
-uint8   debug_level = 1u;
+uint8   debug_level = 0u;
 
 // function to start UART debug
 void debug_start(){
@@ -88,12 +88,12 @@ void printNotif(uint8 type, char* format, ...){
     
     // if debug flag = 1, then print debug statements, otherwise don't print anything
     #if USE_DEBUG
-        printd("{ ");
-        printd("\"time\":\"%ld\" " , getTimeStamp());
-        
+   
         // if it is an error or warning and debug_level >= 0, then print the errors and warnings
         if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING) && debug_level >= 0){
-
+            printd("{ ");
+            printd("\"time\":\"%ld\" " , getTimeStamp());
+            
             if (type == NOTIF_TYPE_ERROR){
                 printd("\"event\":\"error\" \"value\":\"");
             }else{
@@ -102,6 +102,8 @@ void printNotif(uint8 type, char* format, ...){
         
         // else if it is an event and debug level >= 1, then print events
         }else if (type == NOTIF_TYPE_EVENT && debug_level >= 1){
+            printd("{ ");
+            printd("\"time\":\"%ld\" " , getTimeStamp());
             printd("\"event\":\"notif\" \"value\":\"");
 
         // else do not print and exit the function    
