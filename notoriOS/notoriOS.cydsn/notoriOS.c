@@ -485,7 +485,7 @@ uint8 makeMeasurements(){
         printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
         pushData("maxbotix_depth",value,timeStamp);
     }else{
-        printNotif(NOTIF_TYPE_ERROR,"Could not get valide readings from Maxbotix.");
+        printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
         //pushData("maxbotix_depth","error",timeStamp);
     }
     
@@ -498,7 +498,7 @@ uint8 makeMeasurements(){
         pushData("v_bat",value,timeStamp);
     }else{
         //pushData("v_bat","error",timeStamp);
-        printNotif(NOTIF_TYPE_ERROR,"Could not get valide readings from ADC.");
+        printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
     }
     
     return 0u;
@@ -511,7 +511,7 @@ uint8 makeMeasurements(){
 uint8 setTime(long timeStamp){
     // If timestamp is <= 0 print error statement and return 0
     if(timeStamp <=0){
-        printNotif(NOTIF_TYPE_ERROR,"Error setting sytem time.");
+        printNotif(NOTIF_TYPE_ERROR,"Error setting system time.");
         return 0;  
     }
     // Create a new pointer t of data structure tm
