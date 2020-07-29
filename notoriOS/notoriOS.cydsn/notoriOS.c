@@ -254,11 +254,11 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     //test_t t_influx = influx_test();
     //printTestStatus(t_influx);
     
-    printNotif(NOTIF_TYPE_EVENT,"-------------BEGIN TESTS---------------\n\n");
+    printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
     // Test modem
     test_t t_modem = modem_test();
-    printNotif(NOTIF_TYPE_EVENT,"MEID=%s, SIMID=%s, DEVICEID=%s\n",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
+    printNotif(NOTIF_TYPE_STARTUP,"MEID=%s, SIMID=%s, DEVICEID=%s\n",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
     printTestStatus(t_modem);
     
     // Test level sensor
@@ -273,7 +273,7 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     test_t t_sd_card = SD_card_test();
     printTestStatus(t_sd_card);
     
-    printNotif(NOTIF_TYPE_EVENT,"\n\n-------------END TESTS---------------\n\n");
+    printNotif(NOTIF_TYPE_STARTUP,"\n\n-------------END TESTS---------------\n\n");
 
 }
 

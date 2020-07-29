@@ -20,6 +20,7 @@ long getTimeStamp();
 #define NOTIF_TYPE_EVENT 0u
 #define NOTIF_TYPE_WARNING 1u
 #define NOTIF_TYPE_ERROR 2u
+#define NOTIF_TYPE_STARTUP 3u
     
 
 

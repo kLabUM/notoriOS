@@ -631,7 +631,7 @@ gps_t modem_get_gps_coordinates(){
     
     long lock_time = getTimeStamp();
     
-    // Enable this for thr LTER module
+    // Enable this for the LTER module
     // Enable GPS Low-Dropout Regulator
     at_write_command("AT#GPIO=5,1,1,0\r","OK",DEFAULT_AT_TIMEOUT);
     
@@ -644,10 +644,10 @@ gps_t modem_get_gps_coordinates(){
     // Enable AGPS service
     at_write_command("AT$AGPSEN=1\r","OK",DEFAULT_AT_TIMEOUT);
     
-    // Chose SUPL server, use google publiuc service
+    // Chose SUPL server, use google public service
     at_write_command("AT$SLP=1,\"supl.google.com:7275\"\r","OK",DEFAULT_AT_TIMEOUT);
     
-    //pdp context has to be lockeed to carrier for this to work
+    //pdp context has to be locked to carrier for this to work
     
     // Unlock context since it needs to be used by modem
     at_write_command("AT#SGACT=1,0\r\n", "OK",DEFAULT_AT_TIMEOUT);
@@ -664,7 +664,7 @@ gps_t modem_get_gps_coordinates(){
     
     // Start the AGPS service
     // Will keep receiving a buynch of commas without numbers, until GPS locks
-    // Good lock will retunr a string with "N" and "W" coordinates
+    // Good lock will return a string with "N" and "W" coordinates
     
     
  
