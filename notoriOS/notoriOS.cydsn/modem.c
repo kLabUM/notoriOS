@@ -534,7 +534,9 @@ long modem_get_network_time(){
     
     // AT command +CCLK? is a read command that returns the current setting of the real-time clock in the format <time>.
     if(at_write_command("AT+CCLK?\r","OK",DEFAULT_AT_TIMEOUT)){
+        // need to set this to /0
         char network_time[30]; // Create a character array of length 30 called network_time 
+        network_time[0] = '\0';
         // Extract UART string recieved from the modem and save to variable network_time
         extract_string(uart_received_string,": \"","\"\r",network_time);
         
@@ -552,7 +554,7 @@ long modem_get_network_time(){
         }else if(sscanf(network_time,"%d/%d/%d,%d:%d:%d+%d",&year,&month,&day,&hour,&minute,&second,&gmt_offset) == 7){
             gmt_offset = gmt_offset*(-900);
         }else{
-            printNotif(NOTIF_TYPE_ERROR,"Could not parse modem time: %s.",network_time);
+            printNotif(NOTIF_TYPE_ERROR,"Could not parse modem time.");
             return 0;  // Return 0 if cannot get time 
         }
         
