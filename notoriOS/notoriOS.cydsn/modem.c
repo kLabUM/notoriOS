@@ -304,6 +304,19 @@ uint8 modem_process_tasks(){
     }
     // Else if modem state is "waiting for network" 
     else if(modem_state == MODEM_STATE_WAITING_FOR_NETWORK){
+        // Check if modem has a good cell signal, if not, wait one minute before proceeding
+       for(uint8 i=0;i<60;i++){
+            // Get cell network stats
+            get_cell_network_stats();
+            // If cell signal (rsrp) is strong enough, break and connect to the network
+            // Otherwise, keep checking rsrp
+            if(modem_stats.rsrp > 26){
+                break;
+            }
+            // Delay for 1 second
+            CyDelay(1000u);
+        }
+        
         // If modem connected to the cell network, save/print the time to connect to the network
         if(is_connected_to_cell_network()){
       
@@ -369,9 +382,8 @@ uint8 is_connected_to_cell_network(){
         printNotif(NOTIF_TYPE_EVENT,"Registered to network, CREG: %s",creg);
         printNotif(NOTIF_TYPE_EVENT,"Done extracing string AT+CREG?");
     
-        // Search creg for "0,1", if "0,1" exists, it will return 1u otherwise it will return NULL
-        // If it returns 1u and not NULL, then return 1u
-        if(strstr(creg,"0,1")!=NULL){
+        // Search creg for "0,1" or "0,5", if either exists and either is not equal to NULL, return 1
+        if((strstr(creg,"0,1")!=NULL)||(strstr(creg,"0,5")!=NULL)){
             //time_network_connect = getTimeStamp();
             return 1u;
         }
