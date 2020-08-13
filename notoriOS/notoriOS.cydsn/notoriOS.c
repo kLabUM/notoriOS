@@ -18,6 +18,7 @@ uint8 timeToMeasure;
 alarm alarmSync;
 uint8 timeToSync;
 uint8 timeToSycnRemoteParams;
+uint8 try_counter;
 
 
 // This function must always be called (when the Sleep Timer's interrupt
@@ -333,9 +334,13 @@ uint8 syncData(){
         for(int8 try_counter = 0; try_counter<3; try_counter++){
             // This puts all the modem points into a state that won't leak power
             modem_power_up();
-            // if modem successfully powers up, break out of the loop
+            // If modem successfully powers up, break out of the loop
             if(modem_power_up() == 1u){
                 break;
+            }else if (modem_power_up() == 0u && try_counter >= 2){
+                try_counter = 0;
+                modem_power_down();
+                return 0u;
             }
         }
             
@@ -352,6 +357,11 @@ uint8 syncData(){
         char s_rsrp[DATA_MAX_KEY_LENGTH];
         snprintf(s_rsrp,sizeof(s_rsrp),"%d",modem_stats.rsrp);
         pushData("rsrp", s_rsrp, getTimeStamp());
+        
+        // Push syncData try_counter to know how many tries it tried to connect
+        char c_try_counter[5];
+        snprintf(c_try_counter,sizeof(c_try_counter),"%d",try_counter);
+        pushData("try_counter",c_try_counter,getTimeStamp());
         
         // Get size of the actual and desired data stack count and push them to the stack
         uint16 data_count_sent = sizeOfDataStack();
@@ -429,7 +439,7 @@ uint8 syncData(){
         modem_power_down();
         
         return 0u;
-      }
+    }
       
       return 1u; // Not done yet
 }
