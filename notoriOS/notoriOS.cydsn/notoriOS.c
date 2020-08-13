@@ -327,106 +327,111 @@ uint8 syncData(){
     // Create request body, in this case influx
     // Place body into HTTP request header
     // Fire up modem and get it out
-      
      
-     if(modem_get_state() == MODEM_STATE_OFF){
+    if(modem_get_state() == MODEM_STATE_OFF){
+        // Try up to 3 times to connect to the modem
+        for(int8 try_counter = 0; try_counter<3; try_counter++){
             // This puts all the modem points into a state that won't leak power
             modem_power_up();
-            // Should put this on a max_try counter, so we don't just keep trying to connect over and over
+            // if modem successfully powers up, break out of the loop
+            if(modem_power_up() == 1u){
+                break;
+            }
+        }
             
-      }else if(modem_get_state() == MODEM_STATE_READY){
-            printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
-            
-            
-            http_request[0] = '\0';
-            http_body[0] = '\0';
-            http_route[0] = '\0';
-            char *base = "write";
-            
-            // Push cell strength data (RSRP: reference signal received power)
-            char s_rsrp[DATA_MAX_KEY_LENGTH];
-            snprintf(s_rsrp,sizeof(s_rsrp),"%d",modem_stats.rsrp);
-            pushData("rsrp", s_rsrp, getTimeStamp());
-            
-            // Get size of the actual and desired data stack count and push them to the stack
-            uint16 data_count_sent = sizeOfDataStack();
-            char c_data_count_sent[20];
-            snprintf(c_data_count_sent,sizeof(c_data_count_sent),"%d",data_count_sent);
-            pushData("data_count_sent",c_data_count_sent,getTimeStamp());
-            uint16 data_count_desired = sizeOfDataStackDesired();
-            char c_data_count_desired[20];
-            // subtract 1 to disclude data_count_sent so that it focuses only on the actual data
-            snprintf(c_data_count_desired,sizeof(c_data_count_desired),"%d", data_count_desired-1);
-            pushData("data_count_desired",c_data_count_desired,getTimeStamp());
-            
-            // Construct HTPP request
-            printNotif(NOTIF_TYPE_EVENT,"Begin HTTP post.");
-            
-            // Old influx API
-            // Construct_influx_route(http_route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
-            construct_malcom_route(http_route,"api/v1/write",modem_info.imei,HASH_KEY);
-            
-            printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", http_route);
-            
-            //OLD INFLUX API
-            //construct_influx_write_body(http_body,system_settings.node_id);
-            construct_malcom_body(http_body);
+    }else if(modem_get_state() == MODEM_STATE_READY){
+        printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
+        
+        
+        http_request[0] = '\0';
+        http_body[0] = '\0';
+        http_route[0] = '\0';
+        char *base = "write";
+        
+        // Push cell strength data (RSRP: reference signal received power)
+        char s_rsrp[DATA_MAX_KEY_LENGTH];
+        snprintf(s_rsrp,sizeof(s_rsrp),"%d",modem_stats.rsrp);
+        pushData("rsrp", s_rsrp, getTimeStamp());
+        
+        // Get size of the actual and desired data stack count and push them to the stack
+        uint16 data_count_sent = sizeOfDataStack();
+        char c_data_count_sent[20];
+        snprintf(c_data_count_sent,sizeof(c_data_count_sent),"%d",data_count_sent);
+        pushData("data_count_sent",c_data_count_sent,getTimeStamp());
+        uint16 data_count_desired = sizeOfDataStackDesired();
+        char c_data_count_desired[20];
+        // subtract 1 to disclude data_count_sent so that it focuses only on the actual data
+        snprintf(c_data_count_desired,sizeof(c_data_count_desired),"%d", data_count_desired-1);
+        pushData("data_count_desired",c_data_count_desired,getTimeStamp());
+        
+        // Construct HTPP request
+        printNotif(NOTIF_TYPE_EVENT,"Begin HTTP post.");
+        
+        // Old influx API
+        // Construct_influx_route(http_route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
+        construct_malcom_route(http_route,"api/v1/write",modem_info.imei,HASH_KEY);
+        
+        printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", http_route);
+        
+        //OLD INFLUX API
+        //construct_influx_write_body(http_body,system_settings.node_id);
+        construct_malcom_body(http_body);
+   
+        construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,http_route,system_settings.ep_port,"POST","Close","",0,"1.1");
+        
+        printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
+        
        
-            construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,http_route,system_settings.ep_port,"POST","Close","",0,"1.1");
-            
-            printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
-            
-           
-            // Push request to modem and escape with <ctrl+z> escape sequence
-            // Open port and begin command line sequence
-            char portConfig[200];
-            uint8 status = 0u;
-            
-            snprintf(portConfig,sizeof(portConfig),"AT#SD=1,0,%d,\"%s\",0,0,1\r",system_settings.ep_port,system_settings.ep_host);
-            printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
-            status = at_write_command(portConfig,"OK",10000u);
-            
-            // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
-            // To complete the operation, send Ctrl-Z char to exit
-            status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
-            // Append <ctrl+z> escape sequence to http_request to exit modem command line
-            strncat(http_request, "\032", 1); 
-          
-            status = at_write_command(http_request, "SRING", 5000u);
-            
-            // Read received buffer
-            // A good write will return code "204 No Content"
-            // AT command #SRECV= is an execution command that permits users to read data arrived through a connection socket
-            // = 1 means the UPD information is enabled: data are read just until the end of the UDP datagram and the response carries information about the remote IP address and port and about the remaining bytes in the datagram.
-            status = at_write_command("AT#SRECV=1,1000\r","204 NO CONTENT",5000u);
-            //printNotif(NOTIF_TYPE_EVENT,"Received SRECV: %s",uart_received_string);
-           
+        // Push request to modem and escape with <ctrl+z> escape sequence
+        // Open port and begin command line sequence
+        char portConfig[200];
+        uint8 status = 0u;
+        
+        snprintf(portConfig,sizeof(portConfig),"AT#SD=1,0,%d,\"%s\",0,0,1\r",system_settings.ep_port,system_settings.ep_host);
+        printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
+        status = at_write_command(portConfig,"OK",10000u);
+        
+        // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
+        // To complete the operation, send Ctrl-Z char to exit
+        status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
+        // Append <ctrl+z> escape sequence to http_request to exit modem command line
+        strncat(http_request, "\032", 1); 
       
-            // If it worked, clear the queue and clock how long the end-to-end tx took
-            if(status == 1u){
-                Clear_Data_Stack();
-                int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
-                char s_send_time[10];
-                snprintf(s_send_time,sizeof(s_send_time),"%d",send_time);
-                pushData("modem_tx_time",s_send_time,getTimeStamp());
-            }
+        status = at_write_command(http_request, "SRING", 5000u);
+        
+        // Read received buffer
+        // A good write will return code "204 No Content"
+        // AT command #SRECV= is an execution command that permits users to read data arrived through a connection socket
+        // = 1 means the UPD information is enabled: data are read just until the end of the UDP datagram and the response carries information about the remote IP address and port and about the remaining bytes in the datagram.
+        status = at_write_command("AT#SRECV=1,1000\r","204 NO CONTENT",5000u);
+        //printNotif(NOTIF_TYPE_EVENT,"Received SRECV: %s",uart_received_string);
+       
+  
+        // If it worked, clear the queue and clock how long the end-to-end tx took
+        if(status == 1u){
+            Clear_Data_Stack();
+            int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
+            char s_send_time[10];
+            snprintf(s_send_time,sizeof(s_send_time),"%d",send_time);
+            pushData("modem_tx_time",s_send_time,getTimeStamp());
+        }
 
-             
-            // Get time, and if it looks good, set the RTC with it
-            long network_time = modem_get_network_time();
-            if(network_time != 0){
-               setTime(network_time);
-            }
-            
-            // If transmitted, flush the data stack and shut down modem
-            // If not -- keep the statck and try next time
-            // Power down the modem -- completely "kill" modem to conserve power
-            modem_power_down();
-            
-            return 0u;
+         
+        // Get time, and if it looks good, set the RTC with it
+        long network_time = modem_get_network_time();
+        if(network_time != 0){
+           setTime(network_time);
+        }
+        
+        // If transmitted, flush the data stack and shut down modem
+        // If not -- keep the statck and try next time
+        // Power down the modem -- completely "kill" modem to conserve power
+        modem_power_down();
+        
+        return 0u;
       }
       
-      return 1; // Not done yet
+      return 1u; // Not done yet
 }
 
 // ==============================================
