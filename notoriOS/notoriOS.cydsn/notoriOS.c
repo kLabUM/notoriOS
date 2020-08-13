@@ -386,7 +386,7 @@ uint8 syncData(){
             printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
             status = at_write_command(portConfig,"OK",10000u);
             
-            // AT command #SSEND= is an execution command that permits, while the modul eis in command mode, to send data through a connected socket.
+            // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
             // To complete the operation, send Ctrl-Z char to exit
             status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
             // Append <ctrl+z> escape sequence to http_request to exit modem command line
