@@ -304,7 +304,7 @@ uint8 modem_process_tasks(){
     }
     // Else if modem state is "waiting for network" 
     else if(modem_state == MODEM_STATE_WAITING_FOR_NETWORK){
-        // Check if modem has a good cell signal, if not, wait one minute before proceeding
+        // Check if modem has a good cell signal each second for up to a minute
        for(uint8 i=0;i<60;i++){
             // Get cell network stats
             get_cell_network_stats();
