@@ -310,7 +310,7 @@ uint8 modem_process_tasks(){
             get_cell_network_stats();
             // If cell signal (rsrp) is strong enough, break and connect to the network
             // Otherwise, keep checking rsrp
-            if(modem_stats.rsrp > 26){
+            if(modem_stats.rsrp > 26 && modem_stats.rsrp != 255){
                 break;
             }
             // Delay for 1 second

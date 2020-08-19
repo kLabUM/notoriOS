@@ -79,10 +79,10 @@ void ReadyOrNot()
         
     
     // Create a continuous alarm called alarmMeasure that triggers every 10 min to take measurements
-    alarmMeasure = CreateAlarm(10u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    alarmMeasure = CreateAlarm(1u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 1u;
     // Create a continuous alarm called alarmSync that triggers every 60 min to sync the data to database
-    alarmSync = CreateAlarm(60u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    alarmSync = CreateAlarm(5u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToSync = 1u;
     
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
@@ -331,14 +331,14 @@ uint8 syncData(){
      
     if(modem_get_state() == MODEM_STATE_OFF){
         // Try up to 3 times to connect to the modem
-        for(int8 try_counter = 0; try_counter<3; try_counter++){
+        for(int8 try_counter = 1; try_counter<4; try_counter++){
             // This puts all the modem points into a state that won't leak power
             modem_power_up();
             // If modem successfully powers up, break out of the loop
             if(modem_power_up() == 1u){
                 break;
-            }else if (modem_power_up() == 0u && try_counter >= 2){
-                try_counter = 0;
+            }else if (modem_power_up() == 0u && try_counter >= 3){
+                try_counter = 1;
                 modem_power_down();
                 return 0u;
             }
