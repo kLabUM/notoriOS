@@ -1,13 +1,7 @@
-//drivers for UART debug 
-
 #include "debug.h"
 #include <stdarg.h> // handles variable argument list
 
 char    BB_fileName[30] = "blackbox.txt";
-
-// Set debug level based on what you want printed/ written to SD card
-// 0u = errors, warnings, startup notifications , 1u = all notifications
-uint8   debug_level = 1u;
 
 // function to start UART debug
 void debug_start(){
@@ -90,7 +84,7 @@ void printNotif(uint8 type, char* format, ...){
     #if USE_DEBUG
    
         // if it is an error, warning, or startup notification and debug_level >= 0, then print them
-        if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING || type == NOTIF_TYPE_STARTUP) && debug_level >= 0){
+        if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING  || type == NOTIF_TYPE_STARTUP) && updatable_parameters.debug_level >= 0){
             printd("{ ");
             printd("\"time\":\"%ld\" " , getTimeStamp());
             
@@ -103,7 +97,7 @@ void printNotif(uint8 type, char* format, ...){
             }
         
         // else if it is an event notification and debug level >= 1, then print everything
-        }else if (type == NOTIF_TYPE_EVENT && debug_level >= 1){
+        }else if (type == NOTIF_TYPE_EVENT && updatable_parameters.debug_level >= 1){
             printd("{ ");
             printd("\"time\":\"%ld\" " , getTimeStamp());
             printd("\"event\":\"notif\" \"value\":\"");

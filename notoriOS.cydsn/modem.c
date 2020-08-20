@@ -321,7 +321,7 @@ uint8 modem_process_tasks(){
         if(is_connected_to_cell_network()){
       
              modem_stats.time_to_network_connect = (int)(getTimeStamp() - (int32)modem_start_time_stamp);
-             printNotif(NOTIF_TYPE_EVENT,"Time to connecto to network: %d seconds",
+             printNotif(NOTIF_TYPE_EVENT,"Time to connect to network: %d seconds",
                                             modem_stats.time_to_network_connect);
             get_cell_network_stats(); // Get cell network stats
             set_up_internet_connection(); // Setup the internet connection
@@ -469,7 +469,37 @@ void get_cell_network_stats(){
         }
     }
 }
+// Initialize updatable parameters (sampling, reporting, and debug frequencies)
+void updatable_parameters_initialize(){
+    updatable_parameters.measure_time = 10u;
+    updatable_parameters.sync_time = 60u;
+    updatable_parameters.debug_level = 1u;
+}
+
+// Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
+void get_updated_parameters_from_malcom(){
     
+    // Create character array of size 1024 characters to hold the uart received string
+    char SRECV[1024];
+    
+    // Extract UART string recieved from the modem and save to variables
+    extract_string(uart_received_string,": ","OK",SRECV);
+    
+    // Create variables for what is sent back from the server
+    int sample_freq, report_freq, debug_freq;
+    
+    // Scan SRECV character array and save values 
+    if(sscanf(SRECV, "*: %d, *: %d, *: %d", &sample_freq,&report_freq,&debug_freq)==3){
+        updatable_parameters.measure_time = sample_freq;
+        printNotif(NOTIF_TYPE_EVENT, "Sampling frequency changed to: %d\r\n", sample_freq);
+        updatable_parameters.sync_time = report_freq;
+        printNotif(NOTIF_TYPE_EVENT, "Reporting frequency changed to: %d\r\n", report_freq);
+        updatable_parameters.debug_level = debug_freq;
+        printNotif(NOTIF_TYPE_EVENT, "Debug printing frequency changed to: %d\r\n", debug_freq);
+    }else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not parse malcom parameters.");
+    }
+}
     
 // Configure the modem settings
 void modem_configure_settings(){
@@ -620,11 +650,8 @@ void modem_wakeup(){
         if(modem_get_state() == MODEM_STATE_WAITING_FOR_IP){
             CyDelay(100u);
         }
-        
      }
-    
 }
-
 
     
 // Returns lat,lom,alt data from Assited GPS (AGPS) system

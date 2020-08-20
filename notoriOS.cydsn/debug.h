@@ -9,6 +9,7 @@
 #include "testing.h"
 #include "project.h"
 #include "sd_card.h"
+#include "modem.h"
     
 // function to get timestamp  
 long getTimeStamp();
@@ -21,8 +22,7 @@ long getTimeStamp();
 #define NOTIF_TYPE_WARNING 1u
 #define NOTIF_TYPE_ERROR 2u
 #define NOTIF_TYPE_STARTUP 3u
-    
-
+   
 
 /* Add an explicit reference to the floating point printf library to allow
 the usage of floating point conversion specifier */

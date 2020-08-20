@@ -8,6 +8,7 @@
 #include <string.h> //defines one variable type, one macro, and various functions for manipulating arrays of characters.
 #include <time.h> // defines four variable types, two macro and various functions for manipulating date and time.
 #include "testing.h"
+#include "debug.h"
     
     
 #define MODEM_STATE_OFF 0u
@@ -39,7 +40,8 @@ void modem_wakeup();
 uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeout);
 uint8 extract_string(char* from, const char* beginMarker, const char* endMarker,  char* target);
 long modem_get_network_time();
-
+void updatable_parameters_initialize();
+void get_updated_parameters_from_malcom();
 
 typedef struct { 
     char sim_id[20];
@@ -67,12 +69,22 @@ typedef struct{
     
 } gps_t;
 
+// Create data structure for updatable parameters 
+typedef struct
+{
+    // how often the node should take a measurement
+    uint8 measure_time;
+    // how often the node should sync with the middle layer
+    uint8 sync_time;
+    // what types of information you want printed to the terminal/ written to the SD card
+    // 0u = errors, warnings, startup notifications , 1u = all notifications
+    uint8 debug_level;
+} updatable_parameters_t;
+
 gps_t modem_get_gps_coordinates();
-
-
 int32 modem_start_time_stamp;
 modem_info_t modem_info;
 modem_stats_t modem_stats;
-
+updatable_parameters_t updatable_parameters;
     
 #endif

@@ -13,8 +13,7 @@
 #include "modem.h"
 #include "data.h"
 #include "influx.h"
-
-#define HASH_KEY "BK6-24-MANUAL"
+#include "commit.h"
 
 // Pre-allocate some memory for the HTTP requests
 #define MAX_HTTP_HEADER_LENGTH 1000
@@ -104,7 +103,6 @@ void LayBack();
 void AyoItsTime(uint8 alarmType);
 void ChickityCheckYourselfBeforeYouWreckYourself();
 uint8 upgraded(char *host, int port,char *route);
-
 
 
 /* [] END OF FILE */

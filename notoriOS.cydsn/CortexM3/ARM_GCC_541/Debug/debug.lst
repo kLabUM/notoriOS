@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 1
 
 
    1              		.syntax unified
@@ -19,30 +19,30 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
   16              		.text
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
-  19              		.syntax unified
-  20              		.global _printf_float
-  21              		.thumb
-  22              		.syntax unified
-  23              		.global	BB_fileName
-  24              		.data
-  25              		.align	2
-  26              		.type	BB_fileName, %object
-  27              		.size	BB_fileName, 30
-  28              	BB_fileName:
-  29 0000 626C6163 		.ascii	"blackbox.txt\000"
-  29      6B626F78 
-  29      2E747874 
-  29      00
-  30 000d 00000000 		.space	17
-  30      00000000 
-  30      00000000 
-  30      00000000 
-  30      00
-  31              		.global	debug_level
-  32              		.type	debug_level, %object
-  33              		.size	debug_level, 1
-  34              	debug_level:
-  35 001e 01       		.byte	1
+  19              		.comm	modem_state,1,1
+  20              		.comm	modem_start_time_stamp,4,4
+  21              		.comm	modem_info,60,4
+  22              		.comm	modem_stats,16,4
+  23              		.comm	updatable_parameters,3,4
+  24              		.syntax unified
+  25              		.global _printf_float
+  26              		.thumb
+  27              		.syntax unified
+  28              		.global	BB_fileName
+  29              		.data
+  30              		.align	2
+  31              		.type	BB_fileName, %object
+  32              		.size	BB_fileName, 30
+  33              	BB_fileName:
+  34 0000 626C6163 		.ascii	"blackbox.txt\000"
+  34      6B626F78 
+  34      2E747874 
+  34      00
+  35 000d 00000000 		.space	17
+  35      00000000 
+  35      00000000 
+  35      00000000 
+  35      00
   36              		.section	.text.debug_start,"ax",%progbits
   37              		.align	2
   38              		.global	debug_start
@@ -52,23 +52,17 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
   42              	debug_start:
   43              	.LFB64:
   44              		.file 1 "debug.c"
-   1:debug.c       **** //drivers for UART debug 
-   2:debug.c       **** 
-   3:debug.c       **** #include "debug.h"
-   4:debug.c       **** #include <stdarg.h> // handles variable argument list
+   1:debug.c       **** #include "debug.h"
+   2:debug.c       **** #include <stdarg.h> // handles variable argument list
+   3:debug.c       **** 
+   4:debug.c       **** char    BB_fileName[30] = "blackbox.txt";
    5:debug.c       **** 
-   6:debug.c       **** char    BB_fileName[30] = "blackbox.txt";
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 2
+   6:debug.c       **** // function to start UART debug
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 2
 
 
-   7:debug.c       **** 
-   8:debug.c       **** // Set debug level based on what you want printed/ written to SD card
-   9:debug.c       **** // 0u = errors, warnings, startup notifications , 1u = all notifications
-  10:debug.c       **** uint8   debug_level = 1u;
-  11:debug.c       **** 
-  12:debug.c       **** // function to start UART debug
-  13:debug.c       **** void debug_start(){
-  45              		.loc 1 13 0
+   7:debug.c       **** void debug_start(){
+  45              		.loc 1 7 0
   46              		.cfi_startproc
   47              		@ args = 0, pretend = 0, frame = 0
   48              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -78,16 +72,16 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
   52              		.cfi_offset 14, -4
   53 0002 00AF     		add	r7, sp, #0
   54              		.cfi_def_cfa_register 7
-  14:debug.c       ****     // if debug flag = 1 then start UART
-  15:debug.c       ****     #if USE_DEBUG
-  16:debug.c       ****        Debug_UART_Start();
-  55              		.loc 1 16 0
+   8:debug.c       ****     // if debug flag = 1 then start UART
+   9:debug.c       ****     #if USE_DEBUG
+  10:debug.c       ****        Debug_UART_Start();
+  55              		.loc 1 10 0
   56 0004 FFF7FEFF 		bl	Debug_UART_Start
-  17:debug.c       ****        //setvbuf(stdout, NULL, _IOFBF, Debug_UART_TX_BUFFER_SIZE);//this sets the printf() bufefr t
-  18:debug.c       ****        //setbuf(stdout, NULL);
-  19:debug.c       ****     #endif
-  20:debug.c       **** }
-  57              		.loc 1 20 0
+  11:debug.c       ****        //setvbuf(stdout, NULL, _IOFBF, Debug_UART_TX_BUFFER_SIZE);//this sets the printf() bufefr t
+  12:debug.c       ****        //setbuf(stdout, NULL);
+  13:debug.c       ****     #endif
+  14:debug.c       **** }
+  57              		.loc 1 14 0
   58 0008 00BF     		nop
   59 000a 80BD     		pop	{r7, pc}
   60              		.cfi_endproc
@@ -101,10 +95,10 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
   68              		.type	debug_stop, %function
   69              	debug_stop:
   70              	.LFB65:
-  21:debug.c       **** 
-  22:debug.c       **** // function to stop UART debug
-  23:debug.c       **** void debug_stop(){
-  71              		.loc 1 23 0
+  15:debug.c       **** 
+  16:debug.c       **** // function to stop UART debug
+  17:debug.c       **** void debug_stop(){
+  71              		.loc 1 17 0
   72              		.cfi_startproc
   73              		@ args = 0, pretend = 0, frame = 0
   74              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -114,19 +108,19 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
   78              		.cfi_offset 14, -4
   79 0002 00AF     		add	r7, sp, #0
   80              		.cfi_def_cfa_register 7
-  24:debug.c       ****     // if debug flag = 1 then stop UART
-  25:debug.c       ****     #if USE_DEBUG
-  26:debug.c       ****         Debug_UART_Stop();
-  81              		.loc 1 26 0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 3
-
-
+  18:debug.c       ****     // if debug flag = 1 then stop UART
+  19:debug.c       ****     #if USE_DEBUG
+  20:debug.c       ****         Debug_UART_Stop();
+  81              		.loc 1 20 0
   82 0004 FFF7FEFF 		bl	Debug_UART_Stop
-  27:debug.c       ****     #endif
-  28:debug.c       **** }
-  83              		.loc 1 28 0
+  21:debug.c       ****     #endif
+  22:debug.c       **** }
+  83              		.loc 1 22 0
   84 0008 00BF     		nop
   85 000a 80BD     		pop	{r7, pc}
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 3
+
+
   86              		.cfi_endproc
   87              	.LFE65:
   88              		.size	debug_stop, .-debug_stop
@@ -138,10 +132,10 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
   94              		.type	debug_sleep, %function
   95              	debug_sleep:
   96              	.LFB66:
-  29:debug.c       **** 
-  30:debug.c       **** // function to sleep UART debug
-  31:debug.c       **** void debug_sleep(){
-  97              		.loc 1 31 0
+  23:debug.c       **** 
+  24:debug.c       **** // function to sleep UART debug
+  25:debug.c       **** void debug_sleep(){
+  97              		.loc 1 25 0
   98              		.cfi_startproc
   99              		@ args = 0, pretend = 0, frame = 0
  100              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -151,42 +145,42 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  104              		.cfi_offset 14, -4
  105 0002 00AF     		add	r7, sp, #0
  106              		.cfi_def_cfa_register 7
-  32:debug.c       ****     // if debug flag = 1 and printf still writing, sleep UART
-  33:debug.c       ****     #if USE_DEBUG
-  34:debug.c       **** 
-  35:debug.c       ****         // Check if UART is busy writing and waiit, if needed
-  36:debug.c       ****         // Debug_UART_ReadTxStatus() reads the status register for the TX portion of the UART.
-  37:debug.c       ****         if(!(Debug_UART_ReadTxStatus() & Debug_UART_TX_STS_FIFO_EMPTY)){
- 107              		.loc 1 37 0
+  26:debug.c       ****     // if debug flag = 1 and printf still writing, sleep UART
+  27:debug.c       ****     #if USE_DEBUG
+  28:debug.c       **** 
+  29:debug.c       ****         // Check if UART is busy writing and waiit, if needed
+  30:debug.c       ****         // Debug_UART_ReadTxStatus() reads the status register for the TX portion of the UART.
+  31:debug.c       ****         if(!(Debug_UART_ReadTxStatus() & Debug_UART_TX_STS_FIFO_EMPTY)){
+ 107              		.loc 1 31 0
  108 0004 FFF7FEFF 		bl	Debug_UART_ReadTxStatus
  109 0008 0346     		mov	r3, r0
  110 000a 03F00203 		and	r3, r3, #2
  111 000e 002B     		cmp	r3, #0
  112 0010 02D1     		bne	.L4
-  38:debug.c       ****             CyDelay(1u);
- 113              		.loc 1 38 0
+  32:debug.c       ****             CyDelay(1u);
+ 113              		.loc 1 32 0
  114 0012 0120     		movs	r0, #1
  115 0014 FFF7FEFF 		bl	CyDelay
  116              	.L4:
-  39:debug.c       ****         }
-  40:debug.c       ****     // This is the preferred API to prepare the component for sleep. 
-  41:debug.c       ****     // The Debug_UART_Sleep() API saves the current component state. Then it calls the Debug_UART_S
-  42:debug.c       ****     Debug_UART_Sleep(); 
- 117              		.loc 1 42 0
+  33:debug.c       ****         }
+  34:debug.c       ****     // This is the preferred API to prepare the component for sleep. 
+  35:debug.c       ****     // The Debug_UART_Sleep() API saves the current component state. Then it calls the Debug_UART_S
+  36:debug.c       ****     Debug_UART_Sleep(); 
+ 117              		.loc 1 36 0
  118 0018 FFF7FEFF 		bl	Debug_UART_Sleep
-  43:debug.c       ****    #endif
-  44:debug.c       ****    
-  45:debug.c       **** }
- 119              		.loc 1 45 0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 4
-
-
+  37:debug.c       ****    #endif
+  38:debug.c       ****    
+  39:debug.c       **** }
+ 119              		.loc 1 39 0
  120 001c 00BF     		nop
  121 001e 80BD     		pop	{r7, pc}
  122              		.cfi_endproc
  123              	.LFE66:
  124              		.size	debug_sleep, .-debug_sleep
  125              		.section	.text.debug_wakeup,"ax",%progbits
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 4
+
+
  126              		.align	2
  127              		.global	debug_wakeup
  128              		.thumb
@@ -194,10 +188,10 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  130              		.type	debug_wakeup, %function
  131              	debug_wakeup:
  132              	.LFB67:
-  46:debug.c       **** 
-  47:debug.c       **** // function to wakeup UART debug
-  48:debug.c       **** void debug_wakeup(){
- 133              		.loc 1 48 0
+  40:debug.c       **** 
+  41:debug.c       **** // function to wakeup UART debug
+  42:debug.c       **** void debug_wakeup(){
+ 133              		.loc 1 42 0
  134              		.cfi_startproc
  135              		@ args = 0, pretend = 0, frame = 0
  136              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -207,14 +201,14 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  140              		.cfi_offset 14, -4
  141 0002 00AF     		add	r7, sp, #0
  142              		.cfi_def_cfa_register 7
-  49:debug.c       ****     // if debug flag = 1, wakeup UART debug and turn off stillWriting flag
-  50:debug.c       ****     #if USE_DEBUG
-  51:debug.c       ****         Debug_UART_Wakeup();
- 143              		.loc 1 51 0
+  43:debug.c       ****     // if debug flag = 1, wakeup UART debug and turn off stillWriting flag
+  44:debug.c       ****     #if USE_DEBUG
+  45:debug.c       ****         Debug_UART_Wakeup();
+ 143              		.loc 1 45 0
  144 0004 FFF7FEFF 		bl	Debug_UART_Wakeup
-  52:debug.c       ****     #endif
-  53:debug.c       **** }
- 145              		.loc 1 53 0
+  46:debug.c       ****     #endif
+  47:debug.c       **** }
+ 145              		.loc 1 47 0
  146 0008 00BF     		nop
  147 000a 80BD     		pop	{r7, pc}
  148              		.cfi_endproc
@@ -228,25 +222,25 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  156              		.type	_write, %function
  157              	_write:
  158              	.LFB68:
-  54:debug.c       **** 
-  55:debug.c       **** // if debug flag = 1, and using the GCC compiler, revise the _write() function so that when we call
-  56:debug.c       **** // NOTE: For this to work HEAP size in "System" must be set to 0x300 or more
-  57:debug.c       **** // Stack and heap are both a part of memory. Stack holds functions, variables, etc. Heap sits on to
-  58:debug.c       **** // If heap is too small, then you get a stack overflow. FOr printing, need to have a bigger heap. B
-  59:debug.c       **** // If have memory problems, play around with heap size.
-  60:debug.c       **** #if USE_DEBUG
-  61:debug.c       ****     
-  62:debug.c       ****     
-  63:debug.c       **** // This will allow you to use printf(), as you would in regulart c programs
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 5
-
-
-  64:debug.c       **** // careful though, printf() is sometimes not safe in embedded sytems
-  65:debug.c       **** // may want to use printd() function below
-  66:debug.c       **** int _write(int file, char *ptr, int len)
-  67:debug.c       **** {
- 159              		.loc 1 67 0
+  48:debug.c       **** 
+  49:debug.c       **** // if debug flag = 1, and using the GCC compiler, revise the _write() function so that when we call
+  50:debug.c       **** // NOTE: For this to work HEAP size in "System" must be set to 0x300 or more
+  51:debug.c       **** // Stack and heap are both a part of memory. Stack holds functions, variables, etc. Heap sits on to
+  52:debug.c       **** // If heap is too small, then you get a stack overflow. FOr printing, need to have a bigger heap. B
+  53:debug.c       **** // If have memory problems, play around with heap size.
+  54:debug.c       **** #if USE_DEBUG
+  55:debug.c       ****     
+  56:debug.c       ****     
+  57:debug.c       **** // This will allow you to use printf(), as you would in regulart c programs
+  58:debug.c       **** // careful though, printf() is sometimes not safe in embedded sytems
+  59:debug.c       **** // may want to use printd() function below
+  60:debug.c       **** int _write(int file, char *ptr, int len)
+  61:debug.c       **** {
+ 159              		.loc 1 61 0
  160              		.cfi_startproc
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 5
+
+
  161              		@ args = 0, pretend = 0, frame = 24
  162              		@ frame_needed = 1, uses_anonymous_args = 0
  163 0000 80B5     		push	{r7, lr}
@@ -260,53 +254,53 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  171 0006 F860     		str	r0, [r7, #12]
  172 0008 B960     		str	r1, [r7, #8]
  173 000a 7A60     		str	r2, [r7, #4]
-  68:debug.c       ****     int i;
-  69:debug.c       ****     file = file;
-  70:debug.c       ****     for (i = 0; i < len; i++)
- 174              		.loc 1 70 0
+  62:debug.c       ****     int i;
+  63:debug.c       ****     file = file;
+  64:debug.c       ****     for (i = 0; i < len; i++)
+ 174              		.loc 1 64 0
  175 000c 0023     		movs	r3, #0
  176 000e 7B61     		str	r3, [r7, #20]
  177 0010 09E0     		b	.L7
  178              	.L8:
-  71:debug.c       ****     {   
-  72:debug.c       ****         // Puts a byte of data into the transmit buffer to be sent when the bus is available.
-  73:debug.c       ****         Debug_UART_PutChar(*ptr++);
- 179              		.loc 1 73 0 discriminator 3
+  65:debug.c       ****     {   
+  66:debug.c       ****         // Puts a byte of data into the transmit buffer to be sent when the bus is available.
+  67:debug.c       ****         Debug_UART_PutChar(*ptr++);
+ 179              		.loc 1 67 0 discriminator 3
  180 0012 BB68     		ldr	r3, [r7, #8]
  181 0014 5A1C     		adds	r2, r3, #1
  182 0016 BA60     		str	r2, [r7, #8]
  183 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  184 001a 1846     		mov	r0, r3
  185 001c FFF7FEFF 		bl	Debug_UART_PutChar
-  70:debug.c       ****     {   
- 186              		.loc 1 70 0 discriminator 3
+  64:debug.c       ****     {   
+ 186              		.loc 1 64 0 discriminator 3
  187 0020 7B69     		ldr	r3, [r7, #20]
  188 0022 0133     		adds	r3, r3, #1
  189 0024 7B61     		str	r3, [r7, #20]
  190              	.L7:
-  70:debug.c       ****     {   
- 191              		.loc 1 70 0 is_stmt 0 discriminator 1
+  64:debug.c       ****     {   
+ 191              		.loc 1 64 0 is_stmt 0 discriminator 1
  192 0026 7A69     		ldr	r2, [r7, #20]
  193 0028 7B68     		ldr	r3, [r7, #4]
  194 002a 9A42     		cmp	r2, r3
  195 002c F1DB     		blt	.L8
-  74:debug.c       ****     }
-  75:debug.c       ****     
-  76:debug.c       ****     return (len);
- 196              		.loc 1 76 0 is_stmt 1
+  68:debug.c       ****     }
+  69:debug.c       ****     
+  70:debug.c       ****     return (len);
+ 196              		.loc 1 70 0 is_stmt 1
  197 002e 7B68     		ldr	r3, [r7, #4]
-  77:debug.c       **** }
- 198              		.loc 1 77 0
+  71:debug.c       **** }
+ 198              		.loc 1 71 0
  199 0030 1846     		mov	r0, r3
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 6
-
-
  200 0032 1837     		adds	r7, r7, #24
  201              		.cfi_def_cfa_offset 8
  202 0034 BD46     		mov	sp, r7
  203              		.cfi_def_cfa_register 13
  204              		@ sp needed
  205 0036 80BD     		pop	{r7, pc}
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 6
+
+
  206              		.cfi_endproc
  207              	.LFE68:
  208              		.size	_write, .-_write
@@ -358,23 +352,23 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  234              		.section	.text.printNotif,"ax",%progbits
  235              		.align	2
  236              		.global	printNotif
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 7
-
-
  237              		.thumb
  238              		.thumb_func
  239              		.type	printNotif, %function
  240              	printNotif:
  241              	.LFB69:
-  78:debug.c       **** 
-  79:debug.c       **** #endif
-  80:debug.c       **** 
-  81:debug.c       **** // Create function to hijack printf to add an epoch timestamp to print output
-  82:debug.c       **** // Whenever a function is declared to have an indeterminate number of arguments, in place of the la
-  83:debug.c       **** // to tell the compiler the function should accept however many arguments that the programmer uses,
-  84:debug.c       **** // to at least the number of variables declared. 
-  85:debug.c       **** void printNotif(uint8 type, char* format, ...){
- 242              		.loc 1 85 0
+  72:debug.c       **** 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 7
+
+
+  73:debug.c       **** #endif
+  74:debug.c       **** 
+  75:debug.c       **** // Create function to hijack printf to add an epoch timestamp to print output
+  76:debug.c       **** // Whenever a function is declared to have an indeterminate number of arguments, in place of the la
+  77:debug.c       **** // to tell the compiler the function should accept however many arguments that the programmer uses,
+  78:debug.c       **** // to at least the number of variables declared. 
+  79:debug.c       **** void printNotif(uint8 type, char* format, ...){
+ 242              		.loc 1 79 0
  243              		.cfi_startproc
  244              		@ args = 4, pretend = 12, frame = 2064
  245              		@ frame_needed = 1, uses_anonymous_args = 1
@@ -394,165 +388,165 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  259 000a 0246     		mov	r2, r0
  260 000c FB1D     		adds	r3, r7, #7
  261 000e 1A70     		strb	r2, [r3]
-  86:debug.c       ****     
-  87:debug.c       ****     char debug_string[MAX_DEBUG_STRING_LENGTH]; // string to be printed
-  88:debug.c       ****     
-  89:debug.c       ****     // if debug flag = 1, then print debug statements, otherwise don't print anything
-  90:debug.c       ****     #if USE_DEBUG
-  91:debug.c       ****    
-  92:debug.c       ****         // if it is an error, warning, or startup notification and debug_level >= 0, then print the
-  93:debug.c       ****         if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING || type == NOTIF_TYPE_STARTUP) 
- 262              		.loc 1 93 0
+  80:debug.c       ****     
+  81:debug.c       ****     char debug_string[MAX_DEBUG_STRING_LENGTH]; // string to be printed
+  82:debug.c       ****     
+  83:debug.c       ****     // if debug flag = 1, then print debug statements, otherwise don't print anything
+  84:debug.c       ****     #if USE_DEBUG
+  85:debug.c       ****    
+  86:debug.c       ****         // if it is an error, warning, or startup notification and debug_level >= 0, then print the
+  87:debug.c       ****         if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING  || type == NOTIF_TYPE_STARTUP)
+ 262              		.loc 1 87 0
  263 0010 FB1D     		adds	r3, r7, #7
  264 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  265 0014 022B     		cmp	r3, #2
  266 0016 07D0     		beq	.L11
- 267              		.loc 1 93 0 is_stmt 0 discriminator 1
+ 267              		.loc 1 87 0 is_stmt 0 discriminator 1
  268 0018 FB1D     		adds	r3, r7, #7
  269 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  270 001c 012B     		cmp	r3, #1
  271 001e 03D0     		beq	.L11
- 272              		.loc 1 93 0 discriminator 2
+ 272              		.loc 1 87 0 discriminator 2
  273 0020 FB1D     		adds	r3, r7, #7
  274 0022 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  275 0024 032B     		cmp	r3, #3
  276 0026 1DD1     		bne	.L12
  277              	.L11:
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 8
-
-
-  94:debug.c       ****             printd("{ ");
- 278              		.loc 1 94 0 is_stmt 1
+  88:debug.c       ****             printd("{ ");
+ 278              		.loc 1 88 0 is_stmt 1
  279 0028 2D48     		ldr	r0, .L20
  280 002a FFF7FEFF 		bl	printd
-  95:debug.c       ****             printd("\"time\":\"%ld\" " , getTimeStamp());
- 281              		.loc 1 95 0
+  89:debug.c       ****             printd("\"time\":\"%ld\" " , getTimeStamp());
+ 281              		.loc 1 89 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 8
+
+
  282 002e FFF7FEFF 		bl	getTimeStamp
  283 0032 0346     		mov	r3, r0
  284 0034 1946     		mov	r1, r3
  285 0036 2B48     		ldr	r0, .L20+4
  286 0038 FFF7FEFF 		bl	printd
-  96:debug.c       ****             
-  97:debug.c       ****             if (type == NOTIF_TYPE_ERROR){
- 287              		.loc 1 97 0
+  90:debug.c       ****             
+  91:debug.c       ****             if (type == NOTIF_TYPE_ERROR){
+ 287              		.loc 1 91 0
  288 003c FB1D     		adds	r3, r7, #7
  289 003e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  290 0040 022B     		cmp	r3, #2
  291 0042 03D1     		bne	.L13
-  98:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
- 292              		.loc 1 98 0
+  92:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
+ 292              		.loc 1 92 0
  293 0044 2848     		ldr	r0, .L20+8
  294 0046 FFF7FEFF 		bl	printd
-  97:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
- 295              		.loc 1 97 0
+  91:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
+ 295              		.loc 1 91 0
  296 004a 20E0     		b	.L16
  297              	.L13:
-  99:debug.c       ****             }else if(type == NOTIF_TYPE_WARNING){
- 298              		.loc 1 99 0
+  93:debug.c       ****             }else if(type == NOTIF_TYPE_WARNING){
+ 298              		.loc 1 93 0
  299 004c FB1D     		adds	r3, r7, #7
  300 004e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  301 0050 012B     		cmp	r3, #1
  302 0052 03D1     		bne	.L15
- 100:debug.c       ****                 printd("\"event\":\"warning\" \"value\":\"");
- 303              		.loc 1 100 0
+  94:debug.c       ****                 printd("\"event\":\"warning\" \"value\":\"");
+ 303              		.loc 1 94 0
  304 0054 2548     		ldr	r0, .L20+12
  305 0056 FFF7FEFF 		bl	printd
-  97:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
- 306              		.loc 1 97 0
+  91:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
+ 306              		.loc 1 91 0
  307 005a 18E0     		b	.L16
  308              	.L15:
- 101:debug.c       ****             } else{
- 102:debug.c       ****                 printd("\"event\":\"startup\" \"value\":\"");
- 309              		.loc 1 102 0
+  95:debug.c       ****             } else{
+  96:debug.c       ****                 printd("\"event\":\"startup\" \"value\":\"");
+ 309              		.loc 1 96 0
  310 005c 2448     		ldr	r0, .L20+16
  311 005e FFF7FEFF 		bl	printd
-  97:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
- 312              		.loc 1 97 0
+  91:debug.c       ****                 printd("\"event\":\"error\" \"value\":\"");
+ 312              		.loc 1 91 0
  313 0062 14E0     		b	.L16
  314              	.L12:
- 103:debug.c       ****             }
- 104:debug.c       ****         
- 105:debug.c       ****         // else if it is an event notification and debug level >= 1, then print everything
- 106:debug.c       ****         }else if (type == NOTIF_TYPE_EVENT && debug_level >= 1){
- 315              		.loc 1 106 0
+  97:debug.c       ****             }
+  98:debug.c       ****         
+  99:debug.c       ****         // else if it is an event notification and debug level >= 1, then print everything
+ 100:debug.c       ****         }else if (type == NOTIF_TYPE_EVENT && updatable_parameters.debug_level >= 1){
+ 315              		.loc 1 100 0
  316 0064 FB1D     		adds	r3, r7, #7
  317 0066 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  318 0068 002B     		cmp	r3, #0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 9
-
-
  319 006a 30D1     		bne	.L19
- 320              		.loc 1 106 0 is_stmt 0 discriminator 1
+ 320              		.loc 1 100 0 is_stmt 0 discriminator 1
  321 006c 214B     		ldr	r3, .L20+20
- 322 006e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 322 006e 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
  323 0070 002B     		cmp	r3, #0
  324 0072 2CD0     		beq	.L19
- 107:debug.c       ****             printd("{ ");
- 325              		.loc 1 107 0 is_stmt 1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 9
+
+
+ 101:debug.c       ****             printd("{ ");
+ 325              		.loc 1 101 0 is_stmt 1
  326 0074 1A48     		ldr	r0, .L20
  327 0076 FFF7FEFF 		bl	printd
- 108:debug.c       ****             printd("\"time\":\"%ld\" " , getTimeStamp());
- 328              		.loc 1 108 0
+ 102:debug.c       ****             printd("\"time\":\"%ld\" " , getTimeStamp());
+ 328              		.loc 1 102 0
  329 007a FFF7FEFF 		bl	getTimeStamp
  330 007e 0346     		mov	r3, r0
  331 0080 1946     		mov	r1, r3
  332 0082 1848     		ldr	r0, .L20+4
  333 0084 FFF7FEFF 		bl	printd
- 109:debug.c       ****             printd("\"event\":\"notif\" \"value\":\"");
- 334              		.loc 1 109 0
+ 103:debug.c       ****             printd("\"event\":\"notif\" \"value\":\"");
+ 334              		.loc 1 103 0
  335 0088 1B48     		ldr	r0, .L20+24
  336 008a FFF7FEFF 		bl	printd
  337              	.L16:
- 110:debug.c       **** 
- 111:debug.c       ****         // else do not print and exit the function    
- 112:debug.c       ****         }else{
- 113:debug.c       ****             return;
- 114:debug.c       ****         }
- 115:debug.c       ****         
- 116:debug.c       ****         va_list argptr; // create variable argprt of the type va_list from stdarg.h
- 117:debug.c       ****         va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize a
- 338              		.loc 1 117 0 discriminator 1
+ 104:debug.c       **** 
+ 105:debug.c       ****         // else do not print and exit the function    
+ 106:debug.c       ****         }else{
+ 107:debug.c       ****             return;
+ 108:debug.c       ****         }
+ 109:debug.c       ****         
+ 110:debug.c       ****         va_list argptr; // create variable argprt of the type va_list from stdarg.h
+ 111:debug.c       ****         va_start(argptr, format); // from stdarg.h: the va_start() macro is invoked to initialize a
+ 338              		.loc 1 111 0 discriminator 1
  339 008e 07F50262 		add	r2, r7, #2080
  340 0092 07F10C03 		add	r3, r7, #12
  341 0096 1A60     		str	r2, [r3]
- 118:debug.c       ****         vsnprintf(debug_string, MAX_DEBUG_STRING_LENGTH, format, argptr); // send text to buffer
- 342              		.loc 1 118 0 discriminator 1
+ 112:debug.c       ****         vsnprintf(debug_string, MAX_DEBUG_STRING_LENGTH, format, argptr); // send text to buffer
+ 342              		.loc 1 112 0 discriminator 1
  343 0098 07F10C03 		add	r3, r7, #12
  344 009c 07F11000 		add	r0, r7, #16
  345 00a0 1B68     		ldr	r3, [r3]
  346 00a2 D7F81C28 		ldr	r2, [r7, #2076]
  347 00a6 4FF40061 		mov	r1, #2048
  348 00aa FFF7FEFF 		bl	vsnprintf
- 119:debug.c       ****         Debug_UART_PutString(debug_string); // Sends a NULL terminated string to the TX buffer for 
- 349              		.loc 1 119 0 discriminator 1
+ 113:debug.c       ****         Debug_UART_PutString(debug_string); // Sends a NULL terminated string to the TX buffer for 
+ 349              		.loc 1 113 0 discriminator 1
  350 00ae 07F11003 		add	r3, r7, #16
  351 00b2 1846     		mov	r0, r3
  352 00b4 FFF7FEFF 		bl	Debug_UART_PutString
- 120:debug.c       ****         va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unles
- 121:debug.c       ****         printd("\"}\r\n");
- 353              		.loc 1 121 0 discriminator 1
+ 114:debug.c       ****         va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unles
+ 115:debug.c       ****         printd("\"}\r\n");
+ 353              		.loc 1 115 0 discriminator 1
  354 00b8 1048     		ldr	r0, .L20+28
  355 00ba FFF7FEFF 		bl	printd
- 122:debug.c       ****         SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card  
- 356              		.loc 1 122 0 discriminator 1
+ 116:debug.c       ****         SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card  
+ 356              		.loc 1 116 0 discriminator 1
  357 00be 07F11003 		add	r3, r7, #16
  358 00c2 1A46     		mov	r2, r3
  359 00c4 0E49     		ldr	r1, .L20+32
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 10
-
-
  360 00c6 0F48     		ldr	r0, .L20+36
  361 00c8 FFF7FEFF 		bl	SD_write
  362 00cc 00E0     		b	.L10
  363              	.L19:
- 113:debug.c       ****         }
- 364              		.loc 1 113 0
+ 107:debug.c       ****         }
+ 364              		.loc 1 107 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 10
+
+
  365 00ce 00BF     		nop
  366              	.L10:
- 123:debug.c       **** 
- 124:debug.c       ****     #endif 
- 125:debug.c       **** }
- 367              		.loc 1 125 0
+ 117:debug.c       **** 
+ 118:debug.c       ****     #endif 
+ 119:debug.c       **** }
+ 367              		.loc 1 119 0
  368 00d0 07F61407 		addw	r7, r7, #2068
  369              		.cfi_def_cfa_offset 20
  370 00d4 BD46     		mov	sp, r7
@@ -576,7 +570,7 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  388 00e8 14000000 		.word	.LC2
  389 00ec 30000000 		.word	.LC3
  390 00f0 4C000000 		.word	.LC4
- 391 00f4 00000000 		.word	debug_level
+ 391 00f4 00000000 		.word	updatable_parameters
  392 00f8 68000000 		.word	.LC5
  393 00fc 84000000 		.word	.LC6
  394 0100 8C000000 		.word	.LC7
@@ -598,15 +592,15 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  405      25732220 
  405      00
  406 00ad 000000   		.align	2
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 11
-
-
  407              	.LC10:
  408 00b0 22737461 		.ascii	"\"status\":\"%d\" \000"
  408      74757322 
  408      3A222564 
  408      222000
  409 00bf 00       		.align	2
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 11
+
+
  410              	.LC11:
  411 00c0 22726561 		.ascii	"\"reason\":\"%s\" \000"
  411      736F6E22 
@@ -623,10 +617,10 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  420              		.type	printTestStatus, %function
  421              	printTestStatus:
  422              	.LFB70:
- 126:debug.c       **** 
- 127:debug.c       **** // Print debug test status
- 128:debug.c       **** void printTestStatus(test_t test){
- 423              		.loc 1 128 0
+ 120:debug.c       **** 
+ 121:debug.c       **** // Print debug test status
+ 122:debug.c       **** void printTestStatus(test_t test){
+ 423              		.loc 1 122 0
  424              		.cfi_startproc
  425              		@ args = 388, pretend = 16, frame = 0
  426              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -640,53 +634,53 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  434              		.cfi_def_cfa_register 7
  435 0006 07F1080E 		add	lr, r7, #8
  436 000a 8EE80F00 		stmia	lr, {r0, r1, r2, r3}
- 129:debug.c       ****     // if debug flag = 1
- 130:debug.c       ****     #if USE_DEBUG
- 131:debug.c       ****         printd("{ ");
- 437              		.loc 1 131 0
+ 123:debug.c       ****     // if debug flag = 1
+ 124:debug.c       ****     #if USE_DEBUG
+ 125:debug.c       ****         printd("{ ");
+ 437              		.loc 1 125 0
  438 000e 1348     		ldr	r0, .L23
  439 0010 FFF7FEFF 		bl	printd
- 132:debug.c       ****         printd("\"time\":\"%ld\" " , getTimeStamp());
- 440              		.loc 1 132 0
+ 126:debug.c       ****         printd("\"time\":\"%ld\" " , getTimeStamp());
+ 440              		.loc 1 126 0
  441 0014 FFF7FEFF 		bl	getTimeStamp
  442 0018 0346     		mov	r3, r0
  443 001a 1946     		mov	r1, r3
  444 001c 1048     		ldr	r0, .L23+4
  445 001e FFF7FEFF 		bl	printd
- 133:debug.c       ****         
- 134:debug.c       ****         printd("\"event\":\"test\" ");
- 446              		.loc 1 134 0
+ 127:debug.c       ****         
+ 128:debug.c       ****         printd("\"event\":\"test\" ");
+ 446              		.loc 1 128 0
  447 0022 1048     		ldr	r0, .L23+8
  448 0024 FFF7FEFF 		bl	printd
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 12
-
-
- 135:debug.c       ****         printd("\"name\":\"%s\" ", test.test_name);
- 449              		.loc 1 135 0
+ 129:debug.c       ****         printd("\"name\":\"%s\" ", test.test_name);
+ 449              		.loc 1 129 0
  450 0028 07F10801 		add	r1, r7, #8
  451 002c 0E48     		ldr	r0, .L23+12
  452 002e FFF7FEFF 		bl	printd
- 136:debug.c       ****         printd("\"status\":\"%d\" ", test.status);
- 453              		.loc 1 136 0
+ 130:debug.c       ****         printd("\"status\":\"%d\" ", test.status);
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 12
+
+
+ 453              		.loc 1 130 0
  454 0032 97F88830 		ldrb	r3, [r7, #136]	@ zero_extendqisi2
  455 0036 1946     		mov	r1, r3
  456 0038 0C48     		ldr	r0, .L23+16
  457 003a FFF7FEFF 		bl	printd
- 137:debug.c       ****         printd("\"reason\":\"%s\" ", test.reason);
- 458              		.loc 1 137 0
+ 131:debug.c       ****         printd("\"reason\":\"%s\" ", test.reason);
+ 458              		.loc 1 131 0
  459 003e 07F18903 		add	r3, r7, #137
  460 0042 1946     		mov	r1, r3
  461 0044 0A48     		ldr	r0, .L23+20
  462 0046 FFF7FEFF 		bl	printd
- 138:debug.c       **** 
- 139:debug.c       ****         printd("}\r\n");
- 463              		.loc 1 139 0
+ 132:debug.c       **** 
+ 133:debug.c       ****         printd("}\r\n");
+ 463              		.loc 1 133 0
  464 004a 0A48     		ldr	r0, .L23+24
  465 004c FFF7FEFF 		bl	printd
- 140:debug.c       ****     #endif
- 141:debug.c       ****    
- 142:debug.c       **** }
- 466              		.loc 1 142 0
+ 134:debug.c       ****     #endif
+ 135:debug.c       ****    
+ 136:debug.c       **** }
+ 466              		.loc 1 136 0
  467 0050 00BF     		nop
  468 0052 BD46     		mov	sp, r7
  469              		.cfi_def_cfa_register 13
@@ -718,16 +712,16 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  495              		.thumb_func
  496              		.type	getTimeStamp, %function
  497              	getTimeStamp:
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 13
-
-
  498              	.LFB71:
- 143:debug.c       **** 
- 144:debug.c       **** 
- 145:debug.c       **** // Returns local times in epoch seconds (seconds since Jan 1, 1970)
- 146:debug.c       **** // Can also cast this to a t_of_day struct
- 147:debug.c       **** long getTimeStamp(){
- 499              		.loc 1 147 0
+ 137:debug.c       **** 
+ 138:debug.c       **** 
+ 139:debug.c       **** // Returns local times in epoch seconds (seconds since Jan 1, 1970)
+ 140:debug.c       **** // Can also cast this to a t_of_day struct
+ 141:debug.c       **** long getTimeStamp(){
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 13
+
+
+ 499              		.loc 1 141 0
  500              		.cfi_startproc
  501              		@ args = 0, pretend = 0, frame = 48
  502              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -739,77 +733,77 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  508              		.cfi_def_cfa_offset 56
  509 0004 00AF     		add	r7, sp, #0
  510              		.cfi_def_cfa_register 7
- 148:debug.c       ****     // RTC_TIME_DATE * RTC_ReadTime(void) Description: Reads the current time and date. Parameters:
- 149:debug.c       ****     // Creates a variable named localTime that is a pointer to RTC_TIME_DATE. It saves the time and
- 150:debug.c       ****     RTC_TIME_DATE *localTime = RTC_ReadTime();
- 511              		.loc 1 150 0
+ 142:debug.c       ****     // RTC_TIME_DATE * RTC_ReadTime(void) Description: Reads the current time and date. Parameters:
+ 143:debug.c       ****     // Creates a variable named localTime that is a pointer to RTC_TIME_DATE. It saves the time and
+ 144:debug.c       ****     RTC_TIME_DATE *localTime = RTC_ReadTime();
+ 511              		.loc 1 144 0
  512 0006 FFF7FEFF 		bl	RTC_ReadTime
  513 000a F862     		str	r0, [r7, #44]
- 151:debug.c       ****    
- 152:debug.c       ****     struct tm t; // creates variable t of struct tm
- 153:debug.c       ****     time_t t_of_day;
- 154:debug.c       **** 
- 155:debug.c       ****     // sets each variable to the correct time 
- 156:debug.c       ****     t.tm_sec = localTime->Sec;
- 514              		.loc 1 156 0
+ 145:debug.c       ****    
+ 146:debug.c       ****     struct tm t; // creates variable t of struct tm
+ 147:debug.c       ****     time_t t_of_day;
+ 148:debug.c       **** 
+ 149:debug.c       ****     // sets each variable to the correct time 
+ 150:debug.c       ****     t.tm_sec = localTime->Sec;
+ 514              		.loc 1 150 0
  515 000c FB6A     		ldr	r3, [r7, #44]
  516 000e 1B78     		ldrb	r3, [r3]
  517 0010 DBB2     		uxtb	r3, r3
  518 0012 7B60     		str	r3, [r7, #4]
- 157:debug.c       ****     t.tm_min = localTime->Min;
- 519              		.loc 1 157 0
+ 151:debug.c       ****     t.tm_min = localTime->Min;
+ 519              		.loc 1 151 0
  520 0014 FB6A     		ldr	r3, [r7, #44]
  521 0016 5B78     		ldrb	r3, [r3, #1]
  522 0018 DBB2     		uxtb	r3, r3
  523 001a BB60     		str	r3, [r7, #8]
- 158:debug.c       ****     t.tm_hour = localTime->Hour;
- 524              		.loc 1 158 0
+ 152:debug.c       ****     t.tm_hour = localTime->Hour;
+ 524              		.loc 1 152 0
  525 001c FB6A     		ldr	r3, [r7, #44]
  526 001e 9B78     		ldrb	r3, [r3, #2]
  527 0020 DBB2     		uxtb	r3, r3
  528 0022 FB60     		str	r3, [r7, #12]
- 159:debug.c       ****     t.tm_year = localTime->Year - 1900;  // Year - 1900
- 529              		.loc 1 159 0
+ 153:debug.c       ****     t.tm_year = localTime->Year - 1900;  // Year - 1900
+ 529              		.loc 1 153 0
  530 0024 FB6A     		ldr	r3, [r7, #44]
  531 0026 5B89     		ldrh	r3, [r3, #10]	@ movhi
  532 0028 9BB2     		uxth	r3, r3
  533 002a A3F26C73 		subw	r3, r3, #1900
  534 002e BB61     		str	r3, [r7, #24]
- 160:debug.c       ****     t.tm_mon = localTime->Month;           // Month, where 0 = jan
- 535              		.loc 1 160 0
+ 154:debug.c       ****     t.tm_mon = localTime->Month;           // Month, where 0 = jan
+ 535              		.loc 1 154 0
  536 0030 FB6A     		ldr	r3, [r7, #44]
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 14
-
-
  537 0032 1B7A     		ldrb	r3, [r3, #8]
  538 0034 DBB2     		uxtb	r3, r3
  539 0036 7B61     		str	r3, [r7, #20]
- 161:debug.c       ****     t.tm_mday = localTime->DayOfMonth;          // Day of the month
- 540              		.loc 1 161 0
+ 155:debug.c       ****     t.tm_mday = localTime->DayOfMonth;          // Day of the month
+ 540              		.loc 1 155 0
  541 0038 FB6A     		ldr	r3, [r7, #44]
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 14
+
+
  542 003a 1B79     		ldrb	r3, [r3, #4]
  543 003c DBB2     		uxtb	r3, r3
  544 003e 3B61     		str	r3, [r7, #16]
- 162:debug.c       ****     t.tm_isdst = 0;        // Is Daylight Savings on? 1 = yes, 0 = no, -1 = unknown
- 545              		.loc 1 162 0
+ 156:debug.c       ****     t.tm_isdst = 0;        // Is Daylight Savings on? 1 = yes, 0 = no, -1 = unknown
+ 545              		.loc 1 156 0
  546 0040 0023     		movs	r3, #0
  547 0042 7B62     		str	r3, [r7, #36]
- 163:debug.c       ****     
- 164:debug.c       ****     // the mktime() function converts a broken-down local time (pointed to by timeptr) and returns 
- 165:debug.c       ****     // the syntax for the mktime function in the C Language is: time_t mktime(struct tm *timeptr);
- 166:debug.c       ****     // creates variable t_of_day of type time_t
- 167:debug.c       ****     t_of_day = mktime(&t); // determines a calendar time
- 548              		.loc 1 167 0
+ 157:debug.c       ****     
+ 158:debug.c       ****     // the mktime() function converts a broken-down local time (pointed to by timeptr) and returns 
+ 159:debug.c       ****     // the syntax for the mktime function in the C Language is: time_t mktime(struct tm *timeptr);
+ 160:debug.c       ****     // creates variable t_of_day of type time_t
+ 161:debug.c       ****     t_of_day = mktime(&t); // determines a calendar time
+ 548              		.loc 1 161 0
  549 0044 3B1D     		adds	r3, r7, #4
  550 0046 1846     		mov	r0, r3
  551 0048 FFF7FEFF 		bl	mktime
  552 004c B862     		str	r0, [r7, #40]
- 168:debug.c       **** 
- 169:debug.c       ****     return (long) t_of_day;
- 553              		.loc 1 169 0
+ 162:debug.c       **** 
+ 163:debug.c       ****     return (long) t_of_day;
+ 553              		.loc 1 163 0
  554 004e BB6A     		ldr	r3, [r7, #40]
- 170:debug.c       **** }
- 555              		.loc 1 170 0
+ 164:debug.c       **** }
+ 555              		.loc 1 164 0
  556 0050 1846     		mov	r0, r3
  557 0052 3037     		adds	r7, r7, #48
  558              		.cfi_def_cfa_offset 8
@@ -828,41 +822,41 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  571              		.type	stripEscapeCharacters, %function
  572              	stripEscapeCharacters:
  573              	.LFB72:
- 171:debug.c       **** 
- 172:debug.c       **** // The C library function char *strchr(const char *str, int c) searches for the first occurrence of
- 173:debug.c       **** // Format for strchr() function: char *strchr(const char *str, int c).
- 174:debug.c       **** void stripEscapeCharacters(char *string){
- 574              		.loc 1 174 0
+ 165:debug.c       **** 
+ 166:debug.c       **** // The C library function char *strchr(const char *str, int c) searches for the first occurrence of
+ 167:debug.c       **** // Format for strchr() function: char *strchr(const char *str, int c).
+ 168:debug.c       **** void stripEscapeCharacters(char *string){
+ 574              		.loc 1 168 0
  575              		.cfi_startproc
  576              		@ args = 0, pretend = 0, frame = 16
  577              		@ frame_needed = 1, uses_anonymous_args = 0
  578 0000 80B5     		push	{r7, lr}
  579              		.cfi_def_cfa_offset 8
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 15
-
-
  580              		.cfi_offset 7, -8
  581              		.cfi_offset 14, -4
  582 0002 84B0     		sub	sp, sp, #16
  583              		.cfi_def_cfa_offset 24
  584 0004 00AF     		add	r7, sp, #0
  585              		.cfi_def_cfa_register 7
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 15
+
+
  586 0006 7860     		str	r0, [r7, #4]
- 175:debug.c       **** 
- 176:debug.c       ****   char * pch;
- 177:debug.c       ****   pch=strchr(string,'\n');
- 587              		.loc 1 177 0
+ 169:debug.c       **** 
+ 170:debug.c       ****   char * pch;
+ 171:debug.c       ****   pch=strchr(string,'\n');
+ 587              		.loc 1 171 0
  588 0008 0A21     		movs	r1, #10
  589 000a 7868     		ldr	r0, [r7, #4]
  590 000c FFF7FEFF 		bl	strchr
  591 0010 F860     		str	r0, [r7, #12]
- 178:debug.c       ****   while (pch!=NULL)
- 592              		.loc 1 178 0
+ 172:debug.c       ****   while (pch!=NULL)
+ 592              		.loc 1 172 0
  593 0012 0EE0     		b	.L28
  594              	.L29:
- 179:debug.c       ****   {
- 180:debug.c       ****     string[pch-string+1] = 0;
- 595              		.loc 1 180 0
+ 173:debug.c       ****   {
+ 174:debug.c       ****     string[pch-string+1] = 0;
+ 595              		.loc 1 174 0
  596 0014 FA68     		ldr	r2, [r7, #12]
  597 0016 7B68     		ldr	r3, [r7, #4]
  598 0018 D31A     		subs	r3, r2, r3
@@ -871,8 +865,8 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  601 001e 1344     		add	r3, r3, r2
  602 0020 0022     		movs	r2, #0
  603 0022 1A70     		strb	r2, [r3]
- 181:debug.c       ****     pch=strchr(pch+1,'s');
- 604              		.loc 1 181 0
+ 175:debug.c       ****     pch=strchr(pch+1,'s');
+ 604              		.loc 1 175 0
  605 0024 FB68     		ldr	r3, [r7, #12]
  606 0026 0133     		adds	r3, r3, #1
  607 0028 7321     		movs	r1, #115
@@ -880,14 +874,14 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  609 002c FFF7FEFF 		bl	strchr
  610 0030 F860     		str	r0, [r7, #12]
  611              	.L28:
- 178:debug.c       ****   while (pch!=NULL)
- 612              		.loc 1 178 0
+ 172:debug.c       ****   while (pch!=NULL)
+ 612              		.loc 1 172 0
  613 0032 FB68     		ldr	r3, [r7, #12]
  614 0034 002B     		cmp	r3, #0
  615 0036 EDD1     		bne	.L29
- 182:debug.c       ****   }
- 183:debug.c       **** }
- 616              		.loc 1 183 0
+ 176:debug.c       ****   }
+ 177:debug.c       **** }
+ 616              		.loc 1 177 0
  617 0038 00BF     		nop
  618 003a 1037     		adds	r7, r7, #16
  619              		.cfi_def_cfa_offset 8
@@ -898,22 +892,22 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  624              		.cfi_endproc
  625              	.LFE72:
  626              		.size	stripEscapeCharacters, .-stripEscapeCharacters
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 16
-
-
  627              		.section	.text.strextract,"ax",%progbits
  628              		.align	2
  629              		.global	strextract
  630              		.thumb
  631              		.thumb_func
  632              		.type	strextract, %function
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 16
+
+
  633              	strextract:
  634              	.LFB73:
- 184:debug.c       **** 
- 185:debug.c       **** // Extract
- 186:debug.c       **** char *strextract(const char input_str[], char output_str[],
- 187:debug.c       ****                  const char search_start[], const char search_end[]) {
- 635              		.loc 1 187 0
+ 178:debug.c       **** 
+ 179:debug.c       **** // Extract
+ 180:debug.c       **** char *strextract(const char input_str[], char output_str[],
+ 181:debug.c       ****                  const char search_start[], const char search_end[]) {
+ 635              		.loc 1 181 0
  636              		.cfi_startproc
  637              		@ args = 0, pretend = 0, frame = 24
  638              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -929,23 +923,23 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  648 0008 B960     		str	r1, [r7, #8]
  649 000a 7A60     		str	r2, [r7, #4]
  650 000c 3B60     		str	r3, [r7]
- 188:debug.c       ****     if (input_str == NULL) return NULL;
- 651              		.loc 1 188 0
+ 182:debug.c       ****     if (input_str == NULL) return NULL;
+ 651              		.loc 1 182 0
  652 000e FB68     		ldr	r3, [r7, #12]
  653 0010 002B     		cmp	r3, #0
  654 0012 01D1     		bne	.L31
- 655              		.loc 1 188 0 is_stmt 0 discriminator 1
+ 655              		.loc 1 182 0 is_stmt 0 discriminator 1
  656 0014 0023     		movs	r3, #0
  657 0016 29E0     		b	.L32
  658              	.L31:
- 189:debug.c       ****     char *begin, *end = NULL;
- 659              		.loc 1 189 0 is_stmt 1
+ 183:debug.c       ****     char *begin, *end = NULL;
+ 659              		.loc 1 183 0 is_stmt 1
  660 0018 0023     		movs	r3, #0
  661 001a 7B61     		str	r3, [r7, #20]
- 190:debug.c       **** 
- 191:debug.c       ****     // strstr(): char *strstr(const char *haystack, const char *needle). haystack - main C string t
- 192:debug.c       ****     if ((begin = strstr(input_str, search_start))) {
- 662              		.loc 1 192 0
+ 184:debug.c       **** 
+ 185:debug.c       ****     // strstr(): char *strstr(const char *haystack, const char *needle). haystack - main C string t
+ 186:debug.c       ****     if ((begin = strstr(input_str, search_start))) {
+ 662              		.loc 1 186 0
  663 001c 7968     		ldr	r1, [r7, #4]
  664 001e F868     		ldr	r0, [r7, #12]
  665 0020 FFF7FEFF 		bl	strstr
@@ -953,20 +947,20 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  667 0026 3B69     		ldr	r3, [r7, #16]
  668 0028 002B     		cmp	r3, #0
  669 002a 1ED0     		beq	.L33
- 193:debug.c       ****         // The strlen() function calculates the length of a given string. The strlen() function tak
- 194:debug.c       ****         begin += strlen(search_start);
- 670              		.loc 1 194 0
+ 187:debug.c       ****         // The strlen() function calculates the length of a given string. The strlen() function tak
+ 188:debug.c       ****         begin += strlen(search_start);
+ 670              		.loc 1 188 0
  671 002c 7868     		ldr	r0, [r7, #4]
  672 002e FFF7FEFF 		bl	strlen
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 17
-
-
  673 0032 0246     		mov	r2, r0
  674 0034 3B69     		ldr	r3, [r7, #16]
  675 0036 1344     		add	r3, r3, r2
  676 0038 3B61     		str	r3, [r7, #16]
- 195:debug.c       ****         if ((end = strstr(begin, search_end))) {
- 677              		.loc 1 195 0
+ 189:debug.c       ****         if ((end = strstr(begin, search_end))) {
+ 677              		.loc 1 189 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 17
+
+
  678 003a 3968     		ldr	r1, [r7]
  679 003c 3869     		ldr	r0, [r7, #16]
  680 003e FFF7FEFF 		bl	strstr
@@ -974,9 +968,9 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  682 0044 7B69     		ldr	r3, [r7, #20]
  683 0046 002B     		cmp	r3, #0
  684 0048 0FD0     		beq	.L33
- 196:debug.c       ****             // strncpy(: char *strncpy(char *dest, const char *src, size_t n). dest -  pointer to t
- 197:debug.c       ****             strncpy(output_str, begin, end - begin);
- 685              		.loc 1 197 0
+ 190:debug.c       ****             // strncpy(: char *strncpy(char *dest, const char *src, size_t n). dest -  pointer to t
+ 191:debug.c       ****             strncpy(output_str, begin, end - begin);
+ 685              		.loc 1 191 0
  686 004a 7A69     		ldr	r2, [r7, #20]
  687 004c 3B69     		ldr	r3, [r7, #16]
  688 004e D31A     		subs	r3, r2, r3
@@ -984,8 +978,8 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  690 0052 3969     		ldr	r1, [r7, #16]
  691 0054 B868     		ldr	r0, [r7, #8]
  692 0056 FFF7FEFF 		bl	strncpy
- 198:debug.c       ****             output_str[end - begin] = '\0';
- 693              		.loc 1 198 0
+ 192:debug.c       ****             output_str[end - begin] = '\0';
+ 693              		.loc 1 192 0
  694 005a 7A69     		ldr	r2, [r7, #20]
  695 005c 3B69     		ldr	r3, [r7, #16]
  696 005e D31A     		subs	r3, r2, r3
@@ -995,15 +989,15 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  700 0066 0022     		movs	r2, #0
  701 0068 1A70     		strb	r2, [r3]
  702              	.L33:
- 199:debug.c       ****         }
- 200:debug.c       ****     }
- 201:debug.c       **** 
- 202:debug.c       ****     return end;
- 703              		.loc 1 202 0
+ 193:debug.c       ****         }
+ 194:debug.c       ****     }
+ 195:debug.c       **** 
+ 196:debug.c       ****     return end;
+ 703              		.loc 1 196 0
  704 006a 7B69     		ldr	r3, [r7, #20]
  705              	.L32:
- 203:debug.c       **** }
- 706              		.loc 1 203 0
+ 197:debug.c       **** }
+ 706              		.loc 1 197 0
  707 006c 1846     		mov	r0, r3
  708 006e 1837     		adds	r7, r7, #24
  709              		.cfi_def_cfa_offset 8
@@ -1018,17 +1012,17 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  718              		.align	2
  719              		.global	printd
  720              		.thumb
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 18
-
-
  721              		.thumb_func
  722              		.type	printd, %function
  723              	printd:
  724              	.LFB74:
- 204:debug.c       **** 
- 205:debug.c       **** //out attempt at a safe (from buffer overflow) version of printf     
- 206:debug.c       **** void printd(char* format, ...){
- 725              		.loc 1 206 0
+ 198:debug.c       **** 
+ 199:debug.c       **** //out attempt at a safe (from buffer overflow) version of printf     
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 18
+
+
+ 200:debug.c       **** void printd(char* format, ...){
+ 725              		.loc 1 200 0
  726              		.cfi_startproc
  727              		@ args = 4, pretend = 16, frame = 2056
  728              		@ frame_needed = 1, uses_anonymous_args = 1
@@ -1046,47 +1040,47 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  740              		.cfi_def_cfa_offset 2080
  741 0008 00AF     		add	r7, sp, #0
  742              		.cfi_def_cfa_register 7
- 207:debug.c       ****     
- 208:debug.c       ****     va_list argptr; // Create variable argptr of data structure va_list
- 209:debug.c       ****     va_start(argptr, format); // void va_start(va_list ap, last_arg) initializes ap variable to be 
- 743              		.loc 1 209 0
+ 201:debug.c       ****     
+ 202:debug.c       ****     va_list argptr; // Create variable argptr of data structure va_list
+ 203:debug.c       ****     va_start(argptr, format); // void va_start(va_list ap, last_arg) initializes ap variable to be 
+ 743              		.loc 1 203 0
  744 000a 07F61403 		addw	r3, r7, #2068
  745 000e C7F80438 		str	r3, [r7, #2052]
- 210:debug.c       ****     
- 211:debug.c       ****     // Create character array debug_string of size MAX_DEBUG_STRING_LENGTH
- 212:debug.c       ****     char debug_string[MAX_DEBUG_STRING_LENGTH];
- 213:debug.c       ****     // The vsnprintf() used to write a formatted string to a string buffer.vsnprintf(debug_string,M
- 214:debug.c       ****     vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
- 746              		.loc 1 214 0
+ 204:debug.c       ****     
+ 205:debug.c       ****     // Create character array debug_string of size MAX_DEBUG_STRING_LENGTH
+ 206:debug.c       ****     char debug_string[MAX_DEBUG_STRING_LENGTH];
+ 207:debug.c       ****     // The vsnprintf() used to write a formatted string to a string buffer.vsnprintf(debug_string,M
+ 208:debug.c       ****     vsnprintf(debug_string,MAX_DEBUG_STRING_LENGTH,format, argptr);
+ 746              		.loc 1 208 0
  747 0012 381D     		adds	r0, r7, #4
  748 0014 D7F80438 		ldr	r3, [r7, #2052]
  749 0018 D7F81028 		ldr	r2, [r7, #2064]
  750 001c 4FF40061 		mov	r1, #2048
  751 0020 FFF7FEFF 		bl	vsnprintf
- 215:debug.c       ****     // Sends a NULL terminated string to the TX buffer for transmission.
- 216:debug.c       ****     Debug_UART_PutString(debug_string);
- 752              		.loc 1 216 0
+ 209:debug.c       ****     // Sends a NULL terminated string to the TX buffer for transmission.
+ 210:debug.c       ****     Debug_UART_PutString(debug_string);
+ 752              		.loc 1 210 0
  753 0024 3B1D     		adds	r3, r7, #4
  754 0026 1846     		mov	r0, r3
  755 0028 FFF7FEFF 		bl	Debug_UART_PutString
- 217:debug.c       ****     
- 218:debug.c       ****     va_end(argptr); // macro void va_end(va_list ap) allows a function with variable arguments whic
- 219:debug.c       ****     
- 220:debug.c       **** }
- 756              		.loc 1 220 0
+ 211:debug.c       ****     
+ 212:debug.c       ****     va_end(argptr); // macro void va_end(va_list ap) allows a function with variable arguments whic
+ 213:debug.c       ****     
+ 214:debug.c       **** }
+ 756              		.loc 1 214 0
  757 002c 00BF     		nop
  758 002e 07F60807 		addw	r7, r7, #2056
  759              		.cfi_def_cfa_offset 24
  760 0032 BD46     		mov	sp, r7
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 19
-
-
  761              		.cfi_def_cfa_register 13
  762              		@ sp needed
  763 0034 BDE88040 		pop	{r7, lr}
  764              		.cfi_restore 14
  765              		.cfi_restore 7
  766              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 19
+
+
  767 0038 04B0     		add	sp, sp, #16
  768              		.cfi_restore 3
  769              		.cfi_restore 2
@@ -1107,1497 +1101,1760 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 1
  784              		.file 7 "Generated_Source\\PSoC5/cytypes.h"
  785              		.file 8 "Generated_Source\\PSoC5/RTC.h"
  786              		.file 9 "testing.h"
- 787              		.file 10 "Generated_Source\\PSoC5/core_cm3.h"
- 788              		.file 11 "<built-in>"
- 789              		.section	.debug_info,"",%progbits
- 790              	.Ldebug_info0:
- 791 0000 D6040000 		.4byte	0x4d6
- 792 0004 0400     		.2byte	0x4
- 793 0006 00000000 		.4byte	.Ldebug_abbrev0
- 794 000a 04       		.byte	0x4
- 795 000b 01       		.uleb128 0x1
- 796 000c 66000000 		.4byte	.LASF70
- 797 0010 0C       		.byte	0xc
- 798 0011 42010000 		.4byte	.LASF71
- 799 0015 27020000 		.4byte	.LASF72
- 800 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 801 001d 00000000 		.4byte	0
- 802 0021 00000000 		.4byte	.Ldebug_line0
- 803 0025 02       		.uleb128 0x2
- 804 0026 01       		.byte	0x1
- 805 0027 06       		.byte	0x6
- 806 0028 DD010000 		.4byte	.LASF0
- 807 002c 02       		.uleb128 0x2
- 808 002d 01       		.byte	0x1
- 809 002e 08       		.byte	0x8
- 810 002f C5010000 		.4byte	.LASF1
- 811 0033 02       		.uleb128 0x2
- 812 0034 02       		.byte	0x2
- 813 0035 05       		.byte	0x5
- 814 0036 3D000000 		.4byte	.LASF2
- 815 003a 02       		.uleb128 0x2
- 816 003b 02       		.byte	0x2
- 817 003c 07       		.byte	0x7
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 20
+ 787              		.file 10 "modem.h"
+ 788              		.file 11 "Generated_Source\\PSoC5/core_cm3.h"
+ 789              		.file 12 "<built-in>"
+ 790              		.section	.debug_info,"",%progbits
+ 791              	.Ldebug_info0:
+ 792 0000 1A060000 		.4byte	0x61a
+ 793 0004 0400     		.2byte	0x4
+ 794 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 795 000a 04       		.byte	0x4
+ 796 000b 01       		.uleb128 0x1
+ 797 000c 71000000 		.4byte	.LASF91
+ 798 0010 0C       		.byte	0xc
+ 799 0011 54020000 		.4byte	.LASF92
+ 800 0015 A3020000 		.4byte	.LASF93
+ 801 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 802 001d 00000000 		.4byte	0
+ 803 0021 00000000 		.4byte	.Ldebug_line0
+ 804 0025 02       		.uleb128 0x2
+ 805 0026 01       		.byte	0x1
+ 806 0027 06       		.byte	0x6
+ 807 0028 5C020000 		.4byte	.LASF0
+ 808 002c 02       		.uleb128 0x2
+ 809 002d 01       		.byte	0x1
+ 810 002e 08       		.byte	0x8
+ 811 002f 2F020000 		.4byte	.LASF1
+ 812 0033 02       		.uleb128 0x2
+ 813 0034 02       		.byte	0x2
+ 814 0035 05       		.byte	0x5
+ 815 0036 4D000000 		.4byte	.LASF2
+ 816 003a 02       		.uleb128 0x2
+ 817 003b 02       		.byte	0x2
+ 818 003c 07       		.byte	0x7
+ 819 003d 12030000 		.4byte	.LASF3
+ 820 0041 03       		.uleb128 0x3
+ 821 0042 18040000 		.4byte	.LASF10
+ 822 0046 02       		.byte	0x2
+ 823 0047 3F       		.byte	0x3f
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 20
 
 
- 818 003d 6E020000 		.4byte	.LASF3
- 819 0041 03       		.uleb128 0x3
- 820 0042 2B030000 		.4byte	.LASF10
- 821 0046 02       		.byte	0x2
- 822 0047 3F       		.byte	0x3f
- 823 0048 4C000000 		.4byte	0x4c
- 824 004c 02       		.uleb128 0x2
- 825 004d 04       		.byte	0x4
- 826 004e 05       		.byte	0x5
- 827 004f 9B020000 		.4byte	.LASF4
- 828 0053 02       		.uleb128 0x2
- 829 0054 04       		.byte	0x4
- 830 0055 07       		.byte	0x7
- 831 0056 FF020000 		.4byte	.LASF5
- 832 005a 02       		.uleb128 0x2
- 833 005b 08       		.byte	0x8
- 834 005c 05       		.byte	0x5
- 835 005d FC000000 		.4byte	.LASF6
- 836 0061 02       		.uleb128 0x2
- 837 0062 08       		.byte	0x8
- 838 0063 07       		.byte	0x7
- 839 0064 F1010000 		.4byte	.LASF7
- 840 0068 04       		.uleb128 0x4
- 841 0069 04       		.byte	0x4
- 842 006a 05       		.byte	0x5
- 843 006b 696E7400 		.ascii	"int\000"
- 844 006f 02       		.uleb128 0x2
- 845 0070 04       		.byte	0x4
- 846 0071 07       		.byte	0x7
- 847 0072 0D020000 		.4byte	.LASF8
- 848 0076 02       		.uleb128 0x2
- 849 0077 08       		.byte	0x8
- 850 0078 04       		.byte	0x4
- 851 0079 B9010000 		.4byte	.LASF9
- 852 007d 03       		.uleb128 0x3
- 853 007e 3E030000 		.4byte	.LASF11
- 854 0082 03       		.byte	0x3
- 855 0083 28       		.byte	0x28
- 856 0084 88000000 		.4byte	0x88
- 857 0088 05       		.uleb128 0x5
- 858 0089 7D010000 		.4byte	.LASF16
- 859 008d 04       		.byte	0x4
- 860 008e 0B       		.byte	0xb
- 861 008f 00       		.byte	0
- 862 0090 9F000000 		.4byte	0x9f
- 863 0094 06       		.uleb128 0x6
- 864 0095 1A020000 		.4byte	.LASF73
- 865 0099 9F000000 		.4byte	0x9f
- 866 009d 00       		.byte	0
- 867 009e 00       		.byte	0
- 868 009f 07       		.uleb128 0x7
- 869 00a0 04       		.byte	0x4
- 870 00a1 02       		.uleb128 0x2
- 871 00a2 04       		.byte	0x4
- 872 00a3 07       		.byte	0x7
- 873 00a4 35030000 		.4byte	.LASF12
- 874 00a8 08       		.uleb128 0x8
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 21
+ 824 0048 4C000000 		.4byte	0x4c
+ 825 004c 02       		.uleb128 0x2
+ 826 004d 04       		.byte	0x4
+ 827 004e 05       		.byte	0x5
+ 828 004f C2010000 		.4byte	.LASF4
+ 829 0053 02       		.uleb128 0x2
+ 830 0054 04       		.byte	0x4
+ 831 0055 07       		.byte	0x7
+ 832 0056 DE030000 		.4byte	.LASF5
+ 833 005a 02       		.uleb128 0x2
+ 834 005b 08       		.byte	0x8
+ 835 005c 05       		.byte	0x5
+ 836 005d 07010000 		.4byte	.LASF6
+ 837 0061 02       		.uleb128 0x2
+ 838 0062 08       		.byte	0x8
+ 839 0063 07       		.byte	0x7
+ 840 0064 70020000 		.4byte	.LASF7
+ 841 0068 04       		.uleb128 0x4
+ 842 0069 04       		.byte	0x4
+ 843 006a 05       		.byte	0x5
+ 844 006b 696E7400 		.ascii	"int\000"
+ 845 006f 02       		.uleb128 0x2
+ 846 0070 04       		.byte	0x4
+ 847 0071 07       		.byte	0x7
+ 848 0072 8C020000 		.4byte	.LASF8
+ 849 0076 02       		.uleb128 0x2
+ 850 0077 08       		.byte	0x8
+ 851 0078 04       		.byte	0x4
+ 852 0079 0E020000 		.4byte	.LASF9
+ 853 007d 03       		.uleb128 0x3
+ 854 007e 22040000 		.4byte	.LASF11
+ 855 0082 03       		.byte	0x3
+ 856 0083 28       		.byte	0x28
+ 857 0084 88000000 		.4byte	0x88
+ 858 0088 05       		.uleb128 0x5
+ 859 0089 9F010000 		.4byte	.LASF16
+ 860 008d 04       		.byte	0x4
+ 861 008e 0C       		.byte	0xc
+ 862 008f 00       		.byte	0
+ 863 0090 9F000000 		.4byte	0x9f
+ 864 0094 06       		.uleb128 0x6
+ 865 0095 44030000 		.4byte	.LASF94
+ 866 0099 9F000000 		.4byte	0x9f
+ 867 009d 00       		.byte	0
+ 868 009e 00       		.byte	0
+ 869 009f 07       		.uleb128 0x7
+ 870 00a0 04       		.byte	0x4
+ 871 00a1 02       		.uleb128 0x2
+ 872 00a2 04       		.byte	0x4
+ 873 00a3 07       		.byte	0x7
+ 874 00a4 57000000 		.4byte	.LASF12
+ 875 00a8 08       		.uleb128 0x8
+ 876 00a9 04       		.byte	0x4
+ 877 00aa AE000000 		.4byte	0xae
+ 878 00ae 02       		.uleb128 0x2
+ 879 00af 01       		.byte	0x1
+ 880 00b0 08       		.byte	0x8
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 21
 
 
- 875 00a9 04       		.byte	0x4
- 876 00aa AE000000 		.4byte	0xae
- 877 00ae 02       		.uleb128 0x2
- 878 00af 01       		.byte	0x1
- 879 00b0 08       		.byte	0x8
- 880 00b1 8F020000 		.4byte	.LASF13
- 881 00b5 08       		.uleb128 0x8
- 882 00b6 04       		.byte	0x4
- 883 00b7 BB000000 		.4byte	0xbb
- 884 00bb 09       		.uleb128 0x9
- 885 00bc AE000000 		.4byte	0xae
- 886 00c0 03       		.uleb128 0x3
- 887 00c1 B4020000 		.4byte	.LASF14
- 888 00c5 04       		.byte	0x4
- 889 00c6 2C       		.byte	0x2c
- 890 00c7 41000000 		.4byte	0x41
- 891 00cb 03       		.uleb128 0x3
- 892 00cc 76010000 		.4byte	.LASF15
- 893 00d0 05       		.byte	0x5
- 894 00d1 28       		.byte	0x28
- 895 00d2 4C000000 		.4byte	0x4c
- 896 00d6 0A       		.uleb128 0xa
- 897 00d7 746D00   		.ascii	"tm\000"
- 898 00da 24       		.byte	0x24
- 899 00db 06       		.byte	0x6
- 900 00dc 21       		.byte	0x21
- 901 00dd 4E010000 		.4byte	0x14e
- 902 00e1 0B       		.uleb128 0xb
- 903 00e2 65030000 		.4byte	.LASF17
- 904 00e6 06       		.byte	0x6
- 905 00e7 23       		.byte	0x23
- 906 00e8 68000000 		.4byte	0x68
- 907 00ec 00       		.byte	0
- 908 00ed 0B       		.uleb128 0xb
- 909 00ee 5B010000 		.4byte	.LASF18
- 910 00f2 06       		.byte	0x6
- 911 00f3 24       		.byte	0x24
- 912 00f4 68000000 		.4byte	0x68
- 913 00f8 04       		.byte	0x4
- 914 00f9 0B       		.uleb128 0xb
- 915 00fa 09000000 		.4byte	.LASF19
- 916 00fe 06       		.byte	0x6
- 917 00ff 25       		.byte	0x25
- 918 0100 68000000 		.4byte	0x68
- 919 0104 08       		.byte	0x8
- 920 0105 0B       		.uleb128 0xb
- 921 0106 1F020000 		.4byte	.LASF20
- 922 010a 06       		.byte	0x6
- 923 010b 26       		.byte	0x26
- 924 010c 68000000 		.4byte	0x68
- 925 0110 0C       		.byte	0xc
- 926 0111 0B       		.uleb128 0xb
- 927 0112 68010000 		.4byte	.LASF21
- 928 0116 06       		.byte	0x6
- 929 0117 27       		.byte	0x27
- 930 0118 68000000 		.4byte	0x68
- 931 011c 10       		.byte	0x10
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 22
+ 881 00b1 A9010000 		.4byte	.LASF13
+ 882 00b5 08       		.uleb128 0x8
+ 883 00b6 04       		.byte	0x4
+ 884 00b7 BB000000 		.4byte	0xbb
+ 885 00bb 09       		.uleb128 0x9
+ 886 00bc AE000000 		.4byte	0xae
+ 887 00c0 03       		.uleb128 0x3
+ 888 00c1 78030000 		.4byte	.LASF14
+ 889 00c5 04       		.byte	0x4
+ 890 00c6 2C       		.byte	0x2c
+ 891 00c7 41000000 		.4byte	0x41
+ 892 00cb 03       		.uleb128 0x3
+ 893 00cc 3F010000 		.4byte	.LASF15
+ 894 00d0 05       		.byte	0x5
+ 895 00d1 28       		.byte	0x28
+ 896 00d2 4C000000 		.4byte	0x4c
+ 897 00d6 0A       		.uleb128 0xa
+ 898 00d7 746D00   		.ascii	"tm\000"
+ 899 00da 24       		.byte	0x24
+ 900 00db 06       		.byte	0x6
+ 901 00dc 21       		.byte	0x21
+ 902 00dd 4E010000 		.4byte	0x14e
+ 903 00e1 0B       		.uleb128 0xb
+ 904 00e2 49040000 		.4byte	.LASF17
+ 905 00e6 06       		.byte	0x6
+ 906 00e7 23       		.byte	0x23
+ 907 00e8 68000000 		.4byte	0x68
+ 908 00ec 00       		.byte	0
+ 909 00ed 0B       		.uleb128 0xb
+ 910 00ee C3030000 		.4byte	.LASF18
+ 911 00f2 06       		.byte	0x6
+ 912 00f3 24       		.byte	0x24
+ 913 00f4 68000000 		.4byte	0x68
+ 914 00f8 04       		.byte	0x4
+ 915 00f9 0B       		.uleb128 0xb
+ 916 00fa 6E010000 		.4byte	.LASF19
+ 917 00fe 06       		.byte	0x6
+ 918 00ff 25       		.byte	0x25
+ 919 0100 68000000 		.4byte	0x68
+ 920 0104 08       		.byte	0x8
+ 921 0105 0B       		.uleb128 0xb
+ 922 0106 19000000 		.4byte	.LASF20
+ 923 010a 06       		.byte	0x6
+ 924 010b 26       		.byte	0x26
+ 925 010c 68000000 		.4byte	0x68
+ 926 0110 0C       		.byte	0xc
+ 927 0111 0B       		.uleb128 0xb
+ 928 0112 86010000 		.4byte	.LASF21
+ 929 0116 06       		.byte	0x6
+ 930 0117 27       		.byte	0x27
+ 931 0118 68000000 		.4byte	0x68
+ 932 011c 10       		.byte	0x10
+ 933 011d 0B       		.uleb128 0xb
+ 934 011e 68020000 		.4byte	.LASF22
+ 935 0122 06       		.byte	0x6
+ 936 0123 28       		.byte	0x28
+ 937 0124 68000000 		.4byte	0x68
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 22
 
 
- 932 011d 0B       		.uleb128 0xb
- 933 011e E9010000 		.4byte	.LASF22
- 934 0122 06       		.byte	0x6
- 935 0123 28       		.byte	0x28
- 936 0124 68000000 		.4byte	0x68
- 937 0128 14       		.byte	0x14
- 938 0129 0B       		.uleb128 0xb
- 939 012a F4000000 		.4byte	.LASF23
- 940 012e 06       		.byte	0x6
- 941 012f 29       		.byte	0x29
- 942 0130 68000000 		.4byte	0x68
- 943 0134 18       		.byte	0x18
- 944 0135 0B       		.uleb128 0xb
- 945 0136 C9020000 		.4byte	.LASF24
- 946 013a 06       		.byte	0x6
- 947 013b 2A       		.byte	0x2a
- 948 013c 68000000 		.4byte	0x68
- 949 0140 1C       		.byte	0x1c
- 950 0141 0B       		.uleb128 0xb
- 951 0142 EB020000 		.4byte	.LASF25
- 952 0146 06       		.byte	0x6
- 953 0147 2B       		.byte	0x2b
- 954 0148 68000000 		.4byte	0x68
- 955 014c 20       		.byte	0x20
- 956 014d 00       		.byte	0
- 957 014e 0C       		.uleb128 0xc
- 958 014f 4A010000 		.4byte	.LASF26
- 959 0153 07       		.byte	0x7
- 960 0154 9201     		.2byte	0x192
- 961 0156 2C000000 		.4byte	0x2c
- 962 015a 0C       		.uleb128 0xc
- 963 015b 33010000 		.4byte	.LASF27
- 964 015f 07       		.byte	0x7
- 965 0160 9301     		.2byte	0x193
- 966 0162 3A000000 		.4byte	0x3a
- 967 0166 02       		.uleb128 0x2
- 968 0167 04       		.byte	0x4
- 969 0168 04       		.byte	0x4
- 970 0169 62010000 		.4byte	.LASF28
- 971 016d 02       		.uleb128 0x2
- 972 016e 08       		.byte	0x8
- 973 016f 04       		.byte	0x4
- 974 0170 11030000 		.4byte	.LASF29
- 975 0174 0D       		.uleb128 0xd
- 976 0175 0C       		.byte	0xc
- 977 0176 08       		.byte	0x8
- 978 0177 30       		.byte	0x30
- 979 0178 DD010000 		.4byte	0x1dd
- 980 017c 0E       		.uleb128 0xe
- 981 017d 53656300 		.ascii	"Sec\000"
- 982 0181 08       		.byte	0x8
- 983 0182 32       		.byte	0x32
- 984 0183 4E010000 		.4byte	0x14e
- 985 0187 00       		.byte	0
+ 938 0128 14       		.byte	0x14
+ 939 0129 0B       		.uleb128 0xb
+ 940 012a FF000000 		.4byte	.LASF23
+ 941 012e 06       		.byte	0x6
+ 942 012f 29       		.byte	0x29
+ 943 0130 68000000 		.4byte	0x68
+ 944 0134 18       		.byte	0x18
+ 945 0135 0B       		.uleb128 0xb
+ 946 0136 F0030000 		.4byte	.LASF24
+ 947 013a 06       		.byte	0x6
+ 948 013b 2A       		.byte	0x2a
+ 949 013c 68000000 		.4byte	0x68
+ 950 0140 1C       		.byte	0x1c
+ 951 0141 0B       		.uleb128 0xb
+ 952 0142 CA030000 		.4byte	.LASF25
+ 953 0146 06       		.byte	0x6
+ 954 0147 2B       		.byte	0x2b
+ 955 0148 68000000 		.4byte	0x68
+ 956 014c 20       		.byte	0x20
+ 957 014d 00       		.byte	0
+ 958 014e 0C       		.uleb128 0xc
+ 959 014f 4E010000 		.4byte	.LASF26
+ 960 0153 07       		.byte	0x7
+ 961 0154 9201     		.2byte	0x192
+ 962 0156 2C000000 		.4byte	0x2c
+ 963 015a 0C       		.uleb128 0xc
+ 964 015b 38010000 		.4byte	.LASF27
+ 965 015f 07       		.byte	0x7
+ 966 0160 9301     		.2byte	0x193
+ 967 0162 3A000000 		.4byte	0x3a
+ 968 0166 0C       		.uleb128 0xc
+ 969 0167 F8030000 		.4byte	.LASF28
+ 970 016b 07       		.byte	0x7
+ 971 016c 9701     		.2byte	0x197
+ 972 016e 4C000000 		.4byte	0x4c
+ 973 0172 02       		.uleb128 0x2
+ 974 0173 04       		.byte	0x4
+ 975 0174 04       		.byte	0x4
+ 976 0175 76010000 		.4byte	.LASF29
+ 977 0179 02       		.uleb128 0x2
+ 978 017a 08       		.byte	0x8
+ 979 017b 04       		.byte	0x4
+ 980 017c FE030000 		.4byte	.LASF30
+ 981 0180 0D       		.uleb128 0xd
+ 982 0181 0C       		.byte	0xc
+ 983 0182 08       		.byte	0x8
+ 984 0183 30       		.byte	0x30
+ 985 0184 E9010000 		.4byte	0x1e9
  986 0188 0E       		.uleb128 0xe
- 987 0189 4D696E00 		.ascii	"Min\000"
+ 987 0189 53656300 		.ascii	"Sec\000"
  988 018d 08       		.byte	0x8
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 23
-
-
- 989 018e 33       		.byte	0x33
+ 989 018e 32       		.byte	0x32
  990 018f 4E010000 		.4byte	0x14e
- 991 0193 01       		.byte	0x1
- 992 0194 0B       		.uleb128 0xb
- 993 0195 1E010000 		.4byte	.LASF30
+ 991 0193 00       		.byte	0
+ 992 0194 0E       		.uleb128 0xe
+ 993 0195 4D696E00 		.ascii	"Min\000"
  994 0199 08       		.byte	0x8
- 995 019a 34       		.byte	0x34
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 23
+
+
+ 995 019a 33       		.byte	0x33
  996 019b 4E010000 		.4byte	0x14e
- 997 019f 02       		.byte	0x2
+ 997 019f 01       		.byte	0x1
  998 01a0 0B       		.uleb128 0xb
- 999 01a1 D3010000 		.4byte	.LASF31
+ 999 01a1 29010000 		.4byte	.LASF31
  1000 01a5 08       		.byte	0x8
- 1001 01a6 35       		.byte	0x35
+ 1001 01a6 34       		.byte	0x34
  1002 01a7 4E010000 		.4byte	0x14e
- 1003 01ab 03       		.byte	0x3
+ 1003 01ab 02       		.byte	0x2
  1004 01ac 0B       		.uleb128 0xb
- 1005 01ad 28010000 		.4byte	.LASF32
+ 1005 01ad 7C010000 		.4byte	.LASF32
  1006 01b1 08       		.byte	0x8
- 1007 01b2 36       		.byte	0x36
+ 1007 01b2 35       		.byte	0x35
  1008 01b3 4E010000 		.4byte	0x14e
- 1009 01b7 04       		.byte	0x4
+ 1009 01b7 03       		.byte	0x3
  1010 01b8 0B       		.uleb128 0xb
- 1011 01b9 8F030000 		.4byte	.LASF33
+ 1011 01b9 B8030000 		.4byte	.LASF33
  1012 01bd 08       		.byte	0x8
- 1013 01be 37       		.byte	0x37
- 1014 01bf 5A010000 		.4byte	0x15a
- 1015 01c3 06       		.byte	0x6
+ 1013 01be 36       		.byte	0x36
+ 1014 01bf 4E010000 		.4byte	0x14e
+ 1015 01c3 04       		.byte	0x4
  1016 01c4 0B       		.uleb128 0xb
- 1017 01c5 B3010000 		.4byte	.LASF34
+ 1017 01c5 86040000 		.4byte	.LASF34
  1018 01c9 08       		.byte	0x8
- 1019 01ca 38       		.byte	0x38
- 1020 01cb 4E010000 		.4byte	0x14e
- 1021 01cf 08       		.byte	0x8
+ 1019 01ca 37       		.byte	0x37
+ 1020 01cb 5A010000 		.4byte	0x15a
+ 1021 01cf 06       		.byte	0x6
  1022 01d0 0B       		.uleb128 0xb
- 1023 01d1 AE010000 		.4byte	.LASF35
+ 1023 01d1 08020000 		.4byte	.LASF35
  1024 01d5 08       		.byte	0x8
- 1025 01d6 39       		.byte	0x39
- 1026 01d7 5A010000 		.4byte	0x15a
- 1027 01db 0A       		.byte	0xa
- 1028 01dc 00       		.byte	0
- 1029 01dd 03       		.uleb128 0x3
- 1030 01de 47000000 		.4byte	.LASF36
- 1031 01e2 08       		.byte	0x8
- 1032 01e3 3A       		.byte	0x3a
- 1033 01e4 E8010000 		.4byte	0x1e8
- 1034 01e8 0F       		.uleb128 0xf
- 1035 01e9 74010000 		.4byte	0x174
- 1036 01ed 10       		.uleb128 0x10
- 1037 01ee 8101     		.2byte	0x181
- 1038 01f0 09       		.byte	0x9
- 1039 01f1 0A       		.byte	0xa
- 1040 01f2 1B020000 		.4byte	0x21b
- 1041 01f6 0B       		.uleb128 0xb
- 1042 01f7 1D000000 		.4byte	.LASF37
- 1043 01fb 09       		.byte	0x9
- 1044 01fc 0C       		.byte	0xc
- 1045 01fd 1B020000 		.4byte	0x21b
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 24
-
-
- 1046 0201 00       		.byte	0
+ 1025 01d6 38       		.byte	0x38
+ 1026 01d7 4E010000 		.4byte	0x14e
+ 1027 01db 08       		.byte	0x8
+ 1028 01dc 0B       		.uleb128 0xb
+ 1029 01dd EA010000 		.4byte	.LASF36
+ 1030 01e1 08       		.byte	0x8
+ 1031 01e2 39       		.byte	0x39
+ 1032 01e3 5A010000 		.4byte	0x15a
+ 1033 01e7 0A       		.byte	0xa
+ 1034 01e8 00       		.byte	0
+ 1035 01e9 03       		.uleb128 0x3
+ 1036 01ea 5D040000 		.4byte	.LASF37
+ 1037 01ee 08       		.byte	0x8
+ 1038 01ef 3A       		.byte	0x3a
+ 1039 01f0 F4010000 		.4byte	0x1f4
+ 1040 01f4 0F       		.uleb128 0xf
+ 1041 01f5 80010000 		.4byte	0x180
+ 1042 01f9 10       		.uleb128 0x10
+ 1043 01fa 8101     		.2byte	0x181
+ 1044 01fc 09       		.byte	0x9
+ 1045 01fd 0A       		.byte	0xa
+ 1046 01fe 27020000 		.4byte	0x227
  1047 0202 0B       		.uleb128 0xb
- 1048 0203 81020000 		.4byte	.LASF38
+ 1048 0203 2D000000 		.4byte	.LASF38
  1049 0207 09       		.byte	0x9
- 1050 0208 0D       		.byte	0xd
- 1051 0209 4E010000 		.4byte	0x14e
- 1052 020d 80       		.byte	0x80
+ 1050 0208 0C       		.byte	0xc
+ 1051 0209 27020000 		.4byte	0x227
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 24
+
+
+ 1052 020d 00       		.byte	0
  1053 020e 0B       		.uleb128 0xb
- 1054 020f 87010000 		.4byte	.LASF39
+ 1054 020f 3D030000 		.4byte	.LASF39
  1055 0213 09       		.byte	0x9
- 1056 0214 0F       		.byte	0xf
- 1057 0215 2B020000 		.4byte	0x22b
- 1058 0219 81       		.byte	0x81
- 1059 021a 00       		.byte	0
- 1060 021b 11       		.uleb128 0x11
- 1061 021c AE000000 		.4byte	0xae
- 1062 0220 2B020000 		.4byte	0x22b
- 1063 0224 12       		.uleb128 0x12
- 1064 0225 A1000000 		.4byte	0xa1
- 1065 0229 7F       		.byte	0x7f
- 1066 022a 00       		.byte	0
- 1067 022b 11       		.uleb128 0x11
- 1068 022c AE000000 		.4byte	0xae
- 1069 0230 3B020000 		.4byte	0x23b
- 1070 0234 12       		.uleb128 0x12
- 1071 0235 A1000000 		.4byte	0xa1
- 1072 0239 FF       		.byte	0xff
- 1073 023a 00       		.byte	0
- 1074 023b 03       		.uleb128 0x3
- 1075 023c 94020000 		.4byte	.LASF40
- 1076 0240 09       		.byte	0x9
- 1077 0241 10       		.byte	0x10
- 1078 0242 ED010000 		.4byte	0x1ed
- 1079 0246 03       		.uleb128 0x3
- 1080 0247 3A010000 		.4byte	.LASF41
- 1081 024b 03       		.byte	0x3
- 1082 024c 62       		.byte	0x62
- 1083 024d 7D000000 		.4byte	0x7d
- 1084 0251 13       		.uleb128 0x13
- 1085 0252 31000000 		.4byte	.LASF42
- 1086 0256 01       		.byte	0x1
- 1087 0257 0D       		.byte	0xd
- 1088 0258 00000000 		.4byte	.LFB64
- 1089 025c 0C000000 		.4byte	.LFE64-.LFB64
- 1090 0260 01       		.uleb128 0x1
- 1091 0261 9C       		.byte	0x9c
- 1092 0262 13       		.uleb128 0x13
- 1093 0263 F4020000 		.4byte	.LASF43
- 1094 0267 01       		.byte	0x1
- 1095 0268 17       		.byte	0x17
- 1096 0269 00000000 		.4byte	.LFB65
- 1097 026d 0C000000 		.4byte	.LFE65-.LFB65
- 1098 0271 01       		.uleb128 0x1
- 1099 0272 9C       		.byte	0x9c
- 1100 0273 13       		.uleb128 0x13
- 1101 0274 11000000 		.4byte	.LASF44
- 1102 0278 01       		.byte	0x1
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 25
+ 1056 0214 0D       		.byte	0xd
+ 1057 0215 4E010000 		.4byte	0x14e
+ 1058 0219 80       		.byte	0x80
+ 1059 021a 0B       		.uleb128 0xb
+ 1060 021b BB010000 		.4byte	.LASF40
+ 1061 021f 09       		.byte	0x9
+ 1062 0220 0F       		.byte	0xf
+ 1063 0221 37020000 		.4byte	0x237
+ 1064 0225 81       		.byte	0x81
+ 1065 0226 00       		.byte	0
+ 1066 0227 11       		.uleb128 0x11
+ 1067 0228 AE000000 		.4byte	0xae
+ 1068 022c 37020000 		.4byte	0x237
+ 1069 0230 12       		.uleb128 0x12
+ 1070 0231 A1000000 		.4byte	0xa1
+ 1071 0235 7F       		.byte	0x7f
+ 1072 0236 00       		.byte	0
+ 1073 0237 11       		.uleb128 0x11
+ 1074 0238 AE000000 		.4byte	0xae
+ 1075 023c 47020000 		.4byte	0x247
+ 1076 0240 12       		.uleb128 0x12
+ 1077 0241 A1000000 		.4byte	0xa1
+ 1078 0245 FF       		.byte	0xff
+ 1079 0246 00       		.byte	0
+ 1080 0247 03       		.uleb128 0x3
+ 1081 0248 5C030000 		.4byte	.LASF41
+ 1082 024c 09       		.byte	0x9
+ 1083 024d 10       		.byte	0x10
+ 1084 024e F9010000 		.4byte	0x1f9
+ 1085 0252 0D       		.uleb128 0xd
+ 1086 0253 3C       		.byte	0x3c
+ 1087 0254 0A       		.byte	0xa
+ 1088 0255 2E       		.byte	0x2e
+ 1089 0256 7F020000 		.4byte	0x27f
+ 1090 025a 0B       		.uleb128 0xb
+ 1091 025b 12000000 		.4byte	.LASF42
+ 1092 025f 0A       		.byte	0xa
+ 1093 0260 2F       		.byte	0x2f
+ 1094 0261 7F020000 		.4byte	0x27f
+ 1095 0265 00       		.byte	0
+ 1096 0266 0B       		.uleb128 0xb
+ 1097 0267 00000000 		.4byte	.LASF43
+ 1098 026b 0A       		.byte	0xa
+ 1099 026c 30       		.byte	0x30
+ 1100 026d 7F020000 		.4byte	0x27f
+ 1101 0271 14       		.byte	0x14
+ 1102 0272 0B       		.uleb128 0xb
+ 1103 0273 63030000 		.4byte	.LASF44
+ 1104 0277 0A       		.byte	0xa
+ 1105 0278 31       		.byte	0x31
+ 1106 0279 7F020000 		.4byte	0x27f
+ 1107 027d 28       		.byte	0x28
+ 1108 027e 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 25
 
 
- 1103 0279 1F       		.byte	0x1f
- 1104 027a 00000000 		.4byte	.LFB66
- 1105 027e 20000000 		.4byte	.LFE66-.LFB66
- 1106 0282 01       		.uleb128 0x1
- 1107 0283 9C       		.byte	0x9c
- 1108 0284 13       		.uleb128 0x13
- 1109 0285 4D030000 		.4byte	.LASF45
- 1110 0289 01       		.byte	0x1
- 1111 028a 30       		.byte	0x30
- 1112 028b 00000000 		.4byte	.LFB67
- 1113 028f 0C000000 		.4byte	.LFE67-.LFB67
- 1114 0293 01       		.uleb128 0x1
- 1115 0294 9C       		.byte	0x9c
- 1116 0295 14       		.uleb128 0x14
- 1117 0296 0A010000 		.4byte	.LASF59
- 1118 029a 01       		.byte	0x1
- 1119 029b 42       		.byte	0x42
- 1120 029c 68000000 		.4byte	0x68
- 1121 02a0 00000000 		.4byte	.LFB68
- 1122 02a4 38000000 		.4byte	.LFE68-.LFB68
- 1123 02a8 01       		.uleb128 0x1
- 1124 02a9 9C       		.byte	0x9c
- 1125 02aa E5020000 		.4byte	0x2e5
- 1126 02ae 15       		.uleb128 0x15
- 1127 02af 23010000 		.4byte	.LASF46
- 1128 02b3 01       		.byte	0x1
- 1129 02b4 42       		.byte	0x42
- 1130 02b5 68000000 		.4byte	0x68
- 1131 02b9 02       		.uleb128 0x2
- 1132 02ba 91       		.byte	0x91
- 1133 02bb 6C       		.sleb128 -20
- 1134 02bc 16       		.uleb128 0x16
- 1135 02bd 70747200 		.ascii	"ptr\000"
- 1136 02c1 01       		.byte	0x1
- 1137 02c2 42       		.byte	0x42
- 1138 02c3 A8000000 		.4byte	0xa8
- 1139 02c7 02       		.uleb128 0x2
- 1140 02c8 91       		.byte	0x91
- 1141 02c9 68       		.sleb128 -24
- 1142 02ca 16       		.uleb128 0x16
- 1143 02cb 6C656E00 		.ascii	"len\000"
- 1144 02cf 01       		.byte	0x1
- 1145 02d0 42       		.byte	0x42
- 1146 02d1 68000000 		.4byte	0x68
- 1147 02d5 02       		.uleb128 0x2
- 1148 02d6 91       		.byte	0x91
- 1149 02d7 64       		.sleb128 -28
- 1150 02d8 17       		.uleb128 0x17
- 1151 02d9 6900     		.ascii	"i\000"
- 1152 02db 01       		.byte	0x1
- 1153 02dc 44       		.byte	0x44
- 1154 02dd 68000000 		.4byte	0x68
- 1155 02e1 02       		.uleb128 0x2
- 1156 02e2 91       		.byte	0x91
- 1157 02e3 74       		.sleb128 -12
- 1158 02e4 00       		.byte	0
- 1159 02e5 18       		.uleb128 0x18
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 26
+ 1109 027f 11       		.uleb128 0x11
+ 1110 0280 AE000000 		.4byte	0xae
+ 1111 0284 8F020000 		.4byte	0x28f
+ 1112 0288 12       		.uleb128 0x12
+ 1113 0289 A1000000 		.4byte	0xa1
+ 1114 028d 13       		.byte	0x13
+ 1115 028e 00       		.byte	0
+ 1116 028f 03       		.uleb128 0x3
+ 1117 0290 AE010000 		.4byte	.LASF45
+ 1118 0294 0A       		.byte	0xa
+ 1119 0295 32       		.byte	0x32
+ 1120 0296 52020000 		.4byte	0x252
+ 1121 029a 0D       		.uleb128 0xd
+ 1122 029b 10       		.byte	0x10
+ 1123 029c 0A       		.byte	0xa
+ 1124 029d 34       		.byte	0x34
+ 1125 029e 03030000 		.4byte	0x303
+ 1126 02a2 0B       		.uleb128 0xb
+ 1127 02a3 6B040000 		.4byte	.LASF46
+ 1128 02a7 0A       		.byte	0xa
+ 1129 02a8 35       		.byte	0x35
+ 1130 02a9 4E010000 		.4byte	0x14e
+ 1131 02ad 00       		.byte	0
+ 1132 02ae 0E       		.uleb128 0xe
+ 1133 02af 62657200 		.ascii	"ber\000"
+ 1134 02b3 0A       		.byte	0xa
+ 1135 02b4 36       		.byte	0x36
+ 1136 02b5 4E010000 		.4byte	0x14e
+ 1137 02b9 01       		.byte	0x1
+ 1138 02ba 0B       		.uleb128 0xb
+ 1139 02bb 5F010000 		.4byte	.LASF47
+ 1140 02bf 0A       		.byte	0xa
+ 1141 02c0 37       		.byte	0x37
+ 1142 02c1 4E010000 		.4byte	0x14e
+ 1143 02c5 02       		.byte	0x2
+ 1144 02c6 0B       		.uleb128 0xb
+ 1145 02c7 33010000 		.4byte	.LASF48
+ 1146 02cb 0A       		.byte	0xa
+ 1147 02cc 38       		.byte	0x38
+ 1148 02cd 4E010000 		.4byte	0x14e
+ 1149 02d1 03       		.byte	0x3
+ 1150 02d2 0B       		.uleb128 0xb
+ 1151 02d3 69010000 		.4byte	.LASF49
+ 1152 02d7 0A       		.byte	0xa
+ 1153 02d8 39       		.byte	0x39
+ 1154 02d9 4E010000 		.4byte	0x14e
+ 1155 02dd 04       		.byte	0x4
+ 1156 02de 0B       		.uleb128 0xb
+ 1157 02df 64010000 		.4byte	.LASF50
+ 1158 02e3 0A       		.byte	0xa
+ 1159 02e4 3A       		.byte	0x3a
+ 1160 02e5 4E010000 		.4byte	0x14e
+ 1161 02e9 05       		.byte	0x5
+ 1162 02ea 0B       		.uleb128 0xb
+ 1163 02eb 25030000 		.4byte	.LASF51
+ 1164 02ef 0A       		.byte	0xa
+ 1165 02f0 3B       		.byte	0x3b
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 26
 
 
- 1160 02e6 5A030000 		.4byte	.LASF51
- 1161 02ea 01       		.byte	0x1
- 1162 02eb 55       		.byte	0x55
- 1163 02ec 00000000 		.4byte	.LFB69
- 1164 02f0 08010000 		.4byte	.LFE69-.LFB69
- 1165 02f4 01       		.uleb128 0x1
- 1166 02f5 9C       		.byte	0x9c
- 1167 02f6 37030000 		.4byte	0x337
- 1168 02fa 15       		.uleb128 0x15
- 1169 02fb 08020000 		.4byte	.LASF47
- 1170 02ff 01       		.byte	0x1
- 1171 0300 55       		.byte	0x55
- 1172 0301 4E010000 		.4byte	0x14e
- 1173 0305 03       		.uleb128 0x3
- 1174 0306 91       		.byte	0x91
- 1175 0307 DF6F     		.sleb128 -2081
- 1176 0309 15       		.uleb128 0x15
- 1177 030a 6F010000 		.4byte	.LASF48
- 1178 030e 01       		.byte	0x1
- 1179 030f 55       		.byte	0x55
- 1180 0310 A8000000 		.4byte	0xa8
- 1181 0314 02       		.uleb128 0x2
- 1182 0315 91       		.byte	0x91
- 1183 0316 74       		.sleb128 -12
- 1184 0317 19       		.uleb128 0x19
- 1185 0318 1A       		.uleb128 0x1a
- 1186 0319 BC020000 		.4byte	.LASF49
- 1187 031d 01       		.byte	0x1
- 1188 031e 57       		.byte	0x57
- 1189 031f 37030000 		.4byte	0x337
- 1190 0323 03       		.uleb128 0x3
- 1191 0324 91       		.byte	0x91
- 1192 0325 E86F     		.sleb128 -2072
- 1193 0327 1A       		.uleb128 0x1a
- 1194 0328 18030000 		.4byte	.LASF50
- 1195 032c 01       		.byte	0x1
- 1196 032d 74       		.byte	0x74
- 1197 032e 46020000 		.4byte	0x246
- 1198 0332 03       		.uleb128 0x3
- 1199 0333 91       		.byte	0x91
- 1200 0334 E46F     		.sleb128 -2076
- 1201 0336 00       		.byte	0
- 1202 0337 11       		.uleb128 0x11
- 1203 0338 AE000000 		.4byte	0xae
- 1204 033c 48030000 		.4byte	0x348
- 1205 0340 1B       		.uleb128 0x1b
- 1206 0341 A1000000 		.4byte	0xa1
- 1207 0345 FF07     		.2byte	0x7ff
- 1208 0347 00       		.byte	0
- 1209 0348 18       		.uleb128 0x18
- 1210 0349 A4020000 		.4byte	.LASF52
- 1211 034d 01       		.byte	0x1
- 1212 034e 80       		.byte	0x80
- 1213 034f 00000000 		.4byte	.LFB70
- 1214 0353 78000000 		.4byte	.LFE70-.LFB70
- 1215 0357 01       		.uleb128 0x1
- 1216 0358 9C       		.byte	0x9c
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 27
+ 1166 02f1 68000000 		.4byte	0x68
+ 1167 02f5 08       		.byte	0x8
+ 1168 02f6 0B       		.uleb128 0xb
+ 1169 02f7 49030000 		.4byte	.LASF52
+ 1170 02fb 0A       		.byte	0xa
+ 1171 02fc 3C       		.byte	0x3c
+ 1172 02fd 68000000 		.4byte	0x68
+ 1173 0301 0C       		.byte	0xc
+ 1174 0302 00       		.byte	0
+ 1175 0303 03       		.uleb128 0x3
+ 1176 0304 8D030000 		.4byte	.LASF53
+ 1177 0308 0A       		.byte	0xa
+ 1178 0309 3D       		.byte	0x3d
+ 1179 030a 9A020000 		.4byte	0x29a
+ 1180 030e 0D       		.uleb128 0xd
+ 1181 030f 03       		.byte	0x3
+ 1182 0310 0A       		.byte	0xa
+ 1183 0311 49       		.byte	0x49
+ 1184 0312 3B030000 		.4byte	0x33b
+ 1185 0316 0B       		.uleb128 0xb
+ 1186 0317 FB010000 		.4byte	.LASF54
+ 1187 031b 0A       		.byte	0xa
+ 1188 031c 4C       		.byte	0x4c
+ 1189 031d 4E010000 		.4byte	0x14e
+ 1190 0321 00       		.byte	0
+ 1191 0322 0B       		.uleb128 0xb
+ 1192 0323 99020000 		.4byte	.LASF55
+ 1193 0327 0A       		.byte	0xa
+ 1194 0328 4E       		.byte	0x4e
+ 1195 0329 4E010000 		.4byte	0x14e
+ 1196 032d 01       		.byte	0x1
+ 1197 032e 0B       		.uleb128 0xb
+ 1198 032f 0C040000 		.4byte	.LASF56
+ 1199 0333 0A       		.byte	0xa
+ 1200 0334 51       		.byte	0x51
+ 1201 0335 4E010000 		.4byte	0x14e
+ 1202 0339 02       		.byte	0x2
+ 1203 033a 00       		.byte	0
+ 1204 033b 03       		.uleb128 0x3
+ 1205 033c FB020000 		.4byte	.LASF57
+ 1206 0340 0A       		.byte	0xa
+ 1207 0341 52       		.byte	0x52
+ 1208 0342 0E030000 		.4byte	0x30e
+ 1209 0346 03       		.uleb128 0x3
+ 1210 0347 46010000 		.4byte	.LASF58
+ 1211 034b 03       		.byte	0x3
+ 1212 034c 62       		.byte	0x62
+ 1213 034d 7D000000 		.4byte	0x7d
+ 1214 0351 13       		.uleb128 0x13
+ 1215 0352 41000000 		.4byte	.LASF59
+ 1216 0356 01       		.byte	0x1
+ 1217 0357 07       		.byte	0x7
+ 1218 0358 00000000 		.4byte	.LFB64
+ 1219 035c 0C000000 		.4byte	.LFE64-.LFB64
+ 1220 0360 01       		.uleb128 0x1
+ 1221 0361 9C       		.byte	0x9c
+ 1222 0362 13       		.uleb128 0x13
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 27
 
 
- 1217 0359 6C030000 		.4byte	0x36c
- 1218 035d 15       		.uleb128 0x15
- 1219 035e DB020000 		.4byte	.LASF53
- 1220 0362 01       		.byte	0x1
- 1221 0363 80       		.byte	0x80
- 1222 0364 3B020000 		.4byte	0x23b
- 1223 0368 02       		.uleb128 0x2
- 1224 0369 91       		.byte	0x91
- 1225 036a 70       		.sleb128 -16
- 1226 036b 00       		.byte	0
- 1227 036c 1C       		.uleb128 0x1c
- 1228 036d 11010000 		.4byte	.LASF54
- 1229 0371 01       		.byte	0x1
- 1230 0372 93       		.byte	0x93
- 1231 0373 4C000000 		.4byte	0x4c
- 1232 0377 00000000 		.4byte	.LFB71
- 1233 037b 58000000 		.4byte	.LFE71-.LFB71
- 1234 037f 01       		.uleb128 0x1
- 1235 0380 9C       		.byte	0x9c
- 1236 0381 AE030000 		.4byte	0x3ae
- 1237 0385 1A       		.uleb128 0x1a
- 1238 0386 D1020000 		.4byte	.LASF55
- 1239 038a 01       		.byte	0x1
- 1240 038b 96       		.byte	0x96
- 1241 038c AE030000 		.4byte	0x3ae
- 1242 0390 02       		.uleb128 0x2
- 1243 0391 91       		.byte	0x91
- 1244 0392 74       		.sleb128 -12
- 1245 0393 17       		.uleb128 0x17
- 1246 0394 7400     		.ascii	"t\000"
- 1247 0396 01       		.byte	0x1
- 1248 0397 98       		.byte	0x98
- 1249 0398 D6000000 		.4byte	0xd6
- 1250 039c 02       		.uleb128 0x2
- 1251 039d 91       		.byte	0x91
- 1252 039e 4C       		.sleb128 -52
- 1253 039f 1A       		.uleb128 0x1a
- 1254 03a0 00000000 		.4byte	.LASF56
- 1255 03a4 01       		.byte	0x1
- 1256 03a5 99       		.byte	0x99
- 1257 03a6 CB000000 		.4byte	0xcb
- 1258 03aa 02       		.uleb128 0x2
- 1259 03ab 91       		.byte	0x91
- 1260 03ac 70       		.sleb128 -16
- 1261 03ad 00       		.byte	0
- 1262 03ae 08       		.uleb128 0x8
- 1263 03af 04       		.byte	0x4
- 1264 03b0 DD010000 		.4byte	0x1dd
- 1265 03b4 18       		.uleb128 0x18
- 1266 03b5 79030000 		.4byte	.LASF57
- 1267 03b9 01       		.byte	0x1
- 1268 03ba AE       		.byte	0xae
- 1269 03bb 00000000 		.4byte	.LFB72
- 1270 03bf 40000000 		.4byte	.LFE72-.LFB72
- 1271 03c3 01       		.uleb128 0x1
- 1272 03c4 9C       		.byte	0x9c
- 1273 03c5 E6030000 		.4byte	0x3e6
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 28
+ 1223 0363 D3030000 		.4byte	.LASF60
+ 1224 0367 01       		.byte	0x1
+ 1225 0368 11       		.byte	0x11
+ 1226 0369 00000000 		.4byte	.LFB65
+ 1227 036d 0C000000 		.4byte	.LFE65-.LFB65
+ 1228 0371 01       		.uleb128 0x1
+ 1229 0372 9C       		.byte	0x9c
+ 1230 0373 13       		.uleb128 0x13
+ 1231 0374 21000000 		.4byte	.LASF61
+ 1232 0378 01       		.byte	0x1
+ 1233 0379 19       		.byte	0x19
+ 1234 037a 00000000 		.4byte	.LFB66
+ 1235 037e 20000000 		.4byte	.LFE66-.LFB66
+ 1236 0382 01       		.uleb128 0x1
+ 1237 0383 9C       		.byte	0x9c
+ 1238 0384 13       		.uleb128 0x13
+ 1239 0385 31040000 		.4byte	.LASF62
+ 1240 0389 01       		.byte	0x1
+ 1241 038a 2A       		.byte	0x2a
+ 1242 038b 00000000 		.4byte	.LFB67
+ 1243 038f 0C000000 		.4byte	.LFE67-.LFB67
+ 1244 0393 01       		.uleb128 0x1
+ 1245 0394 9C       		.byte	0x9c
+ 1246 0395 14       		.uleb128 0x14
+ 1247 0396 15010000 		.4byte	.LASF76
+ 1248 039a 01       		.byte	0x1
+ 1249 039b 3C       		.byte	0x3c
+ 1250 039c 68000000 		.4byte	0x68
+ 1251 03a0 00000000 		.4byte	.LFB68
+ 1252 03a4 38000000 		.4byte	.LFE68-.LFB68
+ 1253 03a8 01       		.uleb128 0x1
+ 1254 03a9 9C       		.byte	0x9c
+ 1255 03aa E5030000 		.4byte	0x3e5
+ 1256 03ae 15       		.uleb128 0x15
+ 1257 03af 2E010000 		.4byte	.LASF63
+ 1258 03b3 01       		.byte	0x1
+ 1259 03b4 3C       		.byte	0x3c
+ 1260 03b5 68000000 		.4byte	0x68
+ 1261 03b9 02       		.uleb128 0x2
+ 1262 03ba 91       		.byte	0x91
+ 1263 03bb 6C       		.sleb128 -20
+ 1264 03bc 16       		.uleb128 0x16
+ 1265 03bd 70747200 		.ascii	"ptr\000"
+ 1266 03c1 01       		.byte	0x1
+ 1267 03c2 3C       		.byte	0x3c
+ 1268 03c3 A8000000 		.4byte	0xa8
+ 1269 03c7 02       		.uleb128 0x2
+ 1270 03c8 91       		.byte	0x91
+ 1271 03c9 68       		.sleb128 -24
+ 1272 03ca 16       		.uleb128 0x16
+ 1273 03cb 6C656E00 		.ascii	"len\000"
+ 1274 03cf 01       		.byte	0x1
+ 1275 03d0 3C       		.byte	0x3c
+ 1276 03d1 68000000 		.4byte	0x68
+ 1277 03d5 02       		.uleb128 0x2
+ 1278 03d6 91       		.byte	0x91
+ 1279 03d7 64       		.sleb128 -28
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 28
 
 
- 1274 03c9 15       		.uleb128 0x15
- 1275 03ca 9B010000 		.4byte	.LASF58
- 1276 03ce 01       		.byte	0x1
- 1277 03cf AE       		.byte	0xae
- 1278 03d0 A8000000 		.4byte	0xa8
- 1279 03d4 02       		.uleb128 0x2
- 1280 03d5 91       		.byte	0x91
- 1281 03d6 6C       		.sleb128 -20
- 1282 03d7 17       		.uleb128 0x17
- 1283 03d8 70636800 		.ascii	"pch\000"
- 1284 03dc 01       		.byte	0x1
- 1285 03dd B0       		.byte	0xb0
- 1286 03de A8000000 		.4byte	0xa8
- 1287 03e2 02       		.uleb128 0x2
- 1288 03e3 91       		.byte	0x91
- 1289 03e4 74       		.sleb128 -12
- 1290 03e5 00       		.byte	0
- 1291 03e6 14       		.uleb128 0x14
- 1292 03e7 55000000 		.4byte	.LASF60
- 1293 03eb 01       		.byte	0x1
- 1294 03ec BA       		.byte	0xba
- 1295 03ed A8000000 		.4byte	0xa8
- 1296 03f1 00000000 		.4byte	.LFB73
- 1297 03f5 74000000 		.4byte	.LFE73-.LFB73
- 1298 03f9 01       		.uleb128 0x1
- 1299 03fa 9C       		.byte	0x9c
- 1300 03fb 54040000 		.4byte	0x454
- 1301 03ff 15       		.uleb128 0x15
- 1302 0400 27000000 		.4byte	.LASF61
- 1303 0404 01       		.byte	0x1
- 1304 0405 BA       		.byte	0xba
- 1305 0406 B5000000 		.4byte	0xb5
- 1306 040a 02       		.uleb128 0x2
- 1307 040b 91       		.byte	0x91
- 1308 040c 6C       		.sleb128 -20
- 1309 040d 15       		.uleb128 0x15
- 1310 040e 50010000 		.4byte	.LASF62
- 1311 0412 01       		.byte	0x1
- 1312 0413 BA       		.byte	0xba
- 1313 0414 A8000000 		.4byte	0xa8
- 1314 0418 02       		.uleb128 0x2
- 1315 0419 91       		.byte	0x91
- 1316 041a 68       		.sleb128 -24
- 1317 041b 15       		.uleb128 0x15
- 1318 041c 8E010000 		.4byte	.LASF63
- 1319 0420 01       		.byte	0x1
- 1320 0421 BB       		.byte	0xbb
- 1321 0422 B5000000 		.4byte	0xb5
- 1322 0426 02       		.uleb128 0x2
- 1323 0427 91       		.byte	0x91
- 1324 0428 64       		.sleb128 -28
- 1325 0429 15       		.uleb128 0x15
- 1326 042a E0020000 		.4byte	.LASF64
- 1327 042e 01       		.byte	0x1
- 1328 042f BB       		.byte	0xbb
- 1329 0430 B5000000 		.4byte	0xb5
- 1330 0434 02       		.uleb128 0x2
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 29
+ 1280 03d8 17       		.uleb128 0x17
+ 1281 03d9 6900     		.ascii	"i\000"
+ 1282 03db 01       		.byte	0x1
+ 1283 03dc 3E       		.byte	0x3e
+ 1284 03dd 68000000 		.4byte	0x68
+ 1285 03e1 02       		.uleb128 0x2
+ 1286 03e2 91       		.byte	0x91
+ 1287 03e3 74       		.sleb128 -12
+ 1288 03e4 00       		.byte	0
+ 1289 03e5 18       		.uleb128 0x18
+ 1290 03e6 3E040000 		.4byte	.LASF68
+ 1291 03ea 01       		.byte	0x1
+ 1292 03eb 4F       		.byte	0x4f
+ 1293 03ec 00000000 		.4byte	.LFB69
+ 1294 03f0 08010000 		.4byte	.LFE69-.LFB69
+ 1295 03f4 01       		.uleb128 0x1
+ 1296 03f5 9C       		.byte	0x9c
+ 1297 03f6 37040000 		.4byte	0x437
+ 1298 03fa 15       		.uleb128 0x15
+ 1299 03fb 87020000 		.4byte	.LASF64
+ 1300 03ff 01       		.byte	0x1
+ 1301 0400 4F       		.byte	0x4f
+ 1302 0401 4E010000 		.4byte	0x14e
+ 1303 0405 03       		.uleb128 0x3
+ 1304 0406 91       		.byte	0x91
+ 1305 0407 DF6F     		.sleb128 -2081
+ 1306 0409 15       		.uleb128 0x15
+ 1307 040a 8D010000 		.4byte	.LASF65
+ 1308 040e 01       		.byte	0x1
+ 1309 040f 4F       		.byte	0x4f
+ 1310 0410 A8000000 		.4byte	0xa8
+ 1311 0414 02       		.uleb128 0x2
+ 1312 0415 91       		.byte	0x91
+ 1313 0416 74       		.sleb128 -12
+ 1314 0417 19       		.uleb128 0x19
+ 1315 0418 1A       		.uleb128 0x1a
+ 1316 0419 80030000 		.4byte	.LASF66
+ 1317 041d 01       		.byte	0x1
+ 1318 041e 51       		.byte	0x51
+ 1319 041f 37040000 		.4byte	0x437
+ 1320 0423 03       		.uleb128 0x3
+ 1321 0424 91       		.byte	0x91
+ 1322 0425 E86F     		.sleb128 -2072
+ 1323 0427 1A       		.uleb128 0x1a
+ 1324 0428 05040000 		.4byte	.LASF67
+ 1325 042c 01       		.byte	0x1
+ 1326 042d 6E       		.byte	0x6e
+ 1327 042e 46030000 		.4byte	0x346
+ 1328 0432 03       		.uleb128 0x3
+ 1329 0433 91       		.byte	0x91
+ 1330 0434 E46F     		.sleb128 -2076
+ 1331 0436 00       		.byte	0
+ 1332 0437 11       		.uleb128 0x11
+ 1333 0438 AE000000 		.4byte	0xae
+ 1334 043c 48040000 		.4byte	0x448
+ 1335 0440 1B       		.uleb128 0x1b
+ 1336 0441 A1000000 		.4byte	0xa1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 29
 
 
- 1331 0435 91       		.byte	0x91
- 1332 0436 60       		.sleb128 -32
- 1333 0437 1A       		.uleb128 0x1a
- 1334 0438 60000000 		.4byte	.LASF65
- 1335 043c 01       		.byte	0x1
- 1336 043d BD       		.byte	0xbd
- 1337 043e A8000000 		.4byte	0xa8
- 1338 0442 02       		.uleb128 0x2
- 1339 0443 91       		.byte	0x91
- 1340 0444 70       		.sleb128 -16
- 1341 0445 17       		.uleb128 0x17
- 1342 0446 656E6400 		.ascii	"end\000"
- 1343 044a 01       		.byte	0x1
- 1344 044b BD       		.byte	0xbd
- 1345 044c A8000000 		.4byte	0xa8
- 1346 0450 02       		.uleb128 0x2
- 1347 0451 91       		.byte	0x91
- 1348 0452 74       		.sleb128 -12
- 1349 0453 00       		.byte	0
- 1350 0454 18       		.uleb128 0x18
- 1351 0455 88020000 		.4byte	.LASF66
- 1352 0459 01       		.byte	0x1
- 1353 045a CE       		.byte	0xce
- 1354 045b 00000000 		.4byte	.LFB74
- 1355 045f 3C000000 		.4byte	.LFE74-.LFB74
- 1356 0463 01       		.uleb128 0x1
- 1357 0464 9C       		.byte	0x9c
- 1358 0465 96040000 		.4byte	0x496
- 1359 0469 15       		.uleb128 0x15
- 1360 046a 6F010000 		.4byte	.LASF48
- 1361 046e 01       		.byte	0x1
- 1362 046f CE       		.byte	0xce
- 1363 0470 A8000000 		.4byte	0xa8
- 1364 0474 02       		.uleb128 0x2
- 1365 0475 91       		.byte	0x91
- 1366 0476 70       		.sleb128 -16
- 1367 0477 19       		.uleb128 0x19
- 1368 0478 1A       		.uleb128 0x1a
- 1369 0479 18030000 		.4byte	.LASF50
- 1370 047d 01       		.byte	0x1
- 1371 047e D0       		.byte	0xd0
- 1372 047f 46020000 		.4byte	0x246
- 1373 0483 02       		.uleb128 0x2
- 1374 0484 91       		.byte	0x91
- 1375 0485 64       		.sleb128 -28
- 1376 0486 1A       		.uleb128 0x1a
- 1377 0487 BC020000 		.4byte	.LASF49
- 1378 048b 01       		.byte	0x1
- 1379 048c D4       		.byte	0xd4
- 1380 048d 37030000 		.4byte	0x337
- 1381 0491 03       		.uleb128 0x3
- 1382 0492 91       		.byte	0x91
- 1383 0493 E46F     		.sleb128 -2076
- 1384 0495 00       		.byte	0
- 1385 0496 1D       		.uleb128 0x1d
- 1386 0497 6C030000 		.4byte	.LASF67
- 1387 049b 0A       		.byte	0xa
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 30
+ 1337 0445 FF07     		.2byte	0x7ff
+ 1338 0447 00       		.byte	0
+ 1339 0448 18       		.uleb128 0x18
+ 1340 0449 68030000 		.4byte	.LASF69
+ 1341 044d 01       		.byte	0x1
+ 1342 044e 7A       		.byte	0x7a
+ 1343 044f 00000000 		.4byte	.LFB70
+ 1344 0453 78000000 		.4byte	.LFE70-.LFB70
+ 1345 0457 01       		.uleb128 0x1
+ 1346 0458 9C       		.byte	0x9c
+ 1347 0459 6C040000 		.4byte	0x46c
+ 1348 045d 15       		.uleb128 0x15
+ 1349 045e EA020000 		.4byte	.LASF70
+ 1350 0462 01       		.byte	0x1
+ 1351 0463 7A       		.byte	0x7a
+ 1352 0464 47020000 		.4byte	0x247
+ 1353 0468 02       		.uleb128 0x2
+ 1354 0469 91       		.byte	0x91
+ 1355 046a 70       		.sleb128 -16
+ 1356 046b 00       		.byte	0
+ 1357 046c 1C       		.uleb128 0x1c
+ 1358 046d 1C010000 		.4byte	.LASF71
+ 1359 0471 01       		.byte	0x1
+ 1360 0472 8D       		.byte	0x8d
+ 1361 0473 4C000000 		.4byte	0x4c
+ 1362 0477 00000000 		.4byte	.LFB71
+ 1363 047b 58000000 		.4byte	.LFE71-.LFB71
+ 1364 047f 01       		.uleb128 0x1
+ 1365 0480 9C       		.byte	0x9c
+ 1366 0481 AE040000 		.4byte	0x4ae
+ 1367 0485 1A       		.uleb128 0x1a
+ 1368 0486 AE030000 		.4byte	.LASF72
+ 1369 048a 01       		.byte	0x1
+ 1370 048b 90       		.byte	0x90
+ 1371 048c AE040000 		.4byte	0x4ae
+ 1372 0490 02       		.uleb128 0x2
+ 1373 0491 91       		.byte	0x91
+ 1374 0492 74       		.sleb128 -12
+ 1375 0493 17       		.uleb128 0x17
+ 1376 0494 7400     		.ascii	"t\000"
+ 1377 0496 01       		.byte	0x1
+ 1378 0497 92       		.byte	0x92
+ 1379 0498 D6000000 		.4byte	0xd6
+ 1380 049c 02       		.uleb128 0x2
+ 1381 049d 91       		.byte	0x91
+ 1382 049e 4C       		.sleb128 -52
+ 1383 049f 1A       		.uleb128 0x1a
+ 1384 04a0 09000000 		.4byte	.LASF73
+ 1385 04a4 01       		.byte	0x1
+ 1386 04a5 93       		.byte	0x93
+ 1387 04a6 CB000000 		.4byte	0xcb
+ 1388 04aa 02       		.uleb128 0x2
+ 1389 04ab 91       		.byte	0x91
+ 1390 04ac 70       		.sleb128 -16
+ 1391 04ad 00       		.byte	0
+ 1392 04ae 08       		.uleb128 0x8
+ 1393 04af 04       		.byte	0x4
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 30
 
 
- 1388 049c 1207     		.2byte	0x712
- 1389 049e A2040000 		.4byte	0x4a2
- 1390 04a2 0F       		.uleb128 0xf
- 1391 04a3 C0000000 		.4byte	0xc0
- 1392 04a7 11       		.uleb128 0x11
- 1393 04a8 AE000000 		.4byte	0xae
- 1394 04ac B7040000 		.4byte	0x4b7
- 1395 04b0 12       		.uleb128 0x12
- 1396 04b1 A1000000 		.4byte	0xa1
- 1397 04b5 1D       		.byte	0x1d
- 1398 04b6 00       		.byte	0
- 1399 04b7 1E       		.uleb128 0x1e
- 1400 04b8 A2010000 		.4byte	.LASF68
- 1401 04bc 01       		.byte	0x1
- 1402 04bd 06       		.byte	0x6
- 1403 04be A7040000 		.4byte	0x4a7
- 1404 04c2 05       		.uleb128 0x5
- 1405 04c3 03       		.byte	0x3
- 1406 04c4 00000000 		.4byte	BB_fileName
- 1407 04c8 1E       		.uleb128 0x1e
- 1408 04c9 1F030000 		.4byte	.LASF69
- 1409 04cd 01       		.byte	0x1
- 1410 04ce 0A       		.byte	0xa
- 1411 04cf 4E010000 		.4byte	0x14e
- 1412 04d3 05       		.uleb128 0x5
- 1413 04d4 03       		.byte	0x3
- 1414 04d5 00000000 		.4byte	debug_level
- 1415 04d9 00       		.byte	0
- 1416              		.section	.debug_abbrev,"",%progbits
- 1417              	.Ldebug_abbrev0:
- 1418 0000 01       		.uleb128 0x1
- 1419 0001 11       		.uleb128 0x11
- 1420 0002 01       		.byte	0x1
- 1421 0003 25       		.uleb128 0x25
- 1422 0004 0E       		.uleb128 0xe
- 1423 0005 13       		.uleb128 0x13
- 1424 0006 0B       		.uleb128 0xb
- 1425 0007 03       		.uleb128 0x3
- 1426 0008 0E       		.uleb128 0xe
- 1427 0009 1B       		.uleb128 0x1b
- 1428 000a 0E       		.uleb128 0xe
- 1429 000b 55       		.uleb128 0x55
- 1430 000c 17       		.uleb128 0x17
- 1431 000d 11       		.uleb128 0x11
- 1432 000e 01       		.uleb128 0x1
- 1433 000f 10       		.uleb128 0x10
- 1434 0010 17       		.uleb128 0x17
- 1435 0011 00       		.byte	0
- 1436 0012 00       		.byte	0
- 1437 0013 02       		.uleb128 0x2
- 1438 0014 24       		.uleb128 0x24
- 1439 0015 00       		.byte	0
- 1440 0016 0B       		.uleb128 0xb
- 1441 0017 0B       		.uleb128 0xb
- 1442 0018 3E       		.uleb128 0x3e
- 1443 0019 0B       		.uleb128 0xb
- 1444 001a 03       		.uleb128 0x3
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 31
+ 1394 04b0 E9010000 		.4byte	0x1e9
+ 1395 04b4 18       		.uleb128 0x18
+ 1396 04b5 70040000 		.4byte	.LASF74
+ 1397 04b9 01       		.byte	0x1
+ 1398 04ba A8       		.byte	0xa8
+ 1399 04bb 00000000 		.4byte	.LFB72
+ 1400 04bf 40000000 		.4byte	.LFE72-.LFB72
+ 1401 04c3 01       		.uleb128 0x1
+ 1402 04c4 9C       		.byte	0x9c
+ 1403 04c5 E6040000 		.4byte	0x4e6
+ 1404 04c9 15       		.uleb128 0x15
+ 1405 04ca A7030000 		.4byte	.LASF75
+ 1406 04ce 01       		.byte	0x1
+ 1407 04cf A8       		.byte	0xa8
+ 1408 04d0 A8000000 		.4byte	0xa8
+ 1409 04d4 02       		.uleb128 0x2
+ 1410 04d5 91       		.byte	0x91
+ 1411 04d6 6C       		.sleb128 -20
+ 1412 04d7 17       		.uleb128 0x17
+ 1413 04d8 70636800 		.ascii	"pch\000"
+ 1414 04dc 01       		.byte	0x1
+ 1415 04dd AA       		.byte	0xaa
+ 1416 04de A8000000 		.4byte	0xa8
+ 1417 04e2 02       		.uleb128 0x2
+ 1418 04e3 91       		.byte	0x91
+ 1419 04e4 74       		.sleb128 -12
+ 1420 04e5 00       		.byte	0
+ 1421 04e6 14       		.uleb128 0x14
+ 1422 04e7 60000000 		.4byte	.LASF77
+ 1423 04eb 01       		.byte	0x1
+ 1424 04ec B4       		.byte	0xb4
+ 1425 04ed A8000000 		.4byte	0xa8
+ 1426 04f1 00000000 		.4byte	.LFB73
+ 1427 04f5 74000000 		.4byte	.LFE73-.LFB73
+ 1428 04f9 01       		.uleb128 0x1
+ 1429 04fa 9C       		.byte	0x9c
+ 1430 04fb 54050000 		.4byte	0x554
+ 1431 04ff 15       		.uleb128 0x15
+ 1432 0500 37000000 		.4byte	.LASF78
+ 1433 0504 01       		.byte	0x1
+ 1434 0505 B4       		.byte	0xb4
+ 1435 0506 B5000000 		.4byte	0xb5
+ 1436 050a 02       		.uleb128 0x2
+ 1437 050b 91       		.byte	0x91
+ 1438 050c 6C       		.sleb128 -20
+ 1439 050d 15       		.uleb128 0x15
+ 1440 050e 54010000 		.4byte	.LASF79
+ 1441 0512 01       		.byte	0x1
+ 1442 0513 B4       		.byte	0xb4
+ 1443 0514 A8000000 		.4byte	0xa8
+ 1444 0518 02       		.uleb128 0x2
+ 1445 0519 91       		.byte	0x91
+ 1446 051a 68       		.sleb128 -24
+ 1447 051b 15       		.uleb128 0x15
+ 1448 051c CB010000 		.4byte	.LASF80
+ 1449 0520 01       		.byte	0x1
+ 1450 0521 B5       		.byte	0xb5
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 31
 
 
- 1445 001b 0E       		.uleb128 0xe
- 1446 001c 00       		.byte	0
- 1447 001d 00       		.byte	0
- 1448 001e 03       		.uleb128 0x3
- 1449 001f 16       		.uleb128 0x16
- 1450 0020 00       		.byte	0
- 1451 0021 03       		.uleb128 0x3
- 1452 0022 0E       		.uleb128 0xe
- 1453 0023 3A       		.uleb128 0x3a
- 1454 0024 0B       		.uleb128 0xb
- 1455 0025 3B       		.uleb128 0x3b
- 1456 0026 0B       		.uleb128 0xb
- 1457 0027 49       		.uleb128 0x49
- 1458 0028 13       		.uleb128 0x13
- 1459 0029 00       		.byte	0
- 1460 002a 00       		.byte	0
- 1461 002b 04       		.uleb128 0x4
- 1462 002c 24       		.uleb128 0x24
- 1463 002d 00       		.byte	0
- 1464 002e 0B       		.uleb128 0xb
- 1465 002f 0B       		.uleb128 0xb
- 1466 0030 3E       		.uleb128 0x3e
- 1467 0031 0B       		.uleb128 0xb
- 1468 0032 03       		.uleb128 0x3
- 1469 0033 08       		.uleb128 0x8
- 1470 0034 00       		.byte	0
- 1471 0035 00       		.byte	0
- 1472 0036 05       		.uleb128 0x5
- 1473 0037 13       		.uleb128 0x13
- 1474 0038 01       		.byte	0x1
- 1475 0039 03       		.uleb128 0x3
- 1476 003a 0E       		.uleb128 0xe
- 1477 003b 0B       		.uleb128 0xb
- 1478 003c 0B       		.uleb128 0xb
- 1479 003d 3A       		.uleb128 0x3a
- 1480 003e 0B       		.uleb128 0xb
- 1481 003f 3B       		.uleb128 0x3b
- 1482 0040 0B       		.uleb128 0xb
- 1483 0041 01       		.uleb128 0x1
- 1484 0042 13       		.uleb128 0x13
- 1485 0043 00       		.byte	0
- 1486 0044 00       		.byte	0
- 1487 0045 06       		.uleb128 0x6
- 1488 0046 0D       		.uleb128 0xd
- 1489 0047 00       		.byte	0
- 1490 0048 03       		.uleb128 0x3
- 1491 0049 0E       		.uleb128 0xe
- 1492 004a 49       		.uleb128 0x49
- 1493 004b 13       		.uleb128 0x13
- 1494 004c 38       		.uleb128 0x38
- 1495 004d 0B       		.uleb128 0xb
- 1496 004e 34       		.uleb128 0x34
- 1497 004f 19       		.uleb128 0x19
- 1498 0050 00       		.byte	0
- 1499 0051 00       		.byte	0
- 1500 0052 07       		.uleb128 0x7
- 1501 0053 0F       		.uleb128 0xf
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 32
+ 1451 0522 B5000000 		.4byte	0xb5
+ 1452 0526 02       		.uleb128 0x2
+ 1453 0527 91       		.byte	0x91
+ 1454 0528 64       		.sleb128 -28
+ 1455 0529 15       		.uleb128 0x15
+ 1456 052a 94010000 		.4byte	.LASF81
+ 1457 052e 01       		.byte	0x1
+ 1458 052f B5       		.byte	0xb5
+ 1459 0530 B5000000 		.4byte	0xb5
+ 1460 0534 02       		.uleb128 0x2
+ 1461 0535 91       		.byte	0x91
+ 1462 0536 60       		.sleb128 -32
+ 1463 0537 1A       		.uleb128 0x1a
+ 1464 0538 6B000000 		.4byte	.LASF82
+ 1465 053c 01       		.byte	0x1
+ 1466 053d B7       		.byte	0xb7
+ 1467 053e A8000000 		.4byte	0xa8
+ 1468 0542 02       		.uleb128 0x2
+ 1469 0543 91       		.byte	0x91
+ 1470 0544 70       		.sleb128 -16
+ 1471 0545 17       		.uleb128 0x17
+ 1472 0546 656E6400 		.ascii	"end\000"
+ 1473 054a 01       		.byte	0x1
+ 1474 054b B7       		.byte	0xb7
+ 1475 054c A8000000 		.4byte	0xa8
+ 1476 0550 02       		.uleb128 0x2
+ 1477 0551 91       		.byte	0x91
+ 1478 0552 74       		.sleb128 -12
+ 1479 0553 00       		.byte	0
+ 1480 0554 18       		.uleb128 0x18
+ 1481 0555 D8010000 		.4byte	.LASF83
+ 1482 0559 01       		.byte	0x1
+ 1483 055a C8       		.byte	0xc8
+ 1484 055b 00000000 		.4byte	.LFB74
+ 1485 055f 3C000000 		.4byte	.LFE74-.LFB74
+ 1486 0563 01       		.uleb128 0x1
+ 1487 0564 9C       		.byte	0x9c
+ 1488 0565 96050000 		.4byte	0x596
+ 1489 0569 15       		.uleb128 0x15
+ 1490 056a 8D010000 		.4byte	.LASF65
+ 1491 056e 01       		.byte	0x1
+ 1492 056f C8       		.byte	0xc8
+ 1493 0570 A8000000 		.4byte	0xa8
+ 1494 0574 02       		.uleb128 0x2
+ 1495 0575 91       		.byte	0x91
+ 1496 0576 70       		.sleb128 -16
+ 1497 0577 19       		.uleb128 0x19
+ 1498 0578 1A       		.uleb128 0x1a
+ 1499 0579 05040000 		.4byte	.LASF67
+ 1500 057d 01       		.byte	0x1
+ 1501 057e CA       		.byte	0xca
+ 1502 057f 46030000 		.4byte	0x346
+ 1503 0583 02       		.uleb128 0x2
+ 1504 0584 91       		.byte	0x91
+ 1505 0585 64       		.sleb128 -28
+ 1506 0586 1A       		.uleb128 0x1a
+ 1507 0587 80030000 		.4byte	.LASF66
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 32
 
 
- 1502 0054 00       		.byte	0
- 1503 0055 0B       		.uleb128 0xb
- 1504 0056 0B       		.uleb128 0xb
- 1505 0057 00       		.byte	0
- 1506 0058 00       		.byte	0
- 1507 0059 08       		.uleb128 0x8
- 1508 005a 0F       		.uleb128 0xf
- 1509 005b 00       		.byte	0
- 1510 005c 0B       		.uleb128 0xb
- 1511 005d 0B       		.uleb128 0xb
- 1512 005e 49       		.uleb128 0x49
- 1513 005f 13       		.uleb128 0x13
- 1514 0060 00       		.byte	0
- 1515 0061 00       		.byte	0
- 1516 0062 09       		.uleb128 0x9
- 1517 0063 26       		.uleb128 0x26
- 1518 0064 00       		.byte	0
- 1519 0065 49       		.uleb128 0x49
- 1520 0066 13       		.uleb128 0x13
- 1521 0067 00       		.byte	0
- 1522 0068 00       		.byte	0
- 1523 0069 0A       		.uleb128 0xa
- 1524 006a 13       		.uleb128 0x13
- 1525 006b 01       		.byte	0x1
- 1526 006c 03       		.uleb128 0x3
- 1527 006d 08       		.uleb128 0x8
- 1528 006e 0B       		.uleb128 0xb
- 1529 006f 0B       		.uleb128 0xb
- 1530 0070 3A       		.uleb128 0x3a
- 1531 0071 0B       		.uleb128 0xb
- 1532 0072 3B       		.uleb128 0x3b
- 1533 0073 0B       		.uleb128 0xb
- 1534 0074 01       		.uleb128 0x1
- 1535 0075 13       		.uleb128 0x13
- 1536 0076 00       		.byte	0
- 1537 0077 00       		.byte	0
- 1538 0078 0B       		.uleb128 0xb
- 1539 0079 0D       		.uleb128 0xd
- 1540 007a 00       		.byte	0
- 1541 007b 03       		.uleb128 0x3
- 1542 007c 0E       		.uleb128 0xe
- 1543 007d 3A       		.uleb128 0x3a
- 1544 007e 0B       		.uleb128 0xb
- 1545 007f 3B       		.uleb128 0x3b
- 1546 0080 0B       		.uleb128 0xb
- 1547 0081 49       		.uleb128 0x49
- 1548 0082 13       		.uleb128 0x13
- 1549 0083 38       		.uleb128 0x38
- 1550 0084 0B       		.uleb128 0xb
- 1551 0085 00       		.byte	0
- 1552 0086 00       		.byte	0
- 1553 0087 0C       		.uleb128 0xc
- 1554 0088 16       		.uleb128 0x16
- 1555 0089 00       		.byte	0
- 1556 008a 03       		.uleb128 0x3
- 1557 008b 0E       		.uleb128 0xe
- 1558 008c 3A       		.uleb128 0x3a
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 33
+ 1508 058b 01       		.byte	0x1
+ 1509 058c CE       		.byte	0xce
+ 1510 058d 37040000 		.4byte	0x437
+ 1511 0591 03       		.uleb128 0x3
+ 1512 0592 91       		.byte	0x91
+ 1513 0593 E46F     		.sleb128 -2076
+ 1514 0595 00       		.byte	0
+ 1515 0596 1D       		.uleb128 0x1d
+ 1516 0597 50040000 		.4byte	.LASF84
+ 1517 059b 0B       		.byte	0xb
+ 1518 059c 1207     		.2byte	0x712
+ 1519 059e A2050000 		.4byte	0x5a2
+ 1520 05a2 0F       		.uleb128 0xf
+ 1521 05a3 C0000000 		.4byte	0xc0
+ 1522 05a7 1E       		.uleb128 0x1e
+ 1523 05a8 9B030000 		.4byte	.LASF85
+ 1524 05ac 0A       		.byte	0xa
+ 1525 05ad 16       		.byte	0x16
+ 1526 05ae 4E010000 		.4byte	0x14e
+ 1527 05b2 05       		.uleb128 0x5
+ 1528 05b3 03       		.byte	0x3
+ 1529 05b4 00000000 		.4byte	modem_state
+ 1530 05b8 1E       		.uleb128 0x1e
+ 1531 05b9 3D020000 		.4byte	.LASF86
+ 1532 05bd 0A       		.byte	0xa
+ 1533 05be 55       		.byte	0x55
+ 1534 05bf 66010000 		.4byte	0x166
+ 1535 05c3 05       		.uleb128 0x5
+ 1536 05c4 03       		.byte	0x3
+ 1537 05c5 00000000 		.4byte	modem_start_time_stamp
+ 1538 05c9 1E       		.uleb128 0x1e
+ 1539 05ca DF010000 		.4byte	.LASF87
+ 1540 05ce 0A       		.byte	0xa
+ 1541 05cf 56       		.byte	0x56
+ 1542 05d0 8F020000 		.4byte	0x28f
+ 1543 05d4 05       		.uleb128 0x5
+ 1544 05d5 03       		.byte	0x3
+ 1545 05d6 00000000 		.4byte	modem_info
+ 1546 05da 1E       		.uleb128 0x1e
+ 1547 05db EF020000 		.4byte	.LASF88
+ 1548 05df 0A       		.byte	0xa
+ 1549 05e0 57       		.byte	0x57
+ 1550 05e1 03030000 		.4byte	0x303
+ 1551 05e5 05       		.uleb128 0x5
+ 1552 05e6 03       		.byte	0x3
+ 1553 05e7 00000000 		.4byte	modem_stats
+ 1554 05eb 1E       		.uleb128 0x1e
+ 1555 05ec 1A020000 		.4byte	.LASF89
+ 1556 05f0 0A       		.byte	0xa
+ 1557 05f1 58       		.byte	0x58
+ 1558 05f2 3B030000 		.4byte	0x33b
+ 1559 05f6 05       		.uleb128 0x5
+ 1560 05f7 03       		.byte	0x3
+ 1561 05f8 00000000 		.4byte	updatable_parameters
+ 1562 05fc 11       		.uleb128 0x11
+ 1563 05fd AE000000 		.4byte	0xae
+ 1564 0601 0C060000 		.4byte	0x60c
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 33
 
 
- 1559 008d 0B       		.uleb128 0xb
- 1560 008e 3B       		.uleb128 0x3b
- 1561 008f 05       		.uleb128 0x5
- 1562 0090 49       		.uleb128 0x49
- 1563 0091 13       		.uleb128 0x13
- 1564 0092 00       		.byte	0
- 1565 0093 00       		.byte	0
- 1566 0094 0D       		.uleb128 0xd
- 1567 0095 13       		.uleb128 0x13
- 1568 0096 01       		.byte	0x1
- 1569 0097 0B       		.uleb128 0xb
- 1570 0098 0B       		.uleb128 0xb
- 1571 0099 3A       		.uleb128 0x3a
- 1572 009a 0B       		.uleb128 0xb
- 1573 009b 3B       		.uleb128 0x3b
- 1574 009c 0B       		.uleb128 0xb
- 1575 009d 01       		.uleb128 0x1
- 1576 009e 13       		.uleb128 0x13
- 1577 009f 00       		.byte	0
- 1578 00a0 00       		.byte	0
- 1579 00a1 0E       		.uleb128 0xe
- 1580 00a2 0D       		.uleb128 0xd
- 1581 00a3 00       		.byte	0
- 1582 00a4 03       		.uleb128 0x3
- 1583 00a5 08       		.uleb128 0x8
- 1584 00a6 3A       		.uleb128 0x3a
- 1585 00a7 0B       		.uleb128 0xb
- 1586 00a8 3B       		.uleb128 0x3b
- 1587 00a9 0B       		.uleb128 0xb
- 1588 00aa 49       		.uleb128 0x49
- 1589 00ab 13       		.uleb128 0x13
- 1590 00ac 38       		.uleb128 0x38
- 1591 00ad 0B       		.uleb128 0xb
- 1592 00ae 00       		.byte	0
- 1593 00af 00       		.byte	0
- 1594 00b0 0F       		.uleb128 0xf
- 1595 00b1 35       		.uleb128 0x35
- 1596 00b2 00       		.byte	0
- 1597 00b3 49       		.uleb128 0x49
- 1598 00b4 13       		.uleb128 0x13
- 1599 00b5 00       		.byte	0
- 1600 00b6 00       		.byte	0
- 1601 00b7 10       		.uleb128 0x10
- 1602 00b8 13       		.uleb128 0x13
- 1603 00b9 01       		.byte	0x1
- 1604 00ba 0B       		.uleb128 0xb
- 1605 00bb 05       		.uleb128 0x5
- 1606 00bc 3A       		.uleb128 0x3a
- 1607 00bd 0B       		.uleb128 0xb
- 1608 00be 3B       		.uleb128 0x3b
- 1609 00bf 0B       		.uleb128 0xb
- 1610 00c0 01       		.uleb128 0x1
- 1611 00c1 13       		.uleb128 0x13
- 1612 00c2 00       		.byte	0
- 1613 00c3 00       		.byte	0
- 1614 00c4 11       		.uleb128 0x11
- 1615 00c5 01       		.uleb128 0x1
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 34
+ 1565 0605 12       		.uleb128 0x12
+ 1566 0606 A1000000 		.4byte	0xa1
+ 1567 060a 1D       		.byte	0x1d
+ 1568 060b 00       		.byte	0
+ 1569 060c 1E       		.uleb128 0x1e
+ 1570 060d EF010000 		.4byte	.LASF90
+ 1571 0611 01       		.byte	0x1
+ 1572 0612 04       		.byte	0x4
+ 1573 0613 FC050000 		.4byte	0x5fc
+ 1574 0617 05       		.uleb128 0x5
+ 1575 0618 03       		.byte	0x3
+ 1576 0619 00000000 		.4byte	BB_fileName
+ 1577 061d 00       		.byte	0
+ 1578              		.section	.debug_abbrev,"",%progbits
+ 1579              	.Ldebug_abbrev0:
+ 1580 0000 01       		.uleb128 0x1
+ 1581 0001 11       		.uleb128 0x11
+ 1582 0002 01       		.byte	0x1
+ 1583 0003 25       		.uleb128 0x25
+ 1584 0004 0E       		.uleb128 0xe
+ 1585 0005 13       		.uleb128 0x13
+ 1586 0006 0B       		.uleb128 0xb
+ 1587 0007 03       		.uleb128 0x3
+ 1588 0008 0E       		.uleb128 0xe
+ 1589 0009 1B       		.uleb128 0x1b
+ 1590 000a 0E       		.uleb128 0xe
+ 1591 000b 55       		.uleb128 0x55
+ 1592 000c 17       		.uleb128 0x17
+ 1593 000d 11       		.uleb128 0x11
+ 1594 000e 01       		.uleb128 0x1
+ 1595 000f 10       		.uleb128 0x10
+ 1596 0010 17       		.uleb128 0x17
+ 1597 0011 00       		.byte	0
+ 1598 0012 00       		.byte	0
+ 1599 0013 02       		.uleb128 0x2
+ 1600 0014 24       		.uleb128 0x24
+ 1601 0015 00       		.byte	0
+ 1602 0016 0B       		.uleb128 0xb
+ 1603 0017 0B       		.uleb128 0xb
+ 1604 0018 3E       		.uleb128 0x3e
+ 1605 0019 0B       		.uleb128 0xb
+ 1606 001a 03       		.uleb128 0x3
+ 1607 001b 0E       		.uleb128 0xe
+ 1608 001c 00       		.byte	0
+ 1609 001d 00       		.byte	0
+ 1610 001e 03       		.uleb128 0x3
+ 1611 001f 16       		.uleb128 0x16
+ 1612 0020 00       		.byte	0
+ 1613 0021 03       		.uleb128 0x3
+ 1614 0022 0E       		.uleb128 0xe
+ 1615 0023 3A       		.uleb128 0x3a
+ 1616 0024 0B       		.uleb128 0xb
+ 1617 0025 3B       		.uleb128 0x3b
+ 1618 0026 0B       		.uleb128 0xb
+ 1619 0027 49       		.uleb128 0x49
+ 1620 0028 13       		.uleb128 0x13
+ 1621 0029 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 34
 
 
- 1616 00c6 01       		.byte	0x1
- 1617 00c7 49       		.uleb128 0x49
- 1618 00c8 13       		.uleb128 0x13
- 1619 00c9 01       		.uleb128 0x1
- 1620 00ca 13       		.uleb128 0x13
- 1621 00cb 00       		.byte	0
- 1622 00cc 00       		.byte	0
- 1623 00cd 12       		.uleb128 0x12
- 1624 00ce 21       		.uleb128 0x21
- 1625 00cf 00       		.byte	0
- 1626 00d0 49       		.uleb128 0x49
- 1627 00d1 13       		.uleb128 0x13
- 1628 00d2 2F       		.uleb128 0x2f
- 1629 00d3 0B       		.uleb128 0xb
- 1630 00d4 00       		.byte	0
- 1631 00d5 00       		.byte	0
- 1632 00d6 13       		.uleb128 0x13
- 1633 00d7 2E       		.uleb128 0x2e
- 1634 00d8 00       		.byte	0
- 1635 00d9 3F       		.uleb128 0x3f
- 1636 00da 19       		.uleb128 0x19
- 1637 00db 03       		.uleb128 0x3
- 1638 00dc 0E       		.uleb128 0xe
- 1639 00dd 3A       		.uleb128 0x3a
- 1640 00de 0B       		.uleb128 0xb
- 1641 00df 3B       		.uleb128 0x3b
- 1642 00e0 0B       		.uleb128 0xb
- 1643 00e1 11       		.uleb128 0x11
- 1644 00e2 01       		.uleb128 0x1
- 1645 00e3 12       		.uleb128 0x12
- 1646 00e4 06       		.uleb128 0x6
- 1647 00e5 40       		.uleb128 0x40
- 1648 00e6 18       		.uleb128 0x18
- 1649 00e7 9642     		.uleb128 0x2116
- 1650 00e9 19       		.uleb128 0x19
- 1651 00ea 00       		.byte	0
- 1652 00eb 00       		.byte	0
- 1653 00ec 14       		.uleb128 0x14
- 1654 00ed 2E       		.uleb128 0x2e
- 1655 00ee 01       		.byte	0x1
- 1656 00ef 3F       		.uleb128 0x3f
- 1657 00f0 19       		.uleb128 0x19
- 1658 00f1 03       		.uleb128 0x3
- 1659 00f2 0E       		.uleb128 0xe
- 1660 00f3 3A       		.uleb128 0x3a
- 1661 00f4 0B       		.uleb128 0xb
- 1662 00f5 3B       		.uleb128 0x3b
- 1663 00f6 0B       		.uleb128 0xb
- 1664 00f7 27       		.uleb128 0x27
- 1665 00f8 19       		.uleb128 0x19
- 1666 00f9 49       		.uleb128 0x49
- 1667 00fa 13       		.uleb128 0x13
- 1668 00fb 11       		.uleb128 0x11
- 1669 00fc 01       		.uleb128 0x1
- 1670 00fd 12       		.uleb128 0x12
- 1671 00fe 06       		.uleb128 0x6
- 1672 00ff 40       		.uleb128 0x40
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 35
+ 1622 002a 00       		.byte	0
+ 1623 002b 04       		.uleb128 0x4
+ 1624 002c 24       		.uleb128 0x24
+ 1625 002d 00       		.byte	0
+ 1626 002e 0B       		.uleb128 0xb
+ 1627 002f 0B       		.uleb128 0xb
+ 1628 0030 3E       		.uleb128 0x3e
+ 1629 0031 0B       		.uleb128 0xb
+ 1630 0032 03       		.uleb128 0x3
+ 1631 0033 08       		.uleb128 0x8
+ 1632 0034 00       		.byte	0
+ 1633 0035 00       		.byte	0
+ 1634 0036 05       		.uleb128 0x5
+ 1635 0037 13       		.uleb128 0x13
+ 1636 0038 01       		.byte	0x1
+ 1637 0039 03       		.uleb128 0x3
+ 1638 003a 0E       		.uleb128 0xe
+ 1639 003b 0B       		.uleb128 0xb
+ 1640 003c 0B       		.uleb128 0xb
+ 1641 003d 3A       		.uleb128 0x3a
+ 1642 003e 0B       		.uleb128 0xb
+ 1643 003f 3B       		.uleb128 0x3b
+ 1644 0040 0B       		.uleb128 0xb
+ 1645 0041 01       		.uleb128 0x1
+ 1646 0042 13       		.uleb128 0x13
+ 1647 0043 00       		.byte	0
+ 1648 0044 00       		.byte	0
+ 1649 0045 06       		.uleb128 0x6
+ 1650 0046 0D       		.uleb128 0xd
+ 1651 0047 00       		.byte	0
+ 1652 0048 03       		.uleb128 0x3
+ 1653 0049 0E       		.uleb128 0xe
+ 1654 004a 49       		.uleb128 0x49
+ 1655 004b 13       		.uleb128 0x13
+ 1656 004c 38       		.uleb128 0x38
+ 1657 004d 0B       		.uleb128 0xb
+ 1658 004e 34       		.uleb128 0x34
+ 1659 004f 19       		.uleb128 0x19
+ 1660 0050 00       		.byte	0
+ 1661 0051 00       		.byte	0
+ 1662 0052 07       		.uleb128 0x7
+ 1663 0053 0F       		.uleb128 0xf
+ 1664 0054 00       		.byte	0
+ 1665 0055 0B       		.uleb128 0xb
+ 1666 0056 0B       		.uleb128 0xb
+ 1667 0057 00       		.byte	0
+ 1668 0058 00       		.byte	0
+ 1669 0059 08       		.uleb128 0x8
+ 1670 005a 0F       		.uleb128 0xf
+ 1671 005b 00       		.byte	0
+ 1672 005c 0B       		.uleb128 0xb
+ 1673 005d 0B       		.uleb128 0xb
+ 1674 005e 49       		.uleb128 0x49
+ 1675 005f 13       		.uleb128 0x13
+ 1676 0060 00       		.byte	0
+ 1677 0061 00       		.byte	0
+ 1678 0062 09       		.uleb128 0x9
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 35
 
 
- 1673 0100 18       		.uleb128 0x18
- 1674 0101 9642     		.uleb128 0x2116
- 1675 0103 19       		.uleb128 0x19
- 1676 0104 01       		.uleb128 0x1
- 1677 0105 13       		.uleb128 0x13
- 1678 0106 00       		.byte	0
- 1679 0107 00       		.byte	0
- 1680 0108 15       		.uleb128 0x15
- 1681 0109 05       		.uleb128 0x5
- 1682 010a 00       		.byte	0
- 1683 010b 03       		.uleb128 0x3
- 1684 010c 0E       		.uleb128 0xe
- 1685 010d 3A       		.uleb128 0x3a
- 1686 010e 0B       		.uleb128 0xb
- 1687 010f 3B       		.uleb128 0x3b
- 1688 0110 0B       		.uleb128 0xb
- 1689 0111 49       		.uleb128 0x49
- 1690 0112 13       		.uleb128 0x13
- 1691 0113 02       		.uleb128 0x2
- 1692 0114 18       		.uleb128 0x18
- 1693 0115 00       		.byte	0
- 1694 0116 00       		.byte	0
- 1695 0117 16       		.uleb128 0x16
- 1696 0118 05       		.uleb128 0x5
- 1697 0119 00       		.byte	0
- 1698 011a 03       		.uleb128 0x3
- 1699 011b 08       		.uleb128 0x8
- 1700 011c 3A       		.uleb128 0x3a
- 1701 011d 0B       		.uleb128 0xb
- 1702 011e 3B       		.uleb128 0x3b
- 1703 011f 0B       		.uleb128 0xb
- 1704 0120 49       		.uleb128 0x49
- 1705 0121 13       		.uleb128 0x13
- 1706 0122 02       		.uleb128 0x2
- 1707 0123 18       		.uleb128 0x18
- 1708 0124 00       		.byte	0
- 1709 0125 00       		.byte	0
- 1710 0126 17       		.uleb128 0x17
- 1711 0127 34       		.uleb128 0x34
- 1712 0128 00       		.byte	0
- 1713 0129 03       		.uleb128 0x3
- 1714 012a 08       		.uleb128 0x8
- 1715 012b 3A       		.uleb128 0x3a
- 1716 012c 0B       		.uleb128 0xb
- 1717 012d 3B       		.uleb128 0x3b
- 1718 012e 0B       		.uleb128 0xb
- 1719 012f 49       		.uleb128 0x49
- 1720 0130 13       		.uleb128 0x13
- 1721 0131 02       		.uleb128 0x2
- 1722 0132 18       		.uleb128 0x18
- 1723 0133 00       		.byte	0
- 1724 0134 00       		.byte	0
- 1725 0135 18       		.uleb128 0x18
- 1726 0136 2E       		.uleb128 0x2e
- 1727 0137 01       		.byte	0x1
- 1728 0138 3F       		.uleb128 0x3f
- 1729 0139 19       		.uleb128 0x19
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 36
+ 1679 0063 26       		.uleb128 0x26
+ 1680 0064 00       		.byte	0
+ 1681 0065 49       		.uleb128 0x49
+ 1682 0066 13       		.uleb128 0x13
+ 1683 0067 00       		.byte	0
+ 1684 0068 00       		.byte	0
+ 1685 0069 0A       		.uleb128 0xa
+ 1686 006a 13       		.uleb128 0x13
+ 1687 006b 01       		.byte	0x1
+ 1688 006c 03       		.uleb128 0x3
+ 1689 006d 08       		.uleb128 0x8
+ 1690 006e 0B       		.uleb128 0xb
+ 1691 006f 0B       		.uleb128 0xb
+ 1692 0070 3A       		.uleb128 0x3a
+ 1693 0071 0B       		.uleb128 0xb
+ 1694 0072 3B       		.uleb128 0x3b
+ 1695 0073 0B       		.uleb128 0xb
+ 1696 0074 01       		.uleb128 0x1
+ 1697 0075 13       		.uleb128 0x13
+ 1698 0076 00       		.byte	0
+ 1699 0077 00       		.byte	0
+ 1700 0078 0B       		.uleb128 0xb
+ 1701 0079 0D       		.uleb128 0xd
+ 1702 007a 00       		.byte	0
+ 1703 007b 03       		.uleb128 0x3
+ 1704 007c 0E       		.uleb128 0xe
+ 1705 007d 3A       		.uleb128 0x3a
+ 1706 007e 0B       		.uleb128 0xb
+ 1707 007f 3B       		.uleb128 0x3b
+ 1708 0080 0B       		.uleb128 0xb
+ 1709 0081 49       		.uleb128 0x49
+ 1710 0082 13       		.uleb128 0x13
+ 1711 0083 38       		.uleb128 0x38
+ 1712 0084 0B       		.uleb128 0xb
+ 1713 0085 00       		.byte	0
+ 1714 0086 00       		.byte	0
+ 1715 0087 0C       		.uleb128 0xc
+ 1716 0088 16       		.uleb128 0x16
+ 1717 0089 00       		.byte	0
+ 1718 008a 03       		.uleb128 0x3
+ 1719 008b 0E       		.uleb128 0xe
+ 1720 008c 3A       		.uleb128 0x3a
+ 1721 008d 0B       		.uleb128 0xb
+ 1722 008e 3B       		.uleb128 0x3b
+ 1723 008f 05       		.uleb128 0x5
+ 1724 0090 49       		.uleb128 0x49
+ 1725 0091 13       		.uleb128 0x13
+ 1726 0092 00       		.byte	0
+ 1727 0093 00       		.byte	0
+ 1728 0094 0D       		.uleb128 0xd
+ 1729 0095 13       		.uleb128 0x13
+ 1730 0096 01       		.byte	0x1
+ 1731 0097 0B       		.uleb128 0xb
+ 1732 0098 0B       		.uleb128 0xb
+ 1733 0099 3A       		.uleb128 0x3a
+ 1734 009a 0B       		.uleb128 0xb
+ 1735 009b 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 36
 
 
- 1730 013a 03       		.uleb128 0x3
- 1731 013b 0E       		.uleb128 0xe
- 1732 013c 3A       		.uleb128 0x3a
- 1733 013d 0B       		.uleb128 0xb
- 1734 013e 3B       		.uleb128 0x3b
- 1735 013f 0B       		.uleb128 0xb
- 1736 0140 27       		.uleb128 0x27
- 1737 0141 19       		.uleb128 0x19
- 1738 0142 11       		.uleb128 0x11
- 1739 0143 01       		.uleb128 0x1
- 1740 0144 12       		.uleb128 0x12
- 1741 0145 06       		.uleb128 0x6
- 1742 0146 40       		.uleb128 0x40
- 1743 0147 18       		.uleb128 0x18
- 1744 0148 9642     		.uleb128 0x2116
- 1745 014a 19       		.uleb128 0x19
- 1746 014b 01       		.uleb128 0x1
- 1747 014c 13       		.uleb128 0x13
- 1748 014d 00       		.byte	0
- 1749 014e 00       		.byte	0
- 1750 014f 19       		.uleb128 0x19
- 1751 0150 18       		.uleb128 0x18
- 1752 0151 00       		.byte	0
- 1753 0152 00       		.byte	0
- 1754 0153 00       		.byte	0
- 1755 0154 1A       		.uleb128 0x1a
- 1756 0155 34       		.uleb128 0x34
- 1757 0156 00       		.byte	0
- 1758 0157 03       		.uleb128 0x3
- 1759 0158 0E       		.uleb128 0xe
- 1760 0159 3A       		.uleb128 0x3a
- 1761 015a 0B       		.uleb128 0xb
- 1762 015b 3B       		.uleb128 0x3b
- 1763 015c 0B       		.uleb128 0xb
- 1764 015d 49       		.uleb128 0x49
- 1765 015e 13       		.uleb128 0x13
- 1766 015f 02       		.uleb128 0x2
- 1767 0160 18       		.uleb128 0x18
- 1768 0161 00       		.byte	0
- 1769 0162 00       		.byte	0
- 1770 0163 1B       		.uleb128 0x1b
- 1771 0164 21       		.uleb128 0x21
- 1772 0165 00       		.byte	0
- 1773 0166 49       		.uleb128 0x49
- 1774 0167 13       		.uleb128 0x13
- 1775 0168 2F       		.uleb128 0x2f
- 1776 0169 05       		.uleb128 0x5
- 1777 016a 00       		.byte	0
- 1778 016b 00       		.byte	0
- 1779 016c 1C       		.uleb128 0x1c
- 1780 016d 2E       		.uleb128 0x2e
- 1781 016e 01       		.byte	0x1
- 1782 016f 3F       		.uleb128 0x3f
- 1783 0170 19       		.uleb128 0x19
- 1784 0171 03       		.uleb128 0x3
- 1785 0172 0E       		.uleb128 0xe
- 1786 0173 3A       		.uleb128 0x3a
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 37
+ 1736 009c 0B       		.uleb128 0xb
+ 1737 009d 01       		.uleb128 0x1
+ 1738 009e 13       		.uleb128 0x13
+ 1739 009f 00       		.byte	0
+ 1740 00a0 00       		.byte	0
+ 1741 00a1 0E       		.uleb128 0xe
+ 1742 00a2 0D       		.uleb128 0xd
+ 1743 00a3 00       		.byte	0
+ 1744 00a4 03       		.uleb128 0x3
+ 1745 00a5 08       		.uleb128 0x8
+ 1746 00a6 3A       		.uleb128 0x3a
+ 1747 00a7 0B       		.uleb128 0xb
+ 1748 00a8 3B       		.uleb128 0x3b
+ 1749 00a9 0B       		.uleb128 0xb
+ 1750 00aa 49       		.uleb128 0x49
+ 1751 00ab 13       		.uleb128 0x13
+ 1752 00ac 38       		.uleb128 0x38
+ 1753 00ad 0B       		.uleb128 0xb
+ 1754 00ae 00       		.byte	0
+ 1755 00af 00       		.byte	0
+ 1756 00b0 0F       		.uleb128 0xf
+ 1757 00b1 35       		.uleb128 0x35
+ 1758 00b2 00       		.byte	0
+ 1759 00b3 49       		.uleb128 0x49
+ 1760 00b4 13       		.uleb128 0x13
+ 1761 00b5 00       		.byte	0
+ 1762 00b6 00       		.byte	0
+ 1763 00b7 10       		.uleb128 0x10
+ 1764 00b8 13       		.uleb128 0x13
+ 1765 00b9 01       		.byte	0x1
+ 1766 00ba 0B       		.uleb128 0xb
+ 1767 00bb 05       		.uleb128 0x5
+ 1768 00bc 3A       		.uleb128 0x3a
+ 1769 00bd 0B       		.uleb128 0xb
+ 1770 00be 3B       		.uleb128 0x3b
+ 1771 00bf 0B       		.uleb128 0xb
+ 1772 00c0 01       		.uleb128 0x1
+ 1773 00c1 13       		.uleb128 0x13
+ 1774 00c2 00       		.byte	0
+ 1775 00c3 00       		.byte	0
+ 1776 00c4 11       		.uleb128 0x11
+ 1777 00c5 01       		.uleb128 0x1
+ 1778 00c6 01       		.byte	0x1
+ 1779 00c7 49       		.uleb128 0x49
+ 1780 00c8 13       		.uleb128 0x13
+ 1781 00c9 01       		.uleb128 0x1
+ 1782 00ca 13       		.uleb128 0x13
+ 1783 00cb 00       		.byte	0
+ 1784 00cc 00       		.byte	0
+ 1785 00cd 12       		.uleb128 0x12
+ 1786 00ce 21       		.uleb128 0x21
+ 1787 00cf 00       		.byte	0
+ 1788 00d0 49       		.uleb128 0x49
+ 1789 00d1 13       		.uleb128 0x13
+ 1790 00d2 2F       		.uleb128 0x2f
+ 1791 00d3 0B       		.uleb128 0xb
+ 1792 00d4 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 37
 
 
- 1787 0174 0B       		.uleb128 0xb
- 1788 0175 3B       		.uleb128 0x3b
- 1789 0176 0B       		.uleb128 0xb
- 1790 0177 49       		.uleb128 0x49
- 1791 0178 13       		.uleb128 0x13
- 1792 0179 11       		.uleb128 0x11
- 1793 017a 01       		.uleb128 0x1
- 1794 017b 12       		.uleb128 0x12
- 1795 017c 06       		.uleb128 0x6
- 1796 017d 40       		.uleb128 0x40
- 1797 017e 18       		.uleb128 0x18
- 1798 017f 9642     		.uleb128 0x2116
- 1799 0181 19       		.uleb128 0x19
- 1800 0182 01       		.uleb128 0x1
- 1801 0183 13       		.uleb128 0x13
- 1802 0184 00       		.byte	0
- 1803 0185 00       		.byte	0
- 1804 0186 1D       		.uleb128 0x1d
- 1805 0187 34       		.uleb128 0x34
- 1806 0188 00       		.byte	0
- 1807 0189 03       		.uleb128 0x3
- 1808 018a 0E       		.uleb128 0xe
- 1809 018b 3A       		.uleb128 0x3a
- 1810 018c 0B       		.uleb128 0xb
- 1811 018d 3B       		.uleb128 0x3b
- 1812 018e 05       		.uleb128 0x5
- 1813 018f 49       		.uleb128 0x49
- 1814 0190 13       		.uleb128 0x13
- 1815 0191 3F       		.uleb128 0x3f
- 1816 0192 19       		.uleb128 0x19
- 1817 0193 3C       		.uleb128 0x3c
- 1818 0194 19       		.uleb128 0x19
- 1819 0195 00       		.byte	0
- 1820 0196 00       		.byte	0
- 1821 0197 1E       		.uleb128 0x1e
- 1822 0198 34       		.uleb128 0x34
- 1823 0199 00       		.byte	0
- 1824 019a 03       		.uleb128 0x3
- 1825 019b 0E       		.uleb128 0xe
- 1826 019c 3A       		.uleb128 0x3a
- 1827 019d 0B       		.uleb128 0xb
- 1828 019e 3B       		.uleb128 0x3b
- 1829 019f 0B       		.uleb128 0xb
- 1830 01a0 49       		.uleb128 0x49
- 1831 01a1 13       		.uleb128 0x13
- 1832 01a2 3F       		.uleb128 0x3f
- 1833 01a3 19       		.uleb128 0x19
- 1834 01a4 02       		.uleb128 0x2
- 1835 01a5 18       		.uleb128 0x18
- 1836 01a6 00       		.byte	0
- 1837 01a7 00       		.byte	0
- 1838 01a8 00       		.byte	0
- 1839              		.section	.debug_aranges,"",%progbits
- 1840 0000 6C000000 		.4byte	0x6c
- 1841 0004 0200     		.2byte	0x2
- 1842 0006 00000000 		.4byte	.Ldebug_info0
- 1843 000a 04       		.byte	0x4
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 38
+ 1793 00d5 00       		.byte	0
+ 1794 00d6 13       		.uleb128 0x13
+ 1795 00d7 2E       		.uleb128 0x2e
+ 1796 00d8 00       		.byte	0
+ 1797 00d9 3F       		.uleb128 0x3f
+ 1798 00da 19       		.uleb128 0x19
+ 1799 00db 03       		.uleb128 0x3
+ 1800 00dc 0E       		.uleb128 0xe
+ 1801 00dd 3A       		.uleb128 0x3a
+ 1802 00de 0B       		.uleb128 0xb
+ 1803 00df 3B       		.uleb128 0x3b
+ 1804 00e0 0B       		.uleb128 0xb
+ 1805 00e1 11       		.uleb128 0x11
+ 1806 00e2 01       		.uleb128 0x1
+ 1807 00e3 12       		.uleb128 0x12
+ 1808 00e4 06       		.uleb128 0x6
+ 1809 00e5 40       		.uleb128 0x40
+ 1810 00e6 18       		.uleb128 0x18
+ 1811 00e7 9642     		.uleb128 0x2116
+ 1812 00e9 19       		.uleb128 0x19
+ 1813 00ea 00       		.byte	0
+ 1814 00eb 00       		.byte	0
+ 1815 00ec 14       		.uleb128 0x14
+ 1816 00ed 2E       		.uleb128 0x2e
+ 1817 00ee 01       		.byte	0x1
+ 1818 00ef 3F       		.uleb128 0x3f
+ 1819 00f0 19       		.uleb128 0x19
+ 1820 00f1 03       		.uleb128 0x3
+ 1821 00f2 0E       		.uleb128 0xe
+ 1822 00f3 3A       		.uleb128 0x3a
+ 1823 00f4 0B       		.uleb128 0xb
+ 1824 00f5 3B       		.uleb128 0x3b
+ 1825 00f6 0B       		.uleb128 0xb
+ 1826 00f7 27       		.uleb128 0x27
+ 1827 00f8 19       		.uleb128 0x19
+ 1828 00f9 49       		.uleb128 0x49
+ 1829 00fa 13       		.uleb128 0x13
+ 1830 00fb 11       		.uleb128 0x11
+ 1831 00fc 01       		.uleb128 0x1
+ 1832 00fd 12       		.uleb128 0x12
+ 1833 00fe 06       		.uleb128 0x6
+ 1834 00ff 40       		.uleb128 0x40
+ 1835 0100 18       		.uleb128 0x18
+ 1836 0101 9642     		.uleb128 0x2116
+ 1837 0103 19       		.uleb128 0x19
+ 1838 0104 01       		.uleb128 0x1
+ 1839 0105 13       		.uleb128 0x13
+ 1840 0106 00       		.byte	0
+ 1841 0107 00       		.byte	0
+ 1842 0108 15       		.uleb128 0x15
+ 1843 0109 05       		.uleb128 0x5
+ 1844 010a 00       		.byte	0
+ 1845 010b 03       		.uleb128 0x3
+ 1846 010c 0E       		.uleb128 0xe
+ 1847 010d 3A       		.uleb128 0x3a
+ 1848 010e 0B       		.uleb128 0xb
+ 1849 010f 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 38
 
 
- 1844 000b 00       		.byte	0
- 1845 000c 0000     		.2byte	0
- 1846 000e 0000     		.2byte	0
- 1847 0010 00000000 		.4byte	.LFB64
- 1848 0014 0C000000 		.4byte	.LFE64-.LFB64
- 1849 0018 00000000 		.4byte	.LFB65
- 1850 001c 0C000000 		.4byte	.LFE65-.LFB65
- 1851 0020 00000000 		.4byte	.LFB66
- 1852 0024 20000000 		.4byte	.LFE66-.LFB66
- 1853 0028 00000000 		.4byte	.LFB67
- 1854 002c 0C000000 		.4byte	.LFE67-.LFB67
- 1855 0030 00000000 		.4byte	.LFB68
- 1856 0034 38000000 		.4byte	.LFE68-.LFB68
- 1857 0038 00000000 		.4byte	.LFB69
- 1858 003c 08010000 		.4byte	.LFE69-.LFB69
- 1859 0040 00000000 		.4byte	.LFB70
- 1860 0044 78000000 		.4byte	.LFE70-.LFB70
- 1861 0048 00000000 		.4byte	.LFB71
- 1862 004c 58000000 		.4byte	.LFE71-.LFB71
- 1863 0050 00000000 		.4byte	.LFB72
- 1864 0054 40000000 		.4byte	.LFE72-.LFB72
- 1865 0058 00000000 		.4byte	.LFB73
- 1866 005c 74000000 		.4byte	.LFE73-.LFB73
- 1867 0060 00000000 		.4byte	.LFB74
- 1868 0064 3C000000 		.4byte	.LFE74-.LFB74
- 1869 0068 00000000 		.4byte	0
- 1870 006c 00000000 		.4byte	0
- 1871              		.section	.debug_ranges,"",%progbits
- 1872              	.Ldebug_ranges0:
- 1873 0000 00000000 		.4byte	.LFB64
- 1874 0004 0C000000 		.4byte	.LFE64
- 1875 0008 00000000 		.4byte	.LFB65
- 1876 000c 0C000000 		.4byte	.LFE65
- 1877 0010 00000000 		.4byte	.LFB66
- 1878 0014 20000000 		.4byte	.LFE66
- 1879 0018 00000000 		.4byte	.LFB67
- 1880 001c 0C000000 		.4byte	.LFE67
- 1881 0020 00000000 		.4byte	.LFB68
- 1882 0024 38000000 		.4byte	.LFE68
- 1883 0028 00000000 		.4byte	.LFB69
- 1884 002c 08010000 		.4byte	.LFE69
- 1885 0030 00000000 		.4byte	.LFB70
- 1886 0034 78000000 		.4byte	.LFE70
- 1887 0038 00000000 		.4byte	.LFB71
- 1888 003c 58000000 		.4byte	.LFE71
- 1889 0040 00000000 		.4byte	.LFB72
- 1890 0044 40000000 		.4byte	.LFE72
- 1891 0048 00000000 		.4byte	.LFB73
- 1892 004c 74000000 		.4byte	.LFE73
- 1893 0050 00000000 		.4byte	.LFB74
- 1894 0054 3C000000 		.4byte	.LFE74
- 1895 0058 00000000 		.4byte	0
- 1896 005c 00000000 		.4byte	0
- 1897              		.section	.debug_line,"",%progbits
- 1898              	.Ldebug_line0:
- 1899 0000 B3030000 		.section	.debug_str,"MS",%progbits,1
- 1899      02007302 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 39
+ 1850 0110 0B       		.uleb128 0xb
+ 1851 0111 49       		.uleb128 0x49
+ 1852 0112 13       		.uleb128 0x13
+ 1853 0113 02       		.uleb128 0x2
+ 1854 0114 18       		.uleb128 0x18
+ 1855 0115 00       		.byte	0
+ 1856 0116 00       		.byte	0
+ 1857 0117 16       		.uleb128 0x16
+ 1858 0118 05       		.uleb128 0x5
+ 1859 0119 00       		.byte	0
+ 1860 011a 03       		.uleb128 0x3
+ 1861 011b 08       		.uleb128 0x8
+ 1862 011c 3A       		.uleb128 0x3a
+ 1863 011d 0B       		.uleb128 0xb
+ 1864 011e 3B       		.uleb128 0x3b
+ 1865 011f 0B       		.uleb128 0xb
+ 1866 0120 49       		.uleb128 0x49
+ 1867 0121 13       		.uleb128 0x13
+ 1868 0122 02       		.uleb128 0x2
+ 1869 0123 18       		.uleb128 0x18
+ 1870 0124 00       		.byte	0
+ 1871 0125 00       		.byte	0
+ 1872 0126 17       		.uleb128 0x17
+ 1873 0127 34       		.uleb128 0x34
+ 1874 0128 00       		.byte	0
+ 1875 0129 03       		.uleb128 0x3
+ 1876 012a 08       		.uleb128 0x8
+ 1877 012b 3A       		.uleb128 0x3a
+ 1878 012c 0B       		.uleb128 0xb
+ 1879 012d 3B       		.uleb128 0x3b
+ 1880 012e 0B       		.uleb128 0xb
+ 1881 012f 49       		.uleb128 0x49
+ 1882 0130 13       		.uleb128 0x13
+ 1883 0131 02       		.uleb128 0x2
+ 1884 0132 18       		.uleb128 0x18
+ 1885 0133 00       		.byte	0
+ 1886 0134 00       		.byte	0
+ 1887 0135 18       		.uleb128 0x18
+ 1888 0136 2E       		.uleb128 0x2e
+ 1889 0137 01       		.byte	0x1
+ 1890 0138 3F       		.uleb128 0x3f
+ 1891 0139 19       		.uleb128 0x19
+ 1892 013a 03       		.uleb128 0x3
+ 1893 013b 0E       		.uleb128 0xe
+ 1894 013c 3A       		.uleb128 0x3a
+ 1895 013d 0B       		.uleb128 0xb
+ 1896 013e 3B       		.uleb128 0x3b
+ 1897 013f 0B       		.uleb128 0xb
+ 1898 0140 27       		.uleb128 0x27
+ 1899 0141 19       		.uleb128 0x19
+ 1900 0142 11       		.uleb128 0x11
+ 1901 0143 01       		.uleb128 0x1
+ 1902 0144 12       		.uleb128 0x12
+ 1903 0145 06       		.uleb128 0x6
+ 1904 0146 40       		.uleb128 0x40
+ 1905 0147 18       		.uleb128 0x18
+ 1906 0148 9642     		.uleb128 0x2116
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 39
 
 
- 1899      00000201 
- 1899      FB0E0D00 
- 1899      01010101 
- 1900              	.LASF56:
- 1901 0000 745F6F66 		.ascii	"t_of_day\000"
- 1901      5F646179 
- 1901      00
- 1902              	.LASF19:
- 1903 0009 746D5F68 		.ascii	"tm_hour\000"
- 1903      6F757200 
- 1904              	.LASF44:
- 1905 0011 64656275 		.ascii	"debug_sleep\000"
- 1905      675F736C 
- 1905      65657000 
- 1906              	.LASF37:
- 1907 001d 74657374 		.ascii	"test_name\000"
- 1907      5F6E616D 
- 1907      6500
- 1908              	.LASF61:
- 1909 0027 696E7075 		.ascii	"input_str\000"
- 1909      745F7374 
- 1909      7200
- 1910              	.LASF42:
- 1911 0031 64656275 		.ascii	"debug_start\000"
- 1911      675F7374 
- 1911      61727400 
- 1912              	.LASF2:
- 1913 003d 73686F72 		.ascii	"short int\000"
- 1913      7420696E 
- 1913      7400
- 1914              	.LASF36:
- 1915 0047 5254435F 		.ascii	"RTC_TIME_DATE\000"
- 1915      54494D45 
- 1915      5F444154 
- 1915      4500
- 1916              	.LASF60:
- 1917 0055 73747265 		.ascii	"strextract\000"
- 1917      78747261 
- 1917      637400
- 1918              	.LASF65:
- 1919 0060 62656769 		.ascii	"begin\000"
- 1919      6E00
- 1920              	.LASF70:
- 1921 0066 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1921      43313120 
- 1921      352E342E 
- 1921      31203230 
- 1921      31363036 
- 1922 0099 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1922      20726576 
- 1922      6973696F 
- 1922      6E203233 
- 1922      37373135 
- 1923 00cc 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1923      66756E63 
- 1923      74696F6E 
- 1923      2D736563 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 40
+ 1907 014a 19       		.uleb128 0x19
+ 1908 014b 01       		.uleb128 0x1
+ 1909 014c 13       		.uleb128 0x13
+ 1910 014d 00       		.byte	0
+ 1911 014e 00       		.byte	0
+ 1912 014f 19       		.uleb128 0x19
+ 1913 0150 18       		.uleb128 0x18
+ 1914 0151 00       		.byte	0
+ 1915 0152 00       		.byte	0
+ 1916 0153 00       		.byte	0
+ 1917 0154 1A       		.uleb128 0x1a
+ 1918 0155 34       		.uleb128 0x34
+ 1919 0156 00       		.byte	0
+ 1920 0157 03       		.uleb128 0x3
+ 1921 0158 0E       		.uleb128 0xe
+ 1922 0159 3A       		.uleb128 0x3a
+ 1923 015a 0B       		.uleb128 0xb
+ 1924 015b 3B       		.uleb128 0x3b
+ 1925 015c 0B       		.uleb128 0xb
+ 1926 015d 49       		.uleb128 0x49
+ 1927 015e 13       		.uleb128 0x13
+ 1928 015f 02       		.uleb128 0x2
+ 1929 0160 18       		.uleb128 0x18
+ 1930 0161 00       		.byte	0
+ 1931 0162 00       		.byte	0
+ 1932 0163 1B       		.uleb128 0x1b
+ 1933 0164 21       		.uleb128 0x21
+ 1934 0165 00       		.byte	0
+ 1935 0166 49       		.uleb128 0x49
+ 1936 0167 13       		.uleb128 0x13
+ 1937 0168 2F       		.uleb128 0x2f
+ 1938 0169 05       		.uleb128 0x5
+ 1939 016a 00       		.byte	0
+ 1940 016b 00       		.byte	0
+ 1941 016c 1C       		.uleb128 0x1c
+ 1942 016d 2E       		.uleb128 0x2e
+ 1943 016e 01       		.byte	0x1
+ 1944 016f 3F       		.uleb128 0x3f
+ 1945 0170 19       		.uleb128 0x19
+ 1946 0171 03       		.uleb128 0x3
+ 1947 0172 0E       		.uleb128 0xe
+ 1948 0173 3A       		.uleb128 0x3a
+ 1949 0174 0B       		.uleb128 0xb
+ 1950 0175 3B       		.uleb128 0x3b
+ 1951 0176 0B       		.uleb128 0xb
+ 1952 0177 49       		.uleb128 0x49
+ 1953 0178 13       		.uleb128 0x13
+ 1954 0179 11       		.uleb128 0x11
+ 1955 017a 01       		.uleb128 0x1
+ 1956 017b 12       		.uleb128 0x12
+ 1957 017c 06       		.uleb128 0x6
+ 1958 017d 40       		.uleb128 0x40
+ 1959 017e 18       		.uleb128 0x18
+ 1960 017f 9642     		.uleb128 0x2116
+ 1961 0181 19       		.uleb128 0x19
+ 1962 0182 01       		.uleb128 0x1
+ 1963 0183 13       		.uleb128 0x13
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 40
 
 
- 1923      74696F6E 
- 1924              	.LASF23:
- 1925 00f4 746D5F77 		.ascii	"tm_wday\000"
- 1925      64617900 
- 1926              	.LASF6:
- 1927 00fc 6C6F6E67 		.ascii	"long long int\000"
- 1927      206C6F6E 
- 1927      6720696E 
- 1927      7400
- 1928              	.LASF59:
- 1929 010a 5F777269 		.ascii	"_write\000"
- 1929      746500
- 1930              	.LASF54:
- 1931 0111 67657454 		.ascii	"getTimeStamp\000"
- 1931      696D6553 
- 1931      74616D70 
- 1931      00
- 1932              	.LASF30:
- 1933 011e 486F7572 		.ascii	"Hour\000"
- 1933      00
- 1934              	.LASF46:
- 1935 0123 66696C65 		.ascii	"file\000"
- 1935      00
- 1936              	.LASF32:
- 1937 0128 4461794F 		.ascii	"DayOfMonth\000"
- 1937      664D6F6E 
- 1937      746800
- 1938              	.LASF27:
- 1939 0133 75696E74 		.ascii	"uint16\000"
- 1939      313600
- 1940              	.LASF41:
- 1941 013a 76615F6C 		.ascii	"va_list\000"
- 1941      69737400 
- 1942              	.LASF71:
- 1943 0142 64656275 		.ascii	"debug.c\000"
- 1943      672E6300 
- 1944              	.LASF26:
- 1945 014a 75696E74 		.ascii	"uint8\000"
- 1945      3800
- 1946              	.LASF62:
- 1947 0150 6F757470 		.ascii	"output_str\000"
- 1947      75745F73 
- 1947      747200
- 1948              	.LASF18:
- 1949 015b 746D5F6D 		.ascii	"tm_min\000"
- 1949      696E00
- 1950              	.LASF28:
- 1951 0162 666C6F61 		.ascii	"float\000"
- 1951      7400
- 1952              	.LASF21:
- 1953 0168 746D5F6D 		.ascii	"tm_mon\000"
- 1953      6F6E00
- 1954              	.LASF48:
- 1955 016f 666F726D 		.ascii	"format\000"
- 1955      617400
- 1956              	.LASF15:
- 1957 0176 74696D65 		.ascii	"time_t\000"
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 41
+ 1964 0184 00       		.byte	0
+ 1965 0185 00       		.byte	0
+ 1966 0186 1D       		.uleb128 0x1d
+ 1967 0187 34       		.uleb128 0x34
+ 1968 0188 00       		.byte	0
+ 1969 0189 03       		.uleb128 0x3
+ 1970 018a 0E       		.uleb128 0xe
+ 1971 018b 3A       		.uleb128 0x3a
+ 1972 018c 0B       		.uleb128 0xb
+ 1973 018d 3B       		.uleb128 0x3b
+ 1974 018e 05       		.uleb128 0x5
+ 1975 018f 49       		.uleb128 0x49
+ 1976 0190 13       		.uleb128 0x13
+ 1977 0191 3F       		.uleb128 0x3f
+ 1978 0192 19       		.uleb128 0x19
+ 1979 0193 3C       		.uleb128 0x3c
+ 1980 0194 19       		.uleb128 0x19
+ 1981 0195 00       		.byte	0
+ 1982 0196 00       		.byte	0
+ 1983 0197 1E       		.uleb128 0x1e
+ 1984 0198 34       		.uleb128 0x34
+ 1985 0199 00       		.byte	0
+ 1986 019a 03       		.uleb128 0x3
+ 1987 019b 0E       		.uleb128 0xe
+ 1988 019c 3A       		.uleb128 0x3a
+ 1989 019d 0B       		.uleb128 0xb
+ 1990 019e 3B       		.uleb128 0x3b
+ 1991 019f 0B       		.uleb128 0xb
+ 1992 01a0 49       		.uleb128 0x49
+ 1993 01a1 13       		.uleb128 0x13
+ 1994 01a2 3F       		.uleb128 0x3f
+ 1995 01a3 19       		.uleb128 0x19
+ 1996 01a4 02       		.uleb128 0x2
+ 1997 01a5 18       		.uleb128 0x18
+ 1998 01a6 00       		.byte	0
+ 1999 01a7 00       		.byte	0
+ 2000 01a8 00       		.byte	0
+ 2001              		.section	.debug_aranges,"",%progbits
+ 2002 0000 6C000000 		.4byte	0x6c
+ 2003 0004 0200     		.2byte	0x2
+ 2004 0006 00000000 		.4byte	.Ldebug_info0
+ 2005 000a 04       		.byte	0x4
+ 2006 000b 00       		.byte	0
+ 2007 000c 0000     		.2byte	0
+ 2008 000e 0000     		.2byte	0
+ 2009 0010 00000000 		.4byte	.LFB64
+ 2010 0014 0C000000 		.4byte	.LFE64-.LFB64
+ 2011 0018 00000000 		.4byte	.LFB65
+ 2012 001c 0C000000 		.4byte	.LFE65-.LFB65
+ 2013 0020 00000000 		.4byte	.LFB66
+ 2014 0024 20000000 		.4byte	.LFE66-.LFB66
+ 2015 0028 00000000 		.4byte	.LFB67
+ 2016 002c 0C000000 		.4byte	.LFE67-.LFB67
+ 2017 0030 00000000 		.4byte	.LFB68
+ 2018 0034 38000000 		.4byte	.LFE68-.LFB68
+ 2019 0038 00000000 		.4byte	.LFB69
+ 2020 003c 08010000 		.4byte	.LFE69-.LFB69
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 41
 
 
- 1957      5F7400
- 1958              	.LASF16:
- 1959 017d 5F5F7661 		.ascii	"__va_list\000"
- 1959      5F6C6973 
- 1959      7400
- 1960              	.LASF39:
- 1961 0187 72656173 		.ascii	"reason\000"
- 1961      6F6E00
- 1962              	.LASF63:
- 1963 018e 73656172 		.ascii	"search_start\000"
- 1963      63685F73 
- 1963      74617274 
- 1963      00
- 1964              	.LASF58:
- 1965 019b 73747269 		.ascii	"string\000"
- 1965      6E6700
- 1966              	.LASF68:
- 1967 01a2 42425F66 		.ascii	"BB_fileName\000"
- 1967      696C654E 
- 1967      616D6500 
- 1968              	.LASF35:
- 1969 01ae 59656172 		.ascii	"Year\000"
- 1969      00
- 1970              	.LASF34:
- 1971 01b3 4D6F6E74 		.ascii	"Month\000"
- 1971      6800
- 1972              	.LASF9:
- 1973 01b9 6C6F6E67 		.ascii	"long double\000"
- 1973      20646F75 
- 1973      626C6500 
- 1974              	.LASF1:
- 1975 01c5 756E7369 		.ascii	"unsigned char\000"
- 1975      676E6564 
- 1975      20636861 
- 1975      7200
- 1976              	.LASF31:
- 1977 01d3 4461794F 		.ascii	"DayOfWeek\000"
- 1977      66576565 
- 1977      6B00
- 1978              	.LASF0:
- 1979 01dd 7369676E 		.ascii	"signed char\000"
- 1979      65642063 
- 1979      68617200 
- 1980              	.LASF22:
- 1981 01e9 746D5F79 		.ascii	"tm_year\000"
- 1981      65617200 
- 1982              	.LASF7:
- 1983 01f1 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1983      206C6F6E 
- 1983      6720756E 
- 1983      7369676E 
- 1983      65642069 
- 1984              	.LASF47:
- 1985 0208 74797065 		.ascii	"type\000"
- 1985      00
- 1986              	.LASF8:
- 1987 020d 756E7369 		.ascii	"unsigned int\000"
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 42
+ 2021 0040 00000000 		.4byte	.LFB70
+ 2022 0044 78000000 		.4byte	.LFE70-.LFB70
+ 2023 0048 00000000 		.4byte	.LFB71
+ 2024 004c 58000000 		.4byte	.LFE71-.LFB71
+ 2025 0050 00000000 		.4byte	.LFB72
+ 2026 0054 40000000 		.4byte	.LFE72-.LFB72
+ 2027 0058 00000000 		.4byte	.LFB73
+ 2028 005c 74000000 		.4byte	.LFE73-.LFB73
+ 2029 0060 00000000 		.4byte	.LFB74
+ 2030 0064 3C000000 		.4byte	.LFE74-.LFB74
+ 2031 0068 00000000 		.4byte	0
+ 2032 006c 00000000 		.4byte	0
+ 2033              		.section	.debug_ranges,"",%progbits
+ 2034              	.Ldebug_ranges0:
+ 2035 0000 00000000 		.4byte	.LFB64
+ 2036 0004 0C000000 		.4byte	.LFE64
+ 2037 0008 00000000 		.4byte	.LFB65
+ 2038 000c 0C000000 		.4byte	.LFE65
+ 2039 0010 00000000 		.4byte	.LFB66
+ 2040 0014 20000000 		.4byte	.LFE66
+ 2041 0018 00000000 		.4byte	.LFB67
+ 2042 001c 0C000000 		.4byte	.LFE67
+ 2043 0020 00000000 		.4byte	.LFB68
+ 2044 0024 38000000 		.4byte	.LFE68
+ 2045 0028 00000000 		.4byte	.LFB69
+ 2046 002c 08010000 		.4byte	.LFE69
+ 2047 0030 00000000 		.4byte	.LFB70
+ 2048 0034 78000000 		.4byte	.LFE70
+ 2049 0038 00000000 		.4byte	.LFB71
+ 2050 003c 58000000 		.4byte	.LFE71
+ 2051 0040 00000000 		.4byte	.LFB72
+ 2052 0044 40000000 		.4byte	.LFE72
+ 2053 0048 00000000 		.4byte	.LFB73
+ 2054 004c 74000000 		.4byte	.LFE73
+ 2055 0050 00000000 		.4byte	.LFB74
+ 2056 0054 3C000000 		.4byte	.LFE74
+ 2057 0058 00000000 		.4byte	0
+ 2058 005c 00000000 		.4byte	0
+ 2059              		.section	.debug_line,"",%progbits
+ 2060              	.Ldebug_line0:
+ 2061 0000 BB030000 		.section	.debug_str,"MS",%progbits,1
+ 2061      02007E02 
+ 2061      00000201 
+ 2061      FB0E0D00 
+ 2061      01010101 
+ 2062              	.LASF43:
+ 2063 0000 6D6F6465 		.ascii	"model_id\000"
+ 2063      6C5F6964 
+ 2063      00
+ 2064              	.LASF73:
+ 2065 0009 745F6F66 		.ascii	"t_of_day\000"
+ 2065      5F646179 
+ 2065      00
+ 2066              	.LASF42:
+ 2067 0012 73696D5F 		.ascii	"sim_id\000"
+ 2067      696400
+ 2068              	.LASF20:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 42
 
 
- 1987      676E6564 
- 1987      20696E74 
- 1987      00
- 1988              	.LASF73:
- 1989 021a 5F5F6170 		.ascii	"__ap\000"
- 1989      00
- 1990              	.LASF20:
- 1991 021f 746D5F6D 		.ascii	"tm_mday\000"
- 1991      64617900 
- 1992              	.LASF72:
- 1993 0227 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
- 1993      73657273 
- 1993      5C686169 
- 1993      6C5C4465 
- 1993      736B746F 
- 1994 0255 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS.cydsn\000"
- 1994      6F72694F 
- 1994      535C6E6F 
- 1994      746F7269 
- 1994      4F532E63 
- 1995              	.LASF3:
- 1996 026e 73686F72 		.ascii	"short unsigned int\000"
- 1996      7420756E 
- 1996      7369676E 
- 1996      65642069 
- 1996      6E7400
- 1997              	.LASF38:
- 1998 0281 73746174 		.ascii	"status\000"
- 1998      757300
- 1999              	.LASF66:
- 2000 0288 7072696E 		.ascii	"printd\000"
- 2000      746400
- 2001              	.LASF13:
- 2002 028f 63686172 		.ascii	"char\000"
- 2002      00
- 2003              	.LASF40:
- 2004 0294 74657374 		.ascii	"test_t\000"
- 2004      5F7400
- 2005              	.LASF4:
- 2006 029b 6C6F6E67 		.ascii	"long int\000"
- 2006      20696E74 
- 2006      00
- 2007              	.LASF52:
- 2008 02a4 7072696E 		.ascii	"printTestStatus\000"
- 2008      74546573 
- 2008      74537461 
- 2008      74757300 
- 2009              	.LASF14:
- 2010 02b4 696E7433 		.ascii	"int32_t\000"
- 2010      325F7400 
- 2011              	.LASF49:
- 2012 02bc 64656275 		.ascii	"debug_string\000"
- 2012      675F7374 
- 2012      72696E67 
- 2012      00
- 2013              	.LASF24:
- 2014 02c9 746D5F79 		.ascii	"tm_yday\000"
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 43
+ 2069 0019 746D5F6D 		.ascii	"tm_mday\000"
+ 2069      64617900 
+ 2070              	.LASF61:
+ 2071 0021 64656275 		.ascii	"debug_sleep\000"
+ 2071      675F736C 
+ 2071      65657000 
+ 2072              	.LASF38:
+ 2073 002d 74657374 		.ascii	"test_name\000"
+ 2073      5F6E616D 
+ 2073      6500
+ 2074              	.LASF78:
+ 2075 0037 696E7075 		.ascii	"input_str\000"
+ 2075      745F7374 
+ 2075      7200
+ 2076              	.LASF59:
+ 2077 0041 64656275 		.ascii	"debug_start\000"
+ 2077      675F7374 
+ 2077      61727400 
+ 2078              	.LASF2:
+ 2079 004d 73686F72 		.ascii	"short int\000"
+ 2079      7420696E 
+ 2079      7400
+ 2080              	.LASF12:
+ 2081 0057 73697A65 		.ascii	"sizetype\000"
+ 2081      74797065 
+ 2081      00
+ 2082              	.LASF77:
+ 2083 0060 73747265 		.ascii	"strextract\000"
+ 2083      78747261 
+ 2083      637400
+ 2084              	.LASF82:
+ 2085 006b 62656769 		.ascii	"begin\000"
+ 2085      6E00
+ 2086              	.LASF91:
+ 2087 0071 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2087      43313120 
+ 2087      352E342E 
+ 2087      31203230 
+ 2087      31363036 
+ 2088 00a4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2088      20726576 
+ 2088      6973696F 
+ 2088      6E203233 
+ 2088      37373135 
+ 2089 00d7 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2089      66756E63 
+ 2089      74696F6E 
+ 2089      2D736563 
+ 2089      74696F6E 
+ 2090              	.LASF23:
+ 2091 00ff 746D5F77 		.ascii	"tm_wday\000"
+ 2091      64617900 
+ 2092              	.LASF6:
+ 2093 0107 6C6F6E67 		.ascii	"long long int\000"
+ 2093      206C6F6E 
+ 2093      6720696E 
+ 2093      7400
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 43
 
 
- 2014      64617900 
- 2015              	.LASF55:
- 2016 02d1 6C6F6361 		.ascii	"localTime\000"
- 2016      6C54696D 
- 2016      6500
- 2017              	.LASF53:
- 2018 02db 74657374 		.ascii	"test\000"
- 2018      00
- 2019              	.LASF64:
- 2020 02e0 73656172 		.ascii	"search_end\000"
- 2020      63685F65 
- 2020      6E6400
- 2021              	.LASF25:
- 2022 02eb 746D5F69 		.ascii	"tm_isdst\000"
- 2022      73647374 
- 2022      00
- 2023              	.LASF43:
- 2024 02f4 64656275 		.ascii	"debug_stop\000"
- 2024      675F7374 
- 2024      6F7000
- 2025              	.LASF5:
- 2026 02ff 6C6F6E67 		.ascii	"long unsigned int\000"
- 2026      20756E73 
- 2026      69676E65 
- 2026      6420696E 
- 2026      7400
- 2027              	.LASF29:
- 2028 0311 646F7562 		.ascii	"double\000"
- 2028      6C6500
- 2029              	.LASF50:
- 2030 0318 61726770 		.ascii	"argptr\000"
- 2030      747200
- 2031              	.LASF69:
- 2032 031f 64656275 		.ascii	"debug_level\000"
- 2032      675F6C65 
- 2032      76656C00 
- 2033              	.LASF10:
- 2034 032b 5F5F696E 		.ascii	"__int32_t\000"
- 2034      7433325F 
- 2034      7400
- 2035              	.LASF12:
- 2036 0335 73697A65 		.ascii	"sizetype\000"
- 2036      74797065 
- 2036      00
- 2037              	.LASF11:
- 2038 033e 5F5F676E 		.ascii	"__gnuc_va_list\000"
- 2038      75635F76 
- 2038      615F6C69 
- 2038      737400
- 2039              	.LASF45:
- 2040 034d 64656275 		.ascii	"debug_wakeup\000"
- 2040      675F7761 
- 2040      6B657570 
- 2040      00
- 2041              	.LASF51:
- 2042 035a 7072696E 		.ascii	"printNotif\000"
- 2042      744E6F74 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\ccLqUsN5.s 			page 44
+ 2094              	.LASF76:
+ 2095 0115 5F777269 		.ascii	"_write\000"
+ 2095      746500
+ 2096              	.LASF71:
+ 2097 011c 67657454 		.ascii	"getTimeStamp\000"
+ 2097      696D6553 
+ 2097      74616D70 
+ 2097      00
+ 2098              	.LASF31:
+ 2099 0129 486F7572 		.ascii	"Hour\000"
+ 2099      00
+ 2100              	.LASF63:
+ 2101 012e 66696C65 		.ascii	"file\000"
+ 2101      00
+ 2102              	.LASF48:
+ 2103 0133 65636E6F 		.ascii	"ecno\000"
+ 2103      00
+ 2104              	.LASF27:
+ 2105 0138 75696E74 		.ascii	"uint16\000"
+ 2105      313600
+ 2106              	.LASF15:
+ 2107 013f 74696D65 		.ascii	"time_t\000"
+ 2107      5F7400
+ 2108              	.LASF58:
+ 2109 0146 76615F6C 		.ascii	"va_list\000"
+ 2109      69737400 
+ 2110              	.LASF26:
+ 2111 014e 75696E74 		.ascii	"uint8\000"
+ 2111      3800
+ 2112              	.LASF79:
+ 2113 0154 6F757470 		.ascii	"output_str\000"
+ 2113      75745F73 
+ 2113      747200
+ 2114              	.LASF47:
+ 2115 015f 72736370 		.ascii	"rscp\000"
+ 2115      00
+ 2116              	.LASF50:
+ 2117 0164 72737270 		.ascii	"rsrp\000"
+ 2117      00
+ 2118              	.LASF49:
+ 2119 0169 72737271 		.ascii	"rsrq\000"
+ 2119      00
+ 2120              	.LASF19:
+ 2121 016e 746D5F68 		.ascii	"tm_hour\000"
+ 2121      6F757200 
+ 2122              	.LASF29:
+ 2123 0176 666C6F61 		.ascii	"float\000"
+ 2123      7400
+ 2124              	.LASF32:
+ 2125 017c 4461794F 		.ascii	"DayOfWeek\000"
+ 2125      66576565 
+ 2125      6B00
+ 2126              	.LASF21:
+ 2127 0186 746D5F6D 		.ascii	"tm_mon\000"
+ 2127      6F6E00
+ 2128              	.LASF65:
+ 2129 018d 666F726D 		.ascii	"format\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 44
 
 
- 2042      696600
- 2043              	.LASF17:
- 2044 0365 746D5F73 		.ascii	"tm_sec\000"
- 2044      656300
- 2045              	.LASF67:
- 2046 036c 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 2046      52784275 
- 2046      66666572 
- 2046      00
- 2047              	.LASF57:
- 2048 0379 73747269 		.ascii	"stripEscapeCharacters\000"
- 2048      70457363 
- 2048      61706543 
- 2048      68617261 
- 2048      63746572 
- 2049              	.LASF33:
- 2050 038f 4461794F 		.ascii	"DayOfYear\000"
- 2050      66596561 
- 2050      7200
- 2051              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 2129      617400
+ 2130              	.LASF81:
+ 2131 0194 73656172 		.ascii	"search_end\000"
+ 2131      63685F65 
+ 2131      6E6400
+ 2132              	.LASF16:
+ 2133 019f 5F5F7661 		.ascii	"__va_list\000"
+ 2133      5F6C6973 
+ 2133      7400
+ 2134              	.LASF13:
+ 2135 01a9 63686172 		.ascii	"char\000"
+ 2135      00
+ 2136              	.LASF45:
+ 2137 01ae 6D6F6465 		.ascii	"modem_info_t\000"
+ 2137      6D5F696E 
+ 2137      666F5F74 
+ 2137      00
+ 2138              	.LASF40:
+ 2139 01bb 72656173 		.ascii	"reason\000"
+ 2139      6F6E00
+ 2140              	.LASF4:
+ 2141 01c2 6C6F6E67 		.ascii	"long int\000"
+ 2141      20696E74 
+ 2141      00
+ 2142              	.LASF80:
+ 2143 01cb 73656172 		.ascii	"search_start\000"
+ 2143      63685F73 
+ 2143      74617274 
+ 2143      00
+ 2144              	.LASF83:
+ 2145 01d8 7072696E 		.ascii	"printd\000"
+ 2145      746400
+ 2146              	.LASF87:
+ 2147 01df 6D6F6465 		.ascii	"modem_info\000"
+ 2147      6D5F696E 
+ 2147      666F00
+ 2148              	.LASF36:
+ 2149 01ea 59656172 		.ascii	"Year\000"
+ 2149      00
+ 2150              	.LASF90:
+ 2151 01ef 42425F66 		.ascii	"BB_fileName\000"
+ 2151      696C654E 
+ 2151      616D6500 
+ 2152              	.LASF54:
+ 2153 01fb 6D656173 		.ascii	"measure_time\000"
+ 2153      7572655F 
+ 2153      74696D65 
+ 2153      00
+ 2154              	.LASF35:
+ 2155 0208 4D6F6E74 		.ascii	"Month\000"
+ 2155      6800
+ 2156              	.LASF9:
+ 2157 020e 6C6F6E67 		.ascii	"long double\000"
+ 2157      20646F75 
+ 2157      626C6500 
+ 2158              	.LASF89:
+ 2159 021a 75706461 		.ascii	"updatable_parameters\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 45
+
+
+ 2159      7461626C 
+ 2159      655F7061 
+ 2159      72616D65 
+ 2159      74657273 
+ 2160              	.LASF1:
+ 2161 022f 756E7369 		.ascii	"unsigned char\000"
+ 2161      676E6564 
+ 2161      20636861 
+ 2161      7200
+ 2162              	.LASF86:
+ 2163 023d 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 2163      6D5F7374 
+ 2163      6172745F 
+ 2163      74696D65 
+ 2163      5F737461 
+ 2164              	.LASF92:
+ 2165 0254 64656275 		.ascii	"debug.c\000"
+ 2165      672E6300 
+ 2166              	.LASF0:
+ 2167 025c 7369676E 		.ascii	"signed char\000"
+ 2167      65642063 
+ 2167      68617200 
+ 2168              	.LASF22:
+ 2169 0268 746D5F79 		.ascii	"tm_year\000"
+ 2169      65617200 
+ 2170              	.LASF7:
+ 2171 0270 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2171      206C6F6E 
+ 2171      6720756E 
+ 2171      7369676E 
+ 2171      65642069 
+ 2172              	.LASF64:
+ 2173 0287 74797065 		.ascii	"type\000"
+ 2173      00
+ 2174              	.LASF8:
+ 2175 028c 756E7369 		.ascii	"unsigned int\000"
+ 2175      676E6564 
+ 2175      20696E74 
+ 2175      00
+ 2176              	.LASF55:
+ 2177 0299 73796E63 		.ascii	"sync_time\000"
+ 2177      5F74696D 
+ 2177      6500
+ 2178              	.LASF93:
+ 2179 02a3 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
+ 2179      73657273 
+ 2179      5C686169 
+ 2179      6C5C4465 
+ 2179      736B746F 
+ 2180 02d1 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS.cydsn\000"
+ 2180      6F72694F 
+ 2180      535C6E6F 
+ 2180      746F7269 
+ 2180      4F532E63 
+ 2181              	.LASF70:
+ 2182 02ea 74657374 		.ascii	"test\000"
+ 2182      00
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 46
+
+
+ 2183              	.LASF88:
+ 2184 02ef 6D6F6465 		.ascii	"modem_stats\000"
+ 2184      6D5F7374 
+ 2184      61747300 
+ 2185              	.LASF57:
+ 2186 02fb 75706461 		.ascii	"updatable_parameters_t\000"
+ 2186      7461626C 
+ 2186      655F7061 
+ 2186      72616D65 
+ 2186      74657273 
+ 2187              	.LASF3:
+ 2188 0312 73686F72 		.ascii	"short unsigned int\000"
+ 2188      7420756E 
+ 2188      7369676E 
+ 2188      65642069 
+ 2188      6E7400
+ 2189              	.LASF51:
+ 2190 0325 74696D65 		.ascii	"time_to_network_connect\000"
+ 2190      5F746F5F 
+ 2190      6E657477 
+ 2190      6F726B5F 
+ 2190      636F6E6E 
+ 2191              	.LASF39:
+ 2192 033d 73746174 		.ascii	"status\000"
+ 2192      757300
+ 2193              	.LASF94:
+ 2194 0344 5F5F6170 		.ascii	"__ap\000"
+ 2194      00
+ 2195              	.LASF52:
+ 2196 0349 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 2196      5F746F5F 
+ 2196      61637175 
+ 2196      6972655F 
+ 2196      697000
+ 2197              	.LASF41:
+ 2198 035c 74657374 		.ascii	"test_t\000"
+ 2198      5F7400
+ 2199              	.LASF44:
+ 2200 0363 696D6569 		.ascii	"imei\000"
+ 2200      00
+ 2201              	.LASF69:
+ 2202 0368 7072696E 		.ascii	"printTestStatus\000"
+ 2202      74546573 
+ 2202      74537461 
+ 2202      74757300 
+ 2203              	.LASF14:
+ 2204 0378 696E7433 		.ascii	"int32_t\000"
+ 2204      325F7400 
+ 2205              	.LASF66:
+ 2206 0380 64656275 		.ascii	"debug_string\000"
+ 2206      675F7374 
+ 2206      72696E67 
+ 2206      00
+ 2207              	.LASF53:
+ 2208 038d 6D6F6465 		.ascii	"modem_stats_t\000"
+ 2208      6D5F7374 
+ 2208      6174735F 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 47
+
+
+ 2208      7400
+ 2209              	.LASF85:
+ 2210 039b 6D6F6465 		.ascii	"modem_state\000"
+ 2210      6D5F7374 
+ 2210      61746500 
+ 2211              	.LASF75:
+ 2212 03a7 73747269 		.ascii	"string\000"
+ 2212      6E6700
+ 2213              	.LASF72:
+ 2214 03ae 6C6F6361 		.ascii	"localTime\000"
+ 2214      6C54696D 
+ 2214      6500
+ 2215              	.LASF33:
+ 2216 03b8 4461794F 		.ascii	"DayOfMonth\000"
+ 2216      664D6F6E 
+ 2216      746800
+ 2217              	.LASF18:
+ 2218 03c3 746D5F6D 		.ascii	"tm_min\000"
+ 2218      696E00
+ 2219              	.LASF25:
+ 2220 03ca 746D5F69 		.ascii	"tm_isdst\000"
+ 2220      73647374 
+ 2220      00
+ 2221              	.LASF60:
+ 2222 03d3 64656275 		.ascii	"debug_stop\000"
+ 2222      675F7374 
+ 2222      6F7000
+ 2223              	.LASF5:
+ 2224 03de 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2224      20756E73 
+ 2224      69676E65 
+ 2224      6420696E 
+ 2224      7400
+ 2225              	.LASF24:
+ 2226 03f0 746D5F79 		.ascii	"tm_yday\000"
+ 2226      64617900 
+ 2227              	.LASF28:
+ 2228 03f8 696E7433 		.ascii	"int32\000"
+ 2228      3200
+ 2229              	.LASF30:
+ 2230 03fe 646F7562 		.ascii	"double\000"
+ 2230      6C6500
+ 2231              	.LASF67:
+ 2232 0405 61726770 		.ascii	"argptr\000"
+ 2232      747200
+ 2233              	.LASF56:
+ 2234 040c 64656275 		.ascii	"debug_level\000"
+ 2234      675F6C65 
+ 2234      76656C00 
+ 2235              	.LASF10:
+ 2236 0418 5F5F696E 		.ascii	"__int32_t\000"
+ 2236      7433325F 
+ 2236      7400
+ 2237              	.LASF11:
+ 2238 0422 5F5F676E 		.ascii	"__gnuc_va_list\000"
+ 2238      75635F76 
+ 2238      615F6C69 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccqsyq2d.s 			page 48
+
+
+ 2238      737400
+ 2239              	.LASF62:
+ 2240 0431 64656275 		.ascii	"debug_wakeup\000"
+ 2240      675F7761 
+ 2240      6B657570 
+ 2240      00
+ 2241              	.LASF68:
+ 2242 043e 7072696E 		.ascii	"printNotif\000"
+ 2242      744E6F74 
+ 2242      696600
+ 2243              	.LASF17:
+ 2244 0449 746D5F73 		.ascii	"tm_sec\000"
+ 2244      656300
+ 2245              	.LASF84:
+ 2246 0450 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2246      52784275 
+ 2246      66666572 
+ 2246      00
+ 2247              	.LASF37:
+ 2248 045d 5254435F 		.ascii	"RTC_TIME_DATE\000"
+ 2248      54494D45 
+ 2248      5F444154 
+ 2248      4500
+ 2249              	.LASF46:
+ 2250 046b 72737369 		.ascii	"rssi\000"
+ 2250      00
+ 2251              	.LASF74:
+ 2252 0470 73747269 		.ascii	"stripEscapeCharacters\000"
+ 2252      70457363 
+ 2252      61706543 
+ 2252      68617261 
+ 2252      63746572 
+ 2253              	.LASF34:
+ 2254 0486 4461794F 		.ascii	"DayOfYear\000"
+ 2254      66596561 
+ 2254      7200
+ 2255              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

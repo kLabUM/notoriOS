@@ -54,6 +54,8 @@ void ReadyOrNot()
     debug_start();                      // Start UART debug
     
     modem_initialize();                 // Initialize the modem
+    
+    updatable_parameters_initialize();  // Initialize sampling, measurement, and debug frequencies 
    
     
     // Collect system info and store in struct (modem ID, silicon ID, etc)
@@ -79,10 +81,10 @@ void ReadyOrNot()
         
     
     // Create a continuous alarm called alarmMeasure that triggers every 10 min to take measurements
-    alarmMeasure = CreateAlarm(1u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 1u;
     // Create a continuous alarm called alarmSync that triggers every 60 min to sync the data to database
-    alarmSync = CreateAlarm(5u,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    alarmSync = CreateAlarm(updatable_parameters.sync_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToSync = 1u;
     
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
@@ -331,14 +333,14 @@ uint8 syncData(){
      
     if(modem_get_state() == MODEM_STATE_OFF){
         // Try up to 3 times to connect to the modem
-        for(int8 try_counter = 1; try_counter<4; try_counter++){
+        for(int8 try_counter = 0; try_counter<3; try_counter++){
             // This puts all the modem points into a state that won't leak power
             modem_power_up();
             // If modem successfully powers up, break out of the loop
             if(modem_power_up() == 1u){
                 break;
-            }else if (modem_power_up() == 0u && try_counter >= 3){
-                try_counter = 1;
+            }else if (modem_power_up() == 0u && try_counter >= 2){
+                try_counter = 0;
                 modem_power_down();
                 return 0u;
             }
@@ -359,7 +361,7 @@ uint8 syncData(){
         pushData("rsrp", s_rsrp, getTimeStamp());
         
         // Push syncData try_counter to know how many tries it tried to connect
-        char c_try_counter[5];
+        char c_try_counter[20];
         snprintf(c_try_counter,sizeof(c_try_counter),"%d",try_counter);
         pushData("try_counter",c_try_counter,getTimeStamp());
         
@@ -379,7 +381,7 @@ uint8 syncData(){
         
         // Old influx API
         // Construct_influx_route(http_route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
-        construct_malcom_route(http_route,"api/v1/write",modem_info.imei,HASH_KEY);
+        construct_malcom_route(http_route,"api/v1/write",modem_info.imei,CURRENT_COMMIT);
         
         printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", http_route);
         
@@ -413,12 +415,13 @@ uint8 syncData(){
         // A good write will return code "204 No Content"
         // AT command #SRECV= is an execution command that permits users to read data arrived through a connection socket
         // = 1 means the UPD information is enabled: data are read just until the end of the UDP datagram and the response carries information about the remote IP address and port and about the remaining bytes in the datagram.
-        status = at_write_command("AT#SRECV=1,1000\r","204 NO CONTENT",5000u);
+        status = at_write_command("AT#SRECV=1,1000\r","204",5000u);
         //printNotif(NOTIF_TYPE_EVENT,"Received SRECV: %s",uart_received_string);
-       
+    
   
         // If it worked, clear the queue and clock how long the end-to-end tx took
         if(status == 1u){
+            get_updated_parameters_from_malcom();
             Clear_Data_Stack();
             int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
             char s_send_time[10];
