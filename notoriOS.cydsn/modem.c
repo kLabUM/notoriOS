@@ -480,24 +480,41 @@ void updatable_parameters_initialize(){
 void get_updated_parameters_from_malcom(){
     
     // Create character array of size 1024 characters to hold the uart received string
-    char SRECV[1024];
+    char s_sample_freq[20];
+    char s_report_freq[20];
+    char s_debug_freq[20];
     
     // Extract UART string recieved from the modem and save to variables
-    extract_string(uart_received_string,": ","OK",SRECV);
+    extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
+    extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
+    extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
     
     // Create variables for what is sent back from the server
     int sample_freq, report_freq, debug_freq;
     
-    // Scan SRECV character array and save values 
-    if(sscanf(SRECV, "*: %d, *: %d, *: %d", &sample_freq,&report_freq,&debug_freq)==3){
+    
+    // Scan character arrays and save values 
+    if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
         updatable_parameters.measure_time = sample_freq;
+        // Create a continuous alarm called alarmMeasure that triggers at the required time to take measurements
+        alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
         printNotif(NOTIF_TYPE_EVENT, "Sampling frequency changed to: %d\r\n", sample_freq);
+    }else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not parse new sampling frequency value.");
+    }
+    if(sscanf(s_report_freq, "%d", &report_freq)==1){
         updatable_parameters.sync_time = report_freq;
+        // Create a continuous alarm called alarmSync that triggers at the required time to sync the data to database
+        alarmSync = CreateAlarm(updatable_parameters.sync_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
         printNotif(NOTIF_TYPE_EVENT, "Reporting frequency changed to: %d\r\n", report_freq);
+        }else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not parse new reporting frequency value.");
+    }
+    if(sscanf(s_debug_freq, "%d", &debug_freq)==1){
         updatable_parameters.debug_level = debug_freq;
         printNotif(NOTIF_TYPE_EVENT, "Debug printing frequency changed to: %d\r\n", debug_freq);
     }else{
-        printNotif(NOTIF_TYPE_ERROR,"Could not parse malcom parameters.");
+        printNotif(NOTIF_TYPE_ERROR,"Could not parse new debugging frequency value.");
     }
 }
     

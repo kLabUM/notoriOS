@@ -12,14 +12,6 @@
 
 #include "notoriOS.h"
 
-// Global variables
-alarm alarmMeasure;
-uint8 timeToMeasure;
-alarm alarmSync;
-uint8 timeToSync;
-uint8 timeToSycnRemoteParams;
-uint8 try_counter;
-
 
 // This function must always be called (when the Sleep Timer's interrupt
 // is disabled or enabled) after wake up to clear the ctw_int status bit.
@@ -71,19 +63,20 @@ void ReadyOrNot()
     system_info.modem_info = &modem_info;
     
     // Configure server endpoints -- these should obviosuly be provided  remotely by the meta data-base server
-    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","ec2co-ecsel-sx2mg1u7m55t-1020078396.us-east-2.elb.amazonaws.com");//data.open-storm.org
+    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","ec2-13-59-131-167.us-east-2.compute.amazonaws.com");//data.open-storm.org
    
-    system_settings.ep_port = 5000;//use 8086 fopr influx
-    snprintf(system_settings.ep_user,sizeof(system_settings.ep_user),"%s","generic_node");
-    snprintf(system_settings.ep_pswd,sizeof(system_settings.ep_pswd),"%s","MakeFloodsCurrents");
-    snprintf(system_settings.ep_database,sizeof(system_settings.ep_database),"%s","ARB");
-    snprintf(system_settings.node_id,sizeof(system_settings.node_id),"%s","GGB000");
+    system_settings.ep_port = 5000;
+    // Don't need the following for new nodes
+    //snprintf(system_settings.ep_user,sizeof(system_settings.ep_user),"%s","generic_node");
+    //snprintf(system_settings.ep_pswd,sizeof(system_settings.ep_pswd),"%s","MakeFloodsCurrents");
+    //snprintf(system_settings.ep_database,sizeof(system_settings.ep_database),"%s","ARB");
+    //snprintf(system_settings.node_id,sizeof(system_settings.node_id),"%s","GGB000");
         
     
-    // Create a continuous alarm called alarmMeasure that triggers every 10 min to take measurements
+    // Create a continuous alarm called alarmMeasure that triggers every 10 min (default) to take measurements
     alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToMeasure = 1u;
-    // Create a continuous alarm called alarmSync that triggers every 60 min to sync the data to database
+    // Create a continuous alarm called alarmSync that triggers every 60 min (default) to sync the data to database
     alarmSync = CreateAlarm(updatable_parameters.sync_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToSync = 1u;
     
@@ -415,7 +408,7 @@ uint8 syncData(){
         // A good write will return code "204 No Content"
         // AT command #SRECV= is an execution command that permits users to read data arrived through a connection socket
         // = 1 means the UPD information is enabled: data are read just until the end of the UDP datagram and the response carries information about the remote IP address and port and about the remaining bytes in the datagram.
-        status = at_write_command("AT#SRECV=1,1000\r","204",5000u);
+        status = at_write_command("AT#SRECV=1,1000\r","204 NO CONTENT",5000u);
         //printNotif(NOTIF_TYPE_EVENT,"Received SRECV: %s",uart_received_string);
     
   

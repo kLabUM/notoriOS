@@ -65,13 +65,13 @@ sys_info_t system_info;
 typedef struct
 {
     // This is the site ID --where in the field the node is located (e.g ARB10)
-    char node_id[20];
+    //char node_id[20];
     // End-point config
     char ep_host[100];
     int ep_port;
-    char ep_user[50];
-    char ep_pswd[100];
-    char ep_database[50];
+    //char ep_user[50];
+    //char ep_pswd[100];
+    //char ep_database[50];
     //char commit_hash[100];
     
 }  sys_settings_t;
@@ -103,6 +103,14 @@ void LayBack();
 void AyoItsTime(uint8 alarmType);
 void ChickityCheckYourselfBeforeYouWreckYourself();
 uint8 upgraded(char *host, int port,char *route);
+
+// Global variables
+alarm alarmMeasure;
+uint8 timeToMeasure;
+alarm alarmSync;
+uint8 timeToSync;
+uint8 timeToSycnRemoteParams;
+uint8 try_counter;
 
 
 /* [] END OF FILE */
