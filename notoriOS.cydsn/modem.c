@@ -475,7 +475,7 @@ void get_cell_network_stats(){
 void updatable_parameters_initialize(){
     updatable_parameters.measure_time = 10u;
     updatable_parameters.sync_time = 60u;
-    updatable_parameters.debug_level = 0u;
+    updatable_parameters.debug_level = 1u;
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -500,7 +500,7 @@ void get_updated_parameters_from_malcom(){
     
     
     // Scan character arrays and save values 
-    /*if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
+    if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
         updatable_parameters.measure_time = sample_freq;
         // Create a continuous alarm called alarmMeasure that triggers at the required time to take measurements
         alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
@@ -521,7 +521,7 @@ void get_updated_parameters_from_malcom(){
         printNotif(NOTIF_TYPE_EVENT, "Debug printing frequency changed to: %d\r\n", debug_freq);
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new debugging frequency value.");
-    }*/
+    }
 }
     
 // Configure the modem settings
