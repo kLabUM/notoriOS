@@ -377,6 +377,7 @@ uint8 is_connected_to_cell_network(){
     if(status){
         // Create a character array of length 10 called creg
         char creg[10];
+        creg[0] = '\0';
         // Extract string from the UART
         extract_string(uart_received_string,": ","\r",creg);
         printNotif(NOTIF_TYPE_EVENT,"Registered to network, CREG: %s",creg);
@@ -431,6 +432,7 @@ void get_cell_network_stats(){
         at_write_command("AT+CESQ\r", "OK",DEFAULT_AT_TIMEOUT);
         
         char cesq[30]; // Create a character array of length 30 called cesq 
+        cesq[0] = '\0';
         // Extract string from the UART
         extract_string(uart_received_string,": ","\r",cesq);
         printNotif(NOTIF_TYPE_EVENT,"Network STts: %s",cesq);
@@ -473,7 +475,7 @@ void get_cell_network_stats(){
 void updatable_parameters_initialize(){
     updatable_parameters.measure_time = 10u;
     updatable_parameters.sync_time = 60u;
-    updatable_parameters.debug_level = 1u;
+    updatable_parameters.debug_level = 0u;
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -483,6 +485,10 @@ void get_updated_parameters_from_malcom(){
     char s_sample_freq[20];
     char s_report_freq[20];
     char s_debug_freq[20];
+    
+    s_sample_freq[0] = '\0';
+    s_report_freq[0] = '\0';
+    s_debug_freq[0] = '\0';
     
     // Extract UART string recieved from the modem and save to variables
     extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
@@ -494,7 +500,7 @@ void get_updated_parameters_from_malcom(){
     
     
     // Scan character arrays and save values 
-    if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
+    /*if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
         updatable_parameters.measure_time = sample_freq;
         // Create a continuous alarm called alarmMeasure that triggers at the required time to take measurements
         alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
@@ -515,7 +521,7 @@ void get_updated_parameters_from_malcom(){
         printNotif(NOTIF_TYPE_EVENT, "Debug printing frequency changed to: %d\r\n", debug_freq);
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new debugging frequency value.");
-    }
+    }*/
 }
     
 // Configure the modem settings
@@ -561,6 +567,7 @@ void modem_configure_settings(){
     // AT command +CFUN? is a read command that reports the current setting of <fun> which is the power saving function mode
     if(at_write_command("AT+CFUN?\r", "OK",DEFAULT_AT_TIMEOUT)){
         char CFUN[10]; // Create a character array of length 10 called CFUN 
+        CFUN[0] = '\0';
         // Extract UART string recieved from the modem
         extract_string(uart_received_string,": ","\r",CFUN);
         // Print UART string recieved from the modem

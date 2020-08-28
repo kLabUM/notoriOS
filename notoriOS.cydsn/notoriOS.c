@@ -592,7 +592,7 @@ uint8 upgraded(char *host, int port,  char *route){
     upgrade_status = at_write_command(http_request, "OK", 5000u);
     // AT command #SRECV= is an execution command that permits users to read data arrived through a connection socket
     // = 1 means the UPD information is enabled: data are read just until the end of the UDP datagram and the response carries information about the remote IP address and port and about the remaining bytes in the datagram.
-    upgrade_status = at_write_command("AT#SRECV=1,1000\r","204 No Content",5000u);
+    upgrade_status = at_write_command("AT#SRECV=1,1000\r","204 No Content",10000u);
     //SD_write(fileName,"w+",uart_received_string);
     
     
