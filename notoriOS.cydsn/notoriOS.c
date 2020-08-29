@@ -405,10 +405,10 @@ uint8 syncData(){
         status = at_write_command(http_request, "SRING", 5000u);
         
         // Read received buffer
-        // A good write will return code "204 No Content"
+        // A good write will return code "OS-OK"
         // AT command #SRECV= is an execution command that permits users to read data arrived through a connection socket
         // = 1 means the UPD information is enabled: data are read just until the end of the UDP datagram and the response carries information about the remote IP address and port and about the remaining bytes in the datagram.
-        status = at_write_command("AT#SRECV=1,1000\r","204 NO CONTENT",5000u);
+        status = at_write_command("AT#SRECV=1,1000\r","OS-OK",5000u);
         //printNotif(NOTIF_TYPE_EVENT,"Received SRECV: %s",uart_received_string);
     
   
@@ -420,8 +420,9 @@ uint8 syncData(){
             char s_send_time[10];
             snprintf(s_send_time,sizeof(s_send_time),"%d",send_time);
             pushData("modem_tx_time",s_send_time,getTimeStamp());
+        }else{
+            printNotif(NOTIF_TYPE_ERROR, "OS-NO: Could not receive data from server.");
         }
-
          
         // Get time, and if it looks good, set the RTC with it
         long network_time = modem_get_network_time();
@@ -592,7 +593,7 @@ uint8 upgraded(char *host, int port,  char *route){
     upgrade_status = at_write_command(http_request, "OK", 5000u);
     // AT command #SRECV= is an execution command that permits users to read data arrived through a connection socket
     // = 1 means the UPD information is enabled: data are read just until the end of the UDP datagram and the response carries information about the remote IP address and port and about the remaining bytes in the datagram.
-    upgrade_status = at_write_command("AT#SRECV=1,1000\r","204 No Content",10000u);
+    upgrade_status = at_write_command("AT#SRECV=1,1000\r","OS-OK",5000u);
     //SD_write(fileName,"w+",uart_received_string);
     
     

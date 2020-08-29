@@ -482,9 +482,9 @@ void updatable_parameters_initialize(){
 void get_updated_parameters_from_malcom(){
     
     // Create character array of size 1024 characters to hold the uart received string
-    char s_sample_freq[20];
-    char s_report_freq[20];
-    char s_debug_freq[20];
+    char s_sample_freq[10];
+    char s_report_freq[10];
+    char s_debug_freq[10];
     
     s_sample_freq[0] = '\0';
     s_report_freq[0] = '\0';
