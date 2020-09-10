@@ -82,6 +82,11 @@ void ReadyOrNot()
     
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
     
+    // send hey to server saying the node rebooted
+    hey = 1u;
+    char c_hey[5];
+    snprintf(c_hey,sizeof(c_hey),"%d",hey);
+    pushData("reboot",c_hey,getTimeStamp());
 }
 
 
@@ -399,7 +404,7 @@ uint8 syncData(){
         // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
         // To complete the operation, send Ctrl-Z char to exit
         status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
-        // Append <ctrl+z> escape sequence to http_request to exit modem command line
+        // Append 1 character "<ctrl+z> escape sequence" to http_request to exit modem command line
         strncat(http_request, "\032", 1); 
       
         status = at_write_command(http_request, "SRING", 5000u);
