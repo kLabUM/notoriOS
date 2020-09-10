@@ -14,6 +14,7 @@
 #include "data.h"
 #include "influx.h"
 #include "commit.h"
+#include <math.h>
 
 // Pre-allocate some memory for the HTTP requests
 #define MAX_HTTP_HEADER_LENGTH 1000

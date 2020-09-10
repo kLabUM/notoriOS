@@ -380,18 +380,14 @@ uint8 syncData(){
         // Old influx API
         // Construct_influx_route(http_route,base,system_settings.ep_user,system_settings.ep_pswd,system_settings.ep_database);
         construct_malcom_route(http_route,"api/v1/write",modem_info.imei,CURRENT_COMMIT);
-        
         printNotif(NOTIF_TYPE_EVENT,"HTTP route: %s", http_route);
         
         //OLD INFLUX API
         //construct_influx_write_body(http_body,system_settings.node_id);
         construct_malcom_body(http_body);
-   
         construct_generic_HTTP_request(http_request,http_body,system_settings.ep_host,http_route,system_settings.ep_port,"POST","Close","",0,"1.1");
-        
         printNotif(NOTIF_TYPE_EVENT,"Full HTTP Request: %s", http_request);
         
-       
         // Push request to modem and escape with <ctrl+z> escape sequence
         // Open port and begin command line sequence
         char portConfig[200];
@@ -401,13 +397,26 @@ uint8 syncData(){
         printNotif(NOTIF_TYPE_EVENT,"%s",portConfig);
         status = at_write_command(portConfig,"OK",10000u);
         
-        // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
-        // To complete the operation, send Ctrl-Z char to exit
-        status = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
-        // Append 1 character "<ctrl+z> escape sequence" to http_request to exit modem command line
-        strncat(http_request, "\032", 1); 
-      
-        status = at_write_command(http_request, "SRING", 5000u);
+        // create character pointer to chunk through the http_request
+        char *chunk;
+        // while the size of the chunk of the data we are sending to the server is smaller than the total data that needs to be sent
+        for(int8 packets = 0; packets < ceil(strlen(http_request)/1000); packets++){
+            // Create character array of 1000 characters for sending chunks of the http_request
+            char http_chunk[1001];
+            // Set chunk to start where http_request starts
+            chunk = http_request;
+            // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
+            // To complete the operation, send Ctrl-Z char to exit
+            status = at_write_command("AT#SSEND=1\r\n", ">", 1000u);
+            // Print the first 1000 characters of http_request into http_chunk
+            snprintf(http_chunk, sizeof(http_chunk), "%s",chunk);
+            // Append 1 character "<ctrl+z> escape sequence" to http_request to exit modem command line
+            strncat(http_chunk, "\032", 1); 
+            // Send data to server
+            status = at_write_command(http_chunk, "SRING", 5000u);
+            // Move the pointer forward 
+            chunk = chunk + 1000;
+        }
         
         // Read received buffer
         // A good write will return code "OS-OK"
