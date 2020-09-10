@@ -84,7 +84,7 @@ void ReadyOrNot()
     
     // send hey to server saying the node rebooted
     hey = 1u;
-    char c_hey[5];
+    char c_hey[10];
     snprintf(c_hey,sizeof(c_hey),"%d",hey);
     pushData("reboot",c_hey,getTimeStamp());
 }

@@ -113,6 +113,11 @@ void printNotif(uint8 type, char* format, ...){
         Debug_UART_PutString(debug_string); // Sends a NULL terminated string to the TX buffer for transmission
         va_end(argptr); // the va_end() macro is used to clean up; it invalidates ap for use (unless va_start() or va_copy() is invoked again).
         printd("\"}\r\n");
+        // Get clock time and save to timeStamp
+        long timeStamp = getTimeStamp();
+        char c_timeStamp[32];
+        snprintf(c_timeStamp,sizeof(c_timeStamp),"%ld",timeStamp);
+        SD_write(BB_fileName,"a+",c_timeStamp); // Write timestamp to SD Card  
         SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card  
 
     #endif 
@@ -196,7 +201,7 @@ char *strextract(const char input_str[], char output_str[],
     return end;
 }
 
-//out attempt at a safe (from buffer overflow) version of printf     
+//outr attempt at a safe (from buffer overflow) version of printf     
 void printd(char* format, ...){
     
     va_list argptr; // Create variable argptr of data structure va_list
