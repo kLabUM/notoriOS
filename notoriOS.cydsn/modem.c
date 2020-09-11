@@ -473,8 +473,8 @@ void get_cell_network_stats(){
 }
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
-    updatable_parameters.measure_time = 10u;
-    updatable_parameters.sync_time = 60u;
+    updatable_parameters.measure_time = 1u;
+    updatable_parameters.sync_time = 5u;
     updatable_parameters.debug_level = 1u;
 }
 

@@ -110,7 +110,10 @@ int WorkWorkWorkWorkWorkWork()
     }
     // Checks to see if the timetoMeasure flag is set
     else if(timeToMeasure){
+        //(int i=0; i<=30; i++){
         timeToMeasure = makeMeasurements(); // Will return 0 when done sending data
+        //CyDelay(1000u);
+        //}
     }else if(timeToSync){
             timeToSync = syncData();
     }
@@ -399,23 +402,34 @@ uint8 syncData(){
         
         // create character pointer to chunk through the http_request
         char *chunk;
+        // Set chunk to start where http_request starts
+        chunk = http_request;
+        // variable for the number of packets to send
+        int8 packets;
+        packets = ceil(nextafter((strlen(http_request)/MAX_BYTES_SENT),1000));
+        printNotif(NOTIF_TYPE_EVENT, "http_request len: %d", strlen(http_request));
+        printNotif(NOTIF_TYPE_EVENT, "# of packets: %d", packets);
         // while the size of the chunk of the data we are sending to the server is smaller than the total data that needs to be sent
-        for(int8 packets = 0; packets < ceil(strlen(http_request)/1000); packets++){
+        for(int8 packet = 0; packet <= packets; packet++){
             // Create character array of 1000 characters for sending chunks of the http_request
             char http_chunk[1001];
-            // Set chunk to start where http_request starts
-            chunk = http_request;
             // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
             // To complete the operation, send Ctrl-Z char to exit
             status = at_write_command("AT#SSEND=1\r\n", ">", 1000u);
             // Print the first 1000 characters of http_request into http_chunk
-            snprintf(http_chunk, sizeof(http_chunk), "%s",chunk);
+            snprintf(http_chunk, MAX_BYTES_SENT, "%s",chunk);
             // Append 1 character "<ctrl+z> escape sequence" to http_request to exit modem command line
             strncat(http_chunk, "\032", 1); 
+            printNotif(NOTIF_TYPE_EVENT,"chunk %d: %s", packet, http_chunk);
             // Send data to server
-            status = at_write_command(http_chunk, "SRING", 5000u);
-            // Move the pointer forward 
-            chunk = chunk + 1000;
+            if (packet != packets){
+                status = at_write_command(http_chunk, "OK", 5000u);
+                // Move the pointer forward 
+                chunk = chunk + 1000;
+            }else{
+                status = at_write_command(http_chunk, "SRING", 5000u);
+            }
+            
         }
         
         // Read received buffer
@@ -428,7 +442,7 @@ uint8 syncData(){
   
         // If it worked, clear the queue and clock how long the end-to-end tx took
         if(status == 1u){
-            get_updated_parameters_from_malcom();
+            //get_updated_parameters_from_malcom();
             Clear_Data_Stack();
             int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
             char s_send_time[10];
