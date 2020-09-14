@@ -19,7 +19,7 @@
 // Pre-allocate some memory for the HTTP requests
 #define MAX_HTTP_HEADER_LENGTH 1000
 #define MAX_ROUTE_LENGTH 200
-#define MAX_BYTES_SENT 100
+#define MAX_BYTES_SENT 500
 char http_request[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
 char http_body[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
 char http_route[MAX_ROUTE_LENGTH];
