@@ -406,11 +406,11 @@ uint8 syncData(){
         chunk = http_request;
         // variable for the number of packets to send
         int8 packets;
-        packets = ceil(nextafter((strlen(http_request)/MAX_BYTES_SENT),1000));
+        packets = ceil(nextafter((strlen(http_request)/MAX_BYTES_SENT),MAX_BYTES_SENT));
         printNotif(NOTIF_TYPE_EVENT, "http_request len: %d", strlen(http_request));
         printNotif(NOTIF_TYPE_EVENT, "# of packets: %d", packets);
         // while the size of the chunk of the data we are sending to the server is smaller than the total data that needs to be sent
-        for(int8 packet = 0; packet <= packets; packet++){
+        for(int8 packet = 0; packet < packets; packet++){
             // Create character array of 1000 characters for sending chunks of the http_request
             char http_chunk[1001];
             // AT command #SSEND= is an execution command that permits, while the module is in command mode, to send data through a connected socket.
@@ -422,10 +422,10 @@ uint8 syncData(){
             strncat(http_chunk, "\032", 1); 
             printNotif(NOTIF_TYPE_EVENT,"chunk %d: %s", packet, http_chunk);
             // Send data to server
-            if (packet != packets){
+            if ((packet+1) != packets){
                 status = at_write_command(http_chunk, "OK", 5000u);
                 // Move the pointer forward 
-                chunk = chunk + 1000;
+                chunk = chunk + MAX_BYTES_SENT - 1;
             }else{
                 status = at_write_command(http_chunk, "SRING", 5000u);
             }
