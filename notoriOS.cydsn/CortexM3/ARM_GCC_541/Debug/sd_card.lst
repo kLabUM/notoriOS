@@ -1,0 +1,2767 @@
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"sd_card.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	modem_state,1,1
+  20              		.comm	modem_start_time_stamp,4,4
+  21              		.comm	modem_info,60,4
+  22              		.comm	modem_stats,16,4
+  23              		.comm	updatable_parameters,3,4
+  24              		.syntax unified
+  25              		.global _printf_float
+  26              		.thumb
+  27              		.syntax unified
+  28              		.comm	dataPointsInStack,2,2
+  29              		.comm	dataPointsInStackDesired,2,2
+  30              		.comm	data,6600,4
+  31              		.comm	http_request,10000,4
+  32              		.comm	http_body,10000,4
+  33              		.comm	http_route,200,4
+  34              		.comm	system_info,28,4
+  35              		.comm	system_settings,104,4
+  36              		.comm	alarmMeasure,6,4
+  37              		.comm	timeToMeasure,1,1
+  38              		.comm	alarmSync,6,4
+  39              		.comm	timeToSync,1,1
+  40              		.comm	timeToSycnRemoteParams,1,1
+  41              		.comm	try_counter,1,1
+  42              		.comm	hey,1,1
+  43              		.global	SD_dir
+  44              		.bss
+  45              		.align	2
+  46              		.type	SD_dir, %object
+  47              		.size	SD_dir, 10
+  48              	SD_dir:
+  49 0000 00000000 		.space	10
+  49      00000000 
+  49      0000
+  50              		.global	SD_body
+  51 000a 0000     		.align	2
+  52              		.type	SD_body, %object
+  53              		.size	SD_body, 3000
+  54              	SD_body:
+  55 000c 00000000 		.space	3000
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 2
+
+
+  55      00000000 
+  55      00000000 
+  55      00000000 
+  55      00000000 
+  56              		.global	SD_filename
+  57              		.data
+  58              		.align	2
+  59              		.type	SD_filename, %object
+  60              		.size	SD_filename, 30
+  61              	SD_filename:
+  62 0000 46696C65 		.ascii	"Filename.txt\000"
+  62      6E616D65 
+  62      2E747874 
+  62      00
+  63 000d 00000000 		.space	17
+  63      00000000 
+  63      00000000 
+  63      00000000 
+  63      00
+  64              		.global	SD_filemode
+  65 001e 0000     		.align	2
+  66              		.type	SD_filemode, %object
+  67              		.size	SD_filemode, 5
+  68              	SD_filemode:
+  69 0020 612B00   		.ascii	"a+\000"
+  70 0023 0000     		.space	2
+  71              		.section	.text.SD_init,"ax",%progbits
+  72              		.align	2
+  73              		.global	SD_init
+  74              		.thumb
+  75              		.thumb_func
+  76              		.type	SD_init, %function
+  77              	SD_init:
+  78              	.LFB64:
+  79              		.file 1 "sd_card.c"
+   1:sd_card.c     **** /**
+   2:sd_card.c     ****  * @file sdcard.c
+   3:sd_card.c     ****  * @brief  Write to an SD card.
+   4:sd_card.c     ****  * @author Brandon Wong
+   5:sd_card.c     ****  * @version 0.0.01
+   6:sd_card.c     ****  * @date 2019-05-15
+   7:sd_card.c     ****  */
+   8:sd_card.c     **** #include <stdio.h>  // Defines three variable types, several macros, and various functions for perf
+   9:sd_card.c     **** #include "sd_card.h"
+  10:sd_card.c     **** #include "notoriOS.h"
+  11:sd_card.c     **** 
+  12:sd_card.c     **** // Preallocate card
+  13:sd_card.c     **** char    SD_dir[10]      = {'\0'};
+  14:sd_card.c     **** char    SD_body[3000]   = {'\0'};
+  15:sd_card.c     **** char    SD_filename[30] = "Filename.txt";
+  16:sd_card.c     **** char    SD_filemode[5]  = "a+";
+  17:sd_card.c     **** 
+  18:sd_card.c     **** 
+  19:sd_card.c     **** void SD_power_up();
+  20:sd_card.c     **** void SD_power_down();
+  21:sd_card.c     **** 
+  22:sd_card.c     **** ///NOTE -- IF SD CARD is not plugged it, the board will draw more power.
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 3
+
+
+  23:sd_card.c     **** 
+  24:sd_card.c     **** 
+  25:sd_card.c     **** /** SD_init()
+  26:sd_card.c     **** * @brief Initialize the file system for the SD card
+  27:sd_card.c     **** * @param Null
+  28:sd_card.c     **** * @return void
+  29:sd_card.c     **** */
+  30:sd_card.c     **** void SD_init()
+  31:sd_card.c     **** {
+  80              		.loc 1 31 0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+  83              		@ frame_needed = 1, uses_anonymous_args = 0
+  84              		@ link register save eliminated.
+  85 0000 80B4     		push	{r7}
+  86              		.cfi_def_cfa_offset 4
+  87              		.cfi_offset 7, -4
+  88 0002 00AF     		add	r7, sp, #0
+  89              		.cfi_def_cfa_register 7
+  32:sd_card.c     ****     /* Uncomment to enable support for long file names
+  33:sd_card.c     ****      * Note: To use long file names (LFN) support on PSoC 5LP devices, you must call
+  34:sd_card.c     ****      * FS_FAT_SupportLFN(). For PSoC 3 devices, this feature is enabled by default.
+  35:sd_card.c     ****      */
+  36:sd_card.c     ****     //FS_FAT_SupportLFN();    
+  37:sd_card.c     **** }
+  90              		.loc 1 37 0
+  91 0004 00BF     		nop
+  92 0006 BD46     		mov	sp, r7
+  93              		.cfi_def_cfa_register 13
+  94              		@ sp needed
+  95 0008 80BC     		pop	{r7}
+  96              		.cfi_restore 7
+  97              		.cfi_def_cfa_offset 0
+  98 000a 7047     		bx	lr
+  99              		.cfi_endproc
+ 100              	.LFE64:
+ 101              		.size	SD_init, .-SD_init
+ 102              		.section	.rodata
+ 103              		.align	2
+ 104              	.LC0:
+ 105 0000 252E3873 		.ascii	"%.8s\000"
+ 105      00
+ 106              		.section	.text.SD_mkdir,"ax",%progbits
+ 107              		.align	2
+ 108              		.global	SD_mkdir
+ 109              		.thumb
+ 110              		.thumb_func
+ 111              		.type	SD_mkdir, %function
+ 112              	SD_mkdir:
+ 113              	.LFB65:
+  38:sd_card.c     **** 
+  39:sd_card.c     **** /**
+  40:sd_card.c     ****  * @brief Make a directory on the SD card
+  41:sd_card.c     ****  * @param dir_name is the name of the directory to create
+  42:sd_card.c     ****  * @return 1u on success, 0u otherwise
+  43:sd_card.c     ****  */
+  44:sd_card.c     **** uint8 SD_mkdir(char* dir_name)
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 4
+
+
+  45:sd_card.c     **** {
+ 114              		.loc 1 45 0
+ 115              		.cfi_startproc
+ 116              		@ args = 0, pretend = 0, frame = 16
+ 117              		@ frame_needed = 1, uses_anonymous_args = 0
+ 118 0000 80B5     		push	{r7, lr}
+ 119              		.cfi_def_cfa_offset 8
+ 120              		.cfi_offset 7, -8
+ 121              		.cfi_offset 14, -4
+ 122 0002 84B0     		sub	sp, sp, #16
+ 123              		.cfi_def_cfa_offset 24
+ 124 0004 00AF     		add	r7, sp, #0
+ 125              		.cfi_def_cfa_register 7
+ 126 0006 7860     		str	r0, [r7, #4]
+  46:sd_card.c     ****     uint8 status = 9; // Initialize to a value not 0 or -1
+ 127              		.loc 1 46 0
+ 128 0008 0923     		movs	r3, #9
+ 129 000a FB73     		strb	r3, [r7, #15]
+  47:sd_card.c     ****     
+  48:sd_card.c     ****     SD_power_up(); // Wakeup the SD Card component
+ 130              		.loc 1 48 0
+ 131 000c FFF7FEFF 		bl	SD_power_up
+  49:sd_card.c     ****     // The snprintf() function formats and stores a series of characters and values in the array bu
+  50:sd_card.c     ****     snprintf(SD_dir,sizeof(SD_dir),"%.8s",dir_name); 
+ 132              		.loc 1 50 0
+ 133 0010 7B68     		ldr	r3, [r7, #4]
+ 134 0012 094A     		ldr	r2, .L4
+ 135 0014 0A21     		movs	r1, #10
+ 136 0016 0948     		ldr	r0, .L4+4
+ 137 0018 FFF7FEFF 		bl	snprintf
+  51:sd_card.c     ****     
+  52:sd_card.c     ****     // FS_MKDir() creates a directory using FS.h.
+  53:sd_card.c     ****     // Typecasting (1+FS_MkDir(SD_dir)) into an uint8 datatype
+  54:sd_card.c     ****     // This makes it 0 if it's a failture, 1 if it's successful
+  55:sd_card.c     ****     status = (uint8) ( 1+FS_MkDir(SD_dir) );
+ 138              		.loc 1 55 0
+ 139 001c 0748     		ldr	r0, .L4+4
+ 140 001e FFF7FEFF 		bl	FS_MkDir
+ 141 0022 0346     		mov	r3, r0
+ 142 0024 DBB2     		uxtb	r3, r3
+ 143 0026 0133     		adds	r3, r3, #1
+ 144 0028 FB73     		strb	r3, [r7, #15]
+  56:sd_card.c     ****     
+  57:sd_card.c     ****     SD_power_down(); // Turn off the SD Card
+ 145              		.loc 1 57 0
+ 146 002a FFF7FEFF 		bl	SD_power_down
+  58:sd_card.c     ****     
+  59:sd_card.c     ****     return status;
+ 147              		.loc 1 59 0
+ 148 002e FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+  60:sd_card.c     **** }
+ 149              		.loc 1 60 0
+ 150 0030 1846     		mov	r0, r3
+ 151 0032 1037     		adds	r7, r7, #16
+ 152              		.cfi_def_cfa_offset 8
+ 153 0034 BD46     		mov	sp, r7
+ 154              		.cfi_def_cfa_register 13
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 5
+
+
+ 155              		@ sp needed
+ 156 0036 80BD     		pop	{r7, pc}
+ 157              	.L5:
+ 158              		.align	2
+ 159              	.L4:
+ 160 0038 00000000 		.word	.LC0
+ 161 003c 00000000 		.word	SD_dir
+ 162              		.cfi_endproc
+ 163              	.LFE65:
+ 164              		.size	SD_mkdir, .-SD_mkdir
+ 165              		.section	.text.SD_rmfile,"ax",%progbits
+ 166              		.align	2
+ 167              		.global	SD_rmfile
+ 168              		.thumb
+ 169              		.thumb_func
+ 170              		.type	SD_rmfile, %function
+ 171              	SD_rmfile:
+ 172              	.LFB66:
+  61:sd_card.c     **** 
+  62:sd_card.c     **** /**
+  63:sd_card.c     ****  * @brief Delete a file
+  64:sd_card.c     ****  * @param dir_name is the name of the directory to create
+  65:sd_card.c     ****  * @return 1u on success, 0u otherwise
+  66:sd_card.c     ****  */
+  67:sd_card.c     **** uint8 SD_rmfile(const char * fileName)
+  68:sd_card.c     **** {
+ 173              		.loc 1 68 0
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 16
+ 176              		@ frame_needed = 1, uses_anonymous_args = 0
+ 177 0000 80B5     		push	{r7, lr}
+ 178              		.cfi_def_cfa_offset 8
+ 179              		.cfi_offset 7, -8
+ 180              		.cfi_offset 14, -4
+ 181 0002 84B0     		sub	sp, sp, #16
+ 182              		.cfi_def_cfa_offset 24
+ 183 0004 00AF     		add	r7, sp, #0
+ 184              		.cfi_def_cfa_register 7
+ 185 0006 7860     		str	r0, [r7, #4]
+  69:sd_card.c     ****     uint8 status = 9; // initialize to a value not 0 or -1
+ 186              		.loc 1 69 0
+ 187 0008 0923     		movs	r3, #9
+ 188 000a FB73     		strb	r3, [r7, #15]
+  70:sd_card.c     **** 
+  71:sd_card.c     ****     SD_power_up(); // Wakeup the SD Card component
+ 189              		.loc 1 71 0
+ 190 000c FFF7FEFF 		bl	SD_power_up
+  72:sd_card.c     ****     
+  73:sd_card.c     ****     // FS_Remove() removes a file using FS.h.
+  74:sd_card.c     ****     // Typecasting (1+FS_Remove(fileName)) into an uint8 datatype
+  75:sd_card.c     ****     // This makes it 0 if it's a failture, 1 if it's successful
+  76:sd_card.c     ****     status = (uint8) ( 1+FS_Remove(fileName));
+ 191              		.loc 1 76 0
+ 192 0010 7868     		ldr	r0, [r7, #4]
+ 193 0012 FFF7FEFF 		bl	FS_Remove
+ 194 0016 0346     		mov	r3, r0
+ 195 0018 DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 6
+
+
+ 196 001a 0133     		adds	r3, r3, #1
+ 197 001c FB73     		strb	r3, [r7, #15]
+  77:sd_card.c     ****     
+  78:sd_card.c     ****     SD_power_down(); // Turn off the SD Card
+ 198              		.loc 1 78 0
+ 199 001e FFF7FEFF 		bl	SD_power_down
+  79:sd_card.c     ****     
+  80:sd_card.c     ****     return status;
+ 200              		.loc 1 80 0
+ 201 0022 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+  81:sd_card.c     **** }
+ 202              		.loc 1 81 0
+ 203 0024 1846     		mov	r0, r3
+ 204 0026 1037     		adds	r7, r7, #16
+ 205              		.cfi_def_cfa_offset 8
+ 206 0028 BD46     		mov	sp, r7
+ 207              		.cfi_def_cfa_register 13
+ 208              		@ sp needed
+ 209 002a 80BD     		pop	{r7, pc}
+ 210              		.cfi_endproc
+ 211              	.LFE66:
+ 212              		.size	SD_rmfile, .-SD_rmfile
+ 213              		.section	.text.SD_write,"ax",%progbits
+ 214              		.align	2
+ 215              		.global	SD_write
+ 216              		.thumb
+ 217              		.thumb_func
+ 218              		.type	SD_write, %function
+ 219              	SD_write:
+ 220              	.LFB67:
+  82:sd_card.c     **** 
+  83:sd_card.c     **** /**
+  84:sd_card.c     ****  * @brief Write data to the SD card
+  85:sd_card.c     ****  * @param fileName is the name of the file to write to
+  86:sd_card.c     ****  * @param pMode is the write mode
+  87:sd_card.c     ****  * @param pData is the data to be written
+  88:sd_card.c     ****  * @return 1u on success, 0u otherwise
+  89:sd_card.c     ****  */
+  90:sd_card.c     **** uint8 SD_write(const char * fileName, const char * pMode, const void * pData)
+  91:sd_card.c     **** {
+ 221              		.loc 1 91 0
+ 222              		.cfi_startproc
+ 223              		@ args = 0, pretend = 0, frame = 24
+ 224              		@ frame_needed = 1, uses_anonymous_args = 0
+ 225 0000 80B5     		push	{r7, lr}
+ 226              		.cfi_def_cfa_offset 8
+ 227              		.cfi_offset 7, -8
+ 228              		.cfi_offset 14, -4
+ 229 0002 86B0     		sub	sp, sp, #24
+ 230              		.cfi_def_cfa_offset 32
+ 231 0004 00AF     		add	r7, sp, #0
+ 232              		.cfi_def_cfa_register 7
+ 233 0006 F860     		str	r0, [r7, #12]
+ 234 0008 B960     		str	r1, [r7, #8]
+ 235 000a 7A60     		str	r2, [r7, #4]
+  92:sd_card.c     ****     uint8 status = 9u; // Initialize to a value not 0 or 1
+ 236              		.loc 1 92 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 7
+
+
+ 237 000c 0923     		movs	r3, #9
+ 238 000e FB75     		strb	r3, [r7, #23]
+  93:sd_card.c     ****     FS_FILE *pFile; // FS_FILE data structure defined in FS.h
+  94:sd_card.c     **** 
+  95:sd_card.c     ****     SD_power_up(); // Wakeup the SD Card component
+ 239              		.loc 1 95 0
+ 240 0010 FFF7FEFF 		bl	SD_power_up
+  96:sd_card.c     ****     
+  97:sd_card.c     ****     // FS_FOpen() opens an existing file or creates a new one.
+  98:sd_card.c     ****     // fileName is the file to be opened or created. It's a 0-termianted string that cannot be NULL
+  99:sd_card.c     ****     // pMode indicates how the file should be opened. It's a 0-terminated string that cannot be NUL
+ 100:sd_card.c     ****     pFile = FS_FOpen(fileName, pMode);
+ 241              		.loc 1 100 0
+ 242 0014 B968     		ldr	r1, [r7, #8]
+ 243 0016 F868     		ldr	r0, [r7, #12]
+ 244 0018 FFF7FEFF 		bl	FS_FOpen
+ 245 001c 3861     		str	r0, [r7, #16]
+ 101:sd_card.c     ****     
+ 102:sd_card.c     ****     // If the SD card doesn't open, try reinitializing the filesystem
+ 103:sd_card.c     ****     if (pFile == 0){
+ 246              		.loc 1 103 0
+ 247 001e 3B69     		ldr	r3, [r7, #16]
+ 248 0020 002B     		cmp	r3, #0
+ 249 0022 08D1     		bne	.L9
+ 104:sd_card.c     ****         FS_DeInit(); // FS_DeInit() frees allocated resources
+ 250              		.loc 1 104 0
+ 251 0024 FFF7FEFF 		bl	FS_DeInit
+ 105:sd_card.c     ****         FS_Init(); // FS_Init() starts the file system
+ 252              		.loc 1 105 0
+ 253 0028 FFF7FEFF 		bl	FS_Init
+ 106:sd_card.c     ****         pFile = FS_FOpen(fileName, pMode);
+ 254              		.loc 1 106 0
+ 255 002c B968     		ldr	r1, [r7, #8]
+ 256 002e F868     		ldr	r0, [r7, #12]
+ 257 0030 FFF7FEFF 		bl	FS_FOpen
+ 258 0034 3861     		str	r0, [r7, #16]
+ 259              	.L9:
+ 107:sd_card.c     ****     }
+ 108:sd_card.c     ****     
+ 109:sd_card.c     ****     // Note: We are using the "No Long File Name (LFN)" library,
+ 110:sd_card.c     ****     //  so names are limited to 8 characters and 3 bytes for extensions
+ 111:sd_card.c     ****     if (pFile != 0) {
+ 260              		.loc 1 111 0
+ 261 0036 3B69     		ldr	r3, [r7, #16]
+ 262 0038 002B     		cmp	r3, #0
+ 263 003a 10D0     		beq	.L10
+ 112:sd_card.c     ****         // FS_Write() writes data to file: pFile is handle to open file, pData is data to be writte
+ 113:sd_card.c     ****         FS_Write(pFile, pData, strlen(pData));
+ 264              		.loc 1 113 0
+ 265 003c 7868     		ldr	r0, [r7, #4]
+ 266 003e FFF7FEFF 		bl	strlen
+ 267 0042 0346     		mov	r3, r0
+ 268 0044 1A46     		mov	r2, r3
+ 269 0046 7968     		ldr	r1, [r7, #4]
+ 270 0048 3869     		ldr	r0, [r7, #16]
+ 271 004a FFF7FEFF 		bl	FS_Write
+ 114:sd_card.c     ****         
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 8
+
+
+ 115:sd_card.c     ****         // FS_FClose() closes an opened file using FS.h. It returns 1 if there's a failure, 0 if su
+ 116:sd_card.c     ****         // Typecasting (1+FS_FClose(pFile)) into an uint8 datatype
+ 117:sd_card.c     ****         // This makes it 0 if it's a failture, 1 if it's successful
+ 118:sd_card.c     ****         status = (uint8) ( -1*FS_FClose(pFile) )+1;
+ 272              		.loc 1 118 0
+ 273 004e 3869     		ldr	r0, [r7, #16]
+ 274 0050 FFF7FEFF 		bl	FS_FClose
+ 275 0054 0346     		mov	r3, r0
+ 276 0056 DBB2     		uxtb	r3, r3
+ 277 0058 C3F10103 		rsb	r3, r3, #1
+ 278 005c FB75     		strb	r3, [r7, #23]
+ 279              	.L10:
+ 119:sd_card.c     ****     }
+ 120:sd_card.c     ****     
+ 121:sd_card.c     ****     SD_power_down(); // Turn off the SD Card
+ 280              		.loc 1 121 0
+ 281 005e FFF7FEFF 		bl	SD_power_down
+ 122:sd_card.c     **** 
+ 123:sd_card.c     ****     
+ 124:sd_card.c     ****     return status;
+ 282              		.loc 1 124 0
+ 283 0062 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 125:sd_card.c     **** }
+ 284              		.loc 1 125 0
+ 285 0064 1846     		mov	r0, r3
+ 286 0066 1837     		adds	r7, r7, #24
+ 287              		.cfi_def_cfa_offset 8
+ 288 0068 BD46     		mov	sp, r7
+ 289              		.cfi_def_cfa_register 13
+ 290              		@ sp needed
+ 291 006a 80BD     		pop	{r7, pc}
+ 292              		.cfi_endproc
+ 293              	.LFE67:
+ 294              		.size	SD_write, .-SD_write
+ 295              		.section	.rodata
+ 296 0005 000000   		.align	2
+ 297              	.LC1:
+ 298 0008 7200     		.ascii	"r\000"
+ 299              		.section	.text.SD_read,"ax",%progbits
+ 300              		.align	2
+ 301              		.global	SD_read
+ 302              		.thumb
+ 303              		.thumb_func
+ 304              		.type	SD_read, %function
+ 305              	SD_read:
+ 306              	.LFB68:
+ 126:sd_card.c     **** 
+ 127:sd_card.c     **** /**
+ 128:sd_card.c     ****  * @brief Write data to the SD card
+ 129:sd_card.c     ****  * @param fileName is the name of the file to write to
+ 130:sd_card.c     ****  * @param pMode is the write mode
+ 131:sd_card.c     ****  * @param pData is the data to be written
+ 132:sd_card.c     ****  * @return 1u on success, 0u otherwise
+ 133:sd_card.c     ****  */
+ 134:sd_card.c     **** uint8 SD_read(const char * fileName,  void * pData, unsigned long NumBytes)
+ 135:sd_card.c     **** {
+ 307              		.loc 1 135 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 9
+
+
+ 308              		.cfi_startproc
+ 309              		@ args = 0, pretend = 0, frame = 24
+ 310              		@ frame_needed = 1, uses_anonymous_args = 0
+ 311 0000 80B5     		push	{r7, lr}
+ 312              		.cfi_def_cfa_offset 8
+ 313              		.cfi_offset 7, -8
+ 314              		.cfi_offset 14, -4
+ 315 0002 86B0     		sub	sp, sp, #24
+ 316              		.cfi_def_cfa_offset 32
+ 317 0004 00AF     		add	r7, sp, #0
+ 318              		.cfi_def_cfa_register 7
+ 319 0006 F860     		str	r0, [r7, #12]
+ 320 0008 B960     		str	r1, [r7, #8]
+ 321 000a 7A60     		str	r2, [r7, #4]
+ 136:sd_card.c     ****     uint8 status = 9u; // initialize to a value not 0 or 1
+ 322              		.loc 1 136 0
+ 323 000c 0923     		movs	r3, #9
+ 324 000e FB75     		strb	r3, [r7, #23]
+ 137:sd_card.c     ****     FS_FILE *pFile; // FS_FILE data structure defined in FS.h
+ 138:sd_card.c     **** 
+ 139:sd_card.c     ****     SD_power_up(); // Powerup the SD Card component
+ 325              		.loc 1 139 0
+ 326 0010 FFF7FEFF 		bl	SD_power_up
+ 140:sd_card.c     ****     
+ 141:sd_card.c     ****     // FS_FOpen() opens an existing file or creates a new one.
+ 142:sd_card.c     ****     // fileName is the file to be opened or created. It's a 0-terminated string that cannot be NULL
+ 143:sd_card.c     ****     // "r" indicates how the file should be opened, in this case, for reading.
+ 144:sd_card.c     ****     pFile = FS_FOpen(fileName, "r");
+ 327              		.loc 1 144 0
+ 328 0014 1349     		ldr	r1, .L16
+ 329 0016 F868     		ldr	r0, [r7, #12]
+ 330 0018 FFF7FEFF 		bl	FS_FOpen
+ 331 001c 3861     		str	r0, [r7, #16]
+ 145:sd_card.c     ****     
+ 146:sd_card.c     ****     // If the SD card doesn't open, try reinitializing the filesystem
+ 147:sd_card.c     ****     if (pFile == 0){
+ 332              		.loc 1 147 0
+ 333 001e 3B69     		ldr	r3, [r7, #16]
+ 334 0020 002B     		cmp	r3, #0
+ 335 0022 08D1     		bne	.L13
+ 148:sd_card.c     ****         FS_DeInit();// FS_DeInit() frees allocated resources
+ 336              		.loc 1 148 0
+ 337 0024 FFF7FEFF 		bl	FS_DeInit
+ 149:sd_card.c     ****         FS_Init(); // FS_Init() starts the file system
+ 338              		.loc 1 149 0
+ 339 0028 FFF7FEFF 		bl	FS_Init
+ 150:sd_card.c     ****         pFile = FS_FOpen(fileName, "r");
+ 340              		.loc 1 150 0
+ 341 002c 0D49     		ldr	r1, .L16
+ 342 002e F868     		ldr	r0, [r7, #12]
+ 343 0030 FFF7FEFF 		bl	FS_FOpen
+ 344 0034 3861     		str	r0, [r7, #16]
+ 345              	.L13:
+ 151:sd_card.c     ****     }
+ 152:sd_card.c     ****     
+ 153:sd_card.c     ****     // Note: We are using the "No Long File Name (LFN)" library,
+ 154:sd_card.c     ****     //  so names are limited to 8 characters and 3 bytes for extensions
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 10
+
+
+ 155:sd_card.c     ****     if (pFile != 0) {
+ 346              		.loc 1 155 0
+ 347 0036 3B69     		ldr	r3, [r7, #16]
+ 348 0038 002B     		cmp	r3, #0
+ 349 003a 0CD0     		beq	.L14
+ 156:sd_card.c     ****         // FS_Read() reads data from a file: pFile is handle to an opened file, pData is the buffer
+ 157:sd_card.c     ****         FS_Read(pFile,pData,NumBytes);
+ 350              		.loc 1 157 0
+ 351 003c 7A68     		ldr	r2, [r7, #4]
+ 352 003e B968     		ldr	r1, [r7, #8]
+ 353 0040 3869     		ldr	r0, [r7, #16]
+ 354 0042 FFF7FEFF 		bl	FS_Read
+ 158:sd_card.c     ****         
+ 159:sd_card.c     ****         // FS_FClose() closes an opened file using FS.h. It returns 1 if there's a failure, 0 if su
+ 160:sd_card.c     ****         // Typecasting (1+FS_FClose(pFile)) into an uint8 datatype
+ 161:sd_card.c     ****         // This makes it 0 if it's a failture, 1 if it's successful
+ 162:sd_card.c     ****         status = (uint8) ( -1*FS_FClose(pFile) )+1;
+ 355              		.loc 1 162 0
+ 356 0046 3869     		ldr	r0, [r7, #16]
+ 357 0048 FFF7FEFF 		bl	FS_FClose
+ 358 004c 0346     		mov	r3, r0
+ 359 004e DBB2     		uxtb	r3, r3
+ 360 0050 C3F10103 		rsb	r3, r3, #1
+ 361 0054 FB75     		strb	r3, [r7, #23]
+ 362              	.L14:
+ 163:sd_card.c     ****     }
+ 164:sd_card.c     ****     
+ 165:sd_card.c     ****     SD_power_down(); // Power down the SD card
+ 363              		.loc 1 165 0
+ 364 0056 FFF7FEFF 		bl	SD_power_down
+ 166:sd_card.c     ****     
+ 167:sd_card.c     ****     return status;
+ 365              		.loc 1 167 0
+ 366 005a FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 168:sd_card.c     **** }
+ 367              		.loc 1 168 0
+ 368 005c 1846     		mov	r0, r3
+ 369 005e 1837     		adds	r7, r7, #24
+ 370              		.cfi_def_cfa_offset 8
+ 371 0060 BD46     		mov	sp, r7
+ 372              		.cfi_def_cfa_register 13
+ 373              		@ sp needed
+ 374 0062 80BD     		pop	{r7, pc}
+ 375              	.L17:
+ 376              		.align	2
+ 377              	.L16:
+ 378 0064 08000000 		.word	.LC1
+ 379              		.cfi_endproc
+ 380              	.LFE68:
+ 381              		.size	SD_read, .-SD_read
+ 382              		.section	.text.SD_power_up,"ax",%progbits
+ 383              		.align	2
+ 384              		.global	SD_power_up
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.type	SD_power_up, %function
+ 388              	SD_power_up:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 11
+
+
+ 389              	.LFB69:
+ 169:sd_card.c     **** 
+ 170:sd_card.c     **** // Power up SD Card
+ 171:sd_card.c     **** void SD_power_up(){
+ 390              		.loc 1 171 0
+ 391              		.cfi_startproc
+ 392              		@ args = 0, pretend = 0, frame = 0
+ 393              		@ frame_needed = 1, uses_anonymous_args = 0
+ 394 0000 80B5     		push	{r7, lr}
+ 395              		.cfi_def_cfa_offset 8
+ 396              		.cfi_offset 7, -8
+ 397              		.cfi_offset 14, -4
+ 398 0002 00AF     		add	r7, sp, #0
+ 399              		.cfi_def_cfa_register 7
+ 172:sd_card.c     **** 
+ 173:sd_card.c     ****     emFile_Wakeup(); // Prepare SPIM Components to wake up.
+ 400              		.loc 1 173 0
+ 401 0004 FFF7FEFF 		bl	emFile_Wakeup
+ 174:sd_card.c     ****     
+ 175:sd_card.c     ****     SD_Card_Power_Write(ON); // Turn on the SD Card (pulls it high).
+ 402              		.loc 1 175 0
+ 403 0008 0120     		movs	r0, #1
+ 404 000a FFF7FEFF 		bl	SD_Card_Power_Write
+ 176:sd_card.c     ****     FS_Init(); // FS_Init() starts the file system
+ 405              		.loc 1 176 0
+ 406 000e FFF7FEFF 		bl	FS_Init
+ 177:sd_card.c     **** }
+ 407              		.loc 1 177 0
+ 408 0012 00BF     		nop
+ 409 0014 80BD     		pop	{r7, pc}
+ 410              		.cfi_endproc
+ 411              	.LFE69:
+ 412              		.size	SD_power_up, .-SD_power_up
+ 413 0016 00BF     		.section	.text.SD_power_down,"ax",%progbits
+ 414              		.align	2
+ 415              		.global	SD_power_down
+ 416              		.thumb
+ 417              		.thumb_func
+ 418              		.type	SD_power_down, %function
+ 419              	SD_power_down:
+ 420              	.LFB70:
+ 178:sd_card.c     **** 
+ 179:sd_card.c     **** // Power down SD Card
+ 180:sd_card.c     **** void SD_power_down(){
+ 421              		.loc 1 180 0
+ 422              		.cfi_startproc
+ 423              		@ args = 0, pretend = 0, frame = 0
+ 424              		@ frame_needed = 1, uses_anonymous_args = 0
+ 425 0000 80B5     		push	{r7, lr}
+ 426              		.cfi_def_cfa_offset 8
+ 427              		.cfi_offset 7, -8
+ 428              		.cfi_offset 14, -4
+ 429 0002 00AF     		add	r7, sp, #0
+ 430              		.cfi_def_cfa_register 7
+ 181:sd_card.c     ****     
+ 182:sd_card.c     ****     SD_Card_Power_Write(OFF);  // Turn off the SD Card (pulls it low). 
+ 431              		.loc 1 182 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 12
+
+
+ 432 0004 0020     		movs	r0, #0
+ 433 0006 FFF7FEFF 		bl	SD_Card_Power_Write
+ 183:sd_card.c     ****     emFile_Sleep(); // emFIle_Sleep() prepare emFile to go to sleep.
+ 434              		.loc 1 183 0
+ 435 000a FFF7FEFF 		bl	emFile_Sleep
+ 184:sd_card.c     ****     FS_DeInit(); // FS_DeInit() frees allocated resources
+ 436              		.loc 1 184 0
+ 437 000e FFF7FEFF 		bl	FS_DeInit
+ 185:sd_card.c     ****     
+ 186:sd_card.c     ****     emFile_miso0_Write(OFF); // emFile_miso0_Write(): Assigns a new value to the digital port's dat
+ 438              		.loc 1 186 0
+ 439 0012 0020     		movs	r0, #0
+ 440 0014 FFF7FEFF 		bl	emFile_miso0_Write
+ 187:sd_card.c     ****     emFile_mosi0_Write(OFF); // emFile_mosi0_Write(): Assigns a new value to the digital port's dat
+ 441              		.loc 1 187 0
+ 442 0018 0020     		movs	r0, #0
+ 443 001a FFF7FEFF 		bl	emFile_mosi0_Write
+ 188:sd_card.c     ****     emFile_sclk0_Write(OFF); // emFile_sclk0_Write(): Assigns a new value to the digital port's dat
+ 444              		.loc 1 188 0
+ 445 001e 0020     		movs	r0, #0
+ 446 0020 FFF7FEFF 		bl	emFile_sclk0_Write
+ 189:sd_card.c     ****     emFile_SPI0_CS_Write(OFF); // emFile_SPIO_CS_Write(): Assigns a new value to the digital port's
+ 447              		.loc 1 189 0
+ 448 0024 0020     		movs	r0, #0
+ 449 0026 FFF7FEFF 		bl	emFile_SPI0_CS_Write
+ 190:sd_card.c     ****     // SD_Chip_Detect_Write(OFF);
+ 191:sd_card.c     **** }
+ 450              		.loc 1 191 0
+ 451 002a 00BF     		nop
+ 452 002c 80BD     		pop	{r7, pc}
+ 453              		.cfi_endproc
+ 454              	.LFE70:
+ 455              		.size	SD_power_down, .-SD_power_down
+ 456 002e 00BF     		.section	.rodata
+ 457 000a 0000     		.align	2
+ 458              	.LC2:
+ 459 000c 54455354 		.ascii	"TEST_SD_CARD\000"
+ 459      5F53445F 
+ 459      43415244 
+ 459      00
+ 460 0019 000000   		.align	2
+ 461              	.LC5:
+ 462 001c 54455354 		.ascii	"TEST_PASS\000"
+ 462      5F504153 
+ 462      5300
+ 463 0026 0000     		.align	2
+ 464              	.LC6:
+ 465 0028 7700     		.ascii	"w\000"
+ 466 002a 0000     		.align	2
+ 467              	.LC7:
+ 468 002c 53554343 		.ascii	"SUCCESS WRITE READ DELETE FILE\000"
+ 468      45535320 
+ 468      57524954 
+ 468      45205245 
+ 468      41442044 
+ 469 004b 00       		.align	2
+ 470              	.LC8:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 13
+
+
+ 471 004c 4641494C 		.ascii	"FAILED TO WRITE READ DELETE FILE\000"
+ 471      45442054 
+ 471      4F205752 
+ 471      49544520 
+ 471      52454144 
+ 472 006d 000000   		.align	2
+ 473              	.LC3:
+ 474 0070 54455354 		.ascii	"TEST_FAIL\000"
+ 474      5F464149 
+ 474      4C00
+ 475 007a 0000     		.align	2
+ 476              	.LC4:
+ 477 007c 74657374 		.ascii	"test.txt\000"
+ 477      2E747874 
+ 477      00
+ 478              		.section	.text.SD_card_test,"ax",%progbits
+ 479              		.align	2
+ 480              		.global	SD_card_test
+ 481              		.thumb
+ 482              		.thumb_func
+ 483              		.type	SD_card_test, %function
+ 484              	SD_card_test:
+ 485              	.LFB71:
+ 192:sd_card.c     **** 
+ 193:sd_card.c     **** // Testing the SD Card - create a  file, write random number, read number from file, delete directo
+ 194:sd_card.c     **** test_t SD_card_test(){
+ 486              		.loc 1 194 0
+ 487              		.cfi_startproc
+ 488              		@ args = 0, pretend = 0, frame = 424
+ 489              		@ frame_needed = 1, uses_anonymous_args = 0
+ 490 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 491              		.cfi_def_cfa_offset 20
+ 492              		.cfi_offset 4, -20
+ 493              		.cfi_offset 5, -16
+ 494              		.cfi_offset 6, -12
+ 495              		.cfi_offset 7, -8
+ 496              		.cfi_offset 14, -4
+ 497 0002 EBB0     		sub	sp, sp, #428
+ 498              		.cfi_def_cfa_offset 448
+ 499 0004 00AF     		add	r7, sp, #0
+ 500              		.cfi_def_cfa_register 7
+ 501 0006 3B1D     		adds	r3, r7, #4
+ 502 0008 1860     		str	r0, [r3]
+ 195:sd_card.c     ****     
+ 196:sd_card.c     ****     // test_t is a new data type we defined in test.h. We then use that data type to define a struc
+ 197:sd_card.c     ****     test_t test;
+ 198:sd_card.c     ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_SD_CARD");
+ 503              		.loc 1 198 0
+ 504 000a 07F12403 		add	r3, r7, #36
+ 505 000e 3D4A     		ldr	r2, .L25
+ 506 0010 1C46     		mov	r4, r3
+ 507 0012 1346     		mov	r3, r2
+ 508 0014 0FCB     		ldmia	r3, {r0, r1, r2, r3}
+ 509 0016 07C4     		stmia	r4!, {r0, r1, r2}
+ 510 0018 2370     		strb	r3, [r4]
+ 199:sd_card.c     ****     test.status = 0;
+ 511              		.loc 1 199 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 14
+
+
+ 512 001a 07F12403 		add	r3, r7, #36
+ 513 001e 0022     		movs	r2, #0
+ 514 0020 83F88020 		strb	r2, [r3, #128]
+ 200:sd_card.c     ****     
+ 201:sd_card.c     ****     char data[] = "TEST_FAIL";
+ 515              		.loc 1 201 0
+ 516 0024 07F11803 		add	r3, r7, #24
+ 517 0028 374A     		ldr	r2, .L25+4
+ 518 002a 07CA     		ldmia	r2, {r0, r1, r2}
+ 519 002c 03C3     		stmia	r3!, {r0, r1}
+ 520 002e 1A80     		strh	r2, [r3]	@ movhi
+ 202:sd_card.c     ****     char fileName[] = "test.txt";
+ 521              		.loc 1 202 0
+ 522 0030 07F10C03 		add	r3, r7, #12
+ 523 0034 354A     		ldr	r2, .L25+8
+ 524 0036 07CA     		ldmia	r2, {r0, r1, r2}
+ 525 0038 03C3     		stmia	r3!, {r0, r1}
+ 526 003a 1A70     		strb	r2, [r3]
+ 203:sd_card.c     ****     
+ 204:sd_card.c     ****     SD_rmfile(fileName); // Remove file from SD Card
+ 527              		.loc 1 204 0
+ 528 003c 07F10C03 		add	r3, r7, #12
+ 529 0040 1846     		mov	r0, r3
+ 530 0042 FFF7FEFF 		bl	SD_rmfile
+ 205:sd_card.c     ****     SD_write(fileName,"w","TEST_PASS"); // Write data to SD Card
+ 531              		.loc 1 205 0
+ 532 0046 07F10C03 		add	r3, r7, #12
+ 533 004a 314A     		ldr	r2, .L25+12
+ 534 004c 3149     		ldr	r1, .L25+16
+ 535 004e 1846     		mov	r0, r3
+ 536 0050 FFF7FEFF 		bl	SD_write
+ 206:sd_card.c     ****     SD_read(fileName,data,sizeof(data)); // Read data from the SD card
+ 537              		.loc 1 206 0
+ 538 0054 07F11801 		add	r1, r7, #24
+ 539 0058 07F10C03 		add	r3, r7, #12
+ 540 005c 0A22     		movs	r2, #10
+ 541 005e 1846     		mov	r0, r3
+ 542 0060 FFF7FEFF 		bl	SD_read
+ 207:sd_card.c     ****     test.status = SD_rmfile(fileName);
+ 543              		.loc 1 207 0
+ 544 0064 07F10C03 		add	r3, r7, #12
+ 545 0068 1846     		mov	r0, r3
+ 546 006a FFF7FEFF 		bl	SD_rmfile
+ 547 006e 0346     		mov	r3, r0
+ 548 0070 1A46     		mov	r2, r3
+ 549 0072 07F12403 		add	r3, r7, #36
+ 550 0076 83F88020 		strb	r2, [r3, #128]
+ 208:sd_card.c     ****     
+ 209:sd_card.c     ****     if(test.status == 1){
+ 551              		.loc 1 209 0
+ 552 007a 07F12403 		add	r3, r7, #36
+ 553 007e 93F88030 		ldrb	r3, [r3, #128]	@ zero_extendqisi2
+ 554 0082 012B     		cmp	r3, #1
+ 555 0084 14D1     		bne	.L21
+ 210:sd_card.c     ****         snprintf(test.reason,sizeof(test.reason),"SUCCESS WRITE READ DELETE FILE");
+ 556              		.loc 1 210 0
+ 557 0086 07F12403 		add	r3, r7, #36
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 15
+
+
+ 558 008a 8133     		adds	r3, r3, #129
+ 559 008c 224A     		ldr	r2, .L25+20
+ 560 008e 1D46     		mov	r5, r3
+ 561 0090 1446     		mov	r4, r2
+ 562 0092 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 563 0094 2860     		str	r0, [r5]	@ unaligned
+ 564 0096 6960     		str	r1, [r5, #4]	@ unaligned
+ 565 0098 AA60     		str	r2, [r5, #8]	@ unaligned
+ 566 009a EB60     		str	r3, [r5, #12]	@ unaligned
+ 567 009c 07CC     		ldmia	r4!, {r0, r1, r2}
+ 568 009e 2861     		str	r0, [r5, #16]	@ unaligned
+ 569 00a0 6961     		str	r1, [r5, #20]	@ unaligned
+ 570 00a2 AA61     		str	r2, [r5, #24]	@ unaligned
+ 571 00a4 2388     		ldrh	r3, [r4]	@ unaligned
+ 572 00a6 A278     		ldrb	r2, [r4, #2]
+ 573 00a8 AB83     		strh	r3, [r5, #28]	@ unaligned
+ 574 00aa 1346     		mov	r3, r2
+ 575 00ac AB77     		strb	r3, [r5, #30]
+ 576 00ae 17E0     		b	.L22
+ 577              	.L21:
+ 211:sd_card.c     ****     }else{
+ 212:sd_card.c     ****        snprintf(test.reason,sizeof(test.reason),"FAILED TO WRITE READ DELETE FILE"); 
+ 578              		.loc 1 212 0
+ 579 00b0 07F12403 		add	r3, r7, #36
+ 580 00b4 8133     		adds	r3, r3, #129
+ 581 00b6 194A     		ldr	r2, .L25+24
+ 582 00b8 1446     		mov	r4, r2
+ 583 00ba 9E46     		mov	lr, r3
+ 584 00bc 04F1200C 		add	ip, r4, #32
+ 585              	.L23:
+ 586 00c0 7546     		mov	r5, lr
+ 587 00c2 2646     		mov	r6, r4
+ 588 00c4 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 589 00c6 2860     		str	r0, [r5]	@ unaligned
+ 590 00c8 6960     		str	r1, [r5, #4]	@ unaligned
+ 591 00ca AA60     		str	r2, [r5, #8]	@ unaligned
+ 592 00cc EB60     		str	r3, [r5, #12]	@ unaligned
+ 593 00ce 1034     		adds	r4, r4, #16
+ 594 00d0 0EF1100E 		add	lr, lr, #16
+ 595 00d4 6445     		cmp	r4, ip
+ 596 00d6 F3D1     		bne	.L23
+ 597 00d8 7346     		mov	r3, lr
+ 598 00da 2246     		mov	r2, r4
+ 599 00dc 1278     		ldrb	r2, [r2]
+ 600 00de 1A70     		strb	r2, [r3]
+ 601              	.L22:
+ 213:sd_card.c     ****     }
+ 214:sd_card.c     ****     
+ 215:sd_card.c     ****     return test;
+ 602              		.loc 1 215 0
+ 603 00e0 3B1D     		adds	r3, r7, #4
+ 604 00e2 1A68     		ldr	r2, [r3]
+ 605 00e4 07F12403 		add	r3, r7, #36
+ 606 00e8 1046     		mov	r0, r2
+ 607 00ea 1946     		mov	r1, r3
+ 608 00ec 40F28113 		movw	r3, #385
+ 609 00f0 1A46     		mov	r2, r3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 16
+
+
+ 610 00f2 FFF7FEFF 		bl	memcpy
+ 216:sd_card.c     ****     
+ 217:sd_card.c     **** }
+ 611              		.loc 1 217 0
+ 612 00f6 3B1D     		adds	r3, r7, #4
+ 613 00f8 1868     		ldr	r0, [r3]
+ 614 00fa 07F5D677 		add	r7, r7, #428
+ 615              		.cfi_def_cfa_offset 20
+ 616 00fe BD46     		mov	sp, r7
+ 617              		.cfi_def_cfa_register 13
+ 618              		@ sp needed
+ 619 0100 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 620              	.L26:
+ 621 0102 00BF     		.align	2
+ 622              	.L25:
+ 623 0104 0C000000 		.word	.LC2
+ 624 0108 70000000 		.word	.LC3
+ 625 010c 7C000000 		.word	.LC4
+ 626 0110 1C000000 		.word	.LC5
+ 627 0114 28000000 		.word	.LC6
+ 628 0118 2C000000 		.word	.LC7
+ 629 011c 4C000000 		.word	.LC8
+ 630              		.cfi_endproc
+ 631              	.LFE71:
+ 632              		.size	SD_card_test, .-SD_card_test
+ 633              		.text
+ 634              	.Letext0:
+ 635              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 636              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 637              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 638              		.file 5 "testing.h"
+ 639              		.file 6 "..\\emFile_V322c\\Code\\Include\\PSoC5/FS_Types.h"
+ 640              		.file 7 "modem.h"
+ 641              		.file 8 "data.h"
+ 642              		.file 9 "notoriOS.h"
+ 643              		.file 10 "Generated_Source\\PSoC5/core_cm3.h"
+ 644              		.section	.debug_info,"",%progbits
+ 645              	.Ldebug_info0:
+ 646 0000 1E070000 		.4byte	0x71e
+ 647 0004 0400     		.2byte	0x4
+ 648 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 649 000a 04       		.byte	0x4
+ 650 000b 01       		.uleb128 0x1
+ 651 000c 95000000 		.4byte	.LASF92
+ 652 0010 0C       		.byte	0xc
+ 653 0011 8B000000 		.4byte	.LASF93
+ 654 0015 C9020000 		.4byte	.LASF94
+ 655 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 656 001d 00000000 		.4byte	0
+ 657 0021 00000000 		.4byte	.Ldebug_line0
+ 658 0025 02       		.uleb128 0x2
+ 659 0026 01       		.byte	0x1
+ 660 0027 06       		.byte	0x6
+ 661 0028 6D020000 		.4byte	.LASF0
+ 662 002c 02       		.uleb128 0x2
+ 663 002d 01       		.byte	0x1
+ 664 002e 08       		.byte	0x8
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 17
+
+
+ 665 002f 2F020000 		.4byte	.LASF1
+ 666 0033 02       		.uleb128 0x2
+ 667 0034 02       		.byte	0x2
+ 668 0035 05       		.byte	0x5
+ 669 0036 5C000000 		.4byte	.LASF2
+ 670 003a 02       		.uleb128 0x2
+ 671 003b 02       		.byte	0x2
+ 672 003c 07       		.byte	0x7
+ 673 003d 52030000 		.4byte	.LASF3
+ 674 0041 03       		.uleb128 0x3
+ 675 0042 52040000 		.4byte	.LASF12
+ 676 0046 02       		.byte	0x2
+ 677 0047 3F       		.byte	0x3f
+ 678 0048 4C000000 		.4byte	0x4c
+ 679 004c 02       		.uleb128 0x2
+ 680 004d 04       		.byte	0x4
+ 681 004e 05       		.byte	0x5
+ 682 004f CA010000 		.4byte	.LASF4
+ 683 0053 02       		.uleb128 0x2
+ 684 0054 04       		.byte	0x4
+ 685 0055 07       		.byte	0x7
+ 686 0056 FF030000 		.4byte	.LASF5
+ 687 005a 02       		.uleb128 0x2
+ 688 005b 08       		.byte	0x8
+ 689 005c 05       		.byte	0x5
+ 690 005d B0010000 		.4byte	.LASF6
+ 691 0061 02       		.uleb128 0x2
+ 692 0062 08       		.byte	0x8
+ 693 0063 07       		.byte	0x7
+ 694 0064 79020000 		.4byte	.LASF7
+ 695 0068 04       		.uleb128 0x4
+ 696 0069 04       		.byte	0x4
+ 697 006a 05       		.byte	0x5
+ 698 006b 696E7400 		.ascii	"int\000"
+ 699 006f 02       		.uleb128 0x2
+ 700 0070 04       		.byte	0x4
+ 701 0071 07       		.byte	0x7
+ 702 0072 A6020000 		.4byte	.LASF8
+ 703 0076 02       		.uleb128 0x2
+ 704 0077 08       		.byte	0x8
+ 705 0078 04       		.byte	0x4
+ 706 0079 23020000 		.4byte	.LASF9
+ 707 007d 05       		.uleb128 0x5
+ 708 007e 04       		.byte	0x4
+ 709 007f 02       		.uleb128 0x2
+ 710 0080 04       		.byte	0x4
+ 711 0081 07       		.byte	0x7
+ 712 0082 66000000 		.4byte	.LASF10
+ 713 0086 06       		.uleb128 0x6
+ 714 0087 04       		.byte	0x4
+ 715 0088 8C000000 		.4byte	0x8c
+ 716 008c 02       		.uleb128 0x2
+ 717 008d 01       		.byte	0x1
+ 718 008e 08       		.byte	0x8
+ 719 008f BE010000 		.4byte	.LASF11
+ 720 0093 06       		.uleb128 0x6
+ 721 0094 04       		.byte	0x4
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 18
+
+
+ 722 0095 99000000 		.4byte	0x99
+ 723 0099 07       		.uleb128 0x7
+ 724 009a 8C000000 		.4byte	0x8c
+ 725 009e 08       		.uleb128 0x8
+ 726 009f 8C000000 		.4byte	0x8c
+ 727 00a3 AE000000 		.4byte	0xae
+ 728 00a7 09       		.uleb128 0x9
+ 729 00a8 7F000000 		.4byte	0x7f
+ 730 00ac 17       		.byte	0x17
+ 731 00ad 00       		.byte	0
+ 732 00ae 03       		.uleb128 0x3
+ 733 00af B7030000 		.4byte	.LASF13
+ 734 00b3 03       		.byte	0x3
+ 735 00b4 2C       		.byte	0x2c
+ 736 00b5 41000000 		.4byte	0x41
+ 737 00b9 0A       		.uleb128 0xa
+ 738 00ba 5D010000 		.4byte	.LASF14
+ 739 00be 04       		.byte	0x4
+ 740 00bf 9201     		.2byte	0x192
+ 741 00c1 2C000000 		.4byte	0x2c
+ 742 00c5 0A       		.uleb128 0xa
+ 743 00c6 44010000 		.4byte	.LASF15
+ 744 00ca 04       		.byte	0x4
+ 745 00cb 9301     		.2byte	0x193
+ 746 00cd 3A000000 		.4byte	0x3a
+ 747 00d1 0A       		.uleb128 0xa
+ 748 00d2 6F010000 		.4byte	.LASF16
+ 749 00d6 04       		.byte	0x4
+ 750 00d7 9601     		.2byte	0x196
+ 751 00d9 33000000 		.4byte	0x33
+ 752 00dd 0A       		.uleb128 0xa
+ 753 00de 11040000 		.4byte	.LASF17
+ 754 00e2 04       		.byte	0x4
+ 755 00e3 9701     		.2byte	0x197
+ 756 00e5 4C000000 		.4byte	0x4c
+ 757 00e9 02       		.uleb128 0x2
+ 758 00ea 04       		.byte	0x4
+ 759 00eb 04       		.byte	0x4
+ 760 00ec A1010000 		.4byte	.LASF18
+ 761 00f0 02       		.uleb128 0x2
+ 762 00f1 08       		.byte	0x8
+ 763 00f2 04       		.byte	0x4
+ 764 00f3 17040000 		.4byte	.LASF19
+ 765 00f7 06       		.uleb128 0x6
+ 766 00f8 04       		.byte	0x4
+ 767 00f9 FD000000 		.4byte	0xfd
+ 768 00fd 0B       		.uleb128 0xb
+ 769 00fe 0C       		.uleb128 0xc
+ 770 00ff 8101     		.2byte	0x181
+ 771 0101 05       		.byte	0x5
+ 772 0102 0A       		.byte	0xa
+ 773 0103 2C010000 		.4byte	0x12c
+ 774 0107 0D       		.uleb128 0xd
+ 775 0108 1E000000 		.4byte	.LASF20
+ 776 010c 05       		.byte	0x5
+ 777 010d 0C       		.byte	0xc
+ 778 010e 2C010000 		.4byte	0x12c
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 19
+
+
+ 779 0112 00       		.byte	0
+ 780 0113 0D       		.uleb128 0xd
+ 781 0114 7D030000 		.4byte	.LASF21
+ 782 0118 05       		.byte	0x5
+ 783 0119 0D       		.byte	0xd
+ 784 011a B9000000 		.4byte	0xb9
+ 785 011e 80       		.byte	0x80
+ 786 011f 0D       		.uleb128 0xd
+ 787 0120 C3010000 		.4byte	.LASF22
+ 788 0124 05       		.byte	0x5
+ 789 0125 0F       		.byte	0xf
+ 790 0126 3C010000 		.4byte	0x13c
+ 791 012a 81       		.byte	0x81
+ 792 012b 00       		.byte	0
+ 793 012c 08       		.uleb128 0x8
+ 794 012d 8C000000 		.4byte	0x8c
+ 795 0131 3C010000 		.4byte	0x13c
+ 796 0135 09       		.uleb128 0x9
+ 797 0136 7F000000 		.4byte	0x7f
+ 798 013a 7F       		.byte	0x7f
+ 799 013b 00       		.byte	0
+ 800 013c 08       		.uleb128 0x8
+ 801 013d 8C000000 		.4byte	0x8c
+ 802 0141 4C010000 		.4byte	0x14c
+ 803 0145 09       		.uleb128 0x9
+ 804 0146 7F000000 		.4byte	0x7f
+ 805 014a FF       		.byte	0xff
+ 806 014b 00       		.byte	0
+ 807 014c 03       		.uleb128 0x3
+ 808 014d AB030000 		.4byte	.LASF23
+ 809 0151 05       		.byte	0x5
+ 810 0152 10       		.byte	0x10
+ 811 0153 FE000000 		.4byte	0xfe
+ 812 0157 03       		.uleb128 0x3
+ 813 0158 3D020000 		.4byte	.LASF24
+ 814 015c 06       		.byte	0x6
+ 815 015d 7E       		.byte	0x7e
+ 816 015e 62010000 		.4byte	0x162
+ 817 0162 0E       		.uleb128 0xe
+ 818 0163 3D020000 		.4byte	.LASF24
+ 819 0167 06       		.uleb128 0x6
+ 820 0168 04       		.byte	0x4
+ 821 0169 57010000 		.4byte	0x157
+ 822 016d 0F       		.uleb128 0xf
+ 823 016e 3C       		.byte	0x3c
+ 824 016f 07       		.byte	0x7
+ 825 0170 2E       		.byte	0x2e
+ 826 0171 9A010000 		.4byte	0x19a
+ 827 0175 0D       		.uleb128 0xd
+ 828 0176 09000000 		.4byte	.LASF25
+ 829 017a 07       		.byte	0x7
+ 830 017b 2F       		.byte	0x2f
+ 831 017c 9A010000 		.4byte	0x19a
+ 832 0180 00       		.byte	0
+ 833 0181 0D       		.uleb128 0xd
+ 834 0182 00000000 		.4byte	.LASF26
+ 835 0186 07       		.byte	0x7
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 20
+
+
+ 836 0187 30       		.byte	0x30
+ 837 0188 9A010000 		.4byte	0x19a
+ 838 018c 14       		.byte	0x14
+ 839 018d 0D       		.uleb128 0xd
+ 840 018e B2030000 		.4byte	.LASF27
+ 841 0192 07       		.byte	0x7
+ 842 0193 31       		.byte	0x31
+ 843 0194 9A010000 		.4byte	0x19a
+ 844 0198 28       		.byte	0x28
+ 845 0199 00       		.byte	0
+ 846 019a 08       		.uleb128 0x8
+ 847 019b 8C000000 		.4byte	0x8c
+ 848 019f AA010000 		.4byte	0x1aa
+ 849 01a3 09       		.uleb128 0x9
+ 850 01a4 7F000000 		.4byte	0x7f
+ 851 01a8 13       		.byte	0x13
+ 852 01a9 00       		.byte	0
+ 853 01aa 03       		.uleb128 0x3
+ 854 01ab 37040000 		.4byte	.LASF28
+ 855 01af 07       		.byte	0x7
+ 856 01b0 32       		.byte	0x32
+ 857 01b1 6D010000 		.4byte	0x16d
+ 858 01b5 0F       		.uleb128 0xf
+ 859 01b6 10       		.byte	0x10
+ 860 01b7 07       		.byte	0x7
+ 861 01b8 34       		.byte	0x34
+ 862 01b9 1E020000 		.4byte	0x21e
+ 863 01bd 0D       		.uleb128 0xd
+ 864 01be EB010000 		.4byte	.LASF29
+ 865 01c2 07       		.byte	0x7
+ 866 01c3 35       		.byte	0x35
+ 867 01c4 B9000000 		.4byte	0xb9
+ 868 01c8 00       		.byte	0
+ 869 01c9 10       		.uleb128 0x10
+ 870 01ca 62657200 		.ascii	"ber\000"
+ 871 01ce 07       		.byte	0x7
+ 872 01cf 36       		.byte	0x36
+ 873 01d0 B9000000 		.4byte	0xb9
+ 874 01d4 01       		.byte	0x1
+ 875 01d5 0D       		.uleb128 0xd
+ 876 01d6 14020000 		.4byte	.LASF30
+ 877 01da 07       		.byte	0x7
+ 878 01db 37       		.byte	0x37
+ 879 01dc B9000000 		.4byte	0xb9
+ 880 01e0 02       		.byte	0x2
+ 881 01e1 0D       		.uleb128 0xd
+ 882 01e2 36010000 		.4byte	.LASF31
+ 883 01e6 07       		.byte	0x7
+ 884 01e7 38       		.byte	0x38
+ 885 01e8 B9000000 		.4byte	0xb9
+ 886 01ec 03       		.byte	0x3
+ 887 01ed 0D       		.uleb128 0xd
+ 888 01ee EF030000 		.4byte	.LASF32
+ 889 01f2 07       		.byte	0x7
+ 890 01f3 39       		.byte	0x39
+ 891 01f4 B9000000 		.4byte	0xb9
+ 892 01f8 04       		.byte	0x4
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 21
+
+
+ 893 01f9 0D       		.uleb128 0xd
+ 894 01fa 45020000 		.4byte	.LASF33
+ 895 01fe 07       		.byte	0x7
+ 896 01ff 3A       		.byte	0x3a
+ 897 0200 B9000000 		.4byte	0xb9
+ 898 0204 05       		.byte	0x5
+ 899 0205 0D       		.uleb128 0xd
+ 900 0206 65030000 		.4byte	.LASF34
+ 901 020a 07       		.byte	0x7
+ 902 020b 3B       		.byte	0x3b
+ 903 020c 68000000 		.4byte	0x68
+ 904 0210 08       		.byte	0x8
+ 905 0211 0D       		.uleb128 0xd
+ 906 0212 98030000 		.4byte	.LASF35
+ 907 0216 07       		.byte	0x7
+ 908 0217 3C       		.byte	0x3c
+ 909 0218 68000000 		.4byte	0x68
+ 910 021c 0C       		.byte	0xc
+ 911 021d 00       		.byte	0
+ 912 021e 03       		.uleb128 0x3
+ 913 021f BF030000 		.4byte	.LASF36
+ 914 0223 07       		.byte	0x7
+ 915 0224 3D       		.byte	0x3d
+ 916 0225 B5010000 		.4byte	0x1b5
+ 917 0229 0F       		.uleb128 0xf
+ 918 022a 03       		.byte	0x3
+ 919 022b 07       		.byte	0x7
+ 920 022c 49       		.byte	0x49
+ 921 022d 56020000 		.4byte	0x256
+ 922 0231 0D       		.uleb128 0xd
+ 923 0232 07020000 		.4byte	.LASF37
+ 924 0236 07       		.byte	0x7
+ 925 0237 4C       		.byte	0x4c
+ 926 0238 B9000000 		.4byte	0xb9
+ 927 023c 00       		.byte	0
+ 928 023d 0D       		.uleb128 0xd
+ 929 023e BF020000 		.4byte	.LASF38
+ 930 0242 07       		.byte	0x7
+ 931 0243 4E       		.byte	0x4e
+ 932 0244 B9000000 		.4byte	0xb9
+ 933 0248 01       		.byte	0x1
+ 934 0249 0D       		.uleb128 0xd
+ 935 024a 2B040000 		.4byte	.LASF39
+ 936 024e 07       		.byte	0x7
+ 937 024f 51       		.byte	0x51
+ 938 0250 B9000000 		.4byte	0xb9
+ 939 0254 02       		.byte	0x2
+ 940 0255 00       		.byte	0
+ 941 0256 03       		.uleb128 0x3
+ 942 0257 30030000 		.4byte	.LASF40
+ 943 025b 07       		.byte	0x7
+ 944 025c 52       		.byte	0x52
+ 945 025d 29020000 		.4byte	0x229
+ 946 0261 0F       		.uleb128 0xf
+ 947 0262 2C       		.byte	0x2c
+ 948 0263 08       		.byte	0x8
+ 949 0264 10       		.byte	0x10
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 22
+
+
+ 950 0265 8E020000 		.4byte	0x28e
+ 951 0269 10       		.uleb128 0x10
+ 952 026a 6B657900 		.ascii	"key\000"
+ 953 026e 08       		.byte	0x8
+ 954 026f 11       		.byte	0x11
+ 955 0270 9A010000 		.4byte	0x19a
+ 956 0274 00       		.byte	0
+ 957 0275 0D       		.uleb128 0xd
+ 958 0276 C6040000 		.4byte	.LASF41
+ 959 027a 08       		.byte	0x8
+ 960 027b 12       		.byte	0x12
+ 961 027c 9A010000 		.4byte	0x19a
+ 962 0280 14       		.byte	0x14
+ 963 0281 0D       		.uleb128 0xd
+ 964 0282 75010000 		.4byte	.LASF42
+ 965 0286 08       		.byte	0x8
+ 966 0287 13       		.byte	0x13
+ 967 0288 DD000000 		.4byte	0xdd
+ 968 028c 28       		.byte	0x28
+ 969 028d 00       		.byte	0
+ 970 028e 03       		.uleb128 0x3
+ 971 028f B3020000 		.4byte	.LASF43
+ 972 0293 08       		.byte	0x8
+ 973 0294 14       		.byte	0x14
+ 974 0295 61020000 		.4byte	0x261
+ 975 0299 0F       		.uleb128 0xf
+ 976 029a 06       		.byte	0x6
+ 977 029b 09       		.byte	0x9
+ 978 029c 2D       		.byte	0x2d
+ 979 029d D2020000 		.4byte	0x2d2
+ 980 02a1 0D       		.uleb128 0xd
+ 981 02a2 4D000000 		.4byte	.LASF44
+ 982 02a6 09       		.byte	0x9
+ 983 02a7 2F       		.byte	0x2f
+ 984 02a8 C5000000 		.4byte	0xc5
+ 985 02ac 00       		.byte	0
+ 986 02ad 0D       		.uleb128 0xd
+ 987 02ae 37000000 		.4byte	.LASF45
+ 988 02b2 09       		.byte	0x9
+ 989 02b3 30       		.byte	0x30
+ 990 02b4 D1000000 		.4byte	0xd1
+ 991 02b8 02       		.byte	0x2
+ 992 02b9 0D       		.uleb128 0xd
+ 993 02ba 44040000 		.4byte	.LASF46
+ 994 02be 09       		.byte	0x9
+ 995 02bf 31       		.byte	0x31
+ 996 02c0 B9000000 		.4byte	0xb9
+ 997 02c4 04       		.byte	0x4
+ 998 02c5 0D       		.uleb128 0xd
+ 999 02c6 68040000 		.4byte	.LASF47
+ 1000 02ca 09       		.byte	0x9
+ 1001 02cb 32       		.byte	0x32
+ 1002 02cc B9000000 		.4byte	0xb9
+ 1003 02d0 05       		.byte	0x5
+ 1004 02d1 00       		.byte	0
+ 1005 02d2 03       		.uleb128 0x3
+ 1006 02d3 CD030000 		.4byte	.LASF48
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 23
+
+
+ 1007 02d7 09       		.byte	0x9
+ 1008 02d8 35       		.byte	0x35
+ 1009 02d9 DD020000 		.4byte	0x2dd
+ 1010 02dd 11       		.uleb128 0x11
+ 1011 02de 99020000 		.4byte	0x299
+ 1012 02e2 0F       		.uleb128 0xf
+ 1013 02e3 1C       		.byte	0x1c
+ 1014 02e4 09       		.byte	0x9
+ 1015 02e5 38       		.byte	0x38
+ 1016 02e6 03030000 		.4byte	0x303
+ 1017 02ea 0D       		.uleb128 0xd
+ 1018 02eb D3010000 		.4byte	.LASF49
+ 1019 02ef 09       		.byte	0x9
+ 1020 02f0 3A       		.byte	0x3a
+ 1021 02f1 03030000 		.4byte	0x303
+ 1022 02f5 00       		.byte	0
+ 1023 02f6 0D       		.uleb128 0xd
+ 1024 02f7 28010000 		.4byte	.LASF50
+ 1025 02fb 09       		.byte	0x9
+ 1026 02fc 3B       		.byte	0x3b
+ 1027 02fd 9E000000 		.4byte	0x9e
+ 1028 0301 04       		.byte	0x4
+ 1029 0302 00       		.byte	0
+ 1030 0303 06       		.uleb128 0x6
+ 1031 0304 04       		.byte	0x4
+ 1032 0305 AA010000 		.4byte	0x1aa
+ 1033 0309 03       		.uleb128 0x3
+ 1034 030a 47030000 		.4byte	.LASF51
+ 1035 030e 09       		.byte	0x9
+ 1036 030f 3D       		.byte	0x3d
+ 1037 0310 E2020000 		.4byte	0x2e2
+ 1038 0314 0F       		.uleb128 0xf
+ 1039 0315 68       		.byte	0x68
+ 1040 0316 09       		.byte	0x9
+ 1041 0317 43       		.byte	0x43
+ 1042 0318 35030000 		.4byte	0x335
+ 1043 031c 0D       		.uleb128 0xd
+ 1044 031d 7C000000 		.4byte	.LASF52
+ 1045 0321 09       		.byte	0x9
+ 1046 0322 48       		.byte	0x48
+ 1047 0323 35030000 		.4byte	0x335
+ 1048 0327 00       		.byte	0
+ 1049 0328 0D       		.uleb128 0xd
+ 1050 0329 BE040000 		.4byte	.LASF53
+ 1051 032d 09       		.byte	0x9
+ 1052 032e 49       		.byte	0x49
+ 1053 032f 68000000 		.4byte	0x68
+ 1054 0333 64       		.byte	0x64
+ 1055 0334 00       		.byte	0
+ 1056 0335 08       		.uleb128 0x8
+ 1057 0336 8C000000 		.4byte	0x8c
+ 1058 033a 45030000 		.4byte	0x345
+ 1059 033e 09       		.uleb128 0x9
+ 1060 033f 7F000000 		.4byte	0x7f
+ 1061 0343 63       		.byte	0x63
+ 1062 0344 00       		.byte	0
+ 1063 0345 03       		.uleb128 0x3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 24
+
+
+ 1064 0346 28000000 		.4byte	.LASF54
+ 1065 034a 09       		.byte	0x9
+ 1066 034b 4F       		.byte	0x4f
+ 1067 034c 14030000 		.4byte	0x314
+ 1068 0350 12       		.uleb128 0x12
+ 1069 0351 80040000 		.4byte	.LASF65
+ 1070 0355 01       		.byte	0x1
+ 1071 0356 1E       		.byte	0x1e
+ 1072 0357 00000000 		.4byte	.LFB64
+ 1073 035b 0C000000 		.4byte	.LFE64-.LFB64
+ 1074 035f 01       		.uleb128 0x1
+ 1075 0360 9C       		.byte	0x9c
+ 1076 0361 13       		.uleb128 0x13
+ 1077 0362 7F010000 		.4byte	.LASF55
+ 1078 0366 01       		.byte	0x1
+ 1079 0367 2C       		.byte	0x2c
+ 1080 0368 B9000000 		.4byte	0xb9
+ 1081 036c 00000000 		.4byte	.LFB65
+ 1082 0370 40000000 		.4byte	.LFE65-.LFB65
+ 1083 0374 01       		.uleb128 0x1
+ 1084 0375 9C       		.byte	0x9c
+ 1085 0376 97030000 		.4byte	0x397
+ 1086 037a 14       		.uleb128 0x14
+ 1087 037b A7010000 		.4byte	.LASF57
+ 1088 037f 01       		.byte	0x1
+ 1089 0380 2C       		.byte	0x2c
+ 1090 0381 86000000 		.4byte	0x86
+ 1091 0385 02       		.uleb128 0x2
+ 1092 0386 91       		.byte	0x91
+ 1093 0387 6C       		.sleb128 -20
+ 1094 0388 15       		.uleb128 0x15
+ 1095 0389 7D030000 		.4byte	.LASF21
+ 1096 038d 01       		.byte	0x1
+ 1097 038e 2E       		.byte	0x2e
+ 1098 038f B9000000 		.4byte	0xb9
+ 1099 0393 02       		.uleb128 0x2
+ 1100 0394 91       		.byte	0x91
+ 1101 0395 77       		.sleb128 -9
+ 1102 0396 00       		.byte	0
+ 1103 0397 13       		.uleb128 0x13
+ 1104 0398 D6040000 		.4byte	.LASF56
+ 1105 039c 01       		.byte	0x1
+ 1106 039d 43       		.byte	0x43
+ 1107 039e B9000000 		.4byte	0xb9
+ 1108 03a2 00000000 		.4byte	.LFB66
+ 1109 03a6 2C000000 		.4byte	.LFE66-.LFB66
+ 1110 03aa 01       		.uleb128 0x1
+ 1111 03ab 9C       		.byte	0x9c
+ 1112 03ac CD030000 		.4byte	0x3cd
+ 1113 03b0 14       		.uleb128 0x14
+ 1114 03b1 88040000 		.4byte	.LASF58
+ 1115 03b5 01       		.byte	0x1
+ 1116 03b6 43       		.byte	0x43
+ 1117 03b7 93000000 		.4byte	0x93
+ 1118 03bb 02       		.uleb128 0x2
+ 1119 03bc 91       		.byte	0x91
+ 1120 03bd 6C       		.sleb128 -20
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 25
+
+
+ 1121 03be 15       		.uleb128 0x15
+ 1122 03bf 7D030000 		.4byte	.LASF21
+ 1123 03c3 01       		.byte	0x1
+ 1124 03c4 45       		.byte	0x45
+ 1125 03c5 B9000000 		.4byte	0xb9
+ 1126 03c9 02       		.uleb128 0x2
+ 1127 03ca 91       		.byte	0x91
+ 1128 03cb 77       		.sleb128 -9
+ 1129 03cc 00       		.byte	0
+ 1130 03cd 13       		.uleb128 0x13
+ 1131 03ce FE010000 		.4byte	.LASF59
+ 1132 03d2 01       		.byte	0x1
+ 1133 03d3 5A       		.byte	0x5a
+ 1134 03d4 B9000000 		.4byte	0xb9
+ 1135 03d8 00000000 		.4byte	.LFB67
+ 1136 03dc 6C000000 		.4byte	.LFE67-.LFB67
+ 1137 03e0 01       		.uleb128 0x1
+ 1138 03e1 9C       		.byte	0x9c
+ 1139 03e2 2D040000 		.4byte	0x42d
+ 1140 03e6 14       		.uleb128 0x14
+ 1141 03e7 88040000 		.4byte	.LASF58
+ 1142 03eb 01       		.byte	0x1
+ 1143 03ec 5A       		.byte	0x5a
+ 1144 03ed 93000000 		.4byte	0x93
+ 1145 03f1 02       		.uleb128 0x2
+ 1146 03f2 91       		.byte	0x91
+ 1147 03f3 6C       		.sleb128 -20
+ 1148 03f4 14       		.uleb128 0x14
+ 1149 03f5 10030000 		.4byte	.LASF60
+ 1150 03f9 01       		.byte	0x1
+ 1151 03fa 5A       		.byte	0x5a
+ 1152 03fb 93000000 		.4byte	0x93
+ 1153 03ff 02       		.uleb128 0x2
+ 1154 0400 91       		.byte	0x91
+ 1155 0401 68       		.sleb128 -24
+ 1156 0402 14       		.uleb128 0x14
+ 1157 0403 18000000 		.4byte	.LASF61
+ 1158 0407 01       		.byte	0x1
+ 1159 0408 5A       		.byte	0x5a
+ 1160 0409 F7000000 		.4byte	0xf7
+ 1161 040d 02       		.uleb128 0x2
+ 1162 040e 91       		.byte	0x91
+ 1163 040f 64       		.sleb128 -28
+ 1164 0410 15       		.uleb128 0x15
+ 1165 0411 7D030000 		.4byte	.LASF21
+ 1166 0415 01       		.byte	0x1
+ 1167 0416 5C       		.byte	0x5c
+ 1168 0417 B9000000 		.4byte	0xb9
+ 1169 041b 02       		.uleb128 0x2
+ 1170 041c 91       		.byte	0x91
+ 1171 041d 77       		.sleb128 -9
+ 1172 041e 15       		.uleb128 0x15
+ 1173 041f A0020000 		.4byte	.LASF62
+ 1174 0423 01       		.byte	0x1
+ 1175 0424 5D       		.byte	0x5d
+ 1176 0425 67010000 		.4byte	0x167
+ 1177 0429 02       		.uleb128 0x2
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 26
+
+
+ 1178 042a 91       		.byte	0x91
+ 1179 042b 70       		.sleb128 -16
+ 1180 042c 00       		.byte	0
+ 1181 042d 13       		.uleb128 0x13
+ 1182 042e 10000000 		.4byte	.LASF63
+ 1183 0432 01       		.byte	0x1
+ 1184 0433 86       		.byte	0x86
+ 1185 0434 B9000000 		.4byte	0xb9
+ 1186 0438 00000000 		.4byte	.LFB68
+ 1187 043c 68000000 		.4byte	.LFE68-.LFB68
+ 1188 0440 01       		.uleb128 0x1
+ 1189 0441 9C       		.byte	0x9c
+ 1190 0442 8D040000 		.4byte	0x48d
+ 1191 0446 14       		.uleb128 0x14
+ 1192 0447 88040000 		.4byte	.LASF58
+ 1193 044b 01       		.byte	0x1
+ 1194 044c 86       		.byte	0x86
+ 1195 044d 93000000 		.4byte	0x93
+ 1196 0451 02       		.uleb128 0x2
+ 1197 0452 91       		.byte	0x91
+ 1198 0453 6C       		.sleb128 -20
+ 1199 0454 14       		.uleb128 0x14
+ 1200 0455 18000000 		.4byte	.LASF61
+ 1201 0459 01       		.byte	0x1
+ 1202 045a 86       		.byte	0x86
+ 1203 045b 7D000000 		.4byte	0x7d
+ 1204 045f 02       		.uleb128 0x2
+ 1205 0460 91       		.byte	0x91
+ 1206 0461 68       		.sleb128 -24
+ 1207 0462 14       		.uleb128 0x14
+ 1208 0463 3B010000 		.4byte	.LASF64
+ 1209 0467 01       		.byte	0x1
+ 1210 0468 86       		.byte	0x86
+ 1211 0469 53000000 		.4byte	0x53
+ 1212 046d 02       		.uleb128 0x2
+ 1213 046e 91       		.byte	0x91
+ 1214 046f 64       		.sleb128 -28
+ 1215 0470 15       		.uleb128 0x15
+ 1216 0471 7D030000 		.4byte	.LASF21
+ 1217 0475 01       		.byte	0x1
+ 1218 0476 88       		.byte	0x88
+ 1219 0477 B9000000 		.4byte	0xb9
+ 1220 047b 02       		.uleb128 0x2
+ 1221 047c 91       		.byte	0x91
+ 1222 047d 77       		.sleb128 -9
+ 1223 047e 15       		.uleb128 0x15
+ 1224 047f A0020000 		.4byte	.LASF62
+ 1225 0483 01       		.byte	0x1
+ 1226 0484 89       		.byte	0x89
+ 1227 0485 67010000 		.4byte	0x167
+ 1228 0489 02       		.uleb128 0x2
+ 1229 048a 91       		.byte	0x91
+ 1230 048b 70       		.sleb128 -16
+ 1231 048c 00       		.byte	0
+ 1232 048d 16       		.uleb128 0x16
+ 1233 048e 9D040000 		.4byte	.LASF66
+ 1234 0492 01       		.byte	0x1
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 27
+
+
+ 1235 0493 AB       		.byte	0xab
+ 1236 0494 00000000 		.4byte	.LFB69
+ 1237 0498 16000000 		.4byte	.LFE69-.LFB69
+ 1238 049c 01       		.uleb128 0x1
+ 1239 049d 9C       		.byte	0x9c
+ 1240 049e 16       		.uleb128 0x16
+ 1241 049f F0010000 		.4byte	.LASF67
+ 1242 04a3 01       		.byte	0x1
+ 1243 04a4 B4       		.byte	0xb4
+ 1244 04a5 00000000 		.4byte	.LFB70
+ 1245 04a9 2E000000 		.4byte	.LFE70-.LFB70
+ 1246 04ad 01       		.uleb128 0x1
+ 1247 04ae 9C       		.byte	0x9c
+ 1248 04af 17       		.uleb128 0x17
+ 1249 04b0 6F000000 		.4byte	.LASF95
+ 1250 04b4 01       		.byte	0x1
+ 1251 04b5 C2       		.byte	0xc2
+ 1252 04b6 4C010000 		.4byte	0x14c
+ 1253 04ba 00000000 		.4byte	.LFB71
+ 1254 04be 20010000 		.4byte	.LFE71-.LFB71
+ 1255 04c2 01       		.uleb128 0x1
+ 1256 04c3 9C       		.byte	0x9c
+ 1257 04c4 F6040000 		.4byte	0x4f6
+ 1258 04c8 15       		.uleb128 0x15
+ 1259 04c9 EA030000 		.4byte	.LASF68
+ 1260 04cd 01       		.byte	0x1
+ 1261 04ce C5       		.byte	0xc5
+ 1262 04cf 4C010000 		.4byte	0x14c
+ 1263 04d3 03       		.uleb128 0x3
+ 1264 04d4 91       		.byte	0x91
+ 1265 04d5 E47C     		.sleb128 -412
+ 1266 04d7 15       		.uleb128 0x15
+ 1267 04d8 23010000 		.4byte	.LASF69
+ 1268 04dc 01       		.byte	0x1
+ 1269 04dd C9       		.byte	0xc9
+ 1270 04de F6040000 		.4byte	0x4f6
+ 1271 04e2 03       		.uleb128 0x3
+ 1272 04e3 91       		.byte	0x91
+ 1273 04e4 D87C     		.sleb128 -424
+ 1274 04e6 15       		.uleb128 0x15
+ 1275 04e7 88040000 		.4byte	.LASF58
+ 1276 04eb 01       		.byte	0x1
+ 1277 04ec CA       		.byte	0xca
+ 1278 04ed 06050000 		.4byte	0x506
+ 1279 04f1 03       		.uleb128 0x3
+ 1280 04f2 91       		.byte	0x91
+ 1281 04f3 CC7C     		.sleb128 -436
+ 1282 04f5 00       		.byte	0
+ 1283 04f6 08       		.uleb128 0x8
+ 1284 04f7 8C000000 		.4byte	0x8c
+ 1285 04fb 06050000 		.4byte	0x506
+ 1286 04ff 09       		.uleb128 0x9
+ 1287 0500 7F000000 		.4byte	0x7f
+ 1288 0504 09       		.byte	0x9
+ 1289 0505 00       		.byte	0
+ 1290 0506 08       		.uleb128 0x8
+ 1291 0507 8C000000 		.4byte	0x8c
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 28
+
+
+ 1292 050b 16050000 		.4byte	0x516
+ 1293 050f 09       		.uleb128 0x9
+ 1294 0510 7F000000 		.4byte	0x7f
+ 1295 0514 08       		.byte	0x8
+ 1296 0515 00       		.byte	0
+ 1297 0516 18       		.uleb128 0x18
+ 1298 0517 1E040000 		.4byte	.LASF70
+ 1299 051b 0A       		.byte	0xa
+ 1300 051c 1207     		.2byte	0x712
+ 1301 051e 22050000 		.4byte	0x522
+ 1302 0522 11       		.uleb128 0x11
+ 1303 0523 AE000000 		.4byte	0xae
+ 1304 0527 19       		.uleb128 0x19
+ 1305 0528 61020000 		.4byte	.LASF71
+ 1306 052c 07       		.byte	0x7
+ 1307 052d 16       		.byte	0x16
+ 1308 052e B9000000 		.4byte	0xb9
+ 1309 0532 05       		.uleb128 0x5
+ 1310 0533 03       		.byte	0x3
+ 1311 0534 00000000 		.4byte	modem_state
+ 1312 0538 19       		.uleb128 0x19
+ 1313 0539 4A020000 		.4byte	.LASF72
+ 1314 053d 07       		.byte	0x7
+ 1315 053e 55       		.byte	0x55
+ 1316 053f DD000000 		.4byte	0xdd
+ 1317 0543 05       		.uleb128 0x5
+ 1318 0544 03       		.byte	0x3
+ 1319 0545 00000000 		.4byte	modem_start_time_stamp
+ 1320 0549 19       		.uleb128 0x19
+ 1321 054a D3010000 		.4byte	.LASF49
+ 1322 054e 07       		.byte	0x7
+ 1323 054f 56       		.byte	0x56
+ 1324 0550 AA010000 		.4byte	0x1aa
+ 1325 0554 05       		.uleb128 0x5
+ 1326 0555 03       		.byte	0x3
+ 1327 0556 00000000 		.4byte	modem_info
+ 1328 055a 19       		.uleb128 0x19
+ 1329 055b 16030000 		.4byte	.LASF73
+ 1330 055f 07       		.byte	0x7
+ 1331 0560 57       		.byte	0x57
+ 1332 0561 1E020000 		.4byte	0x21e
+ 1333 0565 05       		.uleb128 0x5
+ 1334 0566 03       		.byte	0x3
+ 1335 0567 00000000 		.4byte	modem_stats
+ 1336 056b 19       		.uleb128 0x19
+ 1337 056c A9040000 		.4byte	.LASF74
+ 1338 0570 07       		.byte	0x7
+ 1339 0571 58       		.byte	0x58
+ 1340 0572 56020000 		.4byte	0x256
+ 1341 0576 05       		.uleb128 0x5
+ 1342 0577 03       		.byte	0x3
+ 1343 0578 00000000 		.4byte	updatable_parameters
+ 1344 057c 19       		.uleb128 0x19
+ 1345 057d 4B010000 		.4byte	.LASF75
+ 1346 0581 08       		.byte	0x8
+ 1347 0582 1D       		.byte	0x1d
+ 1348 0583 C5000000 		.4byte	0xc5
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 29
+
+
+ 1349 0587 05       		.uleb128 0x5
+ 1350 0588 03       		.byte	0x3
+ 1351 0589 00000000 		.4byte	dataPointsInStack
+ 1352 058d 19       		.uleb128 0x19
+ 1353 058e 88010000 		.4byte	.LASF76
+ 1354 0592 08       		.byte	0x8
+ 1355 0593 1E       		.byte	0x1e
+ 1356 0594 C5000000 		.4byte	0xc5
+ 1357 0598 05       		.uleb128 0x5
+ 1358 0599 03       		.byte	0x3
+ 1359 059a 00000000 		.4byte	dataPointsInStackDesired
+ 1360 059e 08       		.uleb128 0x8
+ 1361 059f 8E020000 		.4byte	0x28e
+ 1362 05a3 AE050000 		.4byte	0x5ae
+ 1363 05a7 09       		.uleb128 0x9
+ 1364 05a8 7F000000 		.4byte	0x7f
+ 1365 05ac 95       		.byte	0x95
+ 1366 05ad 00       		.byte	0
+ 1367 05ae 19       		.uleb128 0x19
+ 1368 05af 23010000 		.4byte	.LASF69
+ 1369 05b3 08       		.byte	0x8
+ 1370 05b4 1F       		.byte	0x1f
+ 1371 05b5 9E050000 		.4byte	0x59e
+ 1372 05b9 05       		.uleb128 0x5
+ 1373 05ba 03       		.byte	0x3
+ 1374 05bb 00000000 		.4byte	data
+ 1375 05bf 08       		.uleb128 0x8
+ 1376 05c0 8C000000 		.4byte	0x8c
+ 1377 05c4 D0050000 		.4byte	0x5d0
+ 1378 05c8 1A       		.uleb128 0x1a
+ 1379 05c9 7F000000 		.4byte	0x7f
+ 1380 05cd 0F27     		.2byte	0x270f
+ 1381 05cf 00       		.byte	0
+ 1382 05d0 19       		.uleb128 0x19
+ 1383 05d1 E0040000 		.4byte	.LASF77
+ 1384 05d5 09       		.byte	0x9
+ 1385 05d6 17       		.byte	0x17
+ 1386 05d7 BF050000 		.4byte	0x5bf
+ 1387 05db 05       		.uleb128 0x5
+ 1388 05dc 03       		.byte	0x3
+ 1389 05dd 00000000 		.4byte	http_request
+ 1390 05e1 19       		.uleb128 0x19
+ 1391 05e2 CC040000 		.4byte	.LASF78
+ 1392 05e6 09       		.byte	0x9
+ 1393 05e7 18       		.byte	0x18
+ 1394 05e8 BF050000 		.4byte	0x5bf
+ 1395 05ec 05       		.uleb128 0x5
+ 1396 05ed 03       		.byte	0x3
+ 1397 05ee 00000000 		.4byte	http_body
+ 1398 05f2 08       		.uleb128 0x8
+ 1399 05f3 8C000000 		.4byte	0x8c
+ 1400 05f7 02060000 		.4byte	0x602
+ 1401 05fb 09       		.uleb128 0x9
+ 1402 05fc 7F000000 		.4byte	0x7f
+ 1403 0600 C7       		.byte	0xc7
+ 1404 0601 00       		.byte	0
+ 1405 0602 19       		.uleb128 0x19
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 30
+
+
+ 1406 0603 F4030000 		.4byte	.LASF79
+ 1407 0607 09       		.byte	0x9
+ 1408 0608 19       		.byte	0x19
+ 1409 0609 F2050000 		.4byte	0x5f2
+ 1410 060d 05       		.uleb128 0x5
+ 1411 060e 03       		.byte	0x3
+ 1412 060f 00000000 		.4byte	http_route
+ 1413 0613 19       		.uleb128 0x19
+ 1414 0614 8C030000 		.4byte	.LASF80
+ 1415 0618 09       		.byte	0x9
+ 1416 0619 40       		.byte	0x40
+ 1417 061a 09030000 		.4byte	0x309
+ 1418 061e 05       		.uleb128 0x5
+ 1419 061f 03       		.byte	0x3
+ 1420 0620 00000000 		.4byte	system_info
+ 1421 0624 19       		.uleb128 0x19
+ 1422 0625 90020000 		.4byte	.LASF81
+ 1423 0629 09       		.byte	0x9
+ 1424 062a 52       		.byte	0x52
+ 1425 062b 45030000 		.4byte	0x345
+ 1426 062f 05       		.uleb128 0x5
+ 1427 0630 03       		.byte	0x3
+ 1428 0631 00000000 		.4byte	system_settings
+ 1429 0635 19       		.uleb128 0x19
+ 1430 0636 DE010000 		.4byte	.LASF82
+ 1431 063a 09       		.byte	0x9
+ 1432 063b 6E       		.byte	0x6e
+ 1433 063c D2020000 		.4byte	0x2d2
+ 1434 0640 05       		.uleb128 0x5
+ 1435 0641 03       		.byte	0x3
+ 1436 0642 00000000 		.4byte	alarmMeasure
+ 1437 0646 19       		.uleb128 0x19
+ 1438 0647 22030000 		.4byte	.LASF83
+ 1439 064b 09       		.byte	0x9
+ 1440 064c 6F       		.byte	0x6f
+ 1441 064d B9000000 		.4byte	0xb9
+ 1442 0651 05       		.uleb128 0x5
+ 1443 0652 03       		.byte	0x3
+ 1444 0653 00000000 		.4byte	timeToMeasure
+ 1445 0657 19       		.uleb128 0x19
+ 1446 0658 19020000 		.4byte	.LASF84
+ 1447 065c 09       		.byte	0x9
+ 1448 065d 70       		.byte	0x70
+ 1449 065e D2020000 		.4byte	0x2d2
+ 1450 0662 05       		.uleb128 0x5
+ 1451 0663 03       		.byte	0x3
+ 1452 0664 00000000 		.4byte	alarmSync
+ 1453 0668 19       		.uleb128 0x19
+ 1454 0669 ED040000 		.4byte	.LASF85
+ 1455 066d 09       		.byte	0x9
+ 1456 066e 71       		.byte	0x71
+ 1457 066f B9000000 		.4byte	0xb9
+ 1458 0673 05       		.uleb128 0x5
+ 1459 0674 03       		.byte	0x3
+ 1460 0675 00000000 		.4byte	timeToSync
+ 1461 0679 19       		.uleb128 0x19
+ 1462 067a D3030000 		.4byte	.LASF86
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 31
+
+
+ 1463 067e 09       		.byte	0x9
+ 1464 067f 72       		.byte	0x72
+ 1465 0680 B9000000 		.4byte	0xb9
+ 1466 0684 05       		.uleb128 0x5
+ 1467 0685 03       		.byte	0x3
+ 1468 0686 00000000 		.4byte	timeToSycnRemoteParams
+ 1469 068a 19       		.uleb128 0x19
+ 1470 068b 91040000 		.4byte	.LASF87
+ 1471 068f 09       		.byte	0x9
+ 1472 0690 73       		.byte	0x73
+ 1473 0691 B9000000 		.4byte	0xb9
+ 1474 0695 05       		.uleb128 0x5
+ 1475 0696 03       		.byte	0x3
+ 1476 0697 00000000 		.4byte	try_counter
+ 1477 069b 1B       		.uleb128 0x1b
+ 1478 069c 68657900 		.ascii	"hey\000"
+ 1479 06a0 09       		.byte	0x9
+ 1480 06a1 74       		.byte	0x74
+ 1481 06a2 B9000000 		.4byte	0xb9
+ 1482 06a6 05       		.uleb128 0x5
+ 1483 06a7 03       		.byte	0x3
+ 1484 06a8 00000000 		.4byte	hey
+ 1485 06ac 19       		.uleb128 0x19
+ 1486 06ad 84000000 		.4byte	.LASF88
+ 1487 06b1 01       		.byte	0x1
+ 1488 06b2 0D       		.byte	0xd
+ 1489 06b3 F6040000 		.4byte	0x4f6
+ 1490 06b7 05       		.uleb128 0x5
+ 1491 06b8 03       		.byte	0x3
+ 1492 06b9 00000000 		.4byte	SD_dir
+ 1493 06bd 08       		.uleb128 0x8
+ 1494 06be 8C000000 		.4byte	0x8c
+ 1495 06c2 CE060000 		.4byte	0x6ce
+ 1496 06c6 1A       		.uleb128 0x1a
+ 1497 06c7 7F000000 		.4byte	0x7f
+ 1498 06cb B70B     		.2byte	0xbb7
+ 1499 06cd 00       		.byte	0
+ 1500 06ce 19       		.uleb128 0x19
+ 1501 06cf 84030000 		.4byte	.LASF89
+ 1502 06d3 01       		.byte	0x1
+ 1503 06d4 0E       		.byte	0xe
+ 1504 06d5 BD060000 		.4byte	0x6bd
+ 1505 06d9 05       		.uleb128 0x5
+ 1506 06da 03       		.byte	0x3
+ 1507 06db 00000000 		.4byte	SD_body
+ 1508 06df 08       		.uleb128 0x8
+ 1509 06e0 8C000000 		.4byte	0x8c
+ 1510 06e4 EF060000 		.4byte	0x6ef
+ 1511 06e8 09       		.uleb128 0x9
+ 1512 06e9 7F000000 		.4byte	0x7f
+ 1513 06ed 1D       		.byte	0x1d
+ 1514 06ee 00       		.byte	0
+ 1515 06ef 19       		.uleb128 0x19
+ 1516 06f0 5C040000 		.4byte	.LASF90
+ 1517 06f4 01       		.byte	0x1
+ 1518 06f5 0F       		.byte	0xf
+ 1519 06f6 DF060000 		.4byte	0x6df
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 32
+
+
+ 1520 06fa 05       		.uleb128 0x5
+ 1521 06fb 03       		.byte	0x3
+ 1522 06fc 00000000 		.4byte	SD_filename
+ 1523 0700 08       		.uleb128 0x8
+ 1524 0701 8C000000 		.4byte	0x8c
+ 1525 0705 10070000 		.4byte	0x710
+ 1526 0709 09       		.uleb128 0x9
+ 1527 070a 7F000000 		.4byte	0x7f
+ 1528 070e 04       		.byte	0x4
+ 1529 070f 00       		.byte	0
+ 1530 0710 19       		.uleb128 0x19
+ 1531 0711 63010000 		.4byte	.LASF91
+ 1532 0715 01       		.byte	0x1
+ 1533 0716 10       		.byte	0x10
+ 1534 0717 00070000 		.4byte	0x700
+ 1535 071b 05       		.uleb128 0x5
+ 1536 071c 03       		.byte	0x3
+ 1537 071d 00000000 		.4byte	SD_filemode
+ 1538 0721 00       		.byte	0
+ 1539              		.section	.debug_abbrev,"",%progbits
+ 1540              	.Ldebug_abbrev0:
+ 1541 0000 01       		.uleb128 0x1
+ 1542 0001 11       		.uleb128 0x11
+ 1543 0002 01       		.byte	0x1
+ 1544 0003 25       		.uleb128 0x25
+ 1545 0004 0E       		.uleb128 0xe
+ 1546 0005 13       		.uleb128 0x13
+ 1547 0006 0B       		.uleb128 0xb
+ 1548 0007 03       		.uleb128 0x3
+ 1549 0008 0E       		.uleb128 0xe
+ 1550 0009 1B       		.uleb128 0x1b
+ 1551 000a 0E       		.uleb128 0xe
+ 1552 000b 55       		.uleb128 0x55
+ 1553 000c 17       		.uleb128 0x17
+ 1554 000d 11       		.uleb128 0x11
+ 1555 000e 01       		.uleb128 0x1
+ 1556 000f 10       		.uleb128 0x10
+ 1557 0010 17       		.uleb128 0x17
+ 1558 0011 00       		.byte	0
+ 1559 0012 00       		.byte	0
+ 1560 0013 02       		.uleb128 0x2
+ 1561 0014 24       		.uleb128 0x24
+ 1562 0015 00       		.byte	0
+ 1563 0016 0B       		.uleb128 0xb
+ 1564 0017 0B       		.uleb128 0xb
+ 1565 0018 3E       		.uleb128 0x3e
+ 1566 0019 0B       		.uleb128 0xb
+ 1567 001a 03       		.uleb128 0x3
+ 1568 001b 0E       		.uleb128 0xe
+ 1569 001c 00       		.byte	0
+ 1570 001d 00       		.byte	0
+ 1571 001e 03       		.uleb128 0x3
+ 1572 001f 16       		.uleb128 0x16
+ 1573 0020 00       		.byte	0
+ 1574 0021 03       		.uleb128 0x3
+ 1575 0022 0E       		.uleb128 0xe
+ 1576 0023 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 33
+
+
+ 1577 0024 0B       		.uleb128 0xb
+ 1578 0025 3B       		.uleb128 0x3b
+ 1579 0026 0B       		.uleb128 0xb
+ 1580 0027 49       		.uleb128 0x49
+ 1581 0028 13       		.uleb128 0x13
+ 1582 0029 00       		.byte	0
+ 1583 002a 00       		.byte	0
+ 1584 002b 04       		.uleb128 0x4
+ 1585 002c 24       		.uleb128 0x24
+ 1586 002d 00       		.byte	0
+ 1587 002e 0B       		.uleb128 0xb
+ 1588 002f 0B       		.uleb128 0xb
+ 1589 0030 3E       		.uleb128 0x3e
+ 1590 0031 0B       		.uleb128 0xb
+ 1591 0032 03       		.uleb128 0x3
+ 1592 0033 08       		.uleb128 0x8
+ 1593 0034 00       		.byte	0
+ 1594 0035 00       		.byte	0
+ 1595 0036 05       		.uleb128 0x5
+ 1596 0037 0F       		.uleb128 0xf
+ 1597 0038 00       		.byte	0
+ 1598 0039 0B       		.uleb128 0xb
+ 1599 003a 0B       		.uleb128 0xb
+ 1600 003b 00       		.byte	0
+ 1601 003c 00       		.byte	0
+ 1602 003d 06       		.uleb128 0x6
+ 1603 003e 0F       		.uleb128 0xf
+ 1604 003f 00       		.byte	0
+ 1605 0040 0B       		.uleb128 0xb
+ 1606 0041 0B       		.uleb128 0xb
+ 1607 0042 49       		.uleb128 0x49
+ 1608 0043 13       		.uleb128 0x13
+ 1609 0044 00       		.byte	0
+ 1610 0045 00       		.byte	0
+ 1611 0046 07       		.uleb128 0x7
+ 1612 0047 26       		.uleb128 0x26
+ 1613 0048 00       		.byte	0
+ 1614 0049 49       		.uleb128 0x49
+ 1615 004a 13       		.uleb128 0x13
+ 1616 004b 00       		.byte	0
+ 1617 004c 00       		.byte	0
+ 1618 004d 08       		.uleb128 0x8
+ 1619 004e 01       		.uleb128 0x1
+ 1620 004f 01       		.byte	0x1
+ 1621 0050 49       		.uleb128 0x49
+ 1622 0051 13       		.uleb128 0x13
+ 1623 0052 01       		.uleb128 0x1
+ 1624 0053 13       		.uleb128 0x13
+ 1625 0054 00       		.byte	0
+ 1626 0055 00       		.byte	0
+ 1627 0056 09       		.uleb128 0x9
+ 1628 0057 21       		.uleb128 0x21
+ 1629 0058 00       		.byte	0
+ 1630 0059 49       		.uleb128 0x49
+ 1631 005a 13       		.uleb128 0x13
+ 1632 005b 2F       		.uleb128 0x2f
+ 1633 005c 0B       		.uleb128 0xb
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 34
+
+
+ 1634 005d 00       		.byte	0
+ 1635 005e 00       		.byte	0
+ 1636 005f 0A       		.uleb128 0xa
+ 1637 0060 16       		.uleb128 0x16
+ 1638 0061 00       		.byte	0
+ 1639 0062 03       		.uleb128 0x3
+ 1640 0063 0E       		.uleb128 0xe
+ 1641 0064 3A       		.uleb128 0x3a
+ 1642 0065 0B       		.uleb128 0xb
+ 1643 0066 3B       		.uleb128 0x3b
+ 1644 0067 05       		.uleb128 0x5
+ 1645 0068 49       		.uleb128 0x49
+ 1646 0069 13       		.uleb128 0x13
+ 1647 006a 00       		.byte	0
+ 1648 006b 00       		.byte	0
+ 1649 006c 0B       		.uleb128 0xb
+ 1650 006d 26       		.uleb128 0x26
+ 1651 006e 00       		.byte	0
+ 1652 006f 00       		.byte	0
+ 1653 0070 00       		.byte	0
+ 1654 0071 0C       		.uleb128 0xc
+ 1655 0072 13       		.uleb128 0x13
+ 1656 0073 01       		.byte	0x1
+ 1657 0074 0B       		.uleb128 0xb
+ 1658 0075 05       		.uleb128 0x5
+ 1659 0076 3A       		.uleb128 0x3a
+ 1660 0077 0B       		.uleb128 0xb
+ 1661 0078 3B       		.uleb128 0x3b
+ 1662 0079 0B       		.uleb128 0xb
+ 1663 007a 01       		.uleb128 0x1
+ 1664 007b 13       		.uleb128 0x13
+ 1665 007c 00       		.byte	0
+ 1666 007d 00       		.byte	0
+ 1667 007e 0D       		.uleb128 0xd
+ 1668 007f 0D       		.uleb128 0xd
+ 1669 0080 00       		.byte	0
+ 1670 0081 03       		.uleb128 0x3
+ 1671 0082 0E       		.uleb128 0xe
+ 1672 0083 3A       		.uleb128 0x3a
+ 1673 0084 0B       		.uleb128 0xb
+ 1674 0085 3B       		.uleb128 0x3b
+ 1675 0086 0B       		.uleb128 0xb
+ 1676 0087 49       		.uleb128 0x49
+ 1677 0088 13       		.uleb128 0x13
+ 1678 0089 38       		.uleb128 0x38
+ 1679 008a 0B       		.uleb128 0xb
+ 1680 008b 00       		.byte	0
+ 1681 008c 00       		.byte	0
+ 1682 008d 0E       		.uleb128 0xe
+ 1683 008e 13       		.uleb128 0x13
+ 1684 008f 00       		.byte	0
+ 1685 0090 03       		.uleb128 0x3
+ 1686 0091 0E       		.uleb128 0xe
+ 1687 0092 3C       		.uleb128 0x3c
+ 1688 0093 19       		.uleb128 0x19
+ 1689 0094 00       		.byte	0
+ 1690 0095 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 35
+
+
+ 1691 0096 0F       		.uleb128 0xf
+ 1692 0097 13       		.uleb128 0x13
+ 1693 0098 01       		.byte	0x1
+ 1694 0099 0B       		.uleb128 0xb
+ 1695 009a 0B       		.uleb128 0xb
+ 1696 009b 3A       		.uleb128 0x3a
+ 1697 009c 0B       		.uleb128 0xb
+ 1698 009d 3B       		.uleb128 0x3b
+ 1699 009e 0B       		.uleb128 0xb
+ 1700 009f 01       		.uleb128 0x1
+ 1701 00a0 13       		.uleb128 0x13
+ 1702 00a1 00       		.byte	0
+ 1703 00a2 00       		.byte	0
+ 1704 00a3 10       		.uleb128 0x10
+ 1705 00a4 0D       		.uleb128 0xd
+ 1706 00a5 00       		.byte	0
+ 1707 00a6 03       		.uleb128 0x3
+ 1708 00a7 08       		.uleb128 0x8
+ 1709 00a8 3A       		.uleb128 0x3a
+ 1710 00a9 0B       		.uleb128 0xb
+ 1711 00aa 3B       		.uleb128 0x3b
+ 1712 00ab 0B       		.uleb128 0xb
+ 1713 00ac 49       		.uleb128 0x49
+ 1714 00ad 13       		.uleb128 0x13
+ 1715 00ae 38       		.uleb128 0x38
+ 1716 00af 0B       		.uleb128 0xb
+ 1717 00b0 00       		.byte	0
+ 1718 00b1 00       		.byte	0
+ 1719 00b2 11       		.uleb128 0x11
+ 1720 00b3 35       		.uleb128 0x35
+ 1721 00b4 00       		.byte	0
+ 1722 00b5 49       		.uleb128 0x49
+ 1723 00b6 13       		.uleb128 0x13
+ 1724 00b7 00       		.byte	0
+ 1725 00b8 00       		.byte	0
+ 1726 00b9 12       		.uleb128 0x12
+ 1727 00ba 2E       		.uleb128 0x2e
+ 1728 00bb 00       		.byte	0
+ 1729 00bc 3F       		.uleb128 0x3f
+ 1730 00bd 19       		.uleb128 0x19
+ 1731 00be 03       		.uleb128 0x3
+ 1732 00bf 0E       		.uleb128 0xe
+ 1733 00c0 3A       		.uleb128 0x3a
+ 1734 00c1 0B       		.uleb128 0xb
+ 1735 00c2 3B       		.uleb128 0x3b
+ 1736 00c3 0B       		.uleb128 0xb
+ 1737 00c4 11       		.uleb128 0x11
+ 1738 00c5 01       		.uleb128 0x1
+ 1739 00c6 12       		.uleb128 0x12
+ 1740 00c7 06       		.uleb128 0x6
+ 1741 00c8 40       		.uleb128 0x40
+ 1742 00c9 18       		.uleb128 0x18
+ 1743 00ca 9742     		.uleb128 0x2117
+ 1744 00cc 19       		.uleb128 0x19
+ 1745 00cd 00       		.byte	0
+ 1746 00ce 00       		.byte	0
+ 1747 00cf 13       		.uleb128 0x13
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 36
+
+
+ 1748 00d0 2E       		.uleb128 0x2e
+ 1749 00d1 01       		.byte	0x1
+ 1750 00d2 3F       		.uleb128 0x3f
+ 1751 00d3 19       		.uleb128 0x19
+ 1752 00d4 03       		.uleb128 0x3
+ 1753 00d5 0E       		.uleb128 0xe
+ 1754 00d6 3A       		.uleb128 0x3a
+ 1755 00d7 0B       		.uleb128 0xb
+ 1756 00d8 3B       		.uleb128 0x3b
+ 1757 00d9 0B       		.uleb128 0xb
+ 1758 00da 27       		.uleb128 0x27
+ 1759 00db 19       		.uleb128 0x19
+ 1760 00dc 49       		.uleb128 0x49
+ 1761 00dd 13       		.uleb128 0x13
+ 1762 00de 11       		.uleb128 0x11
+ 1763 00df 01       		.uleb128 0x1
+ 1764 00e0 12       		.uleb128 0x12
+ 1765 00e1 06       		.uleb128 0x6
+ 1766 00e2 40       		.uleb128 0x40
+ 1767 00e3 18       		.uleb128 0x18
+ 1768 00e4 9642     		.uleb128 0x2116
+ 1769 00e6 19       		.uleb128 0x19
+ 1770 00e7 01       		.uleb128 0x1
+ 1771 00e8 13       		.uleb128 0x13
+ 1772 00e9 00       		.byte	0
+ 1773 00ea 00       		.byte	0
+ 1774 00eb 14       		.uleb128 0x14
+ 1775 00ec 05       		.uleb128 0x5
+ 1776 00ed 00       		.byte	0
+ 1777 00ee 03       		.uleb128 0x3
+ 1778 00ef 0E       		.uleb128 0xe
+ 1779 00f0 3A       		.uleb128 0x3a
+ 1780 00f1 0B       		.uleb128 0xb
+ 1781 00f2 3B       		.uleb128 0x3b
+ 1782 00f3 0B       		.uleb128 0xb
+ 1783 00f4 49       		.uleb128 0x49
+ 1784 00f5 13       		.uleb128 0x13
+ 1785 00f6 02       		.uleb128 0x2
+ 1786 00f7 18       		.uleb128 0x18
+ 1787 00f8 00       		.byte	0
+ 1788 00f9 00       		.byte	0
+ 1789 00fa 15       		.uleb128 0x15
+ 1790 00fb 34       		.uleb128 0x34
+ 1791 00fc 00       		.byte	0
+ 1792 00fd 03       		.uleb128 0x3
+ 1793 00fe 0E       		.uleb128 0xe
+ 1794 00ff 3A       		.uleb128 0x3a
+ 1795 0100 0B       		.uleb128 0xb
+ 1796 0101 3B       		.uleb128 0x3b
+ 1797 0102 0B       		.uleb128 0xb
+ 1798 0103 49       		.uleb128 0x49
+ 1799 0104 13       		.uleb128 0x13
+ 1800 0105 02       		.uleb128 0x2
+ 1801 0106 18       		.uleb128 0x18
+ 1802 0107 00       		.byte	0
+ 1803 0108 00       		.byte	0
+ 1804 0109 16       		.uleb128 0x16
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 37
+
+
+ 1805 010a 2E       		.uleb128 0x2e
+ 1806 010b 00       		.byte	0
+ 1807 010c 3F       		.uleb128 0x3f
+ 1808 010d 19       		.uleb128 0x19
+ 1809 010e 03       		.uleb128 0x3
+ 1810 010f 0E       		.uleb128 0xe
+ 1811 0110 3A       		.uleb128 0x3a
+ 1812 0111 0B       		.uleb128 0xb
+ 1813 0112 3B       		.uleb128 0x3b
+ 1814 0113 0B       		.uleb128 0xb
+ 1815 0114 11       		.uleb128 0x11
+ 1816 0115 01       		.uleb128 0x1
+ 1817 0116 12       		.uleb128 0x12
+ 1818 0117 06       		.uleb128 0x6
+ 1819 0118 40       		.uleb128 0x40
+ 1820 0119 18       		.uleb128 0x18
+ 1821 011a 9642     		.uleb128 0x2116
+ 1822 011c 19       		.uleb128 0x19
+ 1823 011d 00       		.byte	0
+ 1824 011e 00       		.byte	0
+ 1825 011f 17       		.uleb128 0x17
+ 1826 0120 2E       		.uleb128 0x2e
+ 1827 0121 01       		.byte	0x1
+ 1828 0122 3F       		.uleb128 0x3f
+ 1829 0123 19       		.uleb128 0x19
+ 1830 0124 03       		.uleb128 0x3
+ 1831 0125 0E       		.uleb128 0xe
+ 1832 0126 3A       		.uleb128 0x3a
+ 1833 0127 0B       		.uleb128 0xb
+ 1834 0128 3B       		.uleb128 0x3b
+ 1835 0129 0B       		.uleb128 0xb
+ 1836 012a 49       		.uleb128 0x49
+ 1837 012b 13       		.uleb128 0x13
+ 1838 012c 11       		.uleb128 0x11
+ 1839 012d 01       		.uleb128 0x1
+ 1840 012e 12       		.uleb128 0x12
+ 1841 012f 06       		.uleb128 0x6
+ 1842 0130 40       		.uleb128 0x40
+ 1843 0131 18       		.uleb128 0x18
+ 1844 0132 9642     		.uleb128 0x2116
+ 1845 0134 19       		.uleb128 0x19
+ 1846 0135 01       		.uleb128 0x1
+ 1847 0136 13       		.uleb128 0x13
+ 1848 0137 00       		.byte	0
+ 1849 0138 00       		.byte	0
+ 1850 0139 18       		.uleb128 0x18
+ 1851 013a 34       		.uleb128 0x34
+ 1852 013b 00       		.byte	0
+ 1853 013c 03       		.uleb128 0x3
+ 1854 013d 0E       		.uleb128 0xe
+ 1855 013e 3A       		.uleb128 0x3a
+ 1856 013f 0B       		.uleb128 0xb
+ 1857 0140 3B       		.uleb128 0x3b
+ 1858 0141 05       		.uleb128 0x5
+ 1859 0142 49       		.uleb128 0x49
+ 1860 0143 13       		.uleb128 0x13
+ 1861 0144 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 38
+
+
+ 1862 0145 19       		.uleb128 0x19
+ 1863 0146 3C       		.uleb128 0x3c
+ 1864 0147 19       		.uleb128 0x19
+ 1865 0148 00       		.byte	0
+ 1866 0149 00       		.byte	0
+ 1867 014a 19       		.uleb128 0x19
+ 1868 014b 34       		.uleb128 0x34
+ 1869 014c 00       		.byte	0
+ 1870 014d 03       		.uleb128 0x3
+ 1871 014e 0E       		.uleb128 0xe
+ 1872 014f 3A       		.uleb128 0x3a
+ 1873 0150 0B       		.uleb128 0xb
+ 1874 0151 3B       		.uleb128 0x3b
+ 1875 0152 0B       		.uleb128 0xb
+ 1876 0153 49       		.uleb128 0x49
+ 1877 0154 13       		.uleb128 0x13
+ 1878 0155 3F       		.uleb128 0x3f
+ 1879 0156 19       		.uleb128 0x19
+ 1880 0157 02       		.uleb128 0x2
+ 1881 0158 18       		.uleb128 0x18
+ 1882 0159 00       		.byte	0
+ 1883 015a 00       		.byte	0
+ 1884 015b 1A       		.uleb128 0x1a
+ 1885 015c 21       		.uleb128 0x21
+ 1886 015d 00       		.byte	0
+ 1887 015e 49       		.uleb128 0x49
+ 1888 015f 13       		.uleb128 0x13
+ 1889 0160 2F       		.uleb128 0x2f
+ 1890 0161 05       		.uleb128 0x5
+ 1891 0162 00       		.byte	0
+ 1892 0163 00       		.byte	0
+ 1893 0164 1B       		.uleb128 0x1b
+ 1894 0165 34       		.uleb128 0x34
+ 1895 0166 00       		.byte	0
+ 1896 0167 03       		.uleb128 0x3
+ 1897 0168 08       		.uleb128 0x8
+ 1898 0169 3A       		.uleb128 0x3a
+ 1899 016a 0B       		.uleb128 0xb
+ 1900 016b 3B       		.uleb128 0x3b
+ 1901 016c 0B       		.uleb128 0xb
+ 1902 016d 49       		.uleb128 0x49
+ 1903 016e 13       		.uleb128 0x13
+ 1904 016f 3F       		.uleb128 0x3f
+ 1905 0170 19       		.uleb128 0x19
+ 1906 0171 02       		.uleb128 0x2
+ 1907 0172 18       		.uleb128 0x18
+ 1908 0173 00       		.byte	0
+ 1909 0174 00       		.byte	0
+ 1910 0175 00       		.byte	0
+ 1911              		.section	.debug_aranges,"",%progbits
+ 1912 0000 54000000 		.4byte	0x54
+ 1913 0004 0200     		.2byte	0x2
+ 1914 0006 00000000 		.4byte	.Ldebug_info0
+ 1915 000a 04       		.byte	0x4
+ 1916 000b 00       		.byte	0
+ 1917 000c 0000     		.2byte	0
+ 1918 000e 0000     		.2byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 39
+
+
+ 1919 0010 00000000 		.4byte	.LFB64
+ 1920 0014 0C000000 		.4byte	.LFE64-.LFB64
+ 1921 0018 00000000 		.4byte	.LFB65
+ 1922 001c 40000000 		.4byte	.LFE65-.LFB65
+ 1923 0020 00000000 		.4byte	.LFB66
+ 1924 0024 2C000000 		.4byte	.LFE66-.LFB66
+ 1925 0028 00000000 		.4byte	.LFB67
+ 1926 002c 6C000000 		.4byte	.LFE67-.LFB67
+ 1927 0030 00000000 		.4byte	.LFB68
+ 1928 0034 68000000 		.4byte	.LFE68-.LFB68
+ 1929 0038 00000000 		.4byte	.LFB69
+ 1930 003c 16000000 		.4byte	.LFE69-.LFB69
+ 1931 0040 00000000 		.4byte	.LFB70
+ 1932 0044 2E000000 		.4byte	.LFE70-.LFB70
+ 1933 0048 00000000 		.4byte	.LFB71
+ 1934 004c 20010000 		.4byte	.LFE71-.LFB71
+ 1935 0050 00000000 		.4byte	0
+ 1936 0054 00000000 		.4byte	0
+ 1937              		.section	.debug_ranges,"",%progbits
+ 1938              	.Ldebug_ranges0:
+ 1939 0000 00000000 		.4byte	.LFB64
+ 1940 0004 0C000000 		.4byte	.LFE64
+ 1941 0008 00000000 		.4byte	.LFB65
+ 1942 000c 40000000 		.4byte	.LFE65
+ 1943 0010 00000000 		.4byte	.LFB66
+ 1944 0014 2C000000 		.4byte	.LFE66
+ 1945 0018 00000000 		.4byte	.LFB67
+ 1946 001c 6C000000 		.4byte	.LFE67
+ 1947 0020 00000000 		.4byte	.LFB68
+ 1948 0024 68000000 		.4byte	.LFE68
+ 1949 0028 00000000 		.4byte	.LFB69
+ 1950 002c 16000000 		.4byte	.LFE69
+ 1951 0030 00000000 		.4byte	.LFB70
+ 1952 0034 2E000000 		.4byte	.LFE70
+ 1953 0038 00000000 		.4byte	.LFB71
+ 1954 003c 20010000 		.4byte	.LFE71
+ 1955 0040 00000000 		.4byte	0
+ 1956 0044 00000000 		.4byte	0
+ 1957              		.section	.debug_line,"",%progbits
+ 1958              	.Ldebug_line0:
+ 1959 0000 77020000 		.section	.debug_str,"MS",%progbits,1
+ 1959      0200B001 
+ 1959      00000201 
+ 1959      FB0E0D00 
+ 1959      01010101 
+ 1960              	.LASF26:
+ 1961 0000 6D6F6465 		.ascii	"model_id\000"
+ 1961      6C5F6964 
+ 1961      00
+ 1962              	.LASF25:
+ 1963 0009 73696D5F 		.ascii	"sim_id\000"
+ 1963      696400
+ 1964              	.LASF63:
+ 1965 0010 53445F72 		.ascii	"SD_read\000"
+ 1965      65616400 
+ 1966              	.LASF61:
+ 1967 0018 70446174 		.ascii	"pData\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 40
+
+
+ 1967      6100
+ 1968              	.LASF20:
+ 1969 001e 74657374 		.ascii	"test_name\000"
+ 1969      5F6E616D 
+ 1969      6500
+ 1970              	.LASF54:
+ 1971 0028 7379735F 		.ascii	"sys_settings_t\000"
+ 1971      73657474 
+ 1971      696E6773 
+ 1971      5F7400
+ 1972              	.LASF45:
+ 1973 0037 63757272 		.ascii	"currentCountDownValue\000"
+ 1973      656E7443 
+ 1973      6F756E74 
+ 1973      446F776E 
+ 1973      56616C75 
+ 1974              	.LASF44:
+ 1975 004d 636F756E 		.ascii	"countDownValue\000"
+ 1975      74446F77 
+ 1975      6E56616C 
+ 1975      756500
+ 1976              	.LASF2:
+ 1977 005c 73686F72 		.ascii	"short int\000"
+ 1977      7420696E 
+ 1977      7400
+ 1978              	.LASF10:
+ 1979 0066 73697A65 		.ascii	"sizetype\000"
+ 1979      74797065 
+ 1979      00
+ 1980              	.LASF95:
+ 1981 006f 53445F63 		.ascii	"SD_card_test\000"
+ 1981      6172645F 
+ 1981      74657374 
+ 1981      00
+ 1982              	.LASF52:
+ 1983 007c 65705F68 		.ascii	"ep_host\000"
+ 1983      6F737400 
+ 1984              	.LASF88:
+ 1985 0084 53445F64 		.ascii	"SD_dir\000"
+ 1985      697200
+ 1986              	.LASF93:
+ 1987 008b 73645F63 		.ascii	"sd_card.c\000"
+ 1987      6172642E 
+ 1987      6300
+ 1988              	.LASF92:
+ 1989 0095 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1989      43313120 
+ 1989      352E342E 
+ 1989      31203230 
+ 1989      31363036 
+ 1990 00c8 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1990      20726576 
+ 1990      6973696F 
+ 1990      6E203233 
+ 1990      37373135 
+ 1991 00fb 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1991      66756E63 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 41
+
+
+ 1991      74696F6E 
+ 1991      2D736563 
+ 1991      74696F6E 
+ 1992              	.LASF69:
+ 1993 0123 64617461 		.ascii	"data\000"
+ 1993      00
+ 1994              	.LASF50:
+ 1995 0128 63686970 		.ascii	"chip_uniqueId\000"
+ 1995      5F756E69 
+ 1995      71756549 
+ 1995      6400
+ 1996              	.LASF31:
+ 1997 0136 65636E6F 		.ascii	"ecno\000"
+ 1997      00
+ 1998              	.LASF64:
+ 1999 013b 4E756D42 		.ascii	"NumBytes\000"
+ 1999      79746573 
+ 1999      00
+ 2000              	.LASF15:
+ 2001 0144 75696E74 		.ascii	"uint16\000"
+ 2001      313600
+ 2002              	.LASF75:
+ 2003 014b 64617461 		.ascii	"dataPointsInStack\000"
+ 2003      506F696E 
+ 2003      7473496E 
+ 2003      53746163 
+ 2003      6B00
+ 2004              	.LASF14:
+ 2005 015d 75696E74 		.ascii	"uint8\000"
+ 2005      3800
+ 2006              	.LASF91:
+ 2007 0163 53445F66 		.ascii	"SD_filemode\000"
+ 2007      696C656D 
+ 2007      6F646500 
+ 2008              	.LASF16:
+ 2009 016f 696E7431 		.ascii	"int16\000"
+ 2009      3600
+ 2010              	.LASF42:
+ 2011 0175 74696D65 		.ascii	"timeStamp\000"
+ 2011      5374616D 
+ 2011      7000
+ 2012              	.LASF55:
+ 2013 017f 53445F6D 		.ascii	"SD_mkdir\000"
+ 2013      6B646972 
+ 2013      00
+ 2014              	.LASF76:
+ 2015 0188 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 2015      506F696E 
+ 2015      7473496E 
+ 2015      53746163 
+ 2015      6B446573 
+ 2016              	.LASF18:
+ 2017 01a1 666C6F61 		.ascii	"float\000"
+ 2017      7400
+ 2018              	.LASF57:
+ 2019 01a7 6469725F 		.ascii	"dir_name\000"
+ 2019      6E616D65 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 42
+
+
+ 2019      00
+ 2020              	.LASF6:
+ 2021 01b0 6C6F6E67 		.ascii	"long long int\000"
+ 2021      206C6F6E 
+ 2021      6720696E 
+ 2021      7400
+ 2022              	.LASF11:
+ 2023 01be 63686172 		.ascii	"char\000"
+ 2023      00
+ 2024              	.LASF22:
+ 2025 01c3 72656173 		.ascii	"reason\000"
+ 2025      6F6E00
+ 2026              	.LASF4:
+ 2027 01ca 6C6F6E67 		.ascii	"long int\000"
+ 2027      20696E74 
+ 2027      00
+ 2028              	.LASF49:
+ 2029 01d3 6D6F6465 		.ascii	"modem_info\000"
+ 2029      6D5F696E 
+ 2029      666F00
+ 2030              	.LASF82:
+ 2031 01de 616C6172 		.ascii	"alarmMeasure\000"
+ 2031      6D4D6561 
+ 2031      73757265 
+ 2031      00
+ 2032              	.LASF29:
+ 2033 01eb 72737369 		.ascii	"rssi\000"
+ 2033      00
+ 2034              	.LASF67:
+ 2035 01f0 53445F70 		.ascii	"SD_power_down\000"
+ 2035      6F776572 
+ 2035      5F646F77 
+ 2035      6E00
+ 2036              	.LASF59:
+ 2037 01fe 53445F77 		.ascii	"SD_write\000"
+ 2037      72697465 
+ 2037      00
+ 2038              	.LASF37:
+ 2039 0207 6D656173 		.ascii	"measure_time\000"
+ 2039      7572655F 
+ 2039      74696D65 
+ 2039      00
+ 2040              	.LASF30:
+ 2041 0214 72736370 		.ascii	"rscp\000"
+ 2041      00
+ 2042              	.LASF84:
+ 2043 0219 616C6172 		.ascii	"alarmSync\000"
+ 2043      6D53796E 
+ 2043      6300
+ 2044              	.LASF9:
+ 2045 0223 6C6F6E67 		.ascii	"long double\000"
+ 2045      20646F75 
+ 2045      626C6500 
+ 2046              	.LASF1:
+ 2047 022f 756E7369 		.ascii	"unsigned char\000"
+ 2047      676E6564 
+ 2047      20636861 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 43
+
+
+ 2047      7200
+ 2048              	.LASF24:
+ 2049 023d 46535F46 		.ascii	"FS_FILE\000"
+ 2049      494C4500 
+ 2050              	.LASF33:
+ 2051 0245 72737270 		.ascii	"rsrp\000"
+ 2051      00
+ 2052              	.LASF72:
+ 2053 024a 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 2053      6D5F7374 
+ 2053      6172745F 
+ 2053      74696D65 
+ 2053      5F737461 
+ 2054              	.LASF71:
+ 2055 0261 6D6F6465 		.ascii	"modem_state\000"
+ 2055      6D5F7374 
+ 2055      61746500 
+ 2056              	.LASF0:
+ 2057 026d 7369676E 		.ascii	"signed char\000"
+ 2057      65642063 
+ 2057      68617200 
+ 2058              	.LASF7:
+ 2059 0279 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2059      206C6F6E 
+ 2059      6720756E 
+ 2059      7369676E 
+ 2059      65642069 
+ 2060              	.LASF81:
+ 2061 0290 73797374 		.ascii	"system_settings\000"
+ 2061      656D5F73 
+ 2061      65747469 
+ 2061      6E677300 
+ 2062              	.LASF62:
+ 2063 02a0 7046696C 		.ascii	"pFile\000"
+ 2063      6500
+ 2064              	.LASF8:
+ 2065 02a6 756E7369 		.ascii	"unsigned int\000"
+ 2065      676E6564 
+ 2065      20696E74 
+ 2065      00
+ 2066              	.LASF43:
+ 2067 02b3 6B65795F 		.ascii	"key_value_t\000"
+ 2067      76616C75 
+ 2067      655F7400 
+ 2068              	.LASF38:
+ 2069 02bf 73796E63 		.ascii	"sync_time\000"
+ 2069      5F74696D 
+ 2069      6500
+ 2070              	.LASF94:
+ 2071 02c9 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
+ 2071      73657273 
+ 2071      5C686169 
+ 2071      6C5C4465 
+ 2071      736B746F 
+ 2072 02f7 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS.cydsn\000"
+ 2072      6F72694F 
+ 2072      535C6E6F 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 44
+
+
+ 2072      746F7269 
+ 2072      4F532E63 
+ 2073              	.LASF60:
+ 2074 0310 704D6F64 		.ascii	"pMode\000"
+ 2074      6500
+ 2075              	.LASF73:
+ 2076 0316 6D6F6465 		.ascii	"modem_stats\000"
+ 2076      6D5F7374 
+ 2076      61747300 
+ 2077              	.LASF83:
+ 2078 0322 74696D65 		.ascii	"timeToMeasure\000"
+ 2078      546F4D65 
+ 2078      61737572 
+ 2078      6500
+ 2079              	.LASF40:
+ 2080 0330 75706461 		.ascii	"updatable_parameters_t\000"
+ 2080      7461626C 
+ 2080      655F7061 
+ 2080      72616D65 
+ 2080      74657273 
+ 2081              	.LASF51:
+ 2082 0347 7379735F 		.ascii	"sys_info_t\000"
+ 2082      696E666F 
+ 2082      5F7400
+ 2083              	.LASF3:
+ 2084 0352 73686F72 		.ascii	"short unsigned int\000"
+ 2084      7420756E 
+ 2084      7369676E 
+ 2084      65642069 
+ 2084      6E7400
+ 2085              	.LASF34:
+ 2086 0365 74696D65 		.ascii	"time_to_network_connect\000"
+ 2086      5F746F5F 
+ 2086      6E657477 
+ 2086      6F726B5F 
+ 2086      636F6E6E 
+ 2087              	.LASF21:
+ 2088 037d 73746174 		.ascii	"status\000"
+ 2088      757300
+ 2089              	.LASF89:
+ 2090 0384 53445F62 		.ascii	"SD_body\000"
+ 2090      6F647900 
+ 2091              	.LASF80:
+ 2092 038c 73797374 		.ascii	"system_info\000"
+ 2092      656D5F69 
+ 2092      6E666F00 
+ 2093              	.LASF35:
+ 2094 0398 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 2094      5F746F5F 
+ 2094      61637175 
+ 2094      6972655F 
+ 2094      697000
+ 2095              	.LASF23:
+ 2096 03ab 74657374 		.ascii	"test_t\000"
+ 2096      5F7400
+ 2097              	.LASF27:
+ 2098 03b2 696D6569 		.ascii	"imei\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 45
+
+
+ 2098      00
+ 2099              	.LASF13:
+ 2100 03b7 696E7433 		.ascii	"int32_t\000"
+ 2100      325F7400 
+ 2101              	.LASF36:
+ 2102 03bf 6D6F6465 		.ascii	"modem_stats_t\000"
+ 2102      6D5F7374 
+ 2102      6174735F 
+ 2102      7400
+ 2103              	.LASF48:
+ 2104 03cd 616C6172 		.ascii	"alarm\000"
+ 2104      6D00
+ 2105              	.LASF86:
+ 2106 03d3 74696D65 		.ascii	"timeToSycnRemoteParams\000"
+ 2106      546F5379 
+ 2106      636E5265 
+ 2106      6D6F7465 
+ 2106      50617261 
+ 2107              	.LASF68:
+ 2108 03ea 74657374 		.ascii	"test\000"
+ 2108      00
+ 2109              	.LASF32:
+ 2110 03ef 72737271 		.ascii	"rsrq\000"
+ 2110      00
+ 2111              	.LASF79:
+ 2112 03f4 68747470 		.ascii	"http_route\000"
+ 2112      5F726F75 
+ 2112      746500
+ 2113              	.LASF5:
+ 2114 03ff 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2114      20756E73 
+ 2114      69676E65 
+ 2114      6420696E 
+ 2114      7400
+ 2115              	.LASF17:
+ 2116 0411 696E7433 		.ascii	"int32\000"
+ 2116      3200
+ 2117              	.LASF19:
+ 2118 0417 646F7562 		.ascii	"double\000"
+ 2118      6C6500
+ 2119              	.LASF70:
+ 2120 041e 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2120      52784275 
+ 2120      66666572 
+ 2120      00
+ 2121              	.LASF39:
+ 2122 042b 64656275 		.ascii	"debug_level\000"
+ 2122      675F6C65 
+ 2122      76656C00 
+ 2123              	.LASF28:
+ 2124 0437 6D6F6465 		.ascii	"modem_info_t\000"
+ 2124      6D5F696E 
+ 2124      666F5F74 
+ 2124      00
+ 2125              	.LASF46:
+ 2126 0444 636F756E 		.ascii	"countDownType\000"
+ 2126      74446F77 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 46
+
+
+ 2126      6E547970 
+ 2126      6500
+ 2127              	.LASF12:
+ 2128 0452 5F5F696E 		.ascii	"__int32_t\000"
+ 2128      7433325F 
+ 2128      7400
+ 2129              	.LASF90:
+ 2130 045c 53445F66 		.ascii	"SD_filename\000"
+ 2130      696C656E 
+ 2130      616D6500 
+ 2131              	.LASF47:
+ 2132 0468 636F756E 		.ascii	"countDownResetCondition\000"
+ 2132      74446F77 
+ 2132      6E526573 
+ 2132      6574436F 
+ 2132      6E646974 
+ 2133              	.LASF65:
+ 2134 0480 53445F69 		.ascii	"SD_init\000"
+ 2134      6E697400 
+ 2135              	.LASF58:
+ 2136 0488 66696C65 		.ascii	"fileName\000"
+ 2136      4E616D65 
+ 2136      00
+ 2137              	.LASF87:
+ 2138 0491 7472795F 		.ascii	"try_counter\000"
+ 2138      636F756E 
+ 2138      74657200 
+ 2139              	.LASF66:
+ 2140 049d 53445F70 		.ascii	"SD_power_up\000"
+ 2140      6F776572 
+ 2140      5F757000 
+ 2141              	.LASF74:
+ 2142 04a9 75706461 		.ascii	"updatable_parameters\000"
+ 2142      7461626C 
+ 2142      655F7061 
+ 2142      72616D65 
+ 2142      74657273 
+ 2143              	.LASF53:
+ 2144 04be 65705F70 		.ascii	"ep_port\000"
+ 2144      6F727400 
+ 2145              	.LASF41:
+ 2146 04c6 76616C75 		.ascii	"value\000"
+ 2146      6500
+ 2147              	.LASF78:
+ 2148 04cc 68747470 		.ascii	"http_body\000"
+ 2148      5F626F64 
+ 2148      7900
+ 2149              	.LASF56:
+ 2150 04d6 53445F72 		.ascii	"SD_rmfile\000"
+ 2150      6D66696C 
+ 2150      6500
+ 2151              	.LASF77:
+ 2152 04e0 68747470 		.ascii	"http_request\000"
+ 2152      5F726571 
+ 2152      75657374 
+ 2152      00
+ 2153              	.LASF85:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccUCCeM1.s 			page 47
+
+
+ 2154 04ed 74696D65 		.ascii	"timeToSync\000"
+ 2154      546F5379 
+ 2154      6E6300
+ 2155              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
