@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Battery_Voltage_Enable.h  
+* File Name: AN_PRTRANS.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Battery_Voltage_Enable_ALIASES_H) /* Pins Battery_Voltage_Enable_ALIASES_H */
-#define CY_PINS_Battery_Voltage_Enable_ALIASES_H
+#if !defined(CY_PINS_AN_PRTRANS_ALIASES_H) /* Pins AN_PRTRANS_ALIASES_H */
+#define CY_PINS_AN_PRTRANS_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Battery_Voltage_Enable_0			(Battery_Voltage_Enable__0__PC)
-#define Battery_Voltage_Enable_0_INTR	((uint16)((uint16)0x0001u << Battery_Voltage_Enable__0__SHIFT))
+#define AN_PRTRANS_0			(AN_PRTRANS__0__PC)
+#define AN_PRTRANS_0_INTR	((uint16)((uint16)0x0001u << AN_PRTRANS__0__SHIFT))
 
-#define Battery_Voltage_Enable_INTR_ALL	 ((uint16)(Battery_Voltage_Enable_0_INTR))
+#define AN_PRTRANS_INTR_ALL	 ((uint16)(AN_PRTRANS_0_INTR))
 
-#endif /* End Pins Battery_Voltage_Enable_ALIASES_H */
+#endif /* End Pins AN_PRTRANS_ALIASES_H */
 
 
 /* [] END OF FILE */

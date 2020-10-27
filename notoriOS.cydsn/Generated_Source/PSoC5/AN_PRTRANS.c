@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Battery_Voltage_Enable.c  
+* File Name: AN_PRTRANS.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Battery_Voltage_Enable.h"
+#include "AN_PRTRANS.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Battery_Voltage_Enable__PORT == 15 && ((Battery_Voltage_Enable__MASK & 0xC0) != 0))
+	 AN_PRTRANS__PORT == 15 && ((AN_PRTRANS__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Battery_Voltage_Enable_Write
+* Function Name: AN_PRTRANS_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Battery_Voltage_Enable_SUT.c usage_Battery_Voltage_Enable_Write
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_Write
 *******************************************************************************/
-void Battery_Voltage_Enable_Write(uint8 value)
+void AN_PRTRANS_Write(uint8 value)
 {
-    uint8 staticBits = (Battery_Voltage_Enable_DR & (uint8)(~Battery_Voltage_Enable_MASK));
-    Battery_Voltage_Enable_DR = staticBits | ((uint8)(value << Battery_Voltage_Enable_SHIFT) & Battery_Voltage_Enable_MASK);
+    uint8 staticBits = (AN_PRTRANS_DR & (uint8)(~AN_PRTRANS_MASK));
+    AN_PRTRANS_DR = staticBits | ((uint8)(value << AN_PRTRANS_SHIFT) & AN_PRTRANS_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Battery_Voltage_Enable_SetDriveMode
+* Function Name: AN_PRTRANS_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Battery_Voltage_Enable_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Battery_Voltage_Enable_SUT.c usage_Battery_Voltage_Enable_SetDriveMode
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_SetDriveMode
 *******************************************************************************/
-void Battery_Voltage_Enable_SetDriveMode(uint8 mode)
+void AN_PRTRANS_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Battery_Voltage_Enable_0, mode);
+	CyPins_SetPinDriveMode(AN_PRTRANS_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Battery_Voltage_Enable_Read
+* Function Name: AN_PRTRANS_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Battery_Voltage_Enable_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Battery_Voltage_Enable_SUT.c usage_Battery_Voltage_Enable_Read  
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_Read  
 *******************************************************************************/
-uint8 Battery_Voltage_Enable_Read(void)
+uint8 AN_PRTRANS_Read(void)
 {
-    return (Battery_Voltage_Enable_PS & Battery_Voltage_Enable_MASK) >> Battery_Voltage_Enable_SHIFT;
+    return (AN_PRTRANS_PS & AN_PRTRANS_MASK) >> AN_PRTRANS_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Battery_Voltage_Enable_ReadDataReg
+* Function Name: AN_PRTRANS_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Battery_Voltage_Enable_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Battery_Voltage_Enable_Read() API because the 
-* Battery_Voltage_Enable_ReadDataReg() reads the data register instead of the status 
+* preferred AN_PRTRANS_Read() API because the 
+* AN_PRTRANS_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Battery_Voltage_Enable_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Battery_Voltage_Enable_SUT.c usage_Battery_Voltage_Enable_ReadDataReg 
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_ReadDataReg 
 *******************************************************************************/
-uint8 Battery_Voltage_Enable_ReadDataReg(void)
+uint8 AN_PRTRANS_ReadDataReg(void)
 {
-    return (Battery_Voltage_Enable_DR & Battery_Voltage_Enable_MASK) >> Battery_Voltage_Enable_SHIFT;
+    return (AN_PRTRANS_DR & AN_PRTRANS_MASK) >> AN_PRTRANS_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Battery_Voltage_Enable_INTSTAT) 
+#if defined(AN_PRTRANS_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Battery_Voltage_Enable_SetInterruptMode
+    * Function Name: AN_PRTRANS_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Battery_Voltage_Enable_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Battery_Voltage_Enable_INTR_ALL to configure the
+    *  component. Or you may use AN_PRTRANS_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Battery_Voltage_Enable_0_INTR       (First pin in the list)
-    *  - Battery_Voltage_Enable_1_INTR       (Second pin in the list)
+    *  - AN_PRTRANS_0_INTR       (First pin in the list)
+    *  - AN_PRTRANS_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Battery_Voltage_Enable_INTR_ALL     (All pins in Pins component)
+    *  - AN_PRTRANS_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Battery_Voltage_Enable_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Battery_Voltage_Enable_SUT.c usage_Battery_Voltage_Enable_SetInterruptMode
+    *  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_SetInterruptMode
     *******************************************************************************/
-    void Battery_Voltage_Enable_SetInterruptMode(uint16 position, uint16 mode)
+    void AN_PRTRANS_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Battery_Voltage_Enable_0_INTR) != 0u) 
+		if((position & AN_PRTRANS_0_INTR) != 0u) 
 		{ 
-			 Battery_Voltage_Enable_0_INTTYPE_REG = (uint8)mode; 
+			 AN_PRTRANS_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Battery_Voltage_Enable_ClearInterrupt
+    * Function Name: AN_PRTRANS_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Battery_Voltage_Enable_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Battery_Voltage_Enable_SUT.c usage_Battery_Voltage_Enable_ClearInterrupt
+    *  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_ClearInterrupt
     *******************************************************************************/
-    uint8 Battery_Voltage_Enable_ClearInterrupt(void)
+    uint8 AN_PRTRANS_ClearInterrupt(void)
     {
-        return (Battery_Voltage_Enable_INTSTAT & Battery_Voltage_Enable_MASK) >> Battery_Voltage_Enable_SHIFT;
+        return (AN_PRTRANS_INTSTAT & AN_PRTRANS_MASK) >> AN_PRTRANS_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

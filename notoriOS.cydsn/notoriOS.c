@@ -354,7 +354,7 @@ uint8 syncData(){
         http_request[0] = '\0';
         http_body[0] = '\0';
         http_route[0] = '\0';
-        char *base = "write";
+        //char *base = "write";
         
         // Push cell strength data (RSRP: reference signal received power)
         char s_rsrp[DATA_MAX_KEY_LENGTH];

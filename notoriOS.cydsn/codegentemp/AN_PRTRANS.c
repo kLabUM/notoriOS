@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Power_VDD4.c  
+* File Name: AN_PRTRANS.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Power_VDD4.h"
+#include "AN_PRTRANS.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Power_VDD4__PORT == 15 && ((Power_VDD4__MASK & 0xC0) != 0))
+	 AN_PRTRANS__PORT == 15 && ((AN_PRTRANS__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Power_VDD4_Write
+* Function Name: AN_PRTRANS_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Power_VDD4_SUT.c usage_Power_VDD4_Write
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_Write
 *******************************************************************************/
-void Power_VDD4_Write(uint8 value)
+void AN_PRTRANS_Write(uint8 value)
 {
-    uint8 staticBits = (Power_VDD4_DR & (uint8)(~Power_VDD4_MASK));
-    Power_VDD4_DR = staticBits | ((uint8)(value << Power_VDD4_SHIFT) & Power_VDD4_MASK);
+    uint8 staticBits = (AN_PRTRANS_DR & (uint8)(~AN_PRTRANS_MASK));
+    AN_PRTRANS_DR = staticBits | ((uint8)(value << AN_PRTRANS_SHIFT) & AN_PRTRANS_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Power_VDD4_SetDriveMode
+* Function Name: AN_PRTRANS_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Power_VDD4_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Power_VDD4_SUT.c usage_Power_VDD4_SetDriveMode
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_SetDriveMode
 *******************************************************************************/
-void Power_VDD4_SetDriveMode(uint8 mode)
+void AN_PRTRANS_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Power_VDD4_0, mode);
+	CyPins_SetPinDriveMode(AN_PRTRANS_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Power_VDD4_Read
+* Function Name: AN_PRTRANS_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Power_VDD4_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Power_VDD4_SUT.c usage_Power_VDD4_Read  
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_Read  
 *******************************************************************************/
-uint8 Power_VDD4_Read(void)
+uint8 AN_PRTRANS_Read(void)
 {
-    return (Power_VDD4_PS & Power_VDD4_MASK) >> Power_VDD4_SHIFT;
+    return (AN_PRTRANS_PS & AN_PRTRANS_MASK) >> AN_PRTRANS_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Power_VDD4_ReadDataReg
+* Function Name: AN_PRTRANS_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Power_VDD4_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Power_VDD4_Read() API because the 
-* Power_VDD4_ReadDataReg() reads the data register instead of the status 
+* preferred AN_PRTRANS_Read() API because the 
+* AN_PRTRANS_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Power_VDD4_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Power_VDD4_SUT.c usage_Power_VDD4_ReadDataReg 
+*  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_ReadDataReg 
 *******************************************************************************/
-uint8 Power_VDD4_ReadDataReg(void)
+uint8 AN_PRTRANS_ReadDataReg(void)
 {
-    return (Power_VDD4_DR & Power_VDD4_MASK) >> Power_VDD4_SHIFT;
+    return (AN_PRTRANS_DR & AN_PRTRANS_MASK) >> AN_PRTRANS_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Power_VDD4_INTSTAT) 
+#if defined(AN_PRTRANS_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Power_VDD4_SetInterruptMode
+    * Function Name: AN_PRTRANS_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Power_VDD4_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Power_VDD4_INTR_ALL to configure the
+    *  component. Or you may use AN_PRTRANS_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Power_VDD4_0_INTR       (First pin in the list)
-    *  - Power_VDD4_1_INTR       (Second pin in the list)
+    *  - AN_PRTRANS_0_INTR       (First pin in the list)
+    *  - AN_PRTRANS_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Power_VDD4_INTR_ALL     (All pins in Pins component)
+    *  - AN_PRTRANS_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Power_VDD4_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Power_VDD4_SUT.c usage_Power_VDD4_SetInterruptMode
+    *  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_SetInterruptMode
     *******************************************************************************/
-    void Power_VDD4_SetInterruptMode(uint16 position, uint16 mode)
+    void AN_PRTRANS_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Power_VDD4_0_INTR) != 0u) 
+		if((position & AN_PRTRANS_0_INTR) != 0u) 
 		{ 
-			 Power_VDD4_0_INTTYPE_REG = (uint8)mode; 
+			 AN_PRTRANS_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Power_VDD4_ClearInterrupt
+    * Function Name: AN_PRTRANS_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Power_VDD4_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Power_VDD4_SUT.c usage_Power_VDD4_ClearInterrupt
+    *  \snippet AN_PRTRANS_SUT.c usage_AN_PRTRANS_ClearInterrupt
     *******************************************************************************/
-    uint8 Power_VDD4_ClearInterrupt(void)
+    uint8 AN_PRTRANS_ClearInterrupt(void)
     {
-        return (Power_VDD4_INTSTAT & Power_VDD4_MASK) >> Power_VDD4_SHIFT;
+        return (AN_PRTRANS_INTSTAT & AN_PRTRANS_MASK) >> AN_PRTRANS_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

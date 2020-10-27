@@ -1,5 +1,5 @@
 -- Project:   notoriOS
--- Generated: 09/11/2020 17:35:31
+-- Generated: 10/27/2020 14:00:58
 -- PSoC Creator  4.3
 
 ENTITY notoriOS IS
@@ -9,7 +9,7 @@ ENTITY notoriOS IS
         Power_VBAT2(0)_PAD : OUT std_ulogic;
         Power_VDD1(0)_PAD : OUT std_ulogic;
         Power_VDD2(0)_PAD : OUT std_ulogic;
-        Power_VDD4(0)_PAD : OUT std_ulogic;
+        AN_PRTRANS_Power(0)_PAD : OUT std_ulogic;
         Level_Sensor_RX(0)_PAD : IN std_ulogic;
         Level_Sensor_Power(0)_PAD : OUT std_ulogic;
         \emFile:mosi0(0)_PAD\ : OUT std_ulogic;
@@ -18,7 +18,7 @@ ENTITY notoriOS IS
         \emFile:SPI0_CS(0)_PAD\ : OUT std_ulogic;
         SD_Card_Power(0)_PAD : OUT std_ulogic;
         SD_Chip_Detect(0)_PAD : IN std_ulogic;
-        Battery_Voltage_Enable(0)_PAD : OUT std_ulogic;
+        Voltage_Enable(0)_PAD : OUT std_ulogic;
         Debug_TX(0)_PAD : OUT std_ulogic;
         Pin_Telit_ONOFF(0)_PAD : OUT std_ulogic;
         Pin_Telit_pwr(0)_PAD : OUT std_ulogic;
@@ -36,9 +36,10 @@ ENTITY notoriOS IS
 END notoriOS;
 
 ARCHITECTURE __DEFAULT__ OF notoriOS IS
+    SIGNAL AN_PRTRANS(0)__PA : bit;
+    SIGNAL AN_PRTRANS_Power(0)__PA : bit;
     SIGNAL AN_VBAT(0)__PA : bit;
     SIGNAL AN_VSOL(0)__PA : bit;
-    SIGNAL Battery_Voltage_Enable(0)__PA : bit;
     SIGNAL CTW_OUT : bit;
     SIGNAL ClockBlock_100k : bit;
     SIGNAL ClockBlock_1k : bit;
@@ -86,11 +87,11 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     SIGNAL Power_VBAT2(0)__PA : bit;
     SIGNAL Power_VDD1(0)__PA : bit;
     SIGNAL Power_VDD2(0)__PA : bit;
-    SIGNAL Power_VDD4(0)__PA : bit;
     SIGNAL Rx_Telit(0)__PA : bit;
     SIGNAL SD_Card_Power(0)__PA : bit;
     SIGNAL SD_Chip_Detect(0)__PA : bit;
     SIGNAL Tx_Telit(0)__PA : bit;
+    SIGNAL Voltage_Enable(0)__PA : bit;
     SIGNAL \ADC:Net_245_0\ : bit;
     SIGNAL \ADC:Net_245_1\ : bit;
     SIGNAL \ADC:Net_245_2\ : bit;
@@ -323,8 +324,8 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     ATTRIBUTE Location OF Power_VDD1(0) : LABEL IS "P0[2]";
     ATTRIBUTE lib_model OF Power_VDD2(0) : LABEL IS "iocell5";
     ATTRIBUTE Location OF Power_VDD2(0) : LABEL IS "P0[3]";
-    ATTRIBUTE lib_model OF Power_VDD4(0) : LABEL IS "iocell6";
-    ATTRIBUTE Location OF Power_VDD4(0) : LABEL IS "P3[3]";
+    ATTRIBUTE lib_model OF AN_PRTRANS_Power(0) : LABEL IS "iocell6";
+    ATTRIBUTE Location OF AN_PRTRANS_Power(0) : LABEL IS "P3[3]";
     ATTRIBUTE lib_model OF AN_VSOL(0) : LABEL IS "iocell7";
     ATTRIBUTE Location OF AN_VSOL(0) : LABEL IS "P0[5]";
     ATTRIBUTE lib_model OF Level_Sensor_RX(0) : LABEL IS "iocell8";
@@ -343,8 +344,8 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     ATTRIBUTE Location OF SD_Card_Power(0) : LABEL IS "P2[5]";
     ATTRIBUTE lib_model OF SD_Chip_Detect(0) : LABEL IS "iocell15";
     ATTRIBUTE Location OF SD_Chip_Detect(0) : LABEL IS "P2[7]";
-    ATTRIBUTE lib_model OF Battery_Voltage_Enable(0) : LABEL IS "iocell16";
-    ATTRIBUTE Location OF Battery_Voltage_Enable(0) : LABEL IS "P12[1]";
+    ATTRIBUTE lib_model OF Voltage_Enable(0) : LABEL IS "iocell16";
+    ATTRIBUTE Location OF Voltage_Enable(0) : LABEL IS "P12[1]";
     ATTRIBUTE lib_model OF AN_VBAT(0) : LABEL IS "iocell17";
     ATTRIBUTE Location OF AN_VBAT(0) : LABEL IS "P0[0]";
     ATTRIBUTE lib_model OF Debug_TX(0) : LABEL IS "iocell18";
@@ -359,6 +360,8 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     ATTRIBUTE Location OF Rx_Telit(0) : LABEL IS "P3[6]";
     ATTRIBUTE lib_model OF Tx_Telit(0) : LABEL IS "iocell23";
     ATTRIBUTE Location OF Tx_Telit(0) : LABEL IS "P3[7]";
+    ATTRIBUTE lib_model OF AN_PRTRANS(0) : LABEL IS "iocell24";
+    ATTRIBUTE Location OF AN_PRTRANS(0) : LABEL IS "P3[2]";
     ATTRIBUTE lib_model OF \Level_Sensor_UART:BUART:rx_counter_load\ : LABEL IS "macrocell2";
     ATTRIBUTE Location OF \Level_Sensor_UART:BUART:rx_counter_load\ : LABEL IS "U(3,1)";
     ATTRIBUTE lib_model OF \Level_Sensor_UART:BUART:rx_postpoll\ : LABEL IS "macrocell3";
@@ -1382,7 +1385,7 @@ BEGIN
             out_clock_en => '1',
             out_reset => '0');
 
-    Power_VDD4:logicalport
+    AN_PRTRANS_Power:logicalport
         GENERIC MAP(
             drive_mode => "110",
             ibuf_enabled => "1",
@@ -1453,18 +1456,18 @@ BEGIN
             out_clock_en => open,
             out_reset => open);
 
-    Power_VDD4(0):iocell
+    AN_PRTRANS_Power(0):iocell
         GENERIC MAP(
             in_sync_mode => 0,
             out_sync_mode => 0,
             oe_sync_mode => 0,
-            logicalport => "Power_VDD4",
+            logicalport => "AN_PRTRANS_Power",
             logicalport_pin_id => 0,
             io_capabilities => "0000000000000000000000000000000000000000000000000000000000000001")
         PORT MAP(
-            pa_out => Power_VDD4(0)__PA,
+            pa_out => AN_PRTRANS_Power(0)__PA,
             oe => open,
-            pad_in => Power_VDD4(0)_PAD,
+            pad_in => AN_PRTRANS_Power(0)_PAD,
             in_clock => open,
             in_clock_en => '1',
             in_reset => '0',
@@ -2288,7 +2291,7 @@ BEGIN
             out_clock_en => '1',
             out_reset => '0');
 
-    Battery_Voltage_Enable:logicalport
+    Voltage_Enable:logicalport
         GENERIC MAP(
             drive_mode => "110",
             ibuf_enabled => "1",
@@ -2359,18 +2362,18 @@ BEGIN
             out_clock_en => open,
             out_reset => open);
 
-    Battery_Voltage_Enable(0):iocell
+    Voltage_Enable(0):iocell
         GENERIC MAP(
             in_sync_mode => 0,
             out_sync_mode => 0,
             oe_sync_mode => 0,
-            logicalport => "Battery_Voltage_Enable",
+            logicalport => "Voltage_Enable",
             logicalport_pin_id => 0,
             io_capabilities => "0000000000000000000000000000000000000000000000000000000000000001")
         PORT MAP(
-            pa_out => Battery_Voltage_Enable(0)__PA,
+            pa_out => Voltage_Enable(0)__PA,
             oe => open,
-            pad_in => Battery_Voltage_Enable(0)_PAD,
+            pad_in => Voltage_Enable(0)_PAD,
             in_clock => open,
             in_clock_en => '1',
             in_reset => '0',
@@ -3006,6 +3009,95 @@ BEGIN
             pin_input => Net_180,
             pad_out => Tx_Telit(0)_PAD,
             pad_in => Tx_Telit(0)_PAD,
+            in_clock => open,
+            in_clock_en => '1',
+            in_reset => '0',
+            out_clock => open,
+            out_clock_en => '1',
+            out_reset => '0');
+
+    AN_PRTRANS:logicalport
+        GENERIC MAP(
+            drive_mode => "000",
+            ibuf_enabled => "0",
+            id => "3b87299f-c1f5-47ec-a2cd-b51aeda692b4",
+            init_dr_st => "0",
+            input_buffer_sel => "00",
+            input_clk_en => 0,
+            input_sync => "1",
+            input_sync_mode => "0",
+            intr_mode => "00",
+            invert_in_clock => 0,
+            invert_in_clock_en => 0,
+            invert_in_reset => 0,
+            invert_out_clock => 0,
+            invert_out_clock_en => 0,
+            invert_out_reset => 0,
+            io_voltage => "",
+            layout_mode => "CONTIGUOUS",
+            oe_conn => "0",
+            oe_reset => 0,
+            oe_sync => "0",
+            output_clk_en => 0,
+            output_clock_mode => "0",
+            output_conn => "0",
+            output_mode => "0",
+            output_reset => 0,
+            output_sync => "0",
+            ovt_hyst_trim => "0",
+            ovt_needed => "0",
+            ovt_slew_control => "00",
+            pa_in_clock => -1,
+            pa_in_clock_en => -1,
+            pa_in_reset => -1,
+            pa_out_clock => -1,
+            pa_out_clock_en => -1,
+            pa_out_reset => -1,
+            pin_aliases => "",
+            pin_mode => "A",
+            por_state => 4,
+            port_alias_group => "",
+            port_alias_required => 0,
+            sio_group_cnt => 0,
+            sio_hifreq => "00000000",
+            sio_hyst => "1",
+            sio_ibuf => "00000000",
+            sio_info => "00",
+            sio_obuf => "00000000",
+            sio_refsel => "00000000",
+            sio_vohsel => "00000000",
+            sio_vtrip => "00000000",
+            slew_rate => "0",
+            spanning => 0,
+            sw_only => 0,
+            use_annotation => "0",
+            vtrip => "10",
+            width => 1,
+            in_clk_inv => 0,
+            in_clken_inv => 0,
+            in_clken_mode => 1,
+            in_rst_inv => 0,
+            out_clk_inv => 0,
+            out_clken_inv => 0,
+            out_clken_mode => 1,
+            out_rst_inv => 0)
+        PORT MAP(
+            in_clock_en => open,
+            in_reset => open,
+            out_clock_en => open,
+            out_reset => open);
+
+    AN_PRTRANS(0):iocell
+        GENERIC MAP(
+            in_sync_mode => 0,
+            out_sync_mode => 0,
+            oe_sync_mode => 0,
+            logicalport => "AN_PRTRANS",
+            logicalport_pin_id => 0,
+            io_capabilities => "0000000000000000000000000000000000000000000000000000000000000010")
+        PORT MAP(
+            pa_out => AN_PRTRANS(0)__PA,
+            oe => open,
             in_clock => open,
             in_clock_en => '1',
             in_reset => '0',

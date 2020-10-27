@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 09/11/2020 at 17:35
+// 10/27/2020 at 14:00
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1273,8 +1273,9 @@ module top ;
           wire  Net_99;
     electrical  Net_98;
     electrical  Net_97;
-    electrical  Net_291;
-    electrical  Net_290;
+    electrical  Net_303;
+    electrical  Net_301;
+    electrical  Net_300;
           wire  Net_33;
           wire  Net_32;
           wire  Net_31;
@@ -1287,7 +1288,7 @@ module top ;
           wire  Net_23;
           wire  Net_34;
           wire  Net_21;
-    electrical  Net_292;
+    electrical  Net_302;
           wire  Net_38;
           wire  Net_225;
           wire  Net_223;
@@ -1696,11 +1697,11 @@ module top ;
 		 (.clock_out(Net_37));
 
 
-	wire [0:0] tmpOE__Power_VDD4_net;
-	wire [0:0] tmpFB_0__Power_VDD4_net;
-	wire [0:0] tmpIO_0__Power_VDD4_net;
-	wire [0:0] tmpINTERRUPT_0__Power_VDD4_net;
-	electrical [0:0] tmpSIOVREF__Power_VDD4_net;
+	wire [0:0] tmpOE__AN_PRTRANS_Power_net;
+	wire [0:0] tmpFB_0__AN_PRTRANS_Power_net;
+	wire [0:0] tmpIO_0__AN_PRTRANS_Power_net;
+	wire [0:0] tmpINTERRUPT_0__AN_PRTRANS_Power_net;
+	electrical [0:0] tmpSIOVREF__AN_PRTRANS_Power_net;
 
 	cy_psoc3_pins_v1_10
 		#(.id("6f5d4893-83e7-485a-985f-45d04b0b2d15"),
@@ -1755,13 +1756,13 @@ module top ;
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		Power_VDD4
-		 (.oe(tmpOE__Power_VDD4_net),
+		AN_PRTRANS_Power
+		 (.oe(tmpOE__AN_PRTRANS_Power_net),
 		  .y({1'b0}),
-		  .fb({tmpFB_0__Power_VDD4_net[0:0]}),
-		  .io({tmpIO_0__Power_VDD4_net[0:0]}),
-		  .siovref(tmpSIOVREF__Power_VDD4_net),
-		  .interrupt({tmpINTERRUPT_0__Power_VDD4_net[0:0]}),
+		  .fb({tmpFB_0__AN_PRTRANS_Power_net[0:0]}),
+		  .io({tmpIO_0__AN_PRTRANS_Power_net[0:0]}),
+		  .siovref(tmpSIOVREF__AN_PRTRANS_Power_net),
+		  .interrupt({tmpINTERRUPT_0__AN_PRTRANS_Power_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -1769,7 +1770,7 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__Power_VDD4_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__AN_PRTRANS_Power_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 	wire [0:0] tmpOE__AN_VSOL_net;
 	wire [0:0] tmpFB_0__AN_VSOL_net;
@@ -1834,7 +1835,7 @@ module top ;
 		 (.oe(tmpOE__AN_VSOL_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_VSOL_net[0:0]}),
-		  .analog({Net_292}),
+		  .analog({Net_302}),
 		  .io({tmpIO_0__AN_VSOL_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_VSOL_net),
 		  .interrupt({tmpINTERRUPT_0__AN_VSOL_net[0:0]}),
@@ -2189,15 +2190,16 @@ module top ;
     
     cy_psoc3_amux_v1_0 AMux(
         .muxin({
-            Net_292,
-            Net_291,
-            Net_290
+            Net_303,
+            Net_302,
+            Net_301,
+            Net_300
             }),
         .vout(Net_97)
         );
     
-    defparam AMux.muxin_width = 3;
-    defparam AMux.init_mux_sel = 3'h0;
+    defparam AMux.muxin_width = 4;
+    defparam AMux.init_mux_sel = 4'h0;
     defparam AMux.one_active = 0;
     defparam AMux.connect_mode = 2;
     
@@ -2212,11 +2214,11 @@ module top ;
         .nVref(Net_102),
         .mi(1'b0));
 
-	wire [0:0] tmpOE__Battery_Voltage_Enable_net;
-	wire [0:0] tmpFB_0__Battery_Voltage_Enable_net;
-	wire [0:0] tmpIO_0__Battery_Voltage_Enable_net;
-	wire [0:0] tmpINTERRUPT_0__Battery_Voltage_Enable_net;
-	electrical [0:0] tmpSIOVREF__Battery_Voltage_Enable_net;
+	wire [0:0] tmpOE__Voltage_Enable_net;
+	wire [0:0] tmpFB_0__Voltage_Enable_net;
+	wire [0:0] tmpIO_0__Voltage_Enable_net;
+	wire [0:0] tmpINTERRUPT_0__Voltage_Enable_net;
+	electrical [0:0] tmpSIOVREF__Voltage_Enable_net;
 
 	cy_psoc3_pins_v1_10
 		#(.id("d223a634-5f4f-4510-8d2a-070604253278"),
@@ -2271,13 +2273,13 @@ module top ;
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		Battery_Voltage_Enable
-		 (.oe(tmpOE__Battery_Voltage_Enable_net),
+		Voltage_Enable
+		 (.oe(tmpOE__Voltage_Enable_net),
 		  .y({1'b0}),
-		  .fb({tmpFB_0__Battery_Voltage_Enable_net[0:0]}),
-		  .io({tmpIO_0__Battery_Voltage_Enable_net[0:0]}),
-		  .siovref(tmpSIOVREF__Battery_Voltage_Enable_net),
-		  .interrupt({tmpINTERRUPT_0__Battery_Voltage_Enable_net[0:0]}),
+		  .fb({tmpFB_0__Voltage_Enable_net[0:0]}),
+		  .io({tmpIO_0__Voltage_Enable_net[0:0]}),
+		  .siovref(tmpSIOVREF__Voltage_Enable_net),
+		  .interrupt({tmpINTERRUPT_0__Voltage_Enable_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -2285,7 +2287,7 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__Battery_Voltage_Enable_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__Voltage_Enable_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 	wire [0:0] tmpOE__AN_VBAT_net;
 	wire [0:0] tmpFB_0__AN_VBAT_net;
@@ -2350,7 +2352,7 @@ module top ;
 		 (.oe(tmpOE__AN_VBAT_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_VBAT_net[0:0]}),
-		  .analog({Net_291}),
+		  .analog({Net_301}),
 		  .io({tmpIO_0__AN_VBAT_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_VBAT_net),
 		  .interrupt({tmpINTERRUPT_0__AN_VBAT_net[0:0]}),
@@ -2923,8 +2925,84 @@ module top ;
 		  .name("1.024V"),
 		  .autoenable(1))
 		vRef_1
-		 (.vout(Net_290));
+		 (.vout(Net_300));
 
+
+	wire [0:0] tmpOE__AN_PRTRANS_net;
+	wire [0:0] tmpFB_0__AN_PRTRANS_net;
+	wire [0:0] tmpIO_0__AN_PRTRANS_net;
+	wire [0:0] tmpINTERRUPT_0__AN_PRTRANS_net;
+	electrical [0:0] tmpSIOVREF__AN_PRTRANS_net;
+
+	cy_psoc3_pins_v1_10
+		#(.id("3b87299f-c1f5-47ec-a2cd-b51aeda692b4"),
+		  .drive_mode(3'b000),
+		  .ibuf_enabled(1'b0),
+		  .init_dr_st(1'b0),
+		  .input_clk_en(0),
+		  .input_sync(1'b1),
+		  .input_sync_mode(1'b0),
+		  .intr_mode(2'b00),
+		  .invert_in_clock(0),
+		  .invert_in_clock_en(0),
+		  .invert_in_reset(0),
+		  .invert_out_clock(0),
+		  .invert_out_clock_en(0),
+		  .invert_out_reset(0),
+		  .io_voltage(""),
+		  .layout_mode("CONTIGUOUS"),
+		  .oe_conn(1'b0),
+		  .oe_reset(0),
+		  .oe_sync(1'b0),
+		  .output_clk_en(0),
+		  .output_clock_mode(1'b0),
+		  .output_conn(1'b0),
+		  .output_mode(1'b0),
+		  .output_reset(0),
+		  .output_sync(1'b0),
+		  .pa_in_clock(-1),
+		  .pa_in_clock_en(-1),
+		  .pa_in_reset(-1),
+		  .pa_out_clock(-1),
+		  .pa_out_clock_en(-1),
+		  .pa_out_reset(-1),
+		  .pin_aliases(""),
+		  .pin_mode("A"),
+		  .por_state(4),
+		  .sio_group_cnt(0),
+		  .sio_hyst(1'b1),
+		  .sio_ibuf(""),
+		  .sio_info(2'b00),
+		  .sio_obuf(""),
+		  .sio_refsel(""),
+		  .sio_vtrip(""),
+		  .sio_hifreq(""),
+		  .sio_vohsel(""),
+		  .slew_rate(1'b0),
+		  .spanning(0),
+		  .use_annotation(1'b0),
+		  .vtrip(2'b10),
+		  .width(1),
+		  .ovt_hyst_trim(1'b0),
+		  .ovt_needed(1'b0),
+		  .ovt_slew_control(2'b00),
+		  .input_buffer_sel(2'b00))
+		AN_PRTRANS
+		 (.oe(tmpOE__AN_PRTRANS_net),
+		  .y({1'b0}),
+		  .fb({tmpFB_0__AN_PRTRANS_net[0:0]}),
+		  .analog({Net_303}),
+		  .io({tmpIO_0__AN_PRTRANS_net[0:0]}),
+		  .siovref(tmpSIOVREF__AN_PRTRANS_net),
+		  .interrupt({tmpINTERRUPT_0__AN_PRTRANS_net[0:0]}),
+		  .in_clock({1'b0}),
+		  .in_clock_en({1'b1}),
+		  .in_reset({1'b0}),
+		  .out_clock({1'b0}),
+		  .out_clock_en({1'b1}),
+		  .out_reset({1'b0}));
+
+	assign tmpOE__AN_PRTRANS_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 
 

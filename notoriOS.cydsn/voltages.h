@@ -8,7 +8,7 @@
 #define ADC_MUX_OFFSET 1
 #define ADC_MUX_VBAT 1
 #define ADC_MUX_VSOL 2
-#define ADC_MUX_CHRG 3
+
 
 #define N_SAMPLES 11
 
