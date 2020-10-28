@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 10/27/2020 at 14:00
+// 10/28/2020 at 15:42
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1697,11 +1697,11 @@ module top ;
 		 (.clock_out(Net_37));
 
 
-	wire [0:0] tmpOE__AN_PRTRANS_Power_net;
-	wire [0:0] tmpFB_0__AN_PRTRANS_Power_net;
-	wire [0:0] tmpIO_0__AN_PRTRANS_Power_net;
-	wire [0:0] tmpINTERRUPT_0__AN_PRTRANS_Power_net;
-	electrical [0:0] tmpSIOVREF__AN_PRTRANS_Power_net;
+	wire [0:0] tmpOE__Pressure_Voltage_Enable_net;
+	wire [0:0] tmpFB_0__Pressure_Voltage_Enable_net;
+	wire [0:0] tmpIO_0__Pressure_Voltage_Enable_net;
+	wire [0:0] tmpINTERRUPT_0__Pressure_Voltage_Enable_net;
+	electrical [0:0] tmpSIOVREF__Pressure_Voltage_Enable_net;
 
 	cy_psoc3_pins_v1_10
 		#(.id("6f5d4893-83e7-485a-985f-45d04b0b2d15"),
@@ -1756,13 +1756,13 @@ module top ;
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		AN_PRTRANS_Power
-		 (.oe(tmpOE__AN_PRTRANS_Power_net),
+		Pressure_Voltage_Enable
+		 (.oe(tmpOE__Pressure_Voltage_Enable_net),
 		  .y({1'b0}),
-		  .fb({tmpFB_0__AN_PRTRANS_Power_net[0:0]}),
-		  .io({tmpIO_0__AN_PRTRANS_Power_net[0:0]}),
-		  .siovref(tmpSIOVREF__AN_PRTRANS_Power_net),
-		  .interrupt({tmpINTERRUPT_0__AN_PRTRANS_Power_net[0:0]}),
+		  .fb({tmpFB_0__Pressure_Voltage_Enable_net[0:0]}),
+		  .io({tmpIO_0__Pressure_Voltage_Enable_net[0:0]}),
+		  .siovref(tmpSIOVREF__Pressure_Voltage_Enable_net),
+		  .interrupt({tmpINTERRUPT_0__Pressure_Voltage_Enable_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -1770,7 +1770,7 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__AN_PRTRANS_Power_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__Pressure_Voltage_Enable_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 	wire [0:0] tmpOE__AN_VSOL_net;
 	wire [0:0] tmpFB_0__AN_VSOL_net;
@@ -2214,11 +2214,11 @@ module top ;
         .nVref(Net_102),
         .mi(1'b0));
 
-	wire [0:0] tmpOE__Voltage_Enable_net;
-	wire [0:0] tmpFB_0__Voltage_Enable_net;
-	wire [0:0] tmpIO_0__Voltage_Enable_net;
-	wire [0:0] tmpINTERRUPT_0__Voltage_Enable_net;
-	electrical [0:0] tmpSIOVREF__Voltage_Enable_net;
+	wire [0:0] tmpOE__Battery_Voltage_Enable_net;
+	wire [0:0] tmpFB_0__Battery_Voltage_Enable_net;
+	wire [0:0] tmpIO_0__Battery_Voltage_Enable_net;
+	wire [0:0] tmpINTERRUPT_0__Battery_Voltage_Enable_net;
+	electrical [0:0] tmpSIOVREF__Battery_Voltage_Enable_net;
 
 	cy_psoc3_pins_v1_10
 		#(.id("d223a634-5f4f-4510-8d2a-070604253278"),
@@ -2273,13 +2273,13 @@ module top ;
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		Voltage_Enable
-		 (.oe(tmpOE__Voltage_Enable_net),
+		Battery_Voltage_Enable
+		 (.oe(tmpOE__Battery_Voltage_Enable_net),
 		  .y({1'b0}),
-		  .fb({tmpFB_0__Voltage_Enable_net[0:0]}),
-		  .io({tmpIO_0__Voltage_Enable_net[0:0]}),
-		  .siovref(tmpSIOVREF__Voltage_Enable_net),
-		  .interrupt({tmpINTERRUPT_0__Voltage_Enable_net[0:0]}),
+		  .fb({tmpFB_0__Battery_Voltage_Enable_net[0:0]}),
+		  .io({tmpIO_0__Battery_Voltage_Enable_net[0:0]}),
+		  .siovref(tmpSIOVREF__Battery_Voltage_Enable_net),
+		  .interrupt({tmpINTERRUPT_0__Battery_Voltage_Enable_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -2287,7 +2287,7 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__Voltage_Enable_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__Battery_Voltage_Enable_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 	wire [0:0] tmpOE__AN_VBAT_net;
 	wire [0:0] tmpFB_0__AN_VBAT_net;

@@ -8,7 +8,7 @@
 #define ADC_MUX_OFFSET 1
 #define ADC_MUX_VBAT 1
 #define ADC_MUX_VSOL 2
-
+#define ADC_MUX_PRTRANS 3
 
 #define N_SAMPLES 11
 
@@ -16,6 +16,7 @@ typedef struct {
     float voltage_battery;
     float voltage_solar;
     float voltage_charge_current;
+    float voltage_pressure;
     uint8 valid;
 } voltage_t;
 

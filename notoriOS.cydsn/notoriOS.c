@@ -511,7 +511,6 @@ uint8 makeMeasurements(){
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;
     
-    
     // Get clock time and save to timeStamp
     long timeStamp = getTimeStamp();
     // Holds string for value that will be written 
@@ -531,11 +530,16 @@ uint8 makeMeasurements(){
     
     // Take voltage readings and save them to m_voltage
     m_voltage = voltage_take_readings();
-    // If the reading is valid, print the voltage battery reading and push the data to the data wheel
+    // If the reading is valid, print the voltage battery and pressure transducer reading and push the data to the data wheel
     if(m_voltage.valid){
+        // battery voltage data
         snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_battery);
         printNotif(NOTIF_TYPE_EVENT,"v_bat=%s",value);
         pushData("v_bat",value,timeStamp);
+        // pressure transducer data
+        snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_pressure);
+        printNotif(NOTIF_TYPE_EVENT,"pressure=%s",value);
+        pushData("pressure",value,timeStamp);
     }else{
         //pushData("v_bat","error",timeStamp);
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");

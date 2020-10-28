@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Voltage_Enable.c  
+* File Name: Pressure_Voltage_Enable.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Voltage_Enable.h"
+#include "Pressure_Voltage_Enable.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Voltage_Enable__PORT == 15 && ((Voltage_Enable__MASK & 0xC0) != 0))
+	 Pressure_Voltage_Enable__PORT == 15 && ((Pressure_Voltage_Enable__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Voltage_Enable_Write
+* Function Name: Pressure_Voltage_Enable_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Voltage_Enable_SUT.c usage_Voltage_Enable_Write
+*  \snippet Pressure_Voltage_Enable_SUT.c usage_Pressure_Voltage_Enable_Write
 *******************************************************************************/
-void Voltage_Enable_Write(uint8 value)
+void Pressure_Voltage_Enable_Write(uint8 value)
 {
-    uint8 staticBits = (Voltage_Enable_DR & (uint8)(~Voltage_Enable_MASK));
-    Voltage_Enable_DR = staticBits | ((uint8)(value << Voltage_Enable_SHIFT) & Voltage_Enable_MASK);
+    uint8 staticBits = (Pressure_Voltage_Enable_DR & (uint8)(~Pressure_Voltage_Enable_MASK));
+    Pressure_Voltage_Enable_DR = staticBits | ((uint8)(value << Pressure_Voltage_Enable_SHIFT) & Pressure_Voltage_Enable_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Voltage_Enable_SetDriveMode
+* Function Name: Pressure_Voltage_Enable_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Voltage_Enable_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Voltage_Enable_SUT.c usage_Voltage_Enable_SetDriveMode
+*  \snippet Pressure_Voltage_Enable_SUT.c usage_Pressure_Voltage_Enable_SetDriveMode
 *******************************************************************************/
-void Voltage_Enable_SetDriveMode(uint8 mode)
+void Pressure_Voltage_Enable_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Voltage_Enable_0, mode);
+	CyPins_SetPinDriveMode(Pressure_Voltage_Enable_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Voltage_Enable_Read
+* Function Name: Pressure_Voltage_Enable_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Voltage_Enable_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Voltage_Enable_SUT.c usage_Voltage_Enable_Read  
+*  \snippet Pressure_Voltage_Enable_SUT.c usage_Pressure_Voltage_Enable_Read  
 *******************************************************************************/
-uint8 Voltage_Enable_Read(void)
+uint8 Pressure_Voltage_Enable_Read(void)
 {
-    return (Voltage_Enable_PS & Voltage_Enable_MASK) >> Voltage_Enable_SHIFT;
+    return (Pressure_Voltage_Enable_PS & Pressure_Voltage_Enable_MASK) >> Pressure_Voltage_Enable_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Voltage_Enable_ReadDataReg
+* Function Name: Pressure_Voltage_Enable_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Voltage_Enable_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Voltage_Enable_Read() API because the 
-* Voltage_Enable_ReadDataReg() reads the data register instead of the status 
+* preferred Pressure_Voltage_Enable_Read() API because the 
+* Pressure_Voltage_Enable_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Voltage_Enable_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Voltage_Enable_SUT.c usage_Voltage_Enable_ReadDataReg 
+*  \snippet Pressure_Voltage_Enable_SUT.c usage_Pressure_Voltage_Enable_ReadDataReg 
 *******************************************************************************/
-uint8 Voltage_Enable_ReadDataReg(void)
+uint8 Pressure_Voltage_Enable_ReadDataReg(void)
 {
-    return (Voltage_Enable_DR & Voltage_Enable_MASK) >> Voltage_Enable_SHIFT;
+    return (Pressure_Voltage_Enable_DR & Pressure_Voltage_Enable_MASK) >> Pressure_Voltage_Enable_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Voltage_Enable_INTSTAT) 
+#if defined(Pressure_Voltage_Enable_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Voltage_Enable_SetInterruptMode
+    * Function Name: Pressure_Voltage_Enable_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Voltage_Enable_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Voltage_Enable_INTR_ALL to configure the
+    *  component. Or you may use Pressure_Voltage_Enable_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Voltage_Enable_0_INTR       (First pin in the list)
-    *  - Voltage_Enable_1_INTR       (Second pin in the list)
+    *  - Pressure_Voltage_Enable_0_INTR       (First pin in the list)
+    *  - Pressure_Voltage_Enable_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Voltage_Enable_INTR_ALL     (All pins in Pins component)
+    *  - Pressure_Voltage_Enable_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Voltage_Enable_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Voltage_Enable_SUT.c usage_Voltage_Enable_SetInterruptMode
+    *  \snippet Pressure_Voltage_Enable_SUT.c usage_Pressure_Voltage_Enable_SetInterruptMode
     *******************************************************************************/
-    void Voltage_Enable_SetInterruptMode(uint16 position, uint16 mode)
+    void Pressure_Voltage_Enable_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Voltage_Enable_0_INTR) != 0u) 
+		if((position & Pressure_Voltage_Enable_0_INTR) != 0u) 
 		{ 
-			 Voltage_Enable_0_INTTYPE_REG = (uint8)mode; 
+			 Pressure_Voltage_Enable_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Voltage_Enable_ClearInterrupt
+    * Function Name: Pressure_Voltage_Enable_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Voltage_Enable_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Voltage_Enable_SUT.c usage_Voltage_Enable_ClearInterrupt
+    *  \snippet Pressure_Voltage_Enable_SUT.c usage_Pressure_Voltage_Enable_ClearInterrupt
     *******************************************************************************/
-    uint8 Voltage_Enable_ClearInterrupt(void)
+    uint8 Pressure_Voltage_Enable_ClearInterrupt(void)
     {
-        return (Voltage_Enable_INTSTAT & Voltage_Enable_MASK) >> Voltage_Enable_SHIFT;
+        return (Pressure_Voltage_Enable_INTSTAT & Pressure_Voltage_Enable_MASK) >> Pressure_Voltage_Enable_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

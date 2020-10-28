@@ -1,5 +1,5 @@
 -- Project:   notoriOS
--- Generated: 10/27/2020 14:00:58
+-- Generated: 10/28/2020 15:42:50
 -- PSoC Creator  4.3
 
 ENTITY notoriOS IS
@@ -9,7 +9,7 @@ ENTITY notoriOS IS
         Power_VBAT2(0)_PAD : OUT std_ulogic;
         Power_VDD1(0)_PAD : OUT std_ulogic;
         Power_VDD2(0)_PAD : OUT std_ulogic;
-        AN_PRTRANS_Power(0)_PAD : OUT std_ulogic;
+        Pressure_Voltage_Enable(0)_PAD : OUT std_ulogic;
         Level_Sensor_RX(0)_PAD : IN std_ulogic;
         Level_Sensor_Power(0)_PAD : OUT std_ulogic;
         \emFile:mosi0(0)_PAD\ : OUT std_ulogic;
@@ -18,7 +18,7 @@ ENTITY notoriOS IS
         \emFile:SPI0_CS(0)_PAD\ : OUT std_ulogic;
         SD_Card_Power(0)_PAD : OUT std_ulogic;
         SD_Chip_Detect(0)_PAD : IN std_ulogic;
-        Voltage_Enable(0)_PAD : OUT std_ulogic;
+        Battery_Voltage_Enable(0)_PAD : OUT std_ulogic;
         Debug_TX(0)_PAD : OUT std_ulogic;
         Pin_Telit_ONOFF(0)_PAD : OUT std_ulogic;
         Pin_Telit_pwr(0)_PAD : OUT std_ulogic;
@@ -37,9 +37,9 @@ END notoriOS;
 
 ARCHITECTURE __DEFAULT__ OF notoriOS IS
     SIGNAL AN_PRTRANS(0)__PA : bit;
-    SIGNAL AN_PRTRANS_Power(0)__PA : bit;
     SIGNAL AN_VBAT(0)__PA : bit;
     SIGNAL AN_VSOL(0)__PA : bit;
+    SIGNAL Battery_Voltage_Enable(0)__PA : bit;
     SIGNAL CTW_OUT : bit;
     SIGNAL ClockBlock_100k : bit;
     SIGNAL ClockBlock_1k : bit;
@@ -87,11 +87,11 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     SIGNAL Power_VBAT2(0)__PA : bit;
     SIGNAL Power_VDD1(0)__PA : bit;
     SIGNAL Power_VDD2(0)__PA : bit;
+    SIGNAL Pressure_Voltage_Enable(0)__PA : bit;
     SIGNAL Rx_Telit(0)__PA : bit;
     SIGNAL SD_Card_Power(0)__PA : bit;
     SIGNAL SD_Chip_Detect(0)__PA : bit;
     SIGNAL Tx_Telit(0)__PA : bit;
-    SIGNAL Voltage_Enable(0)__PA : bit;
     SIGNAL \ADC:Net_245_0\ : bit;
     SIGNAL \ADC:Net_245_1\ : bit;
     SIGNAL \ADC:Net_245_2\ : bit;
@@ -324,8 +324,8 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     ATTRIBUTE Location OF Power_VDD1(0) : LABEL IS "P0[2]";
     ATTRIBUTE lib_model OF Power_VDD2(0) : LABEL IS "iocell5";
     ATTRIBUTE Location OF Power_VDD2(0) : LABEL IS "P0[3]";
-    ATTRIBUTE lib_model OF AN_PRTRANS_Power(0) : LABEL IS "iocell6";
-    ATTRIBUTE Location OF AN_PRTRANS_Power(0) : LABEL IS "P3[3]";
+    ATTRIBUTE lib_model OF Pressure_Voltage_Enable(0) : LABEL IS "iocell6";
+    ATTRIBUTE Location OF Pressure_Voltage_Enable(0) : LABEL IS "P3[3]";
     ATTRIBUTE lib_model OF AN_VSOL(0) : LABEL IS "iocell7";
     ATTRIBUTE Location OF AN_VSOL(0) : LABEL IS "P0[5]";
     ATTRIBUTE lib_model OF Level_Sensor_RX(0) : LABEL IS "iocell8";
@@ -344,8 +344,8 @@ ARCHITECTURE __DEFAULT__ OF notoriOS IS
     ATTRIBUTE Location OF SD_Card_Power(0) : LABEL IS "P2[5]";
     ATTRIBUTE lib_model OF SD_Chip_Detect(0) : LABEL IS "iocell15";
     ATTRIBUTE Location OF SD_Chip_Detect(0) : LABEL IS "P2[7]";
-    ATTRIBUTE lib_model OF Voltage_Enable(0) : LABEL IS "iocell16";
-    ATTRIBUTE Location OF Voltage_Enable(0) : LABEL IS "P12[1]";
+    ATTRIBUTE lib_model OF Battery_Voltage_Enable(0) : LABEL IS "iocell16";
+    ATTRIBUTE Location OF Battery_Voltage_Enable(0) : LABEL IS "P12[1]";
     ATTRIBUTE lib_model OF AN_VBAT(0) : LABEL IS "iocell17";
     ATTRIBUTE Location OF AN_VBAT(0) : LABEL IS "P0[0]";
     ATTRIBUTE lib_model OF Debug_TX(0) : LABEL IS "iocell18";
@@ -1385,7 +1385,7 @@ BEGIN
             out_clock_en => '1',
             out_reset => '0');
 
-    AN_PRTRANS_Power:logicalport
+    Pressure_Voltage_Enable:logicalport
         GENERIC MAP(
             drive_mode => "110",
             ibuf_enabled => "1",
@@ -1456,18 +1456,18 @@ BEGIN
             out_clock_en => open,
             out_reset => open);
 
-    AN_PRTRANS_Power(0):iocell
+    Pressure_Voltage_Enable(0):iocell
         GENERIC MAP(
             in_sync_mode => 0,
             out_sync_mode => 0,
             oe_sync_mode => 0,
-            logicalport => "AN_PRTRANS_Power",
+            logicalport => "Pressure_Voltage_Enable",
             logicalport_pin_id => 0,
             io_capabilities => "0000000000000000000000000000000000000000000000000000000000000001")
         PORT MAP(
-            pa_out => AN_PRTRANS_Power(0)__PA,
+            pa_out => Pressure_Voltage_Enable(0)__PA,
             oe => open,
-            pad_in => AN_PRTRANS_Power(0)_PAD,
+            pad_in => Pressure_Voltage_Enable(0)_PAD,
             in_clock => open,
             in_clock_en => '1',
             in_reset => '0',
@@ -2291,7 +2291,7 @@ BEGIN
             out_clock_en => '1',
             out_reset => '0');
 
-    Voltage_Enable:logicalport
+    Battery_Voltage_Enable:logicalport
         GENERIC MAP(
             drive_mode => "110",
             ibuf_enabled => "1",
@@ -2362,18 +2362,18 @@ BEGIN
             out_clock_en => open,
             out_reset => open);
 
-    Voltage_Enable(0):iocell
+    Battery_Voltage_Enable(0):iocell
         GENERIC MAP(
             in_sync_mode => 0,
             out_sync_mode => 0,
             oe_sync_mode => 0,
-            logicalport => "Voltage_Enable",
+            logicalport => "Battery_Voltage_Enable",
             logicalport_pin_id => 0,
             io_capabilities => "0000000000000000000000000000000000000000000000000000000000000001")
         PORT MAP(
-            pa_out => Voltage_Enable(0)__PA,
+            pa_out => Battery_Voltage_Enable(0)__PA,
             oe => open,
-            pad_in => Voltage_Enable(0)_PAD,
+            pad_in => Battery_Voltage_Enable(0)_PAD,
             in_clock => open,
             in_clock_en => '1',
             in_reset => '0',

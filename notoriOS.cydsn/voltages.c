@@ -9,7 +9,8 @@ voltage_t voltage_take_readings(){
     
     voltage_t voltage;  // Create variable voltage of data structure voltage_t.
     
-	Voltage_Enable_Write(ON);   // Flip on the ADC pin high (turns it on).
+	Battery_Voltage_Enable_Write(ON);   // Flip on the Battery Voltage ADC pin high (turns it on).
+    Pressure_Voltage_Enable_Write(ON);  // Flip on the Pressure Transducer Voltage ADC pin high (turns it on).
     
 	CyDelay(10u);	    // 10 seconds delay to give time to flip on ADC pin.
     
@@ -23,7 +24,7 @@ voltage_t voltage_take_readings(){
     
     float channels[AMux_CHANNELS];
     
-    for(uint8 c = 0; c< AMux_CHANNELS; c++) // Sweep the MUX Channels
+    for(uint8 c = 0; c< AMux_CHANNELS + 1; c++) // Sweep the MUX Channels
     {
         
         int32 readings[N_SAMPLES];  // Creates new int32 array called readings of size N_SAMPLES = 11
@@ -44,13 +45,15 @@ voltage_t voltage_take_readings(){
     ADC_SaveConfig();   // Save the register configuration which are not retention.
     ADC_Stop();         // Stops and powers down the ADC component and the internal clock if the external clock is not selected.
     
-    Voltage_Enable_Write(OFF);  // Pulls ADC pin low (turns it off).
+    Battery_Voltage_Enable_Write(OFF);  // Pulls Battery ADC pin low (turns it off).
+    Pressure_Voltage_Enable_Write(OFF);  // Pulls Pressure Transducer ADC pin low (turns it off).
     float offset = channels[0] - 1.024; // Should be 1.024 exactly. BK saw an offset when measuring voltages, did this as a hack to fix the issue for now.
     voltage.voltage_battery = (channels[ADC_MUX_VBAT] * 11) - offset; // Voltage divider is (1/10) ratio, so multiply by 11
     voltage.voltage_solar = channels[ADC_MUX_VSOL] - offset; // Just want voltage here
     // Voltage across sensor resistor gives 100mV drop for max current, which is 800mA
     //voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
-    
+    voltage.voltage_pressure = channels[ADC_MUX_PRTRANS]; // Pressure transducer reading
+
     voltage.valid = 1;
     
     return voltage;
@@ -107,10 +110,11 @@ test_t voltages_test(){
     //do some checks here if you want the test to meet some voltage requrement
     //poipoi
     
-    snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f",
+    snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f,PRESSURE=%.3f",
             voltage.voltage_battery,
             voltage.voltage_solar,
-            voltage.voltage_charge_current);
+            voltage.voltage_charge_current,
+            voltage.voltage_pressure);
     
     test.status = 1;
         

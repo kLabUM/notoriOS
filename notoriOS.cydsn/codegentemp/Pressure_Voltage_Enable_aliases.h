@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Voltage_Enable.h  
+* File Name: Pressure_Voltage_Enable.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Voltage_Enable_ALIASES_H) /* Pins Voltage_Enable_ALIASES_H */
-#define CY_PINS_Voltage_Enable_ALIASES_H
+#if !defined(CY_PINS_Pressure_Voltage_Enable_ALIASES_H) /* Pins Pressure_Voltage_Enable_ALIASES_H */
+#define CY_PINS_Pressure_Voltage_Enable_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Voltage_Enable_0			(Voltage_Enable__0__PC)
-#define Voltage_Enable_0_INTR	((uint16)((uint16)0x0001u << Voltage_Enable__0__SHIFT))
+#define Pressure_Voltage_Enable_0			(Pressure_Voltage_Enable__0__PC)
+#define Pressure_Voltage_Enable_0_INTR	((uint16)((uint16)0x0001u << Pressure_Voltage_Enable__0__SHIFT))
 
-#define Voltage_Enable_INTR_ALL	 ((uint16)(Voltage_Enable_0_INTR))
+#define Pressure_Voltage_Enable_INTR_ALL	 ((uint16)(Pressure_Voltage_Enable_0_INTR))
 
-#endif /* End Pins Voltage_Enable_ALIASES_H */
+#endif /* End Pins Pressure_Voltage_Enable_ALIASES_H */
 
 
 /* [] END OF FILE */
