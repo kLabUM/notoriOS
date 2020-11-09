@@ -59,6 +59,24 @@ voltage_t voltage_take_readings(){
     return voltage;
 }
 
+// Function to calculate the pressure transducer current and depth estimate.
+pressure_t pressure_calculations(voltage_t voltage){
+    // Create variable pressure of data structure type pressure_t.
+    pressure_t pressure;
+    
+    // Calculate the pressure transducer current output.
+    // i=V/R where i= currrent, V= voltage, and R= resistance= 150 ohms. Divide by 1000 to get current in mA.
+    // Should fall between 4 and 20mA
+    pressure.pressure_current = (voltage.voltage_pressure/ 150.0)*1000; 
+    // Calculate the estimated depth from the pressure transducer.
+    // d = (Dmax*V/0.016R) - (Dmax/4) where d= depth, V= voltage, R= resistance= 150 ohms, Dmax = sensor max depth = 10 ft.
+    // Should fall between 0 and 10 ft
+    pressure.pressure_depth = ((10.0*voltage.voltage_pressure)/(0.016*150))-(10.0/4.0); 
+    return pressure;
+}
+    
+    
+
 // Function to sort the elements in the level readings array
 void sort32(int32 a[],int32 n) { 
    int32 i,j;
@@ -107,8 +125,7 @@ test_t voltages_test(){
     
     voltage_t voltage = voltage_take_readings();
     
-    //do some checks here if you want the test to meet some voltage requrement
-    //poipoi
+    //do some checks here if you want the test to meet some voltage requirement
     
     snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f,PRESSURE=%.3f",
             voltage.voltage_battery,

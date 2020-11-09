@@ -350,7 +350,6 @@ uint8 syncData(){
     }else if(modem_get_state() == MODEM_STATE_READY){
         printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
         
-        
         http_request[0] = '\0';
         http_body[0] = '\0';
         http_route[0] = '\0';
@@ -510,6 +509,8 @@ uint8 makeMeasurements(){
     level_sensor_t m_level_sensor;
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;
+    // pressure_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_pressure
+    pressure_t m_pressure;
     
     // Get clock time and save to timeStamp
     long timeStamp = getTimeStamp();
@@ -536,10 +537,15 @@ uint8 makeMeasurements(){
         snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_battery);
         printNotif(NOTIF_TYPE_EVENT,"v_bat=%s",value);
         pushData("v_bat",value,timeStamp);
+        
         // pressure transducer data
-        snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_pressure);
-        printNotif(NOTIF_TYPE_EVENT,"pressure=%s",value);
-        pushData("pressure",value,timeStamp);
+        m_pressure = pressure_calculations(m_voltage);
+        snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_current);
+        printNotif(NOTIF_TYPE_EVENT,"pressure_current=%s",value);
+        pushData("pressure_current",value,timeStamp);
+        snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_depth);
+        printNotif(NOTIF_TYPE_EVENT,"pressure_depth=%s",value);
+        pushData("pressure_depth",value,timeStamp);
     }else{
         //pushData("v_bat","error",timeStamp);
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
