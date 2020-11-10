@@ -23,9 +23,10 @@ CY_ISR(Wakeup_ISR) {
 }
 
 
-uint8 syncData();               //syncs data with server 
-uint8 configureRemoteParams();  //syncs RTC with cell network and obtains meta-DB params
-uint8 makeMeasurements();
+uint8 syncData();               // Syncs data with server 
+uint8 configureRemoteParams();  // Syncs RTC with cell network and obtains meta-DB params
+uint8 makeMeasurements();       // Takes sensor measurements
+char  Data_fileName[30] = "data.txt";
 
 
 // ==============================================
@@ -372,6 +373,7 @@ uint8 syncData(){
         pushData("data_count_sent",c_data_count_sent,getTimeStamp());
         uint16 data_count_desired = sizeOfDataStackDesired();
         char c_data_count_desired[20];
+        
         // subtract 1 to disclude data_count_sent so that it focuses only on the actual data
         snprintf(c_data_count_desired,sizeof(c_data_count_desired),"%d", data_count_desired-1);
         pushData("data_count_desired",c_data_count_desired,getTimeStamp());
@@ -514,6 +516,9 @@ uint8 makeMeasurements(){
     
     // Get clock time and save to timeStamp
     long timeStamp = getTimeStamp();
+    char c_timeStamp[32];
+    snprintf(c_timeStamp,sizeof(c_timeStamp),"%ld",timeStamp);
+    
     // Holds string for value that will be written 
     char value[DATA_MAX_KEY_LENGTH];
     // Take level sensor readings and save them to m_level_sensor
@@ -524,6 +529,11 @@ uint8 makeMeasurements(){
         snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
         printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
         pushData("maxbotix_depth",value,timeStamp);
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " ");
+        SD_write(Data_fileName, "a+", value);
+        SD_write(Data_fileName, "a+", " ");
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
         //pushData("maxbotix_depth","error",timeStamp);
@@ -537,15 +547,32 @@ uint8 makeMeasurements(){
         snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_battery);
         printNotif(NOTIF_TYPE_EVENT,"v_bat=%s",value);
         pushData("v_bat",value,timeStamp);
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", " ");
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " vbat: ");
+        SD_write(Data_fileName, "a+", value);
         
-        // pressure transducer data
+        // pressure transducer current (mA) data
         m_pressure = pressure_calculations(m_voltage);
         snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_current);
         printNotif(NOTIF_TYPE_EVENT,"pressure_current=%s",value);
         pushData("pressure_current",value,timeStamp);
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", " ");
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " pressure_current: ");
+        SD_write(Data_fileName, "a+", value);
+        
+        // pressure transducer depth (ft) data
         snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_depth);
         printNotif(NOTIF_TYPE_EVENT,"pressure_depth=%s",value);
         pushData("pressure_depth",value,timeStamp);
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", " ");
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " pressure_depth: ");
+        SD_write(Data_fileName, "a+", value);
     }else{
         //pushData("v_bat","error",timeStamp);
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
