@@ -1,0 +1,1872 @@
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"pressure_transducer.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	modem_state,1,1
+  20              		.comm	modem_start_time_stamp,4,4
+  21              		.comm	modem_info,60,4
+  22              		.comm	modem_stats,16,4
+  23              		.comm	updatable_parameters,3,4
+  24              		.syntax unified
+  25              		.global _printf_float
+  26              		.thumb
+  27              		.syntax unified
+  28              		.comm	dataPointsInStack,2,2
+  29              		.comm	dataPointsInStackDesired,2,2
+  30              		.comm	data,6600,4
+  31              		.comm	http_request,10000,4
+  32              		.comm	http_body,10000,4
+  33              		.comm	http_route,200,4
+  34              		.comm	system_info,28,4
+  35              		.comm	system_settings,104,4
+  36              		.comm	alarmMeasure,6,4
+  37              		.comm	timeToMeasure,1,1
+  38              		.comm	alarmSync,6,4
+  39              		.comm	timeToSync,1,1
+  40              		.comm	timeToSycnRemoteParams,1,1
+  41              		.comm	try_counter,1,1
+  42              		.comm	hey,1,1
+  43              		.global	__aeabi_f2d
+  44              		.global	__aeabi_dsub
+  45              		.global	__aeabi_d2f
+  46              		.global	__aeabi_fmul
+  47              		.global	__aeabi_fsub
+  48              		.section	.text.pressure_take_readings,"ax",%progbits
+  49              		.align	2
+  50              		.global	pressure_take_readings
+  51              		.thumb
+  52              		.thumb_func
+  53              		.type	pressure_take_readings, %function
+  54              	pressure_take_readings:
+  55              	.LFB64:
+  56              		.file 1 "pressure_transducer.c"
+   1:pressure_transducer.c **** #include "pressure_transducer.h"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 2
+
+
+   2:pressure_transducer.c **** #include "notoriOS.h"
+   3:pressure_transducer.c **** #include <stdio.h>
+   4:pressure_transducer.c **** #include <string.h>
+   5:pressure_transducer.c **** 
+   6:pressure_transducer.c **** 
+   7:pressure_transducer.c **** 
+   8:pressure_transducer.c **** pressure_t pressure_take_readings(){
+  57              		.loc 1 8 0
+  58              		.cfi_startproc
+  59              		@ args = 0, pretend = 0, frame = 88
+  60              		@ frame_needed = 1, uses_anonymous_args = 0
+  61 0000 90B5     		push	{r4, r7, lr}
+  62              		.cfi_def_cfa_offset 12
+  63              		.cfi_offset 4, -12
+  64              		.cfi_offset 7, -8
+  65              		.cfi_offset 14, -4
+  66 0002 97B0     		sub	sp, sp, #92
+  67              		.cfi_def_cfa_offset 104
+  68 0004 00AF     		add	r7, sp, #0
+  69              		.cfi_def_cfa_register 7
+  70 0006 7860     		str	r0, [r7, #4]
+   9:pressure_transducer.c ****     
+  10:pressure_transducer.c ****     pressure_t pressure;  // Create variable pressure of data structure pressure_t.
+  11:pressure_transducer.c ****     
+  12:pressure_transducer.c **** 	Voltage_Enable_Write(ON);   // Flip on the ADC pin high (turns it on).
+  71              		.loc 1 12 0
+  72 0008 0120     		movs	r0, #1
+  73 000a FFF7FEFF 		bl	Voltage_Enable_Write
+  13:pressure_transducer.c ****     
+  14:pressure_transducer.c **** 	CyDelay(10u);	    // 10 seconds delay to give time to flip on ADC pin.
+  74              		.loc 1 14 0
+  75 000e 0A20     		movs	r0, #10
+  76 0010 FFF7FEFF 		bl	CyDelay
+  15:pressure_transducer.c ****     
+  16:pressure_transducer.c ****     ADC_RestoreConfig();// Have to call this and save (See below). Otherwise ADC won't work through
+  77              		.loc 1 16 0
+  78 0014 FFF7FEFF 		bl	ADC_RestoreConfig
+  17:pressure_transducer.c **** 	
+  18:pressure_transducer.c **** 	ADC_Start();        // Start the ADC
+  79              		.loc 1 18 0
+  80 0018 FFF7FEFF 		bl	ADC_Start
+  19:pressure_transducer.c ****     
+  20:pressure_transducer.c ****     ADC_StartConvert(); // Forces the ADC to initiate a conversion. If in the "Single Sample" mode,
+  81              		.loc 1 20 0
+  82 001c FFF7FEFF 		bl	ADC_StartConvert
+  21:pressure_transducer.c ****     
+  22:pressure_transducer.c ****     AMux_Start();       // Start the Analog Multiplexer
+  83              		.loc 1 22 0
+  84 0020 FFF7FEFF 		bl	AMux_Start
+  23:pressure_transducer.c ****    
+  24:pressure_transducer.c ****     float channels[AMux_CHANNELS];
+  25:pressure_transducer.c ****     
+  26:pressure_transducer.c ****     int32 readings[N_SAMPLES];  // Creates new int32 array called readings of size N_SAMPLES = 11
+  27:pressure_transducer.c ****         
+  28:pressure_transducer.c ****     AMux_Select(ADC_MUX_PRTRANS); // This functions first disconnects all channels then connects th
+  85              		.loc 1 28 0
+  86 0024 0320     		movs	r0, #3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 3
+
+
+  87 0026 FFF7FEFF 		bl	AMux_Select
+  88              	.LBB2:
+  29:pressure_transducer.c ****     
+  30:pressure_transducer.c ****     for(uint16 i=0; i< N_SAMPLES; i++){
+  89              		.loc 1 30 0
+  90 002a 0023     		movs	r3, #0
+  91 002c A7F85630 		strh	r3, [r7, #86]	@ movhi
+  92 0030 0FE0     		b	.L2
+  93              	.L3:
+  31:pressure_transducer.c ****         readings[i] = ADC_Read32(); // When called, it will start ADC conversions, wait for the con
+  94              		.loc 1 31 0 discriminator 3
+  95 0032 B7F85640 		ldrh	r4, [r7, #86]
+  96 0036 FFF7FEFF 		bl	ADC_Read32
+  97 003a 0246     		mov	r2, r0
+  98 003c A300     		lsls	r3, r4, #2
+  99 003e 07F15801 		add	r1, r7, #88
+ 100 0042 0B44     		add	r3, r3, r1
+ 101 0044 43F84C2C 		str	r2, [r3, #-76]
+  30:pressure_transducer.c ****         readings[i] = ADC_Read32(); // When called, it will start ADC conversions, wait for the con
+ 102              		.loc 1 30 0 discriminator 3
+ 103 0048 B7F85630 		ldrh	r3, [r7, #86]
+ 104 004c 0133     		adds	r3, r3, #1
+ 105 004e A7F85630 		strh	r3, [r7, #86]	@ movhi
+ 106              	.L2:
+  30:pressure_transducer.c ****         readings[i] = ADC_Read32(); // When called, it will start ADC conversions, wait for the con
+ 107              		.loc 1 30 0 is_stmt 0 discriminator 1
+ 108 0052 B7F85630 		ldrh	r3, [r7, #86]
+ 109 0056 0A2B     		cmp	r3, #10
+ 110 0058 EBD9     		bls	.L3
+ 111              	.LBE2:
+  32:pressure_transducer.c ****     }
+  33:pressure_transducer.c ****     // Converts the ADC output to Volts as a floating point number. 
+  34:pressure_transducer.c ****     // Get the median of readings and return that.
+  35:pressure_transducer.c ****     
+  36:pressure_transducer.c ****     channels[ADC_MUX_PRTRANS] = ADC_CountsTo_Volts(find_median32(readings, N_SAMPLES));    // Get m
+ 112              		.loc 1 36 0 is_stmt 1
+ 113 005a 07F10C03 		add	r3, r7, #12
+ 114 005e 0B21     		movs	r1, #11
+ 115 0060 1846     		mov	r0, r3
+ 116 0062 FFF7FEFF 		bl	find_median32
+ 117 0066 0346     		mov	r3, r0
+ 118 0068 1846     		mov	r0, r3
+ 119 006a FFF7FEFF 		bl	ADC_CountsTo_Volts
+ 120 006e 0346     		mov	r3, r0
+ 121 0070 7B64     		str	r3, [r7, #68]	@ float
+  37:pressure_transducer.c ****         
+  38:pressure_transducer.c ****     
+  39:pressure_transducer.c ****     AMux_Stop();        // Disconnects all Analog Multiplex channels.
+ 122              		.loc 1 39 0
+ 123 0072 FFF7FEFF 		bl	AMux_Start
+  40:pressure_transducer.c ****     ADC_StopConvert();  // Forces the ADC to stop all conversions.
+ 124              		.loc 1 40 0
+ 125 0076 FFF7FEFF 		bl	ADC_StopConvert
+  41:pressure_transducer.c ****     ADC_SaveConfig();   // Save the register configuration which are not retention.
+ 126              		.loc 1 41 0
+ 127 007a FFF7FEFF 		bl	ADC_SaveConfig
+  42:pressure_transducer.c ****     ADC_Stop();         // Stops and powers down the ADC component and the internal clock if the ex
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 4
+
+
+ 128              		.loc 1 42 0
+ 129 007e FFF7FEFF 		bl	ADC_Stop
+  43:pressure_transducer.c ****     
+  44:pressure_transducer.c ****     Voltage_Enable_Write(OFF);  // Pulls ADC pin low (turns it off).
+ 130              		.loc 1 44 0
+ 131 0082 0020     		movs	r0, #0
+ 132 0084 FFF7FEFF 		bl	Voltage_Enable_Write
+  45:pressure_transducer.c ****     float offset = channels[0] - 1.024; // Should be 1.024 exactly. BK saw an offset when measuring
+ 133              		.loc 1 45 0
+ 134 0088 BB6B     		ldr	r3, [r7, #56]	@ float
+ 135 008a 1846     		mov	r0, r3
+ 136 008c FFF7FEFF 		bl	__aeabi_f2d
+ 137 0090 13A3     		adr	r3, .L5
+ 138 0092 D3E90023 		ldrd	r2, [r3]
+ 139 0096 FFF7FEFF 		bl	__aeabi_dsub
+ 140 009a 0346     		mov	r3, r0
+ 141 009c 0C46     		mov	r4, r1
+ 142 009e 1846     		mov	r0, r3
+ 143 00a0 2146     		mov	r1, r4
+ 144 00a2 FFF7FEFF 		bl	__aeabi_d2f
+ 145 00a6 0346     		mov	r3, r0
+ 146 00a8 3B65     		str	r3, [r7, #80]	@ float
+  46:pressure_transducer.c ****     pressure.pressure_voltage = (channels[ADC_MUX_PRTRANS] * 11) - offset; // Voltage divider is (1
+ 147              		.loc 1 46 0
+ 148 00aa 7B6C     		ldr	r3, [r7, #68]	@ float
+ 149 00ac 0E49     		ldr	r1, .L5+8
+ 150 00ae 1846     		mov	r0, r3
+ 151 00b0 FFF7FEFF 		bl	__aeabi_fmul
+ 152 00b4 0346     		mov	r3, r0
+ 153 00b6 396D     		ldr	r1, [r7, #80]	@ float
+ 154 00b8 1846     		mov	r0, r3
+ 155 00ba FFF7FEFF 		bl	__aeabi_fsub
+ 156 00be 0346     		mov	r3, r0
+ 157 00c0 BB64     		str	r3, [r7, #72]	@ float
+  47:pressure_transducer.c ****     
+  48:pressure_transducer.c ****     pressure.valid = 1;
+ 158              		.loc 1 48 0
+ 159 00c2 0123     		movs	r3, #1
+ 160 00c4 87F84C30 		strb	r3, [r7, #76]
+  49:pressure_transducer.c ****     
+  50:pressure_transducer.c ****     return pressure;
+ 161              		.loc 1 50 0
+ 162 00c8 7B68     		ldr	r3, [r7, #4]
+ 163 00ca 1A46     		mov	r2, r3
+ 164 00cc 07F14803 		add	r3, r7, #72
+ 165 00d0 93E80300 		ldmia	r3, {r0, r1}
+ 166 00d4 82E80300 		stmia	r2, {r0, r1}
+  51:pressure_transducer.c **** }
+ 167              		.loc 1 51 0
+ 168 00d8 7868     		ldr	r0, [r7, #4]
+ 169 00da 5C37     		adds	r7, r7, #92
+ 170              		.cfi_def_cfa_offset 12
+ 171 00dc BD46     		mov	sp, r7
+ 172              		.cfi_def_cfa_register 13
+ 173              		@ sp needed
+ 174 00de 90BD     		pop	{r4, r7, pc}
+ 175              	.L6:
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 5
+
+
+ 176              		.align	3
+ 177              	.L5:
+ 178 00e0 FCA9F1D2 		.word	-755914244
+ 179 00e4 4D62F03F 		.word	1072718413
+ 180 00e8 00003041 		.word	1093664768
+ 181              		.cfi_endproc
+ 182              	.LFE64:
+ 183              		.size	pressure_take_readings, .-pressure_take_readings
+ 184              		.section	.rodata
+ 185              		.align	2
+ 186              	.LC0:
+ 187 0000 54455354 		.ascii	"TEST_PRESSURE_VOLTAGES\000"
+ 187      5F505245 
+ 187      53535552 
+ 187      455F564F 
+ 187      4C544147 
+ 188 0017 00       		.align	2
+ 189              	.LC1:
+ 190 0018 50726573 		.ascii	"Pressure=%.3f\000"
+ 190      73757265 
+ 190      3D252E33 
+ 190      6600
+ 191              		.section	.text.pressure_test,"ax",%progbits
+ 192              		.align	2
+ 193              		.global	pressure_test
+ 194              		.thumb
+ 195              		.thumb_func
+ 196              		.type	pressure_test, %function
+ 197              	pressure_test:
+ 198              	.LFB65:
+  52:pressure_transducer.c **** 
+  53:pressure_transducer.c **** // Test the pressure readings
+  54:pressure_transducer.c **** test_t pressure_test(){
+ 199              		.loc 1 54 0
+ 200              		.cfi_startproc
+ 201              		@ args = 0, pretend = 0, frame = 408
+ 202              		@ frame_needed = 1, uses_anonymous_args = 0
+ 203 0000 B0B5     		push	{r4, r5, r7, lr}
+ 204              		.cfi_def_cfa_offset 16
+ 205              		.cfi_offset 4, -16
+ 206              		.cfi_offset 5, -12
+ 207              		.cfi_offset 7, -8
+ 208              		.cfi_offset 14, -4
+ 209 0002 E8B0     		sub	sp, sp, #416
+ 210              		.cfi_def_cfa_offset 432
+ 211 0004 02AF     		add	r7, sp, #8
+ 212              		.cfi_def_cfa 7, 424
+ 213 0006 3B1D     		adds	r3, r7, #4
+ 214 0008 1860     		str	r0, [r3]
+  55:pressure_transducer.c ****     // Create variable test of the data structure test_t
+  56:pressure_transducer.c ****     test_t test;
+  57:pressure_transducer.c ****     test.status = 0;
+ 215              		.loc 1 57 0
+ 216 000a 07F11403 		add	r3, r7, #20
+ 217 000e 0022     		movs	r2, #0
+ 218 0010 83F88020 		strb	r2, [r3, #128]
+  58:pressure_transducer.c ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_PRESSURE_VOLTAGES");
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 6
+
+
+ 219              		.loc 1 58 0
+ 220 0014 07F11403 		add	r3, r7, #20
+ 221 0018 1D4A     		ldr	r2, .L9
+ 222 001a 1C46     		mov	r4, r3
+ 223 001c 1546     		mov	r5, r2
+ 224 001e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 225 0020 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 226 0022 95E80300 		ldmia	r5, {r0, r1}
+ 227 0026 2060     		str	r0, [r4]
+ 228 0028 0434     		adds	r4, r4, #4
+ 229 002a 2180     		strh	r1, [r4]	@ movhi
+ 230 002c 0234     		adds	r4, r4, #2
+ 231 002e 0B0C     		lsrs	r3, r1, #16
+ 232 0030 2370     		strb	r3, [r4]
+  59:pressure_transducer.c ****     
+  60:pressure_transducer.c ****     pressure_t pressure = pressure_take_readings();
+ 233              		.loc 1 60 0
+ 234 0032 07F10C03 		add	r3, r7, #12
+ 235 0036 1846     		mov	r0, r3
+ 236 0038 FFF7FEFF 		bl	pressure_take_readings
+  61:pressure_transducer.c ****     
+  62:pressure_transducer.c ****     snprintf(test.reason,sizeof(test.reason),"Pressure=%.3f",
+  63:pressure_transducer.c ****             pressure.pressure_voltage);
+ 237              		.loc 1 63 0
+ 238 003c 07F10C03 		add	r3, r7, #12
+ 239 0040 1B68     		ldr	r3, [r3]	@ float
+  62:pressure_transducer.c ****             pressure.pressure_voltage);
+ 240              		.loc 1 62 0
+ 241 0042 1846     		mov	r0, r3
+ 242 0044 FFF7FEFF 		bl	__aeabi_f2d
+ 243 0048 0346     		mov	r3, r0
+ 244 004a 0C46     		mov	r4, r1
+ 245 004c 07F11402 		add	r2, r7, #20
+ 246 0050 02F18100 		add	r0, r2, #129
+ 247 0054 CDE90034 		strd	r3, [sp]
+ 248 0058 0E4A     		ldr	r2, .L9+4
+ 249 005a 4FF48071 		mov	r1, #256
+ 250 005e FFF7FEFF 		bl	snprintf
+  64:pressure_transducer.c ****     
+  65:pressure_transducer.c ****     test.status = 1;
+ 251              		.loc 1 65 0
+ 252 0062 07F11403 		add	r3, r7, #20
+ 253 0066 0122     		movs	r2, #1
+ 254 0068 83F88020 		strb	r2, [r3, #128]
+  66:pressure_transducer.c ****         
+  67:pressure_transducer.c ****     return test;
+ 255              		.loc 1 67 0
+ 256 006c 3B1D     		adds	r3, r7, #4
+ 257 006e 1A68     		ldr	r2, [r3]
+ 258 0070 07F11403 		add	r3, r7, #20
+ 259 0074 1046     		mov	r0, r2
+ 260 0076 1946     		mov	r1, r3
+ 261 0078 40F28113 		movw	r3, #385
+ 262 007c 1A46     		mov	r2, r3
+ 263 007e FFF7FEFF 		bl	memcpy
+  68:pressure_transducer.c **** }
+ 264              		.loc 1 68 0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 7
+
+
+ 265 0082 3B1D     		adds	r3, r7, #4
+ 266 0084 1868     		ldr	r0, [r3]
+ 267 0086 07F5CC77 		add	r7, r7, #408
+ 268              		.cfi_def_cfa_offset 16
+ 269 008a BD46     		mov	sp, r7
+ 270              		.cfi_def_cfa_register 13
+ 271              		@ sp needed
+ 272 008c B0BD     		pop	{r4, r5, r7, pc}
+ 273              	.L10:
+ 274 008e 00BF     		.align	2
+ 275              	.L9:
+ 276 0090 00000000 		.word	.LC0
+ 277 0094 18000000 		.word	.LC1
+ 278              		.cfi_endproc
+ 279              	.LFE65:
+ 280              		.size	pressure_test, .-pressure_test
+ 281              		.text
+ 282              	.Letext0:
+ 283              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 284              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 285              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 286              		.file 5 "testing.h"
+ 287              		.file 6 "pressure_transducer.h"
+ 288              		.file 7 "modem.h"
+ 289              		.file 8 "data.h"
+ 290              		.file 9 "notoriOS.h"
+ 291              		.file 10 "Generated_Source\\PSoC5/core_cm3.h"
+ 292              		.section	.debug_info,"",%progbits
+ 293              	.Ldebug_info0:
+ 294 0000 A0050000 		.4byte	0x5a0
+ 295 0004 0400     		.2byte	0x4
+ 296 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 297 000a 04       		.byte	0x4
+ 298 000b 01       		.uleb128 0x1
+ 299 000c 6C000000 		.4byte	.LASF83
+ 300 0010 0C       		.byte	0xc
+ 301 0011 0D010000 		.4byte	.LASF84
+ 302 0015 A3020000 		.4byte	.LASF85
+ 303 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 304 001d 00000000 		.4byte	0
+ 305 0021 00000000 		.4byte	.Ldebug_line0
+ 306 0025 02       		.uleb128 0x2
+ 307 0026 01       		.byte	0x1
+ 308 0027 06       		.byte	0x6
+ 309 0028 3F020000 		.4byte	.LASF0
+ 310 002c 02       		.uleb128 0x2
+ 311 002d 01       		.byte	0x1
+ 312 002e 08       		.byte	0x8
+ 313 002f F8010000 		.4byte	.LASF1
+ 314 0033 02       		.uleb128 0x2
+ 315 0034 02       		.byte	0x2
+ 316 0035 05       		.byte	0x5
+ 317 0036 51000000 		.4byte	.LASF2
+ 318 003a 02       		.uleb128 0x2
+ 319 003b 02       		.byte	0x2
+ 320 003c 07       		.byte	0x7
+ 321 003d 26030000 		.4byte	.LASF3
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 8
+
+
+ 322 0041 03       		.uleb128 0x3
+ 323 0042 2C040000 		.4byte	.LASF9
+ 324 0046 02       		.byte	0x2
+ 325 0047 3F       		.byte	0x3f
+ 326 0048 4C000000 		.4byte	0x4c
+ 327 004c 02       		.uleb128 0x2
+ 328 004d 04       		.byte	0x4
+ 329 004e 05       		.byte	0x5
+ 330 004f A5010000 		.4byte	.LASF4
+ 331 0053 02       		.uleb128 0x2
+ 332 0054 04       		.byte	0x4
+ 333 0055 07       		.byte	0x7
+ 334 0056 CB030000 		.4byte	.LASF5
+ 335 005a 02       		.uleb128 0x2
+ 336 005b 08       		.byte	0x8
+ 337 005c 05       		.byte	0x5
+ 338 005d 8B010000 		.4byte	.LASF6
+ 339 0061 02       		.uleb128 0x2
+ 340 0062 08       		.byte	0x8
+ 341 0063 07       		.byte	0x7
+ 342 0064 4B020000 		.4byte	.LASF7
+ 343 0068 04       		.uleb128 0x4
+ 344 0069 04       		.byte	0x4
+ 345 006a 05       		.byte	0x5
+ 346 006b 696E7400 		.ascii	"int\000"
+ 347 006f 02       		.uleb128 0x2
+ 348 0070 04       		.byte	0x4
+ 349 0071 07       		.byte	0x7
+ 350 0072 80020000 		.4byte	.LASF8
+ 351 0076 03       		.uleb128 0x3
+ 352 0077 83030000 		.4byte	.LASF10
+ 353 007b 03       		.byte	0x3
+ 354 007c 2C       		.byte	0x2c
+ 355 007d 41000000 		.4byte	0x41
+ 356 0081 05       		.uleb128 0x5
+ 357 0082 48010000 		.4byte	.LASF11
+ 358 0086 04       		.byte	0x4
+ 359 0087 9201     		.2byte	0x192
+ 360 0089 2C000000 		.4byte	0x2c
+ 361 008d 05       		.uleb128 0x5
+ 362 008e 2F010000 		.4byte	.LASF12
+ 363 0092 04       		.byte	0x4
+ 364 0093 9301     		.2byte	0x193
+ 365 0095 3A000000 		.4byte	0x3a
+ 366 0099 05       		.uleb128 0x5
+ 367 009a 5C010000 		.4byte	.LASF13
+ 368 009e 04       		.byte	0x4
+ 369 009f 9601     		.2byte	0x196
+ 370 00a1 33000000 		.4byte	0x33
+ 371 00a5 05       		.uleb128 0x5
+ 372 00a6 DD030000 		.4byte	.LASF14
+ 373 00aa 04       		.byte	0x4
+ 374 00ab 9701     		.2byte	0x197
+ 375 00ad 4C000000 		.4byte	0x4c
+ 376 00b1 02       		.uleb128 0x2
+ 377 00b2 04       		.byte	0x4
+ 378 00b3 04       		.byte	0x4
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 9
+
+
+ 379 00b4 85010000 		.4byte	.LASF15
+ 380 00b8 02       		.uleb128 0x2
+ 381 00b9 08       		.byte	0x8
+ 382 00ba 04       		.byte	0x4
+ 383 00bb E3030000 		.4byte	.LASF16
+ 384 00bf 02       		.uleb128 0x2
+ 385 00c0 01       		.byte	0x1
+ 386 00c1 08       		.byte	0x8
+ 387 00c2 99010000 		.4byte	.LASF17
+ 388 00c6 02       		.uleb128 0x2
+ 389 00c7 08       		.byte	0x8
+ 390 00c8 04       		.byte	0x4
+ 391 00c9 EC010000 		.4byte	.LASF18
+ 392 00cd 02       		.uleb128 0x2
+ 393 00ce 04       		.byte	0x4
+ 394 00cf 07       		.byte	0x7
+ 395 00d0 5B000000 		.4byte	.LASF19
+ 396 00d4 06       		.uleb128 0x6
+ 397 00d5 BF000000 		.4byte	0xbf
+ 398 00d9 E4000000 		.4byte	0xe4
+ 399 00dd 07       		.uleb128 0x7
+ 400 00de CD000000 		.4byte	0xcd
+ 401 00e2 17       		.byte	0x17
+ 402 00e3 00       		.byte	0
+ 403 00e4 08       		.uleb128 0x8
+ 404 00e5 8101     		.2byte	0x181
+ 405 00e7 05       		.byte	0x5
+ 406 00e8 0A       		.byte	0xa
+ 407 00e9 12010000 		.4byte	0x112
+ 408 00ed 09       		.uleb128 0x9
+ 409 00ee 4E040000 		.4byte	.LASF20
+ 410 00f2 05       		.byte	0x5
+ 411 00f3 0C       		.byte	0xc
+ 412 00f4 12010000 		.4byte	0x112
+ 413 00f8 00       		.byte	0
+ 414 00f9 09       		.uleb128 0x9
+ 415 00fa 51030000 		.4byte	.LASF21
+ 416 00fe 05       		.byte	0x5
+ 417 00ff 0D       		.byte	0xd
+ 418 0100 81000000 		.4byte	0x81
+ 419 0104 80       		.byte	0x80
+ 420 0105 09       		.uleb128 0x9
+ 421 0106 9E010000 		.4byte	.LASF22
+ 422 010a 05       		.byte	0x5
+ 423 010b 0F       		.byte	0xf
+ 424 010c 22010000 		.4byte	0x122
+ 425 0110 81       		.byte	0x81
+ 426 0111 00       		.byte	0
+ 427 0112 06       		.uleb128 0x6
+ 428 0113 BF000000 		.4byte	0xbf
+ 429 0117 22010000 		.4byte	0x122
+ 430 011b 07       		.uleb128 0x7
+ 431 011c CD000000 		.4byte	0xcd
+ 432 0120 7F       		.byte	0x7f
+ 433 0121 00       		.byte	0
+ 434 0122 06       		.uleb128 0x6
+ 435 0123 BF000000 		.4byte	0xbf
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 10
+
+
+ 436 0127 32010000 		.4byte	0x132
+ 437 012b 07       		.uleb128 0x7
+ 438 012c CD000000 		.4byte	0xcd
+ 439 0130 FF       		.byte	0xff
+ 440 0131 00       		.byte	0
+ 441 0132 03       		.uleb128 0x3
+ 442 0133 77030000 		.4byte	.LASF23
+ 443 0137 05       		.byte	0x5
+ 444 0138 10       		.byte	0x10
+ 445 0139 E4000000 		.4byte	0xe4
+ 446 013d 0A       		.uleb128 0xa
+ 447 013e 08       		.byte	0x8
+ 448 013f 06       		.byte	0x6
+ 449 0140 0C       		.byte	0xc
+ 450 0141 5E010000 		.4byte	0x15e
+ 451 0145 09       		.uleb128 0x9
+ 452 0146 0B020000 		.4byte	.LASF24
+ 453 014a 06       		.byte	0x6
+ 454 014b 0D       		.byte	0xd
+ 455 014c B1000000 		.4byte	0xb1
+ 456 0150 00       		.byte	0
+ 457 0151 09       		.uleb128 0x9
+ 458 0152 00000000 		.4byte	.LASF25
+ 459 0156 06       		.byte	0x6
+ 460 0157 0E       		.byte	0xe
+ 461 0158 81000000 		.4byte	0x81
+ 462 015c 04       		.byte	0x4
+ 463 015d 00       		.byte	0
+ 464 015e 03       		.uleb128 0x3
+ 465 015f 92040000 		.4byte	.LASF26
+ 466 0163 06       		.byte	0x6
+ 467 0164 0F       		.byte	0xf
+ 468 0165 3D010000 		.4byte	0x13d
+ 469 0169 0A       		.uleb128 0xa
+ 470 016a 3C       		.byte	0x3c
+ 471 016b 07       		.byte	0x7
+ 472 016c 2E       		.byte	0x2e
+ 473 016d 96010000 		.4byte	0x196
+ 474 0171 09       		.uleb128 0x9
+ 475 0172 0F000000 		.4byte	.LASF27
+ 476 0176 07       		.byte	0x7
+ 477 0177 2F       		.byte	0x2f
+ 478 0178 96010000 		.4byte	0x196
+ 479 017c 00       		.byte	0
+ 480 017d 09       		.uleb128 0x9
+ 481 017e 06000000 		.4byte	.LASF28
+ 482 0182 07       		.byte	0x7
+ 483 0183 30       		.byte	0x30
+ 484 0184 96010000 		.4byte	0x196
+ 485 0188 14       		.byte	0x14
+ 486 0189 09       		.uleb128 0x9
+ 487 018a 7E030000 		.4byte	.LASF29
+ 488 018e 07       		.byte	0x7
+ 489 018f 31       		.byte	0x31
+ 490 0190 96010000 		.4byte	0x196
+ 491 0194 28       		.byte	0x28
+ 492 0195 00       		.byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 11
+
+
+ 493 0196 06       		.uleb128 0x6
+ 494 0197 BF000000 		.4byte	0xbf
+ 495 019b A6010000 		.4byte	0x1a6
+ 496 019f 07       		.uleb128 0x7
+ 497 01a0 CD000000 		.4byte	0xcd
+ 498 01a4 13       		.byte	0x13
+ 499 01a5 00       		.byte	0
+ 500 01a6 03       		.uleb128 0x3
+ 501 01a7 11040000 		.4byte	.LASF30
+ 502 01ab 07       		.byte	0x7
+ 503 01ac 32       		.byte	0x32
+ 504 01ad 69010000 		.4byte	0x169
+ 505 01b1 0A       		.uleb128 0xa
+ 506 01b2 10       		.byte	0x10
+ 507 01b3 07       		.byte	0x7
+ 508 01b4 34       		.byte	0x34
+ 509 01b5 1A020000 		.4byte	0x21a
+ 510 01b9 09       		.uleb128 0x9
+ 511 01ba C6010000 		.4byte	.LASF31
+ 512 01be 07       		.byte	0x7
+ 513 01bf 35       		.byte	0x35
+ 514 01c0 81000000 		.4byte	0x81
+ 515 01c4 00       		.byte	0
+ 516 01c5 0B       		.uleb128 0xb
+ 517 01c6 62657200 		.ascii	"ber\000"
+ 518 01ca 07       		.byte	0x7
+ 519 01cb 36       		.byte	0x36
+ 520 01cc 81000000 		.4byte	0x81
+ 521 01d0 01       		.byte	0x1
+ 522 01d1 09       		.uleb128 0x9
+ 523 01d2 57010000 		.4byte	.LASF32
+ 524 01d6 07       		.byte	0x7
+ 525 01d7 37       		.byte	0x37
+ 526 01d8 81000000 		.4byte	0x81
+ 527 01dc 02       		.byte	0x2
+ 528 01dd 09       		.uleb128 0x9
+ 529 01de 08010000 		.4byte	.LASF33
+ 530 01e2 07       		.byte	0x7
+ 531 01e3 38       		.byte	0x38
+ 532 01e4 81000000 		.4byte	0x81
+ 533 01e8 03       		.byte	0x3
+ 534 01e9 09       		.uleb128 0x9
+ 535 01ea BB030000 		.4byte	.LASF34
+ 536 01ee 07       		.byte	0x7
+ 537 01ef 39       		.byte	0x39
+ 538 01f0 81000000 		.4byte	0x81
+ 539 01f4 04       		.byte	0x4
+ 540 01f5 09       		.uleb128 0x9
+ 541 01f6 06020000 		.4byte	.LASF35
+ 542 01fa 07       		.byte	0x7
+ 543 01fb 3A       		.byte	0x3a
+ 544 01fc 81000000 		.4byte	0x81
+ 545 0200 05       		.byte	0x5
+ 546 0201 09       		.uleb128 0x9
+ 547 0202 39030000 		.4byte	.LASF36
+ 548 0206 07       		.byte	0x7
+ 549 0207 3B       		.byte	0x3b
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 12
+
+
+ 550 0208 68000000 		.4byte	0x68
+ 551 020c 08       		.byte	0x8
+ 552 020d 09       		.uleb128 0x9
+ 553 020e 64030000 		.4byte	.LASF37
+ 554 0212 07       		.byte	0x7
+ 555 0213 3C       		.byte	0x3c
+ 556 0214 68000000 		.4byte	0x68
+ 557 0218 0C       		.byte	0xc
+ 558 0219 00       		.byte	0
+ 559 021a 03       		.uleb128 0x3
+ 560 021b 8B030000 		.4byte	.LASF38
+ 561 021f 07       		.byte	0x7
+ 562 0220 3D       		.byte	0x3d
+ 563 0221 B1010000 		.4byte	0x1b1
+ 564 0225 0A       		.uleb128 0xa
+ 565 0226 03       		.byte	0x3
+ 566 0227 07       		.byte	0x7
+ 567 0228 49       		.byte	0x49
+ 568 0229 52020000 		.4byte	0x252
+ 569 022d 09       		.uleb128 0x9
+ 570 022e D5010000 		.4byte	.LASF39
+ 571 0232 07       		.byte	0x7
+ 572 0233 4C       		.byte	0x4c
+ 573 0234 81000000 		.4byte	0x81
+ 574 0238 00       		.byte	0
+ 575 0239 09       		.uleb128 0x9
+ 576 023a 99020000 		.4byte	.LASF40
+ 577 023e 07       		.byte	0x7
+ 578 023f 4E       		.byte	0x4e
+ 579 0240 81000000 		.4byte	0x81
+ 580 0244 01       		.byte	0x1
+ 581 0245 09       		.uleb128 0x9
+ 582 0246 05040000 		.4byte	.LASF41
+ 583 024a 07       		.byte	0x7
+ 584 024b 51       		.byte	0x51
+ 585 024c 81000000 		.4byte	0x81
+ 586 0250 02       		.byte	0x2
+ 587 0251 00       		.byte	0
+ 588 0252 03       		.uleb128 0x3
+ 589 0253 04030000 		.4byte	.LASF42
+ 590 0257 07       		.byte	0x7
+ 591 0258 52       		.byte	0x52
+ 592 0259 25020000 		.4byte	0x225
+ 593 025d 0A       		.uleb128 0xa
+ 594 025e 2C       		.byte	0x2c
+ 595 025f 08       		.byte	0x8
+ 596 0260 10       		.byte	0x10
+ 597 0261 8A020000 		.4byte	0x28a
+ 598 0265 0B       		.uleb128 0xb
+ 599 0266 6B657900 		.ascii	"key\000"
+ 600 026a 08       		.byte	0x8
+ 601 026b 11       		.byte	0x11
+ 602 026c 96010000 		.4byte	0x196
+ 603 0270 00       		.byte	0
+ 604 0271 09       		.uleb128 0x9
+ 605 0272 8C040000 		.4byte	.LASF43
+ 606 0276 08       		.byte	0x8
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 13
+
+
+ 607 0277 12       		.byte	0x12
+ 608 0278 96010000 		.4byte	0x196
+ 609 027c 14       		.byte	0x14
+ 610 027d 09       		.uleb128 0x9
+ 611 027e 62010000 		.4byte	.LASF44
+ 612 0282 08       		.byte	0x8
+ 613 0283 13       		.byte	0x13
+ 614 0284 A5000000 		.4byte	0xa5
+ 615 0288 28       		.byte	0x28
+ 616 0289 00       		.byte	0
+ 617 028a 03       		.uleb128 0x3
+ 618 028b 8D020000 		.4byte	.LASF45
+ 619 028f 08       		.byte	0x8
+ 620 0290 14       		.byte	0x14
+ 621 0291 5D020000 		.4byte	0x25d
+ 622 0295 0A       		.uleb128 0xa
+ 623 0296 06       		.byte	0x6
+ 624 0297 09       		.byte	0x9
+ 625 0298 2D       		.byte	0x2d
+ 626 0299 CE020000 		.4byte	0x2ce
+ 627 029d 09       		.uleb128 0x9
+ 628 029e 42000000 		.4byte	.LASF46
+ 629 02a2 09       		.byte	0x9
+ 630 02a3 2F       		.byte	0x2f
+ 631 02a4 8D000000 		.4byte	0x8d
+ 632 02a8 00       		.byte	0
+ 633 02a9 09       		.uleb128 0x9
+ 634 02aa 25000000 		.4byte	.LASF47
+ 635 02ae 09       		.byte	0x9
+ 636 02af 30       		.byte	0x30
+ 637 02b0 99000000 		.4byte	0x99
+ 638 02b4 02       		.byte	0x2
+ 639 02b5 09       		.uleb128 0x9
+ 640 02b6 1E040000 		.4byte	.LASF48
+ 641 02ba 09       		.byte	0x9
+ 642 02bb 31       		.byte	0x31
+ 643 02bc 81000000 		.4byte	0x81
+ 644 02c0 04       		.byte	0x4
+ 645 02c1 09       		.uleb128 0x9
+ 646 02c2 36040000 		.4byte	.LASF49
+ 647 02c6 09       		.byte	0x9
+ 648 02c7 32       		.byte	0x32
+ 649 02c8 81000000 		.4byte	0x81
+ 650 02cc 05       		.byte	0x5
+ 651 02cd 00       		.byte	0
+ 652 02ce 03       		.uleb128 0x3
+ 653 02cf 99030000 		.4byte	.LASF50
+ 654 02d3 09       		.byte	0x9
+ 655 02d4 35       		.byte	0x35
+ 656 02d5 D9020000 		.4byte	0x2d9
+ 657 02d9 0C       		.uleb128 0xc
+ 658 02da 95020000 		.4byte	0x295
+ 659 02de 0A       		.uleb128 0xa
+ 660 02df 1C       		.byte	0x1c
+ 661 02e0 09       		.byte	0x9
+ 662 02e1 38       		.byte	0x38
+ 663 02e2 FF020000 		.4byte	0x2ff
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 14
+
+
+ 664 02e6 09       		.uleb128 0x9
+ 665 02e7 AE010000 		.4byte	.LASF51
+ 666 02eb 09       		.byte	0x9
+ 667 02ec 3A       		.byte	0x3a
+ 668 02ed FF020000 		.4byte	0x2ff
+ 669 02f1 00       		.byte	0
+ 670 02f2 09       		.uleb128 0x9
+ 671 02f3 72020000 		.4byte	.LASF52
+ 672 02f7 09       		.byte	0x9
+ 673 02f8 3B       		.byte	0x3b
+ 674 02f9 D4000000 		.4byte	0xd4
+ 675 02fd 04       		.byte	0x4
+ 676 02fe 00       		.byte	0
+ 677 02ff 0D       		.uleb128 0xd
+ 678 0300 04       		.byte	0x4
+ 679 0301 A6010000 		.4byte	0x1a6
+ 680 0305 03       		.uleb128 0x3
+ 681 0306 1B030000 		.4byte	.LASF53
+ 682 030a 09       		.byte	0x9
+ 683 030b 3D       		.byte	0x3d
+ 684 030c DE020000 		.4byte	0x2de
+ 685 0310 0A       		.uleb128 0xa
+ 686 0311 68       		.byte	0x68
+ 687 0312 09       		.byte	0x9
+ 688 0313 43       		.byte	0x43
+ 689 0314 31030000 		.4byte	0x331
+ 690 0318 09       		.uleb128 0x9
+ 691 0319 64000000 		.4byte	.LASF54
+ 692 031d 09       		.byte	0x9
+ 693 031e 48       		.byte	0x48
+ 694 031f 31030000 		.4byte	0x331
+ 695 0323 00       		.byte	0
+ 696 0324 09       		.uleb128 0x9
+ 697 0325 6D040000 		.4byte	.LASF55
+ 698 0329 09       		.byte	0x9
+ 699 032a 49       		.byte	0x49
+ 700 032b 68000000 		.4byte	0x68
+ 701 032f 64       		.byte	0x64
+ 702 0330 00       		.byte	0
+ 703 0331 06       		.uleb128 0x6
+ 704 0332 BF000000 		.4byte	0xbf
+ 705 0336 41030000 		.4byte	0x341
+ 706 033a 07       		.uleb128 0x7
+ 707 033b CD000000 		.4byte	0xcd
+ 708 033f 63       		.byte	0x63
+ 709 0340 00       		.byte	0
+ 710 0341 03       		.uleb128 0x3
+ 711 0342 16000000 		.4byte	.LASF56
+ 712 0346 09       		.byte	0x9
+ 713 0347 4F       		.byte	0x4f
+ 714 0348 10030000 		.4byte	0x310
+ 715 034c 0E       		.uleb128 0xe
+ 716 034d 75040000 		.4byte	.LASF61
+ 717 0351 01       		.byte	0x1
+ 718 0352 08       		.byte	0x8
+ 719 0353 5E010000 		.4byte	0x15e
+ 720 0357 00000000 		.4byte	.LFB64
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 15
+
+
+ 721 035b EC000000 		.4byte	.LFE64-.LFB64
+ 722 035f 01       		.uleb128 0x1
+ 723 0360 9C       		.byte	0x9c
+ 724 0361 B5030000 		.4byte	0x3b5
+ 725 0365 0F       		.uleb128 0xf
+ 726 0366 4E010000 		.4byte	.LASF57
+ 727 036a 01       		.byte	0x1
+ 728 036b 0A       		.byte	0xa
+ 729 036c 5E010000 		.4byte	0x15e
+ 730 0370 02       		.uleb128 0x2
+ 731 0371 91       		.byte	0x91
+ 732 0372 60       		.sleb128 -32
+ 733 0373 0F       		.uleb128 0xf
+ 734 0374 FF000000 		.4byte	.LASF58
+ 735 0378 01       		.byte	0x1
+ 736 0379 18       		.byte	0x18
+ 737 037a B5030000 		.4byte	0x3b5
+ 738 037e 02       		.uleb128 0x2
+ 739 037f 91       		.byte	0x91
+ 740 0380 50       		.sleb128 -48
+ 741 0381 0F       		.uleb128 0xf
+ 742 0382 B5040000 		.4byte	.LASF59
+ 743 0386 01       		.byte	0x1
+ 744 0387 1A       		.byte	0x1a
+ 745 0388 C5030000 		.4byte	0x3c5
+ 746 038c 03       		.uleb128 0x3
+ 747 038d 91       		.byte	0x91
+ 748 038e A47F     		.sleb128 -92
+ 749 0390 0F       		.uleb128 0xf
+ 750 0391 3B000000 		.4byte	.LASF60
+ 751 0395 01       		.byte	0x1
+ 752 0396 2D       		.byte	0x2d
+ 753 0397 B1000000 		.4byte	0xb1
+ 754 039b 02       		.uleb128 0x2
+ 755 039c 91       		.byte	0x91
+ 756 039d 68       		.sleb128 -24
+ 757 039e 10       		.uleb128 0x10
+ 758 039f 2A000000 		.4byte	.LBB2
+ 759 03a3 30000000 		.4byte	.LBE2-.LBB2
+ 760 03a7 11       		.uleb128 0x11
+ 761 03a8 6900     		.ascii	"i\000"
+ 762 03aa 01       		.byte	0x1
+ 763 03ab 1E       		.byte	0x1e
+ 764 03ac 8D000000 		.4byte	0x8d
+ 765 03b0 02       		.uleb128 0x2
+ 766 03b1 91       		.byte	0x91
+ 767 03b2 6E       		.sleb128 -18
+ 768 03b3 00       		.byte	0
+ 769 03b4 00       		.byte	0
+ 770 03b5 06       		.uleb128 0x6
+ 771 03b6 B1000000 		.4byte	0xb1
+ 772 03ba C5030000 		.4byte	0x3c5
+ 773 03be 07       		.uleb128 0x7
+ 774 03bf CD000000 		.4byte	0xcd
+ 775 03c3 03       		.byte	0x3
+ 776 03c4 00       		.byte	0
+ 777 03c5 06       		.uleb128 0x6
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 16
+
+
+ 778 03c6 A5000000 		.4byte	0xa5
+ 779 03ca D5030000 		.4byte	0x3d5
+ 780 03ce 07       		.uleb128 0x7
+ 781 03cf CD000000 		.4byte	0xcd
+ 782 03d3 0A       		.byte	0xa
+ 783 03d4 00       		.byte	0
+ 784 03d5 0E       		.uleb128 0xe
+ 785 03d6 EA030000 		.4byte	.LASF62
+ 786 03da 01       		.byte	0x1
+ 787 03db 36       		.byte	0x36
+ 788 03dc 32010000 		.4byte	0x132
+ 789 03e0 00000000 		.4byte	.LFB65
+ 790 03e4 98000000 		.4byte	.LFE65-.LFB65
+ 791 03e8 01       		.uleb128 0x1
+ 792 03e9 9C       		.byte	0x9c
+ 793 03ea 0D040000 		.4byte	0x40d
+ 794 03ee 0F       		.uleb128 0xf
+ 795 03ef B6030000 		.4byte	.LASF63
+ 796 03f3 01       		.byte	0x1
+ 797 03f4 38       		.byte	0x38
+ 798 03f5 32010000 		.4byte	0x132
+ 799 03f9 03       		.uleb128 0x3
+ 800 03fa 91       		.byte	0x91
+ 801 03fb EC7C     		.sleb128 -404
+ 802 03fd 0F       		.uleb128 0xf
+ 803 03fe 4E010000 		.4byte	.LASF57
+ 804 0402 01       		.byte	0x1
+ 805 0403 3C       		.byte	0x3c
+ 806 0404 5E010000 		.4byte	0x15e
+ 807 0408 03       		.uleb128 0x3
+ 808 0409 91       		.byte	0x91
+ 809 040a E47C     		.sleb128 -412
+ 810 040c 00       		.byte	0
+ 811 040d 12       		.uleb128 0x12
+ 812 040e F8030000 		.4byte	.LASF64
+ 813 0412 0A       		.byte	0xa
+ 814 0413 1207     		.2byte	0x712
+ 815 0415 19040000 		.4byte	0x419
+ 816 0419 0C       		.uleb128 0xc
+ 817 041a 76000000 		.4byte	0x76
+ 818 041e 13       		.uleb128 0x13
+ 819 041f 33020000 		.4byte	.LASF65
+ 820 0423 07       		.byte	0x7
+ 821 0424 16       		.byte	0x16
+ 822 0425 81000000 		.4byte	0x81
+ 823 0429 05       		.uleb128 0x5
+ 824 042a 03       		.byte	0x3
+ 825 042b 00000000 		.4byte	modem_state
+ 826 042f 13       		.uleb128 0x13
+ 827 0430 1C020000 		.4byte	.LASF66
+ 828 0434 07       		.byte	0x7
+ 829 0435 55       		.byte	0x55
+ 830 0436 A5000000 		.4byte	0xa5
+ 831 043a 05       		.uleb128 0x5
+ 832 043b 03       		.byte	0x3
+ 833 043c 00000000 		.4byte	modem_start_time_stamp
+ 834 0440 13       		.uleb128 0x13
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 17
+
+
+ 835 0441 AE010000 		.4byte	.LASF51
+ 836 0445 07       		.byte	0x7
+ 837 0446 56       		.byte	0x56
+ 838 0447 A6010000 		.4byte	0x1a6
+ 839 044b 05       		.uleb128 0x5
+ 840 044c 03       		.byte	0x3
+ 841 044d 00000000 		.4byte	modem_info
+ 842 0451 13       		.uleb128 0x13
+ 843 0452 EA020000 		.4byte	.LASF67
+ 844 0456 07       		.byte	0x7
+ 845 0457 57       		.byte	0x57
+ 846 0458 1A020000 		.4byte	0x21a
+ 847 045c 05       		.uleb128 0x5
+ 848 045d 03       		.byte	0x3
+ 849 045e 00000000 		.4byte	modem_stats
+ 850 0462 13       		.uleb128 0x13
+ 851 0463 58040000 		.4byte	.LASF68
+ 852 0467 07       		.byte	0x7
+ 853 0468 58       		.byte	0x58
+ 854 0469 52020000 		.4byte	0x252
+ 855 046d 05       		.uleb128 0x5
+ 856 046e 03       		.byte	0x3
+ 857 046f 00000000 		.4byte	updatable_parameters
+ 858 0473 13       		.uleb128 0x13
+ 859 0474 36010000 		.4byte	.LASF69
+ 860 0478 08       		.byte	0x8
+ 861 0479 1D       		.byte	0x1d
+ 862 047a 8D000000 		.4byte	0x8d
+ 863 047e 05       		.uleb128 0x5
+ 864 047f 03       		.byte	0x3
+ 865 0480 00000000 		.4byte	dataPointsInStack
+ 866 0484 13       		.uleb128 0x13
+ 867 0485 6C010000 		.4byte	.LASF70
+ 868 0489 08       		.byte	0x8
+ 869 048a 1E       		.byte	0x1e
+ 870 048b 8D000000 		.4byte	0x8d
+ 871 048f 05       		.uleb128 0x5
+ 872 0490 03       		.byte	0x3
+ 873 0491 00000000 		.4byte	dataPointsInStackDesired
+ 874 0495 06       		.uleb128 0x6
+ 875 0496 8A020000 		.4byte	0x28a
+ 876 049a A5040000 		.4byte	0x4a5
+ 877 049e 07       		.uleb128 0x7
+ 878 049f CD000000 		.4byte	0xcd
+ 879 04a3 95       		.byte	0x95
+ 880 04a4 00       		.byte	0
+ 881 04a5 13       		.uleb128 0x13
+ 882 04a6 FA000000 		.4byte	.LASF71
+ 883 04aa 08       		.byte	0x8
+ 884 04ab 1F       		.byte	0x1f
+ 885 04ac 95040000 		.4byte	0x495
+ 886 04b0 05       		.uleb128 0x5
+ 887 04b1 03       		.byte	0x3
+ 888 04b2 00000000 		.4byte	data
+ 889 04b6 06       		.uleb128 0x6
+ 890 04b7 BF000000 		.4byte	0xbf
+ 891 04bb C7040000 		.4byte	0x4c7
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 18
+
+
+ 892 04bf 14       		.uleb128 0x14
+ 893 04c0 CD000000 		.4byte	0xcd
+ 894 04c4 0F27     		.2byte	0x270f
+ 895 04c6 00       		.byte	0
+ 896 04c7 13       		.uleb128 0x13
+ 897 04c8 9D040000 		.4byte	.LASF72
+ 898 04cc 09       		.byte	0x9
+ 899 04cd 17       		.byte	0x17
+ 900 04ce B6040000 		.4byte	0x4b6
+ 901 04d2 05       		.uleb128 0x5
+ 902 04d3 03       		.byte	0x3
+ 903 04d4 00000000 		.4byte	http_request
+ 904 04d8 13       		.uleb128 0x13
+ 905 04d9 CB010000 		.4byte	.LASF73
+ 906 04dd 09       		.byte	0x9
+ 907 04de 18       		.byte	0x18
+ 908 04df B6040000 		.4byte	0x4b6
+ 909 04e3 05       		.uleb128 0x5
+ 910 04e4 03       		.byte	0x3
+ 911 04e5 00000000 		.4byte	http_body
+ 912 04e9 06       		.uleb128 0x6
+ 913 04ea BF000000 		.4byte	0xbf
+ 914 04ee F9040000 		.4byte	0x4f9
+ 915 04f2 07       		.uleb128 0x7
+ 916 04f3 CD000000 		.4byte	0xcd
+ 917 04f7 C7       		.byte	0xc7
+ 918 04f8 00       		.byte	0
+ 919 04f9 13       		.uleb128 0x13
+ 920 04fa C0030000 		.4byte	.LASF74
+ 921 04fe 09       		.byte	0x9
+ 922 04ff 19       		.byte	0x19
+ 923 0500 E9040000 		.4byte	0x4e9
+ 924 0504 05       		.uleb128 0x5
+ 925 0505 03       		.byte	0x3
+ 926 0506 00000000 		.4byte	http_route
+ 927 050a 13       		.uleb128 0x13
+ 928 050b 58030000 		.4byte	.LASF75
+ 929 050f 09       		.byte	0x9
+ 930 0510 40       		.byte	0x40
+ 931 0511 05030000 		.4byte	0x305
+ 932 0515 05       		.uleb128 0x5
+ 933 0516 03       		.byte	0x3
+ 934 0517 00000000 		.4byte	system_info
+ 935 051b 13       		.uleb128 0x13
+ 936 051c 62020000 		.4byte	.LASF76
+ 937 0520 09       		.byte	0x9
+ 938 0521 52       		.byte	0x52
+ 939 0522 41030000 		.4byte	0x341
+ 940 0526 05       		.uleb128 0x5
+ 941 0527 03       		.byte	0x3
+ 942 0528 00000000 		.4byte	system_settings
+ 943 052c 13       		.uleb128 0x13
+ 944 052d B9010000 		.4byte	.LASF77
+ 945 0531 09       		.byte	0x9
+ 946 0532 6E       		.byte	0x6e
+ 947 0533 CE020000 		.4byte	0x2ce
+ 948 0537 05       		.uleb128 0x5
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 19
+
+
+ 949 0538 03       		.byte	0x3
+ 950 0539 00000000 		.4byte	alarmMeasure
+ 951 053d 13       		.uleb128 0x13
+ 952 053e F6020000 		.4byte	.LASF78
+ 953 0542 09       		.byte	0x9
+ 954 0543 6F       		.byte	0x6f
+ 955 0544 81000000 		.4byte	0x81
+ 956 0548 05       		.uleb128 0x5
+ 957 0549 03       		.byte	0x3
+ 958 054a 00000000 		.4byte	timeToMeasure
+ 959 054e 13       		.uleb128 0x13
+ 960 054f E2010000 		.4byte	.LASF79
+ 961 0553 09       		.byte	0x9
+ 962 0554 70       		.byte	0x70
+ 963 0555 CE020000 		.4byte	0x2ce
+ 964 0559 05       		.uleb128 0x5
+ 965 055a 03       		.byte	0x3
+ 966 055b 00000000 		.4byte	alarmSync
+ 967 055f 13       		.uleb128 0x13
+ 968 0560 AA040000 		.4byte	.LASF80
+ 969 0564 09       		.byte	0x9
+ 970 0565 71       		.byte	0x71
+ 971 0566 81000000 		.4byte	0x81
+ 972 056a 05       		.uleb128 0x5
+ 973 056b 03       		.byte	0x3
+ 974 056c 00000000 		.4byte	timeToSync
+ 975 0570 13       		.uleb128 0x13
+ 976 0571 9F030000 		.4byte	.LASF81
+ 977 0575 09       		.byte	0x9
+ 978 0576 72       		.byte	0x72
+ 979 0577 81000000 		.4byte	0x81
+ 980 057b 05       		.uleb128 0x5
+ 981 057c 03       		.byte	0x3
+ 982 057d 00000000 		.4byte	timeToSycnRemoteParams
+ 983 0581 13       		.uleb128 0x13
+ 984 0582 23010000 		.4byte	.LASF82
+ 985 0586 09       		.byte	0x9
+ 986 0587 73       		.byte	0x73
+ 987 0588 81000000 		.4byte	0x81
+ 988 058c 05       		.uleb128 0x5
+ 989 058d 03       		.byte	0x3
+ 990 058e 00000000 		.4byte	try_counter
+ 991 0592 15       		.uleb128 0x15
+ 992 0593 68657900 		.ascii	"hey\000"
+ 993 0597 09       		.byte	0x9
+ 994 0598 74       		.byte	0x74
+ 995 0599 81000000 		.4byte	0x81
+ 996 059d 05       		.uleb128 0x5
+ 997 059e 03       		.byte	0x3
+ 998 059f 00000000 		.4byte	hey
+ 999 05a3 00       		.byte	0
+ 1000              		.section	.debug_abbrev,"",%progbits
+ 1001              	.Ldebug_abbrev0:
+ 1002 0000 01       		.uleb128 0x1
+ 1003 0001 11       		.uleb128 0x11
+ 1004 0002 01       		.byte	0x1
+ 1005 0003 25       		.uleb128 0x25
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 20
+
+
+ 1006 0004 0E       		.uleb128 0xe
+ 1007 0005 13       		.uleb128 0x13
+ 1008 0006 0B       		.uleb128 0xb
+ 1009 0007 03       		.uleb128 0x3
+ 1010 0008 0E       		.uleb128 0xe
+ 1011 0009 1B       		.uleb128 0x1b
+ 1012 000a 0E       		.uleb128 0xe
+ 1013 000b 55       		.uleb128 0x55
+ 1014 000c 17       		.uleb128 0x17
+ 1015 000d 11       		.uleb128 0x11
+ 1016 000e 01       		.uleb128 0x1
+ 1017 000f 10       		.uleb128 0x10
+ 1018 0010 17       		.uleb128 0x17
+ 1019 0011 00       		.byte	0
+ 1020 0012 00       		.byte	0
+ 1021 0013 02       		.uleb128 0x2
+ 1022 0014 24       		.uleb128 0x24
+ 1023 0015 00       		.byte	0
+ 1024 0016 0B       		.uleb128 0xb
+ 1025 0017 0B       		.uleb128 0xb
+ 1026 0018 3E       		.uleb128 0x3e
+ 1027 0019 0B       		.uleb128 0xb
+ 1028 001a 03       		.uleb128 0x3
+ 1029 001b 0E       		.uleb128 0xe
+ 1030 001c 00       		.byte	0
+ 1031 001d 00       		.byte	0
+ 1032 001e 03       		.uleb128 0x3
+ 1033 001f 16       		.uleb128 0x16
+ 1034 0020 00       		.byte	0
+ 1035 0021 03       		.uleb128 0x3
+ 1036 0022 0E       		.uleb128 0xe
+ 1037 0023 3A       		.uleb128 0x3a
+ 1038 0024 0B       		.uleb128 0xb
+ 1039 0025 3B       		.uleb128 0x3b
+ 1040 0026 0B       		.uleb128 0xb
+ 1041 0027 49       		.uleb128 0x49
+ 1042 0028 13       		.uleb128 0x13
+ 1043 0029 00       		.byte	0
+ 1044 002a 00       		.byte	0
+ 1045 002b 04       		.uleb128 0x4
+ 1046 002c 24       		.uleb128 0x24
+ 1047 002d 00       		.byte	0
+ 1048 002e 0B       		.uleb128 0xb
+ 1049 002f 0B       		.uleb128 0xb
+ 1050 0030 3E       		.uleb128 0x3e
+ 1051 0031 0B       		.uleb128 0xb
+ 1052 0032 03       		.uleb128 0x3
+ 1053 0033 08       		.uleb128 0x8
+ 1054 0034 00       		.byte	0
+ 1055 0035 00       		.byte	0
+ 1056 0036 05       		.uleb128 0x5
+ 1057 0037 16       		.uleb128 0x16
+ 1058 0038 00       		.byte	0
+ 1059 0039 03       		.uleb128 0x3
+ 1060 003a 0E       		.uleb128 0xe
+ 1061 003b 3A       		.uleb128 0x3a
+ 1062 003c 0B       		.uleb128 0xb
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 21
+
+
+ 1063 003d 3B       		.uleb128 0x3b
+ 1064 003e 05       		.uleb128 0x5
+ 1065 003f 49       		.uleb128 0x49
+ 1066 0040 13       		.uleb128 0x13
+ 1067 0041 00       		.byte	0
+ 1068 0042 00       		.byte	0
+ 1069 0043 06       		.uleb128 0x6
+ 1070 0044 01       		.uleb128 0x1
+ 1071 0045 01       		.byte	0x1
+ 1072 0046 49       		.uleb128 0x49
+ 1073 0047 13       		.uleb128 0x13
+ 1074 0048 01       		.uleb128 0x1
+ 1075 0049 13       		.uleb128 0x13
+ 1076 004a 00       		.byte	0
+ 1077 004b 00       		.byte	0
+ 1078 004c 07       		.uleb128 0x7
+ 1079 004d 21       		.uleb128 0x21
+ 1080 004e 00       		.byte	0
+ 1081 004f 49       		.uleb128 0x49
+ 1082 0050 13       		.uleb128 0x13
+ 1083 0051 2F       		.uleb128 0x2f
+ 1084 0052 0B       		.uleb128 0xb
+ 1085 0053 00       		.byte	0
+ 1086 0054 00       		.byte	0
+ 1087 0055 08       		.uleb128 0x8
+ 1088 0056 13       		.uleb128 0x13
+ 1089 0057 01       		.byte	0x1
+ 1090 0058 0B       		.uleb128 0xb
+ 1091 0059 05       		.uleb128 0x5
+ 1092 005a 3A       		.uleb128 0x3a
+ 1093 005b 0B       		.uleb128 0xb
+ 1094 005c 3B       		.uleb128 0x3b
+ 1095 005d 0B       		.uleb128 0xb
+ 1096 005e 01       		.uleb128 0x1
+ 1097 005f 13       		.uleb128 0x13
+ 1098 0060 00       		.byte	0
+ 1099 0061 00       		.byte	0
+ 1100 0062 09       		.uleb128 0x9
+ 1101 0063 0D       		.uleb128 0xd
+ 1102 0064 00       		.byte	0
+ 1103 0065 03       		.uleb128 0x3
+ 1104 0066 0E       		.uleb128 0xe
+ 1105 0067 3A       		.uleb128 0x3a
+ 1106 0068 0B       		.uleb128 0xb
+ 1107 0069 3B       		.uleb128 0x3b
+ 1108 006a 0B       		.uleb128 0xb
+ 1109 006b 49       		.uleb128 0x49
+ 1110 006c 13       		.uleb128 0x13
+ 1111 006d 38       		.uleb128 0x38
+ 1112 006e 0B       		.uleb128 0xb
+ 1113 006f 00       		.byte	0
+ 1114 0070 00       		.byte	0
+ 1115 0071 0A       		.uleb128 0xa
+ 1116 0072 13       		.uleb128 0x13
+ 1117 0073 01       		.byte	0x1
+ 1118 0074 0B       		.uleb128 0xb
+ 1119 0075 0B       		.uleb128 0xb
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 22
+
+
+ 1120 0076 3A       		.uleb128 0x3a
+ 1121 0077 0B       		.uleb128 0xb
+ 1122 0078 3B       		.uleb128 0x3b
+ 1123 0079 0B       		.uleb128 0xb
+ 1124 007a 01       		.uleb128 0x1
+ 1125 007b 13       		.uleb128 0x13
+ 1126 007c 00       		.byte	0
+ 1127 007d 00       		.byte	0
+ 1128 007e 0B       		.uleb128 0xb
+ 1129 007f 0D       		.uleb128 0xd
+ 1130 0080 00       		.byte	0
+ 1131 0081 03       		.uleb128 0x3
+ 1132 0082 08       		.uleb128 0x8
+ 1133 0083 3A       		.uleb128 0x3a
+ 1134 0084 0B       		.uleb128 0xb
+ 1135 0085 3B       		.uleb128 0x3b
+ 1136 0086 0B       		.uleb128 0xb
+ 1137 0087 49       		.uleb128 0x49
+ 1138 0088 13       		.uleb128 0x13
+ 1139 0089 38       		.uleb128 0x38
+ 1140 008a 0B       		.uleb128 0xb
+ 1141 008b 00       		.byte	0
+ 1142 008c 00       		.byte	0
+ 1143 008d 0C       		.uleb128 0xc
+ 1144 008e 35       		.uleb128 0x35
+ 1145 008f 00       		.byte	0
+ 1146 0090 49       		.uleb128 0x49
+ 1147 0091 13       		.uleb128 0x13
+ 1148 0092 00       		.byte	0
+ 1149 0093 00       		.byte	0
+ 1150 0094 0D       		.uleb128 0xd
+ 1151 0095 0F       		.uleb128 0xf
+ 1152 0096 00       		.byte	0
+ 1153 0097 0B       		.uleb128 0xb
+ 1154 0098 0B       		.uleb128 0xb
+ 1155 0099 49       		.uleb128 0x49
+ 1156 009a 13       		.uleb128 0x13
+ 1157 009b 00       		.byte	0
+ 1158 009c 00       		.byte	0
+ 1159 009d 0E       		.uleb128 0xe
+ 1160 009e 2E       		.uleb128 0x2e
+ 1161 009f 01       		.byte	0x1
+ 1162 00a0 3F       		.uleb128 0x3f
+ 1163 00a1 19       		.uleb128 0x19
+ 1164 00a2 03       		.uleb128 0x3
+ 1165 00a3 0E       		.uleb128 0xe
+ 1166 00a4 3A       		.uleb128 0x3a
+ 1167 00a5 0B       		.uleb128 0xb
+ 1168 00a6 3B       		.uleb128 0x3b
+ 1169 00a7 0B       		.uleb128 0xb
+ 1170 00a8 49       		.uleb128 0x49
+ 1171 00a9 13       		.uleb128 0x13
+ 1172 00aa 11       		.uleb128 0x11
+ 1173 00ab 01       		.uleb128 0x1
+ 1174 00ac 12       		.uleb128 0x12
+ 1175 00ad 06       		.uleb128 0x6
+ 1176 00ae 40       		.uleb128 0x40
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 23
+
+
+ 1177 00af 18       		.uleb128 0x18
+ 1178 00b0 9642     		.uleb128 0x2116
+ 1179 00b2 19       		.uleb128 0x19
+ 1180 00b3 01       		.uleb128 0x1
+ 1181 00b4 13       		.uleb128 0x13
+ 1182 00b5 00       		.byte	0
+ 1183 00b6 00       		.byte	0
+ 1184 00b7 0F       		.uleb128 0xf
+ 1185 00b8 34       		.uleb128 0x34
+ 1186 00b9 00       		.byte	0
+ 1187 00ba 03       		.uleb128 0x3
+ 1188 00bb 0E       		.uleb128 0xe
+ 1189 00bc 3A       		.uleb128 0x3a
+ 1190 00bd 0B       		.uleb128 0xb
+ 1191 00be 3B       		.uleb128 0x3b
+ 1192 00bf 0B       		.uleb128 0xb
+ 1193 00c0 49       		.uleb128 0x49
+ 1194 00c1 13       		.uleb128 0x13
+ 1195 00c2 02       		.uleb128 0x2
+ 1196 00c3 18       		.uleb128 0x18
+ 1197 00c4 00       		.byte	0
+ 1198 00c5 00       		.byte	0
+ 1199 00c6 10       		.uleb128 0x10
+ 1200 00c7 0B       		.uleb128 0xb
+ 1201 00c8 01       		.byte	0x1
+ 1202 00c9 11       		.uleb128 0x11
+ 1203 00ca 01       		.uleb128 0x1
+ 1204 00cb 12       		.uleb128 0x12
+ 1205 00cc 06       		.uleb128 0x6
+ 1206 00cd 00       		.byte	0
+ 1207 00ce 00       		.byte	0
+ 1208 00cf 11       		.uleb128 0x11
+ 1209 00d0 34       		.uleb128 0x34
+ 1210 00d1 00       		.byte	0
+ 1211 00d2 03       		.uleb128 0x3
+ 1212 00d3 08       		.uleb128 0x8
+ 1213 00d4 3A       		.uleb128 0x3a
+ 1214 00d5 0B       		.uleb128 0xb
+ 1215 00d6 3B       		.uleb128 0x3b
+ 1216 00d7 0B       		.uleb128 0xb
+ 1217 00d8 49       		.uleb128 0x49
+ 1218 00d9 13       		.uleb128 0x13
+ 1219 00da 02       		.uleb128 0x2
+ 1220 00db 18       		.uleb128 0x18
+ 1221 00dc 00       		.byte	0
+ 1222 00dd 00       		.byte	0
+ 1223 00de 12       		.uleb128 0x12
+ 1224 00df 34       		.uleb128 0x34
+ 1225 00e0 00       		.byte	0
+ 1226 00e1 03       		.uleb128 0x3
+ 1227 00e2 0E       		.uleb128 0xe
+ 1228 00e3 3A       		.uleb128 0x3a
+ 1229 00e4 0B       		.uleb128 0xb
+ 1230 00e5 3B       		.uleb128 0x3b
+ 1231 00e6 05       		.uleb128 0x5
+ 1232 00e7 49       		.uleb128 0x49
+ 1233 00e8 13       		.uleb128 0x13
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 24
+
+
+ 1234 00e9 3F       		.uleb128 0x3f
+ 1235 00ea 19       		.uleb128 0x19
+ 1236 00eb 3C       		.uleb128 0x3c
+ 1237 00ec 19       		.uleb128 0x19
+ 1238 00ed 00       		.byte	0
+ 1239 00ee 00       		.byte	0
+ 1240 00ef 13       		.uleb128 0x13
+ 1241 00f0 34       		.uleb128 0x34
+ 1242 00f1 00       		.byte	0
+ 1243 00f2 03       		.uleb128 0x3
+ 1244 00f3 0E       		.uleb128 0xe
+ 1245 00f4 3A       		.uleb128 0x3a
+ 1246 00f5 0B       		.uleb128 0xb
+ 1247 00f6 3B       		.uleb128 0x3b
+ 1248 00f7 0B       		.uleb128 0xb
+ 1249 00f8 49       		.uleb128 0x49
+ 1250 00f9 13       		.uleb128 0x13
+ 1251 00fa 3F       		.uleb128 0x3f
+ 1252 00fb 19       		.uleb128 0x19
+ 1253 00fc 02       		.uleb128 0x2
+ 1254 00fd 18       		.uleb128 0x18
+ 1255 00fe 00       		.byte	0
+ 1256 00ff 00       		.byte	0
+ 1257 0100 14       		.uleb128 0x14
+ 1258 0101 21       		.uleb128 0x21
+ 1259 0102 00       		.byte	0
+ 1260 0103 49       		.uleb128 0x49
+ 1261 0104 13       		.uleb128 0x13
+ 1262 0105 2F       		.uleb128 0x2f
+ 1263 0106 05       		.uleb128 0x5
+ 1264 0107 00       		.byte	0
+ 1265 0108 00       		.byte	0
+ 1266 0109 15       		.uleb128 0x15
+ 1267 010a 34       		.uleb128 0x34
+ 1268 010b 00       		.byte	0
+ 1269 010c 03       		.uleb128 0x3
+ 1270 010d 08       		.uleb128 0x8
+ 1271 010e 3A       		.uleb128 0x3a
+ 1272 010f 0B       		.uleb128 0xb
+ 1273 0110 3B       		.uleb128 0x3b
+ 1274 0111 0B       		.uleb128 0xb
+ 1275 0112 49       		.uleb128 0x49
+ 1276 0113 13       		.uleb128 0x13
+ 1277 0114 3F       		.uleb128 0x3f
+ 1278 0115 19       		.uleb128 0x19
+ 1279 0116 02       		.uleb128 0x2
+ 1280 0117 18       		.uleb128 0x18
+ 1281 0118 00       		.byte	0
+ 1282 0119 00       		.byte	0
+ 1283 011a 00       		.byte	0
+ 1284              		.section	.debug_aranges,"",%progbits
+ 1285 0000 24000000 		.4byte	0x24
+ 1286 0004 0200     		.2byte	0x2
+ 1287 0006 00000000 		.4byte	.Ldebug_info0
+ 1288 000a 04       		.byte	0x4
+ 1289 000b 00       		.byte	0
+ 1290 000c 0000     		.2byte	0
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 25
+
+
+ 1291 000e 0000     		.2byte	0
+ 1292 0010 00000000 		.4byte	.LFB64
+ 1293 0014 EC000000 		.4byte	.LFE64-.LFB64
+ 1294 0018 00000000 		.4byte	.LFB65
+ 1295 001c 98000000 		.4byte	.LFE65-.LFB65
+ 1296 0020 00000000 		.4byte	0
+ 1297 0024 00000000 		.4byte	0
+ 1298              		.section	.debug_ranges,"",%progbits
+ 1299              	.Ldebug_ranges0:
+ 1300 0000 00000000 		.4byte	.LFB64
+ 1301 0004 EC000000 		.4byte	.LFE64
+ 1302 0008 00000000 		.4byte	.LFB65
+ 1303 000c 98000000 		.4byte	.LFE65
+ 1304 0010 00000000 		.4byte	0
+ 1305 0014 00000000 		.4byte	0
+ 1306              		.section	.debug_line,"",%progbits
+ 1307              	.Ldebug_line0:
+ 1308 0000 F3010000 		.section	.debug_str,"MS",%progbits,1
+ 1308      0200A401 
+ 1308      00000201 
+ 1308      FB0E0D00 
+ 1308      01010101 
+ 1309              	.LASF25:
+ 1310 0000 76616C69 		.ascii	"valid\000"
+ 1310      6400
+ 1311              	.LASF28:
+ 1312 0006 6D6F6465 		.ascii	"model_id\000"
+ 1312      6C5F6964 
+ 1312      00
+ 1313              	.LASF27:
+ 1314 000f 73696D5F 		.ascii	"sim_id\000"
+ 1314      696400
+ 1315              	.LASF56:
+ 1316 0016 7379735F 		.ascii	"sys_settings_t\000"
+ 1316      73657474 
+ 1316      696E6773 
+ 1316      5F7400
+ 1317              	.LASF47:
+ 1318 0025 63757272 		.ascii	"currentCountDownValue\000"
+ 1318      656E7443 
+ 1318      6F756E74 
+ 1318      446F776E 
+ 1318      56616C75 
+ 1319              	.LASF60:
+ 1320 003b 6F666673 		.ascii	"offset\000"
+ 1320      657400
+ 1321              	.LASF46:
+ 1322 0042 636F756E 		.ascii	"countDownValue\000"
+ 1322      74446F77 
+ 1322      6E56616C 
+ 1322      756500
+ 1323              	.LASF2:
+ 1324 0051 73686F72 		.ascii	"short int\000"
+ 1324      7420696E 
+ 1324      7400
+ 1325              	.LASF19:
+ 1326 005b 73697A65 		.ascii	"sizetype\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 26
+
+
+ 1326      74797065 
+ 1326      00
+ 1327              	.LASF54:
+ 1328 0064 65705F68 		.ascii	"ep_host\000"
+ 1328      6F737400 
+ 1329              	.LASF83:
+ 1330 006c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1330      43313120 
+ 1330      352E342E 
+ 1330      31203230 
+ 1330      31363036 
+ 1331 009f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1331      20726576 
+ 1331      6973696F 
+ 1331      6E203233 
+ 1331      37373135 
+ 1332 00d2 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1332      66756E63 
+ 1332      74696F6E 
+ 1332      2D736563 
+ 1332      74696F6E 
+ 1333              	.LASF71:
+ 1334 00fa 64617461 		.ascii	"data\000"
+ 1334      00
+ 1335              	.LASF58:
+ 1336 00ff 6368616E 		.ascii	"channels\000"
+ 1336      6E656C73 
+ 1336      00
+ 1337              	.LASF33:
+ 1338 0108 65636E6F 		.ascii	"ecno\000"
+ 1338      00
+ 1339              	.LASF84:
+ 1340 010d 70726573 		.ascii	"pressure_transducer.c\000"
+ 1340      73757265 
+ 1340      5F747261 
+ 1340      6E736475 
+ 1340      6365722E 
+ 1341              	.LASF82:
+ 1342 0123 7472795F 		.ascii	"try_counter\000"
+ 1342      636F756E 
+ 1342      74657200 
+ 1343              	.LASF12:
+ 1344 012f 75696E74 		.ascii	"uint16\000"
+ 1344      313600
+ 1345              	.LASF69:
+ 1346 0136 64617461 		.ascii	"dataPointsInStack\000"
+ 1346      506F696E 
+ 1346      7473496E 
+ 1346      53746163 
+ 1346      6B00
+ 1347              	.LASF11:
+ 1348 0148 75696E74 		.ascii	"uint8\000"
+ 1348      3800
+ 1349              	.LASF57:
+ 1350 014e 70726573 		.ascii	"pressure\000"
+ 1350      73757265 
+ 1350      00
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 27
+
+
+ 1351              	.LASF32:
+ 1352 0157 72736370 		.ascii	"rscp\000"
+ 1352      00
+ 1353              	.LASF13:
+ 1354 015c 696E7431 		.ascii	"int16\000"
+ 1354      3600
+ 1355              	.LASF44:
+ 1356 0162 74696D65 		.ascii	"timeStamp\000"
+ 1356      5374616D 
+ 1356      7000
+ 1357              	.LASF70:
+ 1358 016c 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 1358      506F696E 
+ 1358      7473496E 
+ 1358      53746163 
+ 1358      6B446573 
+ 1359              	.LASF15:
+ 1360 0185 666C6F61 		.ascii	"float\000"
+ 1360      7400
+ 1361              	.LASF6:
+ 1362 018b 6C6F6E67 		.ascii	"long long int\000"
+ 1362      206C6F6E 
+ 1362      6720696E 
+ 1362      7400
+ 1363              	.LASF17:
+ 1364 0199 63686172 		.ascii	"char\000"
+ 1364      00
+ 1365              	.LASF22:
+ 1366 019e 72656173 		.ascii	"reason\000"
+ 1366      6F6E00
+ 1367              	.LASF4:
+ 1368 01a5 6C6F6E67 		.ascii	"long int\000"
+ 1368      20696E74 
+ 1368      00
+ 1369              	.LASF51:
+ 1370 01ae 6D6F6465 		.ascii	"modem_info\000"
+ 1370      6D5F696E 
+ 1370      666F00
+ 1371              	.LASF77:
+ 1372 01b9 616C6172 		.ascii	"alarmMeasure\000"
+ 1372      6D4D6561 
+ 1372      73757265 
+ 1372      00
+ 1373              	.LASF31:
+ 1374 01c6 72737369 		.ascii	"rssi\000"
+ 1374      00
+ 1375              	.LASF73:
+ 1376 01cb 68747470 		.ascii	"http_body\000"
+ 1376      5F626F64 
+ 1376      7900
+ 1377              	.LASF39:
+ 1378 01d5 6D656173 		.ascii	"measure_time\000"
+ 1378      7572655F 
+ 1378      74696D65 
+ 1378      00
+ 1379              	.LASF79:
+ 1380 01e2 616C6172 		.ascii	"alarmSync\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 28
+
+
+ 1380      6D53796E 
+ 1380      6300
+ 1381              	.LASF18:
+ 1382 01ec 6C6F6E67 		.ascii	"long double\000"
+ 1382      20646F75 
+ 1382      626C6500 
+ 1383              	.LASF1:
+ 1384 01f8 756E7369 		.ascii	"unsigned char\000"
+ 1384      676E6564 
+ 1384      20636861 
+ 1384      7200
+ 1385              	.LASF35:
+ 1386 0206 72737270 		.ascii	"rsrp\000"
+ 1386      00
+ 1387              	.LASF24:
+ 1388 020b 70726573 		.ascii	"pressure_voltage\000"
+ 1388      73757265 
+ 1388      5F766F6C 
+ 1388      74616765 
+ 1388      00
+ 1389              	.LASF66:
+ 1390 021c 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 1390      6D5F7374 
+ 1390      6172745F 
+ 1390      74696D65 
+ 1390      5F737461 
+ 1391              	.LASF65:
+ 1392 0233 6D6F6465 		.ascii	"modem_state\000"
+ 1392      6D5F7374 
+ 1392      61746500 
+ 1393              	.LASF0:
+ 1394 023f 7369676E 		.ascii	"signed char\000"
+ 1394      65642063 
+ 1394      68617200 
+ 1395              	.LASF7:
+ 1396 024b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1396      206C6F6E 
+ 1396      6720756E 
+ 1396      7369676E 
+ 1396      65642069 
+ 1397              	.LASF76:
+ 1398 0262 73797374 		.ascii	"system_settings\000"
+ 1398      656D5F73 
+ 1398      65747469 
+ 1398      6E677300 
+ 1399              	.LASF52:
+ 1400 0272 63686970 		.ascii	"chip_uniqueId\000"
+ 1400      5F756E69 
+ 1400      71756549 
+ 1400      6400
+ 1401              	.LASF8:
+ 1402 0280 756E7369 		.ascii	"unsigned int\000"
+ 1402      676E6564 
+ 1402      20696E74 
+ 1402      00
+ 1403              	.LASF45:
+ 1404 028d 6B65795F 		.ascii	"key_value_t\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 29
+
+
+ 1404      76616C75 
+ 1404      655F7400 
+ 1405              	.LASF40:
+ 1406 0299 73796E63 		.ascii	"sync_time\000"
+ 1406      5F74696D 
+ 1406      6500
+ 1407              	.LASF85:
+ 1408 02a3 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
+ 1408      73657273 
+ 1408      5C686169 
+ 1408      6C5C4465 
+ 1408      736B746F 
+ 1409 02d1 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS.cydsn\000"
+ 1409      6F72694F 
+ 1409      535C6E6F 
+ 1409      746F7269 
+ 1409      4F532E63 
+ 1410              	.LASF67:
+ 1411 02ea 6D6F6465 		.ascii	"modem_stats\000"
+ 1411      6D5F7374 
+ 1411      61747300 
+ 1412              	.LASF78:
+ 1413 02f6 74696D65 		.ascii	"timeToMeasure\000"
+ 1413      546F4D65 
+ 1413      61737572 
+ 1413      6500
+ 1414              	.LASF42:
+ 1415 0304 75706461 		.ascii	"updatable_parameters_t\000"
+ 1415      7461626C 
+ 1415      655F7061 
+ 1415      72616D65 
+ 1415      74657273 
+ 1416              	.LASF53:
+ 1417 031b 7379735F 		.ascii	"sys_info_t\000"
+ 1417      696E666F 
+ 1417      5F7400
+ 1418              	.LASF3:
+ 1419 0326 73686F72 		.ascii	"short unsigned int\000"
+ 1419      7420756E 
+ 1419      7369676E 
+ 1419      65642069 
+ 1419      6E7400
+ 1420              	.LASF36:
+ 1421 0339 74696D65 		.ascii	"time_to_network_connect\000"
+ 1421      5F746F5F 
+ 1421      6E657477 
+ 1421      6F726B5F 
+ 1421      636F6E6E 
+ 1422              	.LASF21:
+ 1423 0351 73746174 		.ascii	"status\000"
+ 1423      757300
+ 1424              	.LASF75:
+ 1425 0358 73797374 		.ascii	"system_info\000"
+ 1425      656D5F69 
+ 1425      6E666F00 
+ 1426              	.LASF37:
+ 1427 0364 74696D65 		.ascii	"time_to_acquire_ip\000"
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 30
+
+
+ 1427      5F746F5F 
+ 1427      61637175 
+ 1427      6972655F 
+ 1427      697000
+ 1428              	.LASF23:
+ 1429 0377 74657374 		.ascii	"test_t\000"
+ 1429      5F7400
+ 1430              	.LASF29:
+ 1431 037e 696D6569 		.ascii	"imei\000"
+ 1431      00
+ 1432              	.LASF10:
+ 1433 0383 696E7433 		.ascii	"int32_t\000"
+ 1433      325F7400 
+ 1434              	.LASF38:
+ 1435 038b 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1435      6D5F7374 
+ 1435      6174735F 
+ 1435      7400
+ 1436              	.LASF50:
+ 1437 0399 616C6172 		.ascii	"alarm\000"
+ 1437      6D00
+ 1438              	.LASF81:
+ 1439 039f 74696D65 		.ascii	"timeToSycnRemoteParams\000"
+ 1439      546F5379 
+ 1439      636E5265 
+ 1439      6D6F7465 
+ 1439      50617261 
+ 1440              	.LASF63:
+ 1441 03b6 74657374 		.ascii	"test\000"
+ 1441      00
+ 1442              	.LASF34:
+ 1443 03bb 72737271 		.ascii	"rsrq\000"
+ 1443      00
+ 1444              	.LASF74:
+ 1445 03c0 68747470 		.ascii	"http_route\000"
+ 1445      5F726F75 
+ 1445      746500
+ 1446              	.LASF5:
+ 1447 03cb 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1447      20756E73 
+ 1447      69676E65 
+ 1447      6420696E 
+ 1447      7400
+ 1448              	.LASF14:
+ 1449 03dd 696E7433 		.ascii	"int32\000"
+ 1449      3200
+ 1450              	.LASF16:
+ 1451 03e3 646F7562 		.ascii	"double\000"
+ 1451      6C6500
+ 1452              	.LASF62:
+ 1453 03ea 70726573 		.ascii	"pressure_test\000"
+ 1453      73757265 
+ 1453      5F746573 
+ 1453      7400
+ 1454              	.LASF64:
+ 1455 03f8 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1455      52784275 
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 31
+
+
+ 1455      66666572 
+ 1455      00
+ 1456              	.LASF41:
+ 1457 0405 64656275 		.ascii	"debug_level\000"
+ 1457      675F6C65 
+ 1457      76656C00 
+ 1458              	.LASF30:
+ 1459 0411 6D6F6465 		.ascii	"modem_info_t\000"
+ 1459      6D5F696E 
+ 1459      666F5F74 
+ 1459      00
+ 1460              	.LASF48:
+ 1461 041e 636F756E 		.ascii	"countDownType\000"
+ 1461      74446F77 
+ 1461      6E547970 
+ 1461      6500
+ 1462              	.LASF9:
+ 1463 042c 5F5F696E 		.ascii	"__int32_t\000"
+ 1463      7433325F 
+ 1463      7400
+ 1464              	.LASF49:
+ 1465 0436 636F756E 		.ascii	"countDownResetCondition\000"
+ 1465      74446F77 
+ 1465      6E526573 
+ 1465      6574436F 
+ 1465      6E646974 
+ 1466              	.LASF20:
+ 1467 044e 74657374 		.ascii	"test_name\000"
+ 1467      5F6E616D 
+ 1467      6500
+ 1468              	.LASF68:
+ 1469 0458 75706461 		.ascii	"updatable_parameters\000"
+ 1469      7461626C 
+ 1469      655F7061 
+ 1469      72616D65 
+ 1469      74657273 
+ 1470              	.LASF55:
+ 1471 046d 65705F70 		.ascii	"ep_port\000"
+ 1471      6F727400 
+ 1472              	.LASF61:
+ 1473 0475 70726573 		.ascii	"pressure_take_readings\000"
+ 1473      73757265 
+ 1473      5F74616B 
+ 1473      655F7265 
+ 1473      6164696E 
+ 1474              	.LASF43:
+ 1475 048c 76616C75 		.ascii	"value\000"
+ 1475      6500
+ 1476              	.LASF26:
+ 1477 0492 70726573 		.ascii	"pressure_t\000"
+ 1477      73757265 
+ 1477      5F7400
+ 1478              	.LASF72:
+ 1479 049d 68747470 		.ascii	"http_request\000"
+ 1479      5F726571 
+ 1479      75657374 
+ 1479      00
+ARM GAS  C:\Users\hail\AppData\Local\Temp\ccmfpKlG.s 			page 32
+
+
+ 1480              	.LASF80:
+ 1481 04aa 74696D65 		.ascii	"timeToSync\000"
+ 1481      546F5379 
+ 1481      6E6300
+ 1482              	.LASF59:
+ 1483 04b5 72656164 		.ascii	"readings\000"
+ 1483      696E6773 
+ 1483      00
+ 1484              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

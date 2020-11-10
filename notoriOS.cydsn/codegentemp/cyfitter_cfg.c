@@ -332,6 +332,7 @@ static void AnalogSetDefault(void)
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_CMP0_CR, 0x02u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_PM_ACT_CFG7, 0x01u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_CMP0_SW3, 0x20u);
+	CY_SET_XTND_REG8((void CYFAR *)CYREG_BUS_SW0, 0x40u);
 	CY_SET_XTND_REG8((void CYFAR *)CYREG_PUMP_CR0, 0x66u);
 }
 
@@ -369,21 +370,41 @@ void SetAnalogRoutingPumps(uint8 enabled)
 
 
 #define CY_AMUX_UNUSED CYREG_BOOST_SR
-/* This is an implementation detail of the AMux. Code that depends on it may be
-   incompatible with other versions of PSoC Creator. */
-uint8 CYXDATA * const CYCODE AMux__addrTable[6] = {
-	(uint8 CYXDATA *)CYREG_CMP0_SW4, (uint8 CYXDATA *)CYREG_DSM0_SW0, 
-	(uint8 CYXDATA *)CYREG_PRT0_AG, (uint8 CYXDATA *)CYREG_DSM0_SW0, 
-	(uint8 CYXDATA *)CYREG_PRT0_AG, (uint8 CYXDATA *)CYREG_DSM0_SW0, 
+static uint8 CYXDATA * const CYCODE AMux__outerAddr[4] = {
+	(uint8 CYXDATA *)CYREG_CMP0_SW4, 
+	(uint8 CYXDATA *)CYREG_PRT0_AG, 
+	(uint8 CYXDATA *)CYREG_PRT0_AG, 
+	(uint8 CYXDATA *)CYREG_PRT3_AG, 
 };
 
-/* This is an implementation detail of the AMux. Code that depends on it may be
-   incompatible with other versions of PSoC Creator. */
-const uint8 CYCODE AMux__maskTable[6] = {
-	0x40u, 0x40u, 
-	0x01u, 0x10u, 
-	0x20u, 0x20u, 
+static const uint8 CYCODE AMux__outerMask[4] = {
+	0x40u, 
+	0x01u, 
+	0x20u, 
+	0x04u, 
 };
+
+static uint8 CYXDATA * const CYCODE AMux__innerAddr[3] = {
+	(uint8 CYXDATA *)CYREG_DSM0_SW0, 
+	(uint8 CYXDATA *)CYREG_DSM0_SW0, 
+	(uint8 CYXDATA *)CYREG_DSM0_SW0, 
+};
+
+static const uint8 CYCODE AMux__innerMask[3] = {
+	0x40u, 
+	0x10u, 
+	0x20u, 
+};
+
+static const uint8 CYCODE AMux__innerMap[4] = {
+	0u, 
+	1u, 
+	2u, 
+	0u, 
+};
+
+static uint8 AMux__armsEnabled = 0u;
+static uint8 AMux__refCnt[] = {0u, 0u, 0u};
 
 /*******************************************************************************
 * Function Name: AMux_Set
@@ -400,12 +421,18 @@ const uint8 CYCODE AMux__maskTable[6] = {
 *******************************************************************************/
 void AMux_Set(uint8 channel)
 {
-	if (channel < 3)
+	uint8 i;
+	uint8 channelMask = (1UL << channel);
+	if ((channel < 4u) && ((AMux__armsEnabled & channelMask) == ((uint32)0u)))
 	{
-		channel += channel;
-		*AMux__addrTable[channel] |= AMux__maskTable[channel];
-		channel++;
-		*AMux__addrTable[channel] |= AMux__maskTable[channel];
+		AMux__armsEnabled |= channelMask;
+		*AMux__outerAddr[channel] |= AMux__outerMask[channel];
+		i = AMux__innerMap[channel];
+		if (AMux__refCnt[i] == 0u)
+		{
+			*AMux__innerAddr[i] |= AMux__innerMask[i];
+		}
+		AMux__refCnt[i]++;
 	}
 }
 
@@ -425,12 +452,18 @@ void AMux_Set(uint8 channel)
 *******************************************************************************/
 void AMux_Unset(uint8 channel)
 {
-	if (channel < 3)
+	uint8 i;
+	uint8 channelMask = (1UL << channel);
+	if ((channel < 4u) && ((AMux__armsEnabled & channelMask) != ((uint32)0u)))
 	{
-		channel += channel;
-		*AMux__addrTable[channel] &= (uint8)~AMux__maskTable[channel];
-		channel++;
-		*AMux__addrTable[channel] &= (uint8)~AMux__maskTable[channel];
+		AMux__armsEnabled &= (uint8)~channelMask;
+		*AMux__outerAddr[channel] &= (uint8)~AMux__outerMask[channel];
+		i = AMux__innerMap[channel];
+		AMux__refCnt[i]--;
+		if (AMux__refCnt[i] == 0)
+		{
+			*AMux__innerAddr[i] &= (uint8)~AMux__innerMask[i];
+		}
 	}
 }
 

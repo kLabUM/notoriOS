@@ -84,7 +84,7 @@ void printNotif(uint8 type, char* format, ...){
     #if USE_DEBUG
    
         // if it is an error, warning, or startup notification and debug_level >= 0, then print them
-        if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING  || type == NOTIF_TYPE_STARTUP) && updatable_parameters.debug_level >= 0){
+        if ((type == NOTIF_TYPE_ERROR || type == NOTIF_TYPE_WARNING  || type == NOTIF_TYPE_STARTUP) && updatable_parameters.debug_level == 0){
             printd("{ ");
             printd("\"time\":\"%ld\" " , getTimeStamp());
             
