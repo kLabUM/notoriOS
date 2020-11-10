@@ -531,7 +531,7 @@ uint8 makeMeasurements(){
         pushData("maxbotix_depth",value,timeStamp);
         // Print measurement to SD card to file called data.txt
         SD_write(Data_fileName, "a+", c_timeStamp);
-        SD_write(Data_fileName, "a+", " ");
+        SD_write(Data_fileName, "a+", " maxbotix_depth: ");
         SD_write(Data_fileName, "a+", value);
         SD_write(Data_fileName, "a+", " ");
     }else{
