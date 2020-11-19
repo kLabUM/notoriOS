@@ -112,7 +112,6 @@ uint8 timeToMeasure;
 alarm alarmSync;
 uint8 timeToSync;
 uint8 timeToSycnRemoteParams;
-uint8 try_counter;
 uint8 hey;
 
 /* [] END OF FILE */

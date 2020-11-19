@@ -14,13 +14,11 @@ voltage_t voltage_take_readings(){
     
 	CyDelay(10u);	    // 10 seconds delay to give time to flip on ADC pin.
     
-    ADC_RestoreConfig();// Have to call this and save (See below). Otherwise ADC won't work through sleep mode
-	
-	ADC_Start();        // Start the ADC
-    
-    ADC_StartConvert(); // Forces the ADC to initiate a conversion. If in the "Single Sample" mode, one conversion will be performed then the ADC will halt.
     AMux_Start();       // Start the Analog Multiplexer
  
+    ADC_RestoreConfig();// Have to call this and save (See below). Otherwise ADC won't work through sleep mode
+    
+    ADC_Start();        // Start the ADC
     
     float channels[AMux_CHANNELS];
     
@@ -30,23 +28,26 @@ voltage_t voltage_take_readings(){
         int32 readings[N_SAMPLES];  // Creates new int32 array called readings of size N_SAMPLES = 11
         
         AMux_Select(c); // This functions first disconnects all channels then connects the given channel.
+        
         for(uint16 i=0; i< N_SAMPLES; i++){
             
             readings[i] = ADC_Read32(); // When called, it will start ADC conversions, wait for the conversion to be complete, stop ADC conversion and return the result.
         }
+        
         // Converts the ADC output to Volts as a floating point number. 
         // Get the median of readings and return that.
         channels[c] = ADC_CountsTo_Volts(find_median32(readings,N_SAMPLES));    // Get median of readings and return that
-        
     }
     
     AMux_Stop();        // Disconnects all Analog Multiplex channels.
-    ADC_StopConvert();  // Forces the ADC to stop all conversions.
+    
     ADC_SaveConfig();   // Save the register configuration which are not retention.
+    
     ADC_Stop();         // Stops and powers down the ADC component and the internal clock if the external clock is not selected.
     
     Battery_Voltage_Enable_Write(OFF);  // Pulls Battery ADC pin low (turns it off).
     Pressure_Voltage_Enable_Write(OFF);  // Pulls Pressure Transducer ADC pin low (turns it off).
+    
     float offset = channels[0] - 1.024; // Should be 1.024 exactly. BK saw an offset when measuring voltages, did this as a hack to fix the issue for now.
     voltage.voltage_battery = (channels[ADC_MUX_VBAT] * 11) - offset; // Voltage divider is (1/10) ratio, so multiply by 11
     voltage.voltage_solar = channels[ADC_MUX_VSOL] - offset; // Just want voltage here

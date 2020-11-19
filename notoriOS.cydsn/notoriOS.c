@@ -27,6 +27,7 @@ uint8 syncData();               // Syncs data with server
 uint8 configureRemoteParams();  // Syncs RTC with cell network and obtains meta-DB params
 uint8 makeMeasurements();       // Takes sensor measurements
 char  Data_fileName[30] = "data.txt";
+uint8 try_counter;
 
 
 // ==============================================
@@ -88,6 +89,9 @@ void ReadyOrNot()
     char c_hey[10];
     snprintf(c_hey,sizeof(c_hey),"%d",hey);
     pushData("reboot",c_hey,getTimeStamp());
+    
+    // Initialize the try counter to 0
+    uint8 try_counter = 0;
 }
 
 
@@ -335,16 +339,15 @@ uint8 syncData(){
      
     if(modem_get_state() == MODEM_STATE_OFF){
         // Try up to 3 times to connect to the modem
-        for(int8 try_counter = 0; try_counter<3; try_counter++){
-            // This puts all the modem points into a state that won't leak power
-            modem_power_up();
-            // If modem successfully powers up, break out of the loop
-            if(modem_power_up() == 1u){
-                break;
-            }else if (modem_power_up() == 0u && try_counter >= 2){
+        if(modem_get_state() == MODEM_STATE_OFF){
+
+        	try_counter++;
+        	
+            if(try_counter <= 3){
+                modem_power_up();
+            }else{
                 try_counter = 0;
-                modem_power_down();
-                return 0u;
+                return 0;
             }
         }
             

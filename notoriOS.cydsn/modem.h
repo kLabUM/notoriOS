@@ -50,12 +50,12 @@ typedef struct {
 } modem_info_t;
 
 typedef struct { 
-    uint8 rssi;     // received signal strength indication
-    uint8 ber;      // bit error rate (in percent)
-    uint8 rscp;     // received signal code power
-    uint8 ecno;     // ratio of the received energy per PN chip to the total received power spectral density
-    uint8 rsrq;     // referenced signal received quality
-    uint8 rsrp;     // reference signal received power
+    int rxlev;    // received signal strength indication
+    int ber;      // bit error rate (in percent)
+    int rscp;     // received signal code power
+    int ecno;     // ratio of the received energy per PN chip to the total received power spectral density
+    int rsrq;     // referenced signal received quality
+    int rsrp;     // reference signal received power
     int   time_to_network_connect; 
     int   time_to_acquire_ip;
 } modem_stats_t;

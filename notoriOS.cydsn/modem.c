@@ -38,7 +38,7 @@ void modem_initialize(){
     modem_info.imei[0] = '\0';
     modem_info.model_id[0] = '\0';
     modem_info.sim_id[0] = '\0';
-    modem_stats.rssi = 0;
+    modem_stats.rxlev = 0;
     modem_stats.ber = 0;
     modem_stats.rscp = 0;
     modem_stats.ecno = 0;
@@ -422,55 +422,36 @@ uint8 is_connected_to_internet(){
     return 0u;  
 }
 
-// Get cellular network stats 
 void get_cell_network_stats(){
-    // Gets RSSI and FER values
-    // RSSI (Received Signal Strength Indicator) is a measurement of how well your device can hear a signal from an access point or router. It’s a value that is useful for determining if you have enough signal to get a good wireless connection.
-    // RSRQ (Reference Signal Received Quality) (or SQ for short) gives the signal quality. 
-    for(uint8 attempts =0; attempts <10; attempts++){
-        // AT command CESQ checks Signal Quality
-        at_write_command("AT+CESQ\r", "OK",DEFAULT_AT_TIMEOUT);
-        
-        char cesq[30]; // Create a character array of length 30 called cesq 
-        cesq[0] = '\0';
-        // Extract string from the UART
-        extract_string(uart_received_string,": ","\r",cesq);
-        printNotif(NOTIF_TYPE_EVENT,"Network STts: %s",cesq);
-        
-        char *token; // Create a character variable pointer
-        // strtok(): breaks "cesq" into smaller string when sees ","
-        token = strtok(cesq,",");
-        // If token is not NULL then set modem_stats.rssi equal to the integer "token"
-        // int atoi(const char *str) converts the string argument str to an integer (type int).
-        if(token != NULL){
-            modem_stats.rssi = atoi(token);
-        }
-        token = strtok(NULL,",");
-        if(token != NULL){
-            modem_stats.ber = atoi(token);
-        }
-        token = strtok(NULL,",");
-        if(token != NULL){
-            modem_stats.rscp = atoi(token);
-        }
-        token = strtok(NULL,",");
-        if(token != NULL){
-            modem_stats.ecno = atoi(token);
-        }
-        token = strtok(NULL,",");
-        if(token != NULL){
-            modem_stats.rsrq = atoi(token);
-        }
-        token = strtok(NULL,",");
-        if(token != NULL){
-            modem_stats.rsrp = atoi(token);
-        }
-        // If rsrp is not equal to 255 then break.
-        if(modem_stats.rsrp != 255){
+    // Initialize values
+    modem_stats.ber = 255;
+    modem_stats.ecno = 255;
+    modem_stats.rscp = 255;
+    modem_stats.rsrp = 255;
+    modem_stats.rsrq = 255;
+    modem_stats.rxlev = 255;
+
+    for(uint8 attempts =0; attempts <100; attempts++){
+        // Delay one second
+        CyDelay(1000u);
+        at_write_command("AT+CESQ\r", "OK",5000u);
+        //CESQ: <rxlev>,<ber>,<rscp>,<ecno>,<rsrq>,<rsrp>
+
+        int match = sscanf(uart_received_string,"\r\n+CESQ: %d,%d,%d,%d,%d,%d%*s",
+            &modem_stats.rxlev,
+            &modem_stats.ber,
+            &modem_stats.rscp,
+            &modem_stats.ecno,
+            &modem_stats.rsrq,
+            &modem_stats.rsrp);
+
+        //check to see if we’re getting a good received signal strength
+        if(modem_stats.rsrp != 255 && modem_stats.rsrp > 26){// || modem_stats.rxlev !=0){
             break;
         }
     }
 }
+
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
     updatable_parameters.measure_time = 10u;
