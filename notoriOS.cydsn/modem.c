@@ -1,10 +1,6 @@
 //Methods for Telit modem 
 #include "modem.h"
 #include "notoriOS.h"
-#include "debug.h"
-#include "data.h"
-#include <math.h>
-#include <stdio.h>
 
 char uart_received_string[1024];
 int16 uart_string_index=0;
@@ -12,7 +8,7 @@ int16 uart_string_index=0;
 #define DEFAULT_AT_TIMEOUT 2000u // Send command and wait 2000 ms
 #define NO_AT_TIMEOUT 0u // Send command, no timeout/ don't wait 
 
-#define TIMEOUT_NETWORK_CONNECT 200 //seconds
+#define TIMEOUT_NETWORK_CONNECT 180 //seconds
 #define TIMEOUT_IP_ACQUIRE 230 //seconds (cummulatinve) add to TIMEOUT_NETWORK_CONNECT
 
 CY_ISR_PROTO(isr_telit_rx); // Declares a custom ISR function "isr_telit_rx" using the CY_ISR_PROTO macro instead of modifying the auto-generated code
@@ -96,7 +92,7 @@ void modem_power_down(){
     
 }
 
-// This puts all the modem pints into a state that won't leak power
+// This puts all the modem pins into a state that won't leak power
 // Please call restore_pins() to bring them abck to function when they are needed for UART
 uint8 modem_power_up(){
 
@@ -227,7 +223,7 @@ test_t modem_test(){
     snprintf(test.test_name,sizeof(test.test_name),"TEST_MODEM");
     snprintf(test.reason,sizeof(test.reason),"No reponse from modem.");
    
-    //try the modem 60*100 (60 secs)
+    //try the modem 60*1000ms (60 secs)
     for(int i = 0; i< 60; i++){
         // Function to startup the modem, connect to the network, and then hand it off to sleep.
         modem_process_tasks();
@@ -253,7 +249,7 @@ test_t modem_test(){
         break;
         
       }
-        CyDelay(100u);
+        CyDelay(1000u);
         
     }
     
@@ -304,8 +300,9 @@ uint8 modem_process_tasks(){
     }
     // Else if modem state is "waiting for network" 
     else if(modem_state == MODEM_STATE_WAITING_FOR_NETWORK){
-        // Check if modem has a good cell signal each second for up to a minute
-       for(uint8 i=0;i<60;i++){
+        
+        // Check if modem has a good cell signal each second for up to 30 seconds
+        for(uint8 i=0;i<30;i++){
             // Get cell network stats
             get_cell_network_stats();
             // If cell signal (rsrp) is strong enough, break and connect to the network
@@ -323,19 +320,17 @@ uint8 modem_process_tasks(){
              modem_stats.time_to_network_connect = (int)(getTimeStamp() - (int32)modem_start_time_stamp);
              printNotif(NOTIF_TYPE_EVENT,"Time to connect to network: %d seconds",
                                             modem_stats.time_to_network_connect);
-            get_cell_network_stats(); // Get cell network stats
             set_up_internet_connection(); // Setup the internet connection
             modem_state = MODEM_STATE_WAITING_FOR_IP; // Change modem state 
         }
-
-        //power off if we times out shold only take ~30 secs to connect to network
+        
+        //power off if we time out should only take ~30 secs to connect to network
         if((int)(getTimeStamp()-(int32)modem_start_time_stamp) > TIMEOUT_NETWORK_CONNECT){
             modem_state = MODEM_STATE_OFF; // Change modem state
             modem_power_down(); // Power down the modem -- completely "kill" modem to conserve power
             printNotif(NOTIF_TYPE_ERROR,"Modem timed out on network connect");
             
         }
-        
         return 0u;//ok to hand off to sleep
         
     // Else if modem state is "waiting for IP"
@@ -349,7 +344,7 @@ uint8 modem_process_tasks(){
                                             modem_stats.time_to_acquire_ip);
         }
         
-        // Power off if we times out shold only take ~30 secs to connect to network
+        // Power off if we times out should only take ~30 secs to connect to network
         if((int)(getTimeStamp()-(int32)modem_start_time_stamp) > TIMEOUT_IP_ACQUIRE){
             modem_state = MODEM_STATE_OFF;
             modem_power_down(); // Power down the modem -- completely "kill" modem to conserve power
@@ -385,7 +380,6 @@ uint8 is_connected_to_cell_network(){
     
         // Search creg for "0,1" or "0,5", if either exists and either is not equal to NULL, return 1
         if((strstr(creg,"0,1")!=NULL)||(strstr(creg,"0,5")!=NULL)){
-            //time_network_connect = getTimeStamp();
             return 1u;
         }
     }
@@ -431,29 +425,31 @@ void get_cell_network_stats(){
     modem_stats.rsrq = 255;
     modem_stats.rxlev = 255;
 
-    for(uint8 attempts =0; attempts <100; attempts++){
-        // Delay one second
-        CyDelay(1000u);
-        at_write_command("AT+CESQ\r", "OK",5000u);
-        //CESQ: <rxlev>,<ber>,<rscp>,<ecno>,<rsrq>,<rsrp>
+    //for(uint8 attempts =0; attempts <10; attempts++){
+    at_write_command("AT+CESQ\r", "OK", DEFAULT_AT_TIMEOUT);
+    //CESQ: <rxlev>,<ber>,<rscp>,<ecno>,<rsrq>,<rsrp>
 
-        int match = sscanf(uart_received_string,"\r\n+CESQ: %d,%d,%d,%d,%d,%d%*s",
-            &modem_stats.rxlev,
-            &modem_stats.ber,
-            &modem_stats.rscp,
-            &modem_stats.ecno,
-            &modem_stats.rsrq,
-            &modem_stats.rsrp);
+    int match = sscanf(uart_received_string,"\r\n+CESQ: %d,%d,%d,%d,%d,%d%*s",
+        &modem_stats.rxlev,
+        &modem_stats.ber,
+        &modem_stats.rscp,
+        &modem_stats.ecno,
+        &modem_stats.rsrq,
+        &modem_stats.rsrp);
 
         //check to see if we’re getting a good received signal strength
-        if(modem_stats.rsrp != 255 && modem_stats.rsrp > 26){// || modem_stats.rxlev !=0){
-            break;
-        }
-    }
+        //if(modem_stats.rsrp != 255 && modem_stats.rsrp > 26){// || modem_stats.rxlev !=0){
+        //    break;
+        //}
+        // Delay one second
+        //CyDelay(1000u);
+    //}
 }
 
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
+    updatable_parameters.node_type = NODE_TYPE_DEPTH;
+    updatable_parameters.sim_type = SIM_TYPE_STANDARD;
     updatable_parameters.measure_time = 10u;
     updatable_parameters.sync_time = 60u;
     updatable_parameters.debug_level = 1u;
@@ -463,24 +459,41 @@ void updatable_parameters_initialize(){
 void get_updated_parameters_from_malcom(){
     
     // Create character array of size 1024 characters to hold the uart received string
+    char s_node_type[10];
+    char s_sim_type[10];
     char s_sample_freq[10];
     char s_report_freq[10];
     char s_debug_freq[10];
     
+    s_node_type[0] = '\0';
+    s_sim_type[0] = '\0';
     s_sample_freq[0] = '\0';
     s_report_freq[0] = '\0';
     s_debug_freq[0] = '\0';
     
     // Extract UART string recieved from the modem and save to variables
+    extract_string(uart_received_string,"Node_Type: ","\r",s_node_type);
+    extract_string(uart_received_string,"SIM_Type: ","\r",s_sim_type);
     extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
     
     // Create variables for what is sent back from the server
-    int sample_freq, report_freq, debug_freq;
-    
+    int node_type, sim_type, sample_freq, report_freq, debug_freq;
     
     // Scan character arrays and save values 
+    if(sscanf(s_node_type, "%d", &node_type)==1){
+        updatable_parameters.node_type = node_type;
+        printNotif(NOTIF_TYPE_EVENT, "Node type changed to: %d\r\n", node_type);
+    }else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not change node type.");
+    }
+    if(sscanf(s_sim_type, "%d", &sim_type)==1){
+        updatable_parameters.sim_type = sim_type;
+        printNotif(NOTIF_TYPE_EVENT, "SIM type changed to: %d\r\n", sim_type);
+    }else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not change SIM type.");
+    }
     if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
         updatable_parameters.measure_time = sample_freq;
         // Create a continuous alarm called alarmMeasure that triggers at the required time to take measurements
@@ -542,7 +555,12 @@ void modem_configure_settings(){
     
     // Configure protocol and cellular end point
     // AT command +CGDCONT defines the PDP context parameter values for a PDP context identified by the (local) context identification parameter <cid>. 
-    at_write_command("AT+CGDCONT=1,\"IP\",\"wireless.twilio.com\"\r\n", "OK", DEFAULT_AT_TIMEOUT);
+    if(updatable_parameters.sim_type == SIM_TYPE_STANDARD){
+        at_write_command("AT+CGDCONT=1,\"IP\",\"wireless.twilio.com\"\r\n", "OK", DEFAULT_AT_TIMEOUT);
+    
+    }else if(updatable_parameters.sim_type == SIM_TYPE_SUPER){
+        at_write_command("AT+CGDCONT=1,\"IP\",\"super\"\r\n", "OK", DEFAULT_AT_TIMEOUT);
+    }
     
     // Check if modem power savings is enabled. If so, disable it so we can send data.
     // AT command +CFUN? is a read command that reports the current setting of <fun> which is the power saving function mode

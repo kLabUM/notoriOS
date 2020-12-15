@@ -329,27 +329,26 @@ uint8 syncData(){
 
     
     // If there's no data, not need to do anything
-    if(sizeOfDataStack() == 0){
+    if(sizeOfDataStack() == 0){        
         return 0u;
-    }
+        }
     
     // Create request body, in this case influx
     // Place body into HTTP request header
     // Fire up modem and get it out
      
+    
+    // Try up to 2 times to connect to the modem
     if(modem_get_state() == MODEM_STATE_OFF){
-        // Try up to 3 times to connect to the modem
-        if(modem_get_state() == MODEM_STATE_OFF){
 
-        	try_counter++;
+        try_counter++;
         	
-            if(try_counter <= 3){
-                modem_power_up();
-            }else{
-                try_counter = 0;
-                return 0;
+        if(try_counter <= 2){
+            modem_power_up();
+        }else{
+            try_counter = 0;
+            return 0u;
             }
-        }
             
     }else if(modem_get_state() == MODEM_STATE_READY){
         printNotif(NOTIF_TYPE_EVENT,"Modem is ready.");
@@ -369,14 +368,23 @@ uint8 syncData(){
         snprintf(c_try_counter,sizeof(c_try_counter),"%d",try_counter);
         pushData("try_counter",c_try_counter,getTimeStamp());
         
-        // Get size of the actual and desired data stack count and push them to the stack
-        uint16 data_count_sent = sizeOfDataStack();
-        char c_data_count_sent[20];
-        snprintf(c_data_count_sent,sizeof(c_data_count_sent),"%d",data_count_sent);
-        pushData("data_count_sent",c_data_count_sent,getTimeStamp());
+        // Get size of the actual data stack count and push it to the stack
+        // If the buffer didn't overflow, then the data_count_sent is dataPointsInStack
+        // Otherwise, if the buffer overflows, then the data_count_sent is DATA_MAX_COUNT
+        if(buffer_overflow == false){
+            uint16 data_count_sent = sizeOfDataStack();
+            char c_data_count_sent[20];
+            snprintf(c_data_count_sent,sizeof(c_data_count_sent),"%d",data_count_sent);
+            pushData("data_count_sent",c_data_count_sent,getTimeStamp());
+        }else{
+            char c_data_count_sent[20];
+            snprintf(c_data_count_sent,sizeof(c_data_count_sent),"%d",DATA_MAX_VALUES);
+            pushData("data_count_sent",c_data_count_sent,getTimeStamp());
+        }
+        
+        // Get size of the desired data stack count and push it to the stack
         uint16 data_count_desired = sizeOfDataStackDesired();
         char c_data_count_desired[20];
-        
         // subtract 1 to disclude data_count_sent so that it focuses only on the actual data
         snprintf(c_data_count_desired,sizeof(c_data_count_desired),"%d", data_count_desired-1);
         pushData("data_count_desired",c_data_count_desired,getTimeStamp());
@@ -467,6 +475,7 @@ uint8 syncData(){
         // Power down the modem -- completely "kill" modem to conserve power
         modem_power_down();
         
+        try_counter = 0u;
         return 0u;
     }
       
@@ -510,12 +519,6 @@ uint8 configureRemoteParams(){
 // Returns 0 when finished
 // ==============================================
 uint8 makeMeasurements(){
-    // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
-    level_sensor_t m_level_sensor;
-    // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
-    voltage_t m_voltage;
-    // pressure_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_pressure
-    pressure_t m_pressure;
     
     // Get clock time and save to timeStamp
     long timeStamp = getTimeStamp();
@@ -524,60 +527,90 @@ uint8 makeMeasurements(){
     
     // Holds string for value that will be written 
     char value[DATA_MAX_KEY_LENGTH];
-    // Take level sensor readings and save them to m_level_sensor
-    m_level_sensor = level_sensor_take_reading();
- 
-    // If the numer of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
-    if(m_level_sensor.num_valid_readings > 0){
-        snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
-        printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
-        pushData("maxbotix_depth",value,timeStamp);
-        // Print measurement to SD card to file called data.txt
-        SD_write(Data_fileName, "a+", c_timeStamp);
-        SD_write(Data_fileName, "a+", " maxbotix_depth: ");
-        SD_write(Data_fileName, "a+", value);
-        SD_write(Data_fileName, "a+", " ");
-    }else{
-        printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
-        //pushData("maxbotix_depth","error",timeStamp);
+    
+    // If node type is depth node, take level sensor measurements
+    if(updatable_parameters.node_type == NODE_TYPE_DEPTH){
+        
+        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+        level_sensor_t m_level_sensor;
+        
+        // Take level sensor readings and save them to m_level_sensor
+        m_level_sensor = level_sensor_take_reading();
+    
+        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+        if(m_level_sensor.num_valid_readings > 0){
+            snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
+            printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
+            pushData("maxbotix_depth",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " maxbotix_depth: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
+            //pushData("maxbotix_depth","error",timeStamp);
+        }
     }
+    
+    
+    // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
+    voltage_t m_voltage;
     
     // Take voltage readings and save them to m_voltage
     m_voltage = voltage_take_readings();
+    
     // If the reading is valid, print the voltage battery and pressure transducer reading and push the data to the data wheel
     if(m_voltage.valid){
         // battery voltage data
         snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_battery);
         printNotif(NOTIF_TYPE_EVENT,"v_bat=%s",value);
         pushData("v_bat",value,timeStamp);
+        
         // Print measurement to SD card to file called data.txt
         SD_write(Data_fileName, "a+", " ");
         SD_write(Data_fileName, "a+", c_timeStamp);
         SD_write(Data_fileName, "a+", " vbat: ");
         SD_write(Data_fileName, "a+", value);
         
-        // pressure transducer current (mA) data
-        m_pressure = pressure_calculations(m_voltage);
-        snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_current);
-        printNotif(NOTIF_TYPE_EVENT,"pressure_current=%s",value);
-        pushData("pressure_current",value,timeStamp);
-        // Print measurement to SD card to file called data.txt
-        SD_write(Data_fileName, "a+", " ");
-        SD_write(Data_fileName, "a+", c_timeStamp);
-        SD_write(Data_fileName, "a+", " pressure_current: ");
-        SD_write(Data_fileName, "a+", value);
-        
-        // pressure transducer depth (ft) data
-        snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_depth);
-        printNotif(NOTIF_TYPE_EVENT,"pressure_depth=%s",value);
-        pushData("pressure_depth",value,timeStamp);
-        // Print measurement to SD card to file called data.txt
-        SD_write(Data_fileName, "a+", " ");
-        SD_write(Data_fileName, "a+", c_timeStamp);
-        SD_write(Data_fileName, "a+", " pressure_depth: ");
-        SD_write(Data_fileName, "a+", value);
+        // If node type is green infrastructure node, take pressure transducer measurements
+        if(updatable_parameters.node_type == NODE_TYPE_GREENINFRASTRUCTURE){
+            
+            // pressure transducer voltage (V) data
+            //snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_pressure);
+            //printNotif(NOTIF_TYPE_EVENT,"pressure_voltage=%s",value);
+            //pushData("pressure_voltage",value,timeStamp);
+            
+            // pressure_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_pressure
+            pressure_t m_pressure;
+            
+            // Make pressure transducer calculators for current and depth
+            m_pressure = pressure_calculations(m_voltage);
+            
+            // pressure transducer current (mA) data
+            snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_current);
+            printNotif(NOTIF_TYPE_EVENT,"pressure_current=%s",value);
+            pushData("pressure_current",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", " ");
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " pressure_current: ");
+            SD_write(Data_fileName, "a+", value);
+            
+            // pressure transducer depth (ft) data
+            snprintf(value,sizeof(value),"%.2f",m_pressure.pressure_depth);
+            printNotif(NOTIF_TYPE_EVENT,"pressure_depth=%s",value);
+            pushData("pressure_depth",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", " ");
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " pressure_depth: ");
+            SD_write(Data_fileName, "a+", value);
+        }    
     }else{
-        //pushData("v_bat","error",timeStamp);
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
     }
     

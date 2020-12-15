@@ -19,6 +19,8 @@
  */
 #ifndef SDCARD_H
 #define SDCARD_H
+
+#include <stdio.h>  // Defines three variable types, several macros, and various functions for performing input and output.
 #include "testing.h"
 #include <FS.h>
 

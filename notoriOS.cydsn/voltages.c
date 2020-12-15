@@ -1,10 +1,8 @@
 #include "voltages.h"
 #include "notoriOS.h"
-#include <stdio.h>
-#include <string.h>
 
 
-
+// Function to take voltage readings and save them in the voltage_t datatype
 voltage_t voltage_take_readings(){
     
     voltage_t voltage;  // Create variable voltage of data structure voltage_t.
