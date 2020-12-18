@@ -5,7 +5,7 @@
  * @version 0.0.01
  * @date 2019-05-15
  */
-#include <stdio.h>  // Defines three variable types, several macros, and various functions for performing input and output.
+
 #include "sd_card.h"
 #include "notoriOS.h"
 

@@ -1,19 +1,9 @@
 #include "level_sensor.h"
-#include <assert.h>     // Implements a runtime assertion, which can be used to verify assumptions made by the program and print a diagnostic message if this assumption is false. 
-#include <stdint.h>     // Defines a set of integral type aliases with specific width requirements, along with macros specifying their limits and macro functions to create values of these types.
-#include <stdbool.h>    // Contains four macros for a Boolean data type.
-#include <math.h>       // Designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 
-#include <stdio.h>      // Defines three variable types, several macros, and various functions for performing input and output.
-#include "level_sensor.h"
 #include "notoriOS.h"
-#include "project.h"
-
 
 /* === Driver Functions === */
 
-//sensor realated global calls
-
-
+//Sensor related global calls
 
 
 // Circular buffer of recently received chars.

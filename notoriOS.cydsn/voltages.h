@@ -3,6 +3,8 @@
 
 #include "project.h"
 #include "testing.h"
+#include <stdio.h>
+#include <string.h>
 
 
 #define ADC_MUX_OFFSET 1

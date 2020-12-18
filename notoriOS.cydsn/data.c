@@ -28,8 +28,10 @@ uint8 pushData(char * key, char *value, int32 timestamp){
     // If stack is full, loop around and rewrite over the first point.
     // Keep datPointsInStackDesired increasing to track total number of desired points.
     // Both reset to zero once buffer is flushed ( see Clear_Data_Stack() ).
-    if(dataPointsInStack >= DATA_MAX_VALUES){
+    
+    if(dataPointsInStack >= DATA_MAX_VALUES){    
         dataPointsInStack = 0;
+        buffer_overflow = true;
         printNotif(NOTIF_TYPE_ERROR,"Data stack full. Begin overwrite of circular buffer.");
         return 0; // If stack full, and points need to be deleted, return 0 
     }
@@ -52,6 +54,7 @@ void Clear_Data_Stack(){
     }
     dataPointsInStack = 0;
     dataPointsInStackDesired = 0;
+    buffer_overflow = false;
    
 }
 
@@ -93,12 +96,23 @@ void construct_generic_HTTP_request(char* request, char* body, char* host, char*
 unsigned int construct_malcom_body(char* body){
    
     body[0] = '\0';
- 
+    
     // Construct influx body
-    for(uint16 i = 0;i < sizeOfDataStack();i++){
-        // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
-        snprintf(body,sizeof(http_body), "%s%s, value=%s %ld000000000\n", body, data[i].key, data[i].value, data[i].timeStamp);
+    // if the buffer didn't overflow, send however many data points we have in the buffer
+    if (buffer_overflow == false){
+        for(uint16 i = 0;i < sizeOfDataStack();i++){
+            // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+            snprintf(body,sizeof(http_body), "%s%s, value=%s %ld000000000\n", body, data[i].key, data[i].value, data[i].timeStamp);
+        }
+    }else{
+        // if buffer did overflow, then send the max number of values allowed in the buffer
+        for(uint16 i = 0;i < DATA_MAX_VALUES;i++){
+            // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
+            snprintf(body,sizeof(http_body), "%s%s, value=%s %ld000000000\n", body, data[i].key, data[i].value, data[i].timeStamp);
+        }
     }
+        
+        
     // Get the length of the influx body and save to request_len
     unsigned int request_len = strlen(body);
    
@@ -110,7 +124,6 @@ void construct_malcom_route(char* route, char* base, char* device, char* hash){
     route[0] = '\0';
     snprintf(route,sizeof(http_route), "%s%s?d=%s&h=%s", route, base, device, hash); 
 }
-    
 
 
 

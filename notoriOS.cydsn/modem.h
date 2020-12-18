@@ -3,25 +3,33 @@
 #define MODEM_H   
     
 #include <project.h>  
-#include <stdio.h> //defines three variable types, several macros, and various functions for performing input and output.
-#include <stdlib.h> // defines four variable types, several macros, and various functions for performing general functions.
-#include <string.h> //defines one variable type, one macro, and various functions for manipulating arrays of characters.
-#include <time.h> // defines four variable types, two macro and various functions for manipulating date and time.
+#include <math.h>       // designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 
+#include <stdio.h>      //defines three variable types, several macros, and various functions for performing input and output.
+#include <stdlib.h>     // defines four variable types, several macros, and various functions for performing general functions.
+#include <string.h>     //defines one variable type, one macro, and various functions for manipulating arrays of characters.
+#include <time.h>       // defines four variable types, two macro and various functions for manipulating date and time.
+#include <stdbool.h>    // defines four macros for a Boolean data type
 #include "testing.h"
 #include "debug.h"
+#include "data.h"
     
-    
-#define MODEM_STATE_OFF 0u
-#define MODEM_STATE_STARTUP 1u
+// Define modem states    
+#define MODEM_STATE_OFF                 0u
+#define MODEM_STATE_STARTUP             1u
 #define MODEM_STATE_WAITING_FOR_NETWORK 2u
-#define MODEM_STATE_WAITING_FOR_IP 3u
-#define MODEM_STATE_READY 4u
+#define MODEM_STATE_WAITING_FOR_IP      3u
+#define MODEM_STATE_READY               4u
     
+// Define node types
+#define NODE_TYPE_DEPTH                 0u
+#define NODE_TYPE_GREENINFRASTRUCTURE   1u  
     
-    
+// Define sim types
+#define SIM_TYPE_STANDARD               0u
+#define SIM_TYPE_SUPER                  1u
+
 uint8 modem_state;
 uint8 modem_process_tasks();
-
 void modem_initialize();
 uint8 modem_power_up();
 void modem_power_down();
@@ -40,13 +48,13 @@ void modem_wakeup();
 uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeout);
 uint8 extract_string(char* from, const char* beginMarker, const char* endMarker,  char* target);
 long modem_get_network_time();
-void updatable_parameters_initialize();
-void get_updated_parameters_from_malcom();
+
 
 typedef struct { 
     char sim_id[20];
     char model_id[20];
     char imei[20];
+    
 } modem_info_t;
 
 typedef struct { 
@@ -58,6 +66,7 @@ typedef struct {
     int rsrp;     // reference signal received power
     int   time_to_network_connect; 
     int   time_to_acquire_ip;
+    
 } modem_stats_t;
 
 typedef struct{
@@ -70,8 +79,11 @@ typedef struct{
 } gps_t;
 
 // Create data structure for updatable parameters 
-typedef struct
-{
+typedef struct{
+    // what type of node is it (depth node, GI node, etc.)
+    uint8 node_type;
+    // what type of sim card is it (regular or super)
+    bool sim_type;
     // how often the node should take a measurement
     uint8 measure_time;
     // how often the node should sync with the middle layer
@@ -79,6 +91,7 @@ typedef struct
     // what types of information you want printed to the terminal/ written to the SD card
     // 0u = errors, warnings, startup notifications , 1u = all notifications
     uint8 debug_level;
+    
 } updatable_parameters_t;
 
 gps_t modem_get_gps_coordinates();
@@ -86,5 +99,8 @@ int32 modem_start_time_stamp;
 modem_info_t modem_info;
 modem_stats_t modem_stats;
 updatable_parameters_t updatable_parameters;
+
+void updatable_parameters_initialize();
+void get_updated_parameters_from_malcom();
     
 #endif

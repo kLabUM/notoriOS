@@ -1,5 +1,5 @@
 #include "debug.h"
-#include <stdarg.h> // handles variable argument list
+
 
 char    BB_fileName[30] = "blackbox.txt";
 
@@ -117,8 +117,11 @@ void printNotif(uint8 type, char* format, ...){
         long timeStamp = getTimeStamp();
         char c_timeStamp[32];
         snprintf(c_timeStamp,sizeof(c_timeStamp),"%ld",timeStamp);
-        SD_write(BB_fileName,"a+",c_timeStamp); // Write timestamp to SD Card  
+        SD_write(BB_fileName,"a+"," "); // Write a space to the SD Card  
+        SD_write(BB_fileName,"a+",c_timeStamp); // Write timestamp to SD Card 
+        SD_write(BB_fileName,"a+"," "); // Write a space to the SD Card  
         SD_write(BB_fileName,"a+",debug_string); // Write data to SD Card  
+        SD_write(BB_fileName,"a+"," "); // Write a space to the SD Card  
 
     #endif 
 }

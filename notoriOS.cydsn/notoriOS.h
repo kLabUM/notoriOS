@@ -14,7 +14,7 @@
 #include "data.h"
 #include "influx.h"
 #include "commit.h"
-#include <math.h>
+#include <math.h>       // designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 
 
 // Pre-allocate some memory for the HTTP requests
 #define MAX_HTTP_HEADER_LENGTH 1000
@@ -24,7 +24,7 @@ char http_request[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
 char http_body[DATA_MAX_KEY_LENGTH*DATA_MAX_VALUES*3+MAX_HTTP_HEADER_LENGTH];
 char http_route[MAX_ROUTE_LENGTH];
 
-// Define variables
+// Define alarm variables
 #define ALARM_TYPE_SECOND       0u
 #define ALARM_TYPE_MINUTE       1u
 #define ALARM_TYPE_HOUR         2u
@@ -38,8 +38,8 @@ char http_route[MAX_ROUTE_LENGTH];
 #define ON  1u
 #define  OFF 0u
 
+// Define max number of alarms that can be set
 #define MAX_NUM_ALARMS 5u
-// Used to create alarms, which fire when a tasks needs doing
 
 // Define alarm data structure
 typedef struct

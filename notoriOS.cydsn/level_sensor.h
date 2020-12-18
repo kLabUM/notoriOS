@@ -1,10 +1,14 @@
 #ifndef UART_H
 #define UART_H
 
-//#include "notoriOS.h"
+#include <assert.h>     // Implements a runtime assertion, which can be used to verify assumptions made by the program and print a diagnostic message if this assumption is false. 
+#include <stdint.h>     // Defines a set of integral type aliases with specific width requirements, along with macros specifying their limits and macro functions to create values of these types.
+#include <stdbool.h>    // Contains four macros for a Boolean data type.
+#include <math.h>       // Designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 
+#include <stdio.h>      // Defines three variable types, several macros, and various functions for performing input and output.
+#include "project.h"
 #include "project.h"
 #include "testing.h"
-    
     
 #define N_READINGS 11
 #define READING_INVALID 9999   // This should to be set to 5000 if we're using a short-range sensor
