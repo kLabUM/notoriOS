@@ -7,6 +7,7 @@
 
 #include "project.h"
 #include "level_sensor.h"
+#include "sontek.h"
 #include "sd_card.h"
 #include "voltages.h"
 #include "debug.h"

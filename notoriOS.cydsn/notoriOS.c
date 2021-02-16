@@ -47,6 +47,8 @@ void ReadyOrNot()
     RTC_Start();                        // Enables the RTC component
     debug_start();                      // Start UART debug
     
+    
+    
     modem_initialize();                 // Initialize the modem
     
     updatable_parameters_initialize();  // Initialize sampling, measurement, and debug frequencies 
@@ -263,7 +265,11 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     //test_t t_influx = influx_test();
     //printTestStatus(t_influx);
     
+    
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
+    
+    //---------------- temporary for debugging ----------------
+    sontek_take_reading(); 
     
     // Test modem
     test_t t_modem = modem_test();

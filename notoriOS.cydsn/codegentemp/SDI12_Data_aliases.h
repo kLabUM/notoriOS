@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Power_VBAT1.h  
+* File Name: SDI12_Data.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Power_VBAT1_ALIASES_H) /* Pins Power_VBAT1_ALIASES_H */
-#define CY_PINS_Power_VBAT1_ALIASES_H
+#if !defined(CY_PINS_SDI12_Data_ALIASES_H) /* Pins SDI12_Data_ALIASES_H */
+#define CY_PINS_SDI12_Data_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Power_VBAT1_0			(Power_VBAT1__0__PC)
-#define Power_VBAT1_0_INTR	((uint16)((uint16)0x0001u << Power_VBAT1__0__SHIFT))
+#define SDI12_Data_0			(SDI12_Data__0__PC)
+#define SDI12_Data_0_INTR	((uint16)((uint16)0x0001u << SDI12_Data__0__SHIFT))
 
-#define Power_VBAT1_INTR_ALL	 ((uint16)(Power_VBAT1_0_INTR))
+#define SDI12_Data_INTR_ALL	 ((uint16)(SDI12_Data_0_INTR))
 
-#endif /* End Pins Power_VBAT1_ALIASES_H */
+#endif /* End Pins SDI12_Data_ALIASES_H */
 
 
 /* [] END OF FILE */

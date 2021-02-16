@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 12/13/2020 at 17:05
+// 02/16/2021 at 18:02
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1233,9 +1233,143 @@ endmodule
 `include "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\mux_v1_10\mux_v1_10.v"
 `endif
 
+// UART_v2_50(Address1=0, Address2=0, BaudRate=1200, BreakBitsRX=13, BreakBitsTX=13, BreakDetect=false, CRCoutputsEn=false, Enable_RX=1, Enable_RXIntInterrupt=0, Enable_TX=1, Enable_TXIntInterrupt=0, EnableHWAddress=0, EnIntRXInterrupt=false, EnIntTXInterrupt=false, FlowControl=0, HalfDuplexEn=false, HwTXEnSignal=true, InternalClock=true, InternalClockToleranceMinus=4.40176470588235, InternalClockTolerancePlus=4.40176470588235, InternalClockUsed=1, InterruptOnAddDetect=0, InterruptOnAddressMatch=0, InterruptOnBreak=0, InterruptOnByteRcvd=1, InterruptOnOverrunError=0, InterruptOnParityError=0, InterruptOnStopError=0, InterruptOnTXComplete=false, InterruptOnTXFifoEmpty=false, InterruptOnTXFifoFull=false, InterruptOnTXFifoNotFull=false, IntOnAddressDetect=false, IntOnAddressMatch=false, IntOnBreak=false, IntOnByteRcvd=true, IntOnOverrunError=false, IntOnParityError=false, IntOnStopError=false, NumDataBits=7, NumStopBits=1, OverSamplingRate=8, ParityType=1, ParityTypeSw=false, RequiredClock=9600, RXAddressMode=0, RXBufferSize=4, RxBuffRegSizeReplacementString=uint8, RXEnable=true, TXBitClkGenDP=true, TXBufferSize=4, TxBuffRegSizeReplacementString=uint8, TXEnable=true, Use23Polling=true, CY_API_CALLBACK_HEADER_INCLUDE=#include "cyapicallbacks.h", CY_COMMENT=, CY_COMPONENT_NAME=UART_v2_50, CY_CONFIG_TITLE=SDI12_UART, CY_CONST_CONFIG=true, CY_CONTROL_FILE=<:default:>, CY_DATASHEET_FILE=<:default:>, CY_FITTER_NAME=SDI12_UART, CY_INSTANCE_SHORT_NAME=SDI12_UART, CY_MAJOR_VERSION=2, CY_MINOR_VERSION=50, CY_PDL_DRIVER_NAME=, CY_PDL_DRIVER_REQ_VERSION=, CY_PDL_DRIVER_SUBGROUP=, CY_PDL_DRIVER_VARIANT=, CY_REMOVE=false, CY_SUPPRESS_API_GEN=false, CY_VERSION=PSoC Creator  4.4, INSTANCE_NAME=SDI12_UART, )
+module UART_v2_50_8 (
+    clock,
+    cts_n,
+    reset,
+    rts_n,
+    rx,
+    rx_clk,
+    rx_data,
+    rx_interrupt,
+    tx,
+    tx_clk,
+    tx_data,
+    tx_en,
+    tx_interrupt);
+    input       clock;
+    input       cts_n;
+    input       reset;
+    output      rts_n;
+    input       rx;
+    output      rx_clk;
+    output      rx_data;
+    output      rx_interrupt;
+    output      tx;
+    output      tx_clk;
+    output      tx_data;
+    output      tx_en;
+    output      tx_interrupt;
+
+    parameter Address1 = 0;
+    parameter Address2 = 0;
+    parameter EnIntRXInterrupt = 0;
+    parameter EnIntTXInterrupt = 0;
+    parameter FlowControl = 0;
+    parameter HalfDuplexEn = 0;
+    parameter HwTXEnSignal = 1;
+    parameter NumDataBits = 7;
+    parameter NumStopBits = 1;
+    parameter ParityType = 1;
+    parameter RXEnable = 1;
+    parameter TXEnable = 1;
+
+          wire  Net_289;
+          wire  Net_61;
+          wire  Net_9;
+
+
+	cy_clock_v1_0
+		#(.id("a2e6e23d-e1fe-415e-af98-64f2080584c9/be0a0e37-ad17-42ca-b5a1-1a654d736358"),
+		  .source_clock_id(""),
+		  .divisor(0),
+		  .period("104166666666.667"),
+		  .is_direct(0),
+		  .is_digital(1))
+		IntClock
+		 (.clock_out(Net_9));
+
+
+	// VirtualMux_1 (cy_virtualmux_v1_0)
+	assign Net_61 = Net_9;
+
+    B_UART_v2_50 BUART (
+        .clock(Net_61),
+        .cts_n(cts_n),
+        .reset(reset),
+        .rts_n(rts_n),
+        .rx(rx),
+        .rx_clk(rx_clk),
+        .rx_data(rx_data),
+        .rx_interrupt(rx_interrupt),
+        .tx(tx),
+        .tx_clk(tx_clk),
+        .tx_data(tx_data),
+        .tx_en(tx_en),
+        .tx_interrupt(tx_interrupt));
+    defparam BUART.Address1 = 0;
+    defparam BUART.Address2 = 0;
+    defparam BUART.BreakBitsRX = 13;
+    defparam BUART.BreakBitsTX = 13;
+    defparam BUART.BreakDetect = 0;
+    defparam BUART.CRCoutputsEn = 0;
+    defparam BUART.FlowControl = 0;
+    defparam BUART.HalfDuplexEn = 0;
+    defparam BUART.HwTXEnSignal = 1;
+    defparam BUART.NumDataBits = 7;
+    defparam BUART.NumStopBits = 1;
+    defparam BUART.OverSampleCount = 8;
+    defparam BUART.ParityType = 1;
+    defparam BUART.ParityTypeSw = 0;
+    defparam BUART.RXAddressMode = 0;
+    defparam BUART.RXEnable = 1;
+    defparam BUART.RXStatusIntEnable = 1;
+    defparam BUART.TXBitClkGenDP = 1;
+    defparam BUART.TXEnable = 1;
+    defparam BUART.Use23Polling = 1;
+
+
+
+endmodule
+
+// Component: not_v1_0
+`ifdef CY_BLK_DIR
+`undef CY_BLK_DIR
+`endif
+
+`ifdef WARP
+`define CY_BLK_DIR "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\not_v1_0"
+`include "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\not_v1_0\not_v1_0.v"
+`else
+`define CY_BLK_DIR "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\not_v1_0"
+`include "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\not_v1_0\not_v1_0.v"
+`endif
+
 // top
 module top ;
 
+          wire  Net_326;
+          wire  Net_325;
+          wire  Net_324;
+          wire  Net_323;
+          wire  Net_322;
+          wire  Net_321;
+          wire  Net_320;
+          wire  Net_319;
+          wire  Net_317;
+          wire  Net_316;
+          wire  Net_315;
+          wire  Net_314;
+          wire  Net_313;
+          wire  Net_312;
+          wire  Net_311;
+          wire  Net_310;
+          wire  Net_309;
+          wire  Net_308;
+          wire  Net_307;
+          wire  Net_306;
+          wire  Net_305;
           wire  Net_222;
           wire  Net_221;
           wire  Net_219;
@@ -1294,6 +1428,11 @@ module top ;
           wire  Net_21;
     electrical  Net_302;
           wire  Net_38;
+          wire  Net_318;
+          wire  Net_40;
+          wire  Net_50;
+          wire  Net_46;
+          wire  Net_18;
           wire  Net_225;
           wire  Net_223;
           wire  Net_180;
@@ -1311,81 +1450,6 @@ module top ;
 
     SleepTimer_v3_20_0 SleepTimer (
         .interrupt(Net_2));
-
-	wire [0:0] tmpOE__Power_VBAT1_net;
-	wire [0:0] tmpFB_0__Power_VBAT1_net;
-	wire [0:0] tmpIO_0__Power_VBAT1_net;
-	wire [0:0] tmpINTERRUPT_0__Power_VBAT1_net;
-	electrical [0:0] tmpSIOVREF__Power_VBAT1_net;
-
-	cy_psoc3_pins_v1_10
-		#(.id("1d92e858-678b-4ebf-985d-644b151d2a23"),
-		  .drive_mode(3'b110),
-		  .ibuf_enabled(1'b1),
-		  .init_dr_st(1'b0),
-		  .input_clk_en(0),
-		  .input_sync(1'b1),
-		  .input_sync_mode(1'b0),
-		  .intr_mode(2'b00),
-		  .invert_in_clock(0),
-		  .invert_in_clock_en(0),
-		  .invert_in_reset(0),
-		  .invert_out_clock(0),
-		  .invert_out_clock_en(0),
-		  .invert_out_reset(0),
-		  .io_voltage(""),
-		  .layout_mode("CONTIGUOUS"),
-		  .oe_conn(1'b0),
-		  .oe_reset(0),
-		  .oe_sync(1'b0),
-		  .output_clk_en(0),
-		  .output_clock_mode(1'b0),
-		  .output_conn(1'b0),
-		  .output_mode(1'b0),
-		  .output_reset(0),
-		  .output_sync(1'b0),
-		  .pa_in_clock(-1),
-		  .pa_in_clock_en(-1),
-		  .pa_in_reset(-1),
-		  .pa_out_clock(-1),
-		  .pa_out_clock_en(-1),
-		  .pa_out_reset(-1),
-		  .pin_aliases(""),
-		  .pin_mode("O"),
-		  .por_state(4),
-		  .sio_group_cnt(0),
-		  .sio_hyst(1'b1),
-		  .sio_ibuf(""),
-		  .sio_info(2'b00),
-		  .sio_obuf(""),
-		  .sio_refsel(""),
-		  .sio_vtrip(""),
-		  .sio_hifreq(""),
-		  .sio_vohsel(""),
-		  .slew_rate(1'b0),
-		  .spanning(0),
-		  .use_annotation(1'b0),
-		  .vtrip(2'b10),
-		  .width(1),
-		  .ovt_hyst_trim(1'b0),
-		  .ovt_needed(1'b0),
-		  .ovt_slew_control(2'b00),
-		  .input_buffer_sel(2'b00))
-		Power_VBAT1
-		 (.oe(tmpOE__Power_VBAT1_net),
-		  .y({1'b0}),
-		  .fb({tmpFB_0__Power_VBAT1_net[0:0]}),
-		  .io({tmpIO_0__Power_VBAT1_net[0:0]}),
-		  .siovref(tmpSIOVREF__Power_VBAT1_net),
-		  .interrupt({tmpINTERRUPT_0__Power_VBAT1_net[0:0]}),
-		  .in_clock({1'b0}),
-		  .in_clock_en({1'b1}),
-		  .in_reset({1'b0}),
-		  .out_clock({1'b0}),
-		  .out_clock_en({1'b1}),
-		  .out_reset({1'b0}));
-
-	assign tmpOE__Power_VBAT1_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
     RTC_v2_0_1 RTC ();
 
@@ -3007,6 +3071,222 @@ module top ;
 		  .out_reset({1'b0}));
 
 	assign tmpOE__AN_PRTRANS_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+
+    UART_v2_50_8 SDI12_UART (
+        .clock(1'b0),
+        .cts_n(1'b0),
+        .reset(1'b0),
+        .rts_n(Net_308),
+        .rx(Net_46),
+        .rx_clk(Net_309),
+        .rx_data(Net_310),
+        .rx_interrupt(Net_311),
+        .tx(Net_18),
+        .tx_clk(Net_312),
+        .tx_data(Net_313),
+        .tx_en(Net_314),
+        .tx_interrupt(Net_315));
+    defparam SDI12_UART.Address1 = 0;
+    defparam SDI12_UART.Address2 = 0;
+    defparam SDI12_UART.EnIntRXInterrupt = 0;
+    defparam SDI12_UART.EnIntTXInterrupt = 0;
+    defparam SDI12_UART.FlowControl = 0;
+    defparam SDI12_UART.HalfDuplexEn = 0;
+    defparam SDI12_UART.HwTXEnSignal = 1;
+    defparam SDI12_UART.NumDataBits = 7;
+    defparam SDI12_UART.NumStopBits = 1;
+    defparam SDI12_UART.ParityType = 1;
+    defparam SDI12_UART.RXEnable = 1;
+    defparam SDI12_UART.TXEnable = 1;
+
+
+	cy_isr_v1_0
+		#(.int_type(2'b10))
+		isr_SDI12
+		 (.int_signal(Net_311));
+
+
+
+    assign Net_40 = ~Net_18;
+
+	wire [0:0] tmpOE__SDI12_Power_net;
+	wire [0:0] tmpFB_0__SDI12_Power_net;
+	wire [0:0] tmpIO_0__SDI12_Power_net;
+	wire [0:0] tmpINTERRUPT_0__SDI12_Power_net;
+	electrical [0:0] tmpSIOVREF__SDI12_Power_net;
+
+	cy_psoc3_pins_v1_10
+		#(.id("e851a3b9-efb8-48be-bbb8-b303b216c393"),
+		  .drive_mode(3'b110),
+		  .ibuf_enabled(1'b1),
+		  .init_dr_st(1'b0),
+		  .input_clk_en(0),
+		  .input_sync(1'b1),
+		  .input_sync_mode(1'b0),
+		  .intr_mode(2'b00),
+		  .invert_in_clock(0),
+		  .invert_in_clock_en(0),
+		  .invert_in_reset(0),
+		  .invert_out_clock(0),
+		  .invert_out_clock_en(0),
+		  .invert_out_reset(0),
+		  .io_voltage(""),
+		  .layout_mode("CONTIGUOUS"),
+		  .oe_conn(1'b0),
+		  .oe_reset(0),
+		  .oe_sync(1'b0),
+		  .output_clk_en(0),
+		  .output_clock_mode(1'b0),
+		  .output_conn(1'b0),
+		  .output_mode(1'b0),
+		  .output_reset(0),
+		  .output_sync(1'b0),
+		  .pa_in_clock(-1),
+		  .pa_in_clock_en(-1),
+		  .pa_in_reset(-1),
+		  .pa_out_clock(-1),
+		  .pa_out_clock_en(-1),
+		  .pa_out_reset(-1),
+		  .pin_aliases(""),
+		  .pin_mode("O"),
+		  .por_state(4),
+		  .sio_group_cnt(0),
+		  .sio_hyst(1'b1),
+		  .sio_ibuf(""),
+		  .sio_info(2'b00),
+		  .sio_obuf(""),
+		  .sio_refsel(""),
+		  .sio_vtrip(""),
+		  .sio_hifreq(""),
+		  .sio_vohsel(""),
+		  .slew_rate(1'b0),
+		  .spanning(0),
+		  .use_annotation(1'b0),
+		  .vtrip(2'b10),
+		  .width(1),
+		  .ovt_hyst_trim(1'b0),
+		  .ovt_needed(1'b0),
+		  .ovt_slew_control(2'b00),
+		  .input_buffer_sel(2'b00))
+		SDI12_Power
+		 (.oe(tmpOE__SDI12_Power_net),
+		  .y({1'b0}),
+		  .fb({tmpFB_0__SDI12_Power_net[0:0]}),
+		  .io({tmpIO_0__SDI12_Power_net[0:0]}),
+		  .siovref(tmpSIOVREF__SDI12_Power_net),
+		  .interrupt({tmpINTERRUPT_0__SDI12_Power_net[0:0]}),
+		  .in_clock({1'b0}),
+		  .in_clock_en({1'b1}),
+		  .in_reset({1'b0}),
+		  .out_clock({1'b0}),
+		  .out_clock_en({1'b1}),
+		  .out_reset({1'b0}));
+
+	assign tmpOE__SDI12_Power_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+
+	wire [0:0] tmpOE__SDI12_Data_net;
+	wire [0:0] tmpIO_0__SDI12_Data_net;
+	wire [0:0] tmpINTERRUPT_0__SDI12_Data_net;
+	electrical [0:0] tmpSIOVREF__SDI12_Data_net;
+
+	cy_psoc3_pins_v1_10
+		#(.id("e9b9fd9d-086c-405d-a333-d27d50c57abd"),
+		  .drive_mode(3'b011),
+		  .ibuf_enabled(1'b1),
+		  .init_dr_st(1'b0),
+		  .input_clk_en(0),
+		  .input_sync(1'b0),
+		  .input_sync_mode(1'b0),
+		  .intr_mode(2'b00),
+		  .invert_in_clock(0),
+		  .invert_in_clock_en(0),
+		  .invert_in_reset(0),
+		  .invert_out_clock(0),
+		  .invert_out_clock_en(0),
+		  .invert_out_reset(0),
+		  .io_voltage(""),
+		  .layout_mode("CONTIGUOUS"),
+		  .oe_conn(1'b0),
+		  .oe_reset(0),
+		  .oe_sync(1'b0),
+		  .output_clk_en(0),
+		  .output_clock_mode(1'b0),
+		  .output_conn(1'b1),
+		  .output_mode(1'b0),
+		  .output_reset(0),
+		  .output_sync(1'b0),
+		  .pa_in_clock(-1),
+		  .pa_in_clock_en(-1),
+		  .pa_in_reset(-1),
+		  .pa_out_clock(-1),
+		  .pa_out_clock_en(-1),
+		  .pa_out_reset(-1),
+		  .pin_aliases(""),
+		  .pin_mode("B"),
+		  .por_state(4),
+		  .sio_group_cnt(0),
+		  .sio_hyst(1'b1),
+		  .sio_ibuf(""),
+		  .sio_info(2'b00),
+		  .sio_obuf(""),
+		  .sio_refsel(""),
+		  .sio_vtrip(""),
+		  .sio_hifreq(""),
+		  .sio_vohsel(""),
+		  .slew_rate(1'b0),
+		  .spanning(0),
+		  .use_annotation(1'b0),
+		  .vtrip(2'b00),
+		  .width(1),
+		  .ovt_hyst_trim(1'b0),
+		  .ovt_needed(1'b0),
+		  .ovt_slew_control(2'b00),
+		  .input_buffer_sel(2'b00))
+		SDI12_Data
+		 (.oe(tmpOE__SDI12_Data_net),
+		  .y({Net_316}),
+		  .fb({Net_50}),
+		  .io({tmpIO_0__SDI12_Data_net[0:0]}),
+		  .siovref(tmpSIOVREF__SDI12_Data_net),
+		  .interrupt({tmpINTERRUPT_0__SDI12_Data_net[0:0]}),
+		  .in_clock({1'b0}),
+		  .in_clock_en({1'b1}),
+		  .in_reset({1'b0}),
+		  .out_clock({1'b0}),
+		  .out_clock_en({1'b1}),
+		  .out_reset({1'b0}));
+
+	assign tmpOE__SDI12_Data_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+
+    CyControlReg_v1_80 SDI12_control_reg (
+        .clock(1'b0),
+        .control_0(Net_318),
+        .control_1(Net_319),
+        .control_2(Net_320),
+        .control_3(Net_321),
+        .control_4(Net_322),
+        .control_5(Net_323),
+        .control_6(Net_324),
+        .control_7(Net_325),
+        .reset(1'b0));
+    defparam SDI12_control_reg.Bit0Mode = 0;
+    defparam SDI12_control_reg.Bit1Mode = 0;
+    defparam SDI12_control_reg.Bit2Mode = 0;
+    defparam SDI12_control_reg.Bit3Mode = 0;
+    defparam SDI12_control_reg.Bit4Mode = 0;
+    defparam SDI12_control_reg.Bit5Mode = 0;
+    defparam SDI12_control_reg.Bit6Mode = 0;
+    defparam SDI12_control_reg.Bit7Mode = 0;
+    defparam SDI12_control_reg.BitValue = 0;
+    defparam SDI12_control_reg.BusDisplay = 0;
+    defparam SDI12_control_reg.ExtrReset = 0;
+    defparam SDI12_control_reg.NumOutputs = 1;
+
+
+    assign Net_316 = Net_40 | Net_318;
+
+
+    assign Net_46 = ~Net_50;
 
 
 

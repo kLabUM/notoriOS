@@ -1,0 +1,4371 @@
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"SDI12.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	buffer_overflow,1,1
+  20              		.comm	dataPointsInStack,2,2
+  21              		.comm	dataPointsInStackDesired,2,2
+  22              		.comm	data,6600,4
+  23              		.comm	modem_state,1,1
+  24              		.comm	modem_start_time_stamp,4,4
+  25              		.comm	modem_info,60,4
+  26              		.comm	modem_stats,32,4
+  27              		.comm	updatable_parameters,5,4
+  28              		.syntax unified
+  29              		.global _printf_float
+  30              		.thumb
+  31              		.syntax unified
+  32              		.comm	sensors,156,4
+  33              		.global	sontek_labels
+  34              		.section	.rodata
+  35              		.align	2
+  36              	.LC0:
+  37 0000 5100     		.ascii	"Q\000"
+  38 0002 0000     		.align	2
+  39              	.LC1:
+  40 0004 73746167 		.ascii	"stage\000"
+  40      6500
+  41 000a 0000     		.align	2
+  42              	.LC2:
+  43 000c 765F6D65 		.ascii	"v_mean\000"
+  43      616E00
+  44 0013 00       		.align	2
+  45              	.LC3:
+  46 0014 746F7461 		.ascii	"total_vol\000"
+  46      6C5F766F 
+  46      6C00
+  47 001e 0000     		.align	2
+  48              	.LC4:
+  49 0020 64657074 		.ascii	"depth\000"
+  49      6800
+  50 0026 0000     		.align	2
+  51              	.LC5:
+  52 0028 765F696E 		.ascii	"v_index\000"
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 2
+
+
+  52      64657800 
+  53              		.align	2
+  54              	.LC6:
+  55 0030 785F6172 		.ascii	"x_area\000"
+  55      656100
+  56 0037 00       		.align	2
+  57              	.LC7:
+  58 0038 5400     		.ascii	"T\000"
+  59 003a 0000     		.align	2
+  60              	.LC8:
+  61 003c 73746174 		.ascii	"stat\000"
+  61      00
+  62 0041 000000   		.align	2
+  63              	.LC9:
+  64 0044 765F7800 		.ascii	"v_x\000"
+  65              		.align	2
+  66              	.LC10:
+  67 0048 765F7A00 		.ascii	"v_z\000"
+  68              		.align	2
+  69              	.LC11:
+  70 004c 765F785F 		.ascii	"v_x_left\000"
+  70      6C656674 
+  70      00
+  71 0055 000000   		.align	2
+  72              	.LC12:
+  73 0058 765F785F 		.ascii	"v_x_right\000"
+  73      72696768 
+  73      7400
+  74 0062 0000     		.align	2
+  75              	.LC13:
+  76 0064 765F6261 		.ascii	"v_bat\000"
+  76      7400
+  77 006a 0000     		.align	2
+  78              	.LC14:
+  79 006c 70697463 		.ascii	"pitch\000"
+  79      6800
+  80 0072 0000     		.align	2
+  81              	.LC15:
+  82 0074 726F6C6C 		.ascii	"roll\000"
+  82      00
+  83 0079 000000   		.align	2
+  84              	.LC16:
+  85 007c 7063745F 		.ascii	"pct_sub\000"
+  85      73756200 
+  86              		.align	2
+  87              	.LC17:
+  88 0084 72616E67 		.ascii	"range\000"
+  88      6500
+  89 008a 0000     		.align	2
+  90              	.LC18:
+  91 008c 64657074 		.ascii	"depth_adj\000"
+  91      685F6164 
+  91      6A00
+  92 0096 0000     		.align	2
+  93              	.LC19:
+  94 0098 746F7461 		.ascii	"total_vol_pos\000"
+  94      6C5F766F 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 3
+
+
+  94      6C5F706F 
+  94      7300
+  95 00a6 0000     		.align	2
+  96              	.LC20:
+  97 00a8 746F7461 		.ascii	"total_vol_neg\000"
+  97      6C5F766F 
+  97      6C5F6E65 
+  97      6700
+  98 00b6 0000     		.align	2
+  99              	.LC21:
+ 100 00b8 656E645F 		.ascii	"end_cell\000"
+ 100      63656C6C 
+ 100      00
+ 101 00c1 000000   		.align	2
+ 102              	.LC22:
+ 103 00c4 736E7231 		.ascii	"snr1\000"
+ 103      00
+ 104 00c9 000000   		.align	2
+ 105              	.LC23:
+ 106 00cc 736E7232 		.ascii	"snr2\000"
+ 106      00
+ 107 00d1 000000   		.align	2
+ 108              	.LC24:
+ 109 00d4 736E7233 		.ascii	"snr3\000"
+ 109      00
+ 110 00d9 000000   		.align	2
+ 111              	.LC25:
+ 112 00dc 736E7234 		.ascii	"snr4\000"
+ 112      00
+ 113              		.data
+ 114              		.align	2
+ 115              		.type	sontek_labels, %object
+ 116              		.size	sontek_labels, 104
+ 117              	sontek_labels:
+ 118 0000 00000000 		.word	.LC0
+ 119 0004 04000000 		.word	.LC1
+ 120 0008 0C000000 		.word	.LC2
+ 121 000c 14000000 		.word	.LC3
+ 122 0010 20000000 		.word	.LC4
+ 123 0014 28000000 		.word	.LC5
+ 124 0018 30000000 		.word	.LC6
+ 125 001c 38000000 		.word	.LC7
+ 126 0020 3C000000 		.word	.LC8
+ 127 0024 44000000 		.word	.LC9
+ 128 0028 48000000 		.word	.LC10
+ 129 002c 4C000000 		.word	.LC11
+ 130 0030 58000000 		.word	.LC12
+ 131 0034 64000000 		.word	.LC13
+ 132 0038 6C000000 		.word	.LC14
+ 133 003c 74000000 		.word	.LC15
+ 134 0040 7C000000 		.word	.LC16
+ 135 0044 84000000 		.word	.LC17
+ 136 0048 8C000000 		.word	.LC18
+ 137 004c 98000000 		.word	.LC19
+ 138 0050 A8000000 		.word	.LC20
+ 139 0054 B8000000 		.word	.LC21
+ 140 0058 C4000000 		.word	.LC22
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 4
+
+
+ 141 005c CC000000 		.word	.LC23
+ 142 0060 D4000000 		.word	.LC24
+ 143 0064 DC000000 		.word	.LC25
+ 144              		.global	sontek_values
+ 145              		.align	2
+ 146              		.type	sontek_values, %object
+ 147              		.size	sontek_values, 104
+ 148              	sontek_values:
+ 149 0068 000080BF 		.word	-1082130432
+ 150 006c 000000C0 		.word	-1073741824
+ 151 0070 000040C0 		.word	-1069547520
+ 152 0074 000080C0 		.word	-1065353216
+ 153 0078 0000A0C0 		.word	-1063256064
+ 154 007c 0000C0C0 		.word	-1061158912
+ 155 0080 0000E0C0 		.word	-1059061760
+ 156 0084 000000C1 		.word	-1056964608
+ 157 0088 000010C1 		.word	-1055916032
+ 158 008c 000020C1 		.word	-1054867456
+ 159 0090 000030C1 		.word	-1053818880
+ 160 0094 000040C1 		.word	-1052770304
+ 161 0098 000050C1 		.word	-1051721728
+ 162 009c 000060C1 		.word	-1050673152
+ 163 00a0 000070C1 		.word	-1049624576
+ 164 00a4 000080C1 		.word	-1048576000
+ 165 00a8 000088C1 		.word	-1048051712
+ 166 00ac 000090C1 		.word	-1047527424
+ 167 00b0 000098C1 		.word	-1047003136
+ 168 00b4 0000A0C1 		.word	-1046478848
+ 169 00b8 0000A8C1 		.word	-1045954560
+ 170 00bc 0000B0C1 		.word	-1045430272
+ 171 00c0 0000B8C1 		.word	-1044905984
+ 172 00c4 0000C0C1 		.word	-1044381696
+ 173 00c8 0000C8C1 		.word	-1043857408
+ 174 00cc 0000D0C1 		.word	-1043333120
+ 175              		.global	sontek
+ 176              		.section	.rodata
+ 177 00e1 000000   		.align	2
+ 178              	.LC26:
+ 179 00e4 3000     		.ascii	"0\000"
+ 180              		.data
+ 181              		.align	2
+ 182              		.type	sontek, %object
+ 183              		.size	sontek, 52
+ 184              	sontek:
+ 185 00d0 E4000000 		.word	.LC26
+ 186 00d4 00000000 		.word	sontek_labels
+ 187 00d8 00000000 		.word	sontek_values
+ 188 00dc 1A       		.byte	26
+ 189 00dd 00000000 		.space	39
+ 189      00000000 
+ 189      00000000 
+ 189      00000000 
+ 189      00000000 
+ 190              		.global	labels
+ 191              		.section	.rodata
+ 192 00e6 0000     		.align	2
+ 193              	.LC27:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 5
+
+
+ 194 00e8 736F6C69 		.ascii	"solinst_T\000"
+ 194      6E73745F 
+ 194      5400
+ 195 00f2 0000     		.align	2
+ 196              	.LC28:
+ 197 00f4 736F6C69 		.ascii	"solinst_P\000"
+ 197      6E73745F 
+ 197      5000
+ 198              		.data
+ 199              		.align	2
+ 200              		.type	labels, %object
+ 201              		.size	labels, 8
+ 202              	labels:
+ 203 0104 E8000000 		.word	.LC27
+ 204 0108 F4000000 		.word	.LC28
+ 205              		.global	values
+ 206              		.align	2
+ 207              		.type	values, %object
+ 208              		.size	values, 8
+ 209              	values:
+ 210 010c 0000C6C2 		.word	-1027211264
+ 211 0110 0000C4C2 		.word	-1027342336
+ 212              		.global	solinst
+ 213              		.section	.rodata
+ 214 00fe 0000     		.align	2
+ 215              	.LC29:
+ 216 0100 3100     		.ascii	"1\000"
+ 217              		.data
+ 218              		.align	2
+ 219              		.type	solinst, %object
+ 220              		.size	solinst, 52
+ 221              	solinst:
+ 222 0114 00010000 		.word	.LC29
+ 223 0118 00000000 		.word	labels
+ 224 011c 00000000 		.word	values
+ 225 0120 02       		.byte	2
+ 226 0121 00000000 		.space	39
+ 226      00000000 
+ 226      00000000 
+ 226      00000000 
+ 226      00000000 
+ 227              		.global	GS3_labels
+ 228              		.section	.rodata
+ 229 0102 0000     		.align	2
+ 230              	.LC30:
+ 231 0104 4753335F 		.ascii	"GS3_1\000"
+ 231      3100
+ 232 010a 0000     		.align	2
+ 233              	.LC31:
+ 234 010c 4753335F 		.ascii	"GS3_2\000"
+ 234      3200
+ 235 0112 0000     		.align	2
+ 236              	.LC32:
+ 237 0114 4753335F 		.ascii	"GS3_3\000"
+ 237      3300
+ 238              		.data
+ 239              		.align	2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 6
+
+
+ 240              		.type	GS3_labels, %object
+ 241              		.size	GS3_labels, 12
+ 242              	GS3_labels:
+ 243 0148 04010000 		.word	.LC30
+ 244 014c 0C010000 		.word	.LC31
+ 245 0150 14010000 		.word	.LC32
+ 246              		.global	GS3_values
+ 247              		.align	2
+ 248              		.type	GS3_values, %object
+ 249              		.size	GS3_values, 12
+ 250              	GS3_values:
+ 251 0154 0000C2C2 		.word	-1027473408
+ 252 0158 0000BEC2 		.word	-1027735552
+ 253 015c CDCCBDC2 		.word	-1027748659
+ 254              		.global	GS3
+ 255              		.section	.rodata
+ 256 011a 0000     		.align	2
+ 257              	.LC33:
+ 258 011c 3200     		.ascii	"2\000"
+ 259              		.data
+ 260              		.align	2
+ 261              		.type	GS3, %object
+ 262              		.size	GS3, 52
+ 263              	GS3:
+ 264 0160 1C010000 		.word	.LC33
+ 265 0164 00000000 		.word	GS3_labels
+ 266 0168 00000000 		.word	GS3_values
+ 267 016c 03       		.byte	3
+ 268 016d 00000000 		.space	39
+ 268      00000000 
+ 268      00000000 
+ 268      00000000 
+ 268      00000000 
+ 269              		.bss
+ 270              		.align	2
+ 271              	SDI12_uart_buf:
+ 272 0000 00000000 		.space	257
+ 272      00000000 
+ 272      00000000 
+ 272      00000000 
+ 272      00000000 
+ 273              	SDI12_buf_idx:
+ 274 0101 00       		.space	1
+ 275              		.global	i
+ 276              		.type	i, %object
+ 277              		.size	i, 1
+ 278              	i:
+ 279 0102 00       		.space	1
+ 280              		.global	ms_delay
+ 281 0103 00       		.align	2
+ 282              		.type	ms_delay, %object
+ 283              		.size	ms_delay, 4
+ 284              	ms_delay:
+ 285 0104 00000000 		.space	4
+ 286              		.global	command
+ 287              		.align	2
+ 288              		.type	command, %object
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 7
+
+
+ 289              		.size	command, 100
+ 290              	command:
+ 291 0108 00000000 		.space	100
+ 291      00000000 
+ 291      00000000 
+ 291      00000000 
+ 291      00000000 
+ 292              		.global	value_str
+ 293              		.align	2
+ 294              		.type	value_str, %object
+ 295              		.size	value_str, 100
+ 296              	value_str:
+ 297 016c 00000000 		.space	100
+ 297      00000000 
+ 297      00000000 
+ 297      00000000 
+ 297      00000000 
+ 298              		.global	delay_str
+ 299              		.align	2
+ 300              		.type	delay_str, %object
+ 301              		.size	delay_str, 10
+ 302              	delay_str:
+ 303 01d0 00000000 		.space	10
+ 303      00000000 
+ 303      0000
+ 304              		.comm	ptr_end,4,4
+ 305              		.comm	sign,4,4
+ 306              		.section	.text.SDI12_start,"ax",%progbits
+ 307              		.align	2
+ 308              		.global	SDI12_start
+ 309              		.thumb
+ 310              		.thumb_func
+ 311              		.type	SDI12_start, %function
+ 312              	SDI12_start:
+ 313              	.LFB64:
+ 314              		.file 1 "SDI12.c"
+   1:SDI12.c       **** /**
+   2:SDI12.c       ****  * @file SDI12.c
+   3:SDI12.c       ****  * @brief Implements functions for SDI12 sensors.
+   4:SDI12.c       ****  * @author Brandon Wong
+   5:SDI12.c       ****  * @version TODO
+   6:SDI12.c       ****  * @date 2017-10-28
+   7:SDI12.c       ****  */
+   8:SDI12.c       **** 
+   9:SDI12.c       **** #include "SDI12.h"
+  10:SDI12.c       **** #include "debug.h"
+  11:SDI12.c       **** //#include "misc.h"
+  12:SDI12.c       **** 
+  13:SDI12.c       **** //*========== #BEGIN Define SDI12 sensors ==========//
+  14:SDI12.c       **** //----------   SDI12 Array   ----------//
+  15:SDI12.c       **** #define N_SDI12_SENSORS     3           // Total number of sensors defined
+  16:SDI12.c       **** SDI12_sensor sensors[N_SDI12_SENSORS];  // GOTO zip_SDI12()
+  17:SDI12.c       **** 
+  18:SDI12.c       **** //----------  (1/3) Sontek  ----------//
+  19:SDI12.c       **** char* sontek_labels[] = {"Q","stage","v_mean","total_vol","depth","v_index","x_area","T","stat","v_
+  20:SDI12.c       **** float sontek_values[] = {-1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -9.0, -10.0, -11.0, -12.0,
+  21:SDI12.c       **** SDI12_sensor sontek = {
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 8
+
+
+  22:SDI12.c       ****     .nvars = 26,
+  23:SDI12.c       ****     .address = "0",
+  24:SDI12.c       ****     .labels = sontek_labels,
+  25:SDI12.c       ****     .values = sontek_values
+  26:SDI12.c       **** };
+  27:SDI12.c       **** 
+  28:SDI12.c       **** //----------  (2/3) Solinst  ----------//
+  29:SDI12.c       **** char* labels[] = {"solinst_T","solinst_P"};
+  30:SDI12.c       **** float values[] = {-99.0, -98.0};
+  31:SDI12.c       **** SDI12_sensor solinst = { 
+  32:SDI12.c       ****     .nvars   = 2,
+  33:SDI12.c       ****     .address = "1",
+  34:SDI12.c       ****     .labels  = labels,
+  35:SDI12.c       ****     .values  = values
+  36:SDI12.c       ****     // additional metadata should initialize to 0 or '\0' //
+  37:SDI12.c       **** }; 
+  38:SDI12.c       **** 
+  39:SDI12.c       **** //----------  (3/3) Decagon  ----------//
+  40:SDI12.c       **** char* GS3_labels[] = {"GS3_1","GS3_2","GS3_3"};
+  41:SDI12.c       **** float GS3_values[] = {-97.0, -95.0, -94.9};
+  42:SDI12.c       **** SDI12_sensor GS3 = {
+  43:SDI12.c       ****     .nvars   = 3,
+  44:SDI12.c       ****     .address = "2",
+  45:SDI12.c       ****     .labels  = GS3_labels,
+  46:SDI12.c       ****     .values  = GS3_values        
+  47:SDI12.c       ****     // additional metadata should initialize to 0 or '\0' //
+  48:SDI12.c       **** };  
+  49:SDI12.c       **** // ========== #END   Define SDI12 sensors ==========//*/
+  50:SDI12.c       **** 
+  51:SDI12.c       **** // The buffer and index are dependent on eachother. This buffer is implemented
+  52:SDI12.c       **** // as a circular buffer to avoid overflow.
+  53:SDI12.c       **** static char SDI12_uart_buf[257] = {'\0'};
+  54:SDI12.c       **** static uint8_t SDI12_buf_idx = 0u;
+  55:SDI12.c       **** 
+  56:SDI12.c       **** // unsigned ints for taking measurements
+  57:SDI12.c       **** uint8         i = 0u; // for iterating through sensor measurements
+  58:SDI12.c       **** uint32 ms_delay = 0u; // for delaying the code while measurements are being taken
+  59:SDI12.c       **** 
+  60:SDI12.c       **** // string for constructing the command sent to the SDI12 sensor
+  61:SDI12.c       **** char command[100] = {'\0'};
+  62:SDI12.c       **** 
+  63:SDI12.c       **** // string and pointer to store and parse SDI12 measurement results
+  64:SDI12.c       **** char value_str[100] = {'\0'}, delay_str[10] = {'\0'}, *ptr_end, *sign; 
+  65:SDI12.c       **** 
+  66:SDI12.c       **** 
+  67:SDI12.c       **** void SDI12_start(){
+ 315              		.loc 1 67 0
+ 316              		.cfi_startproc
+ 317              		@ args = 0, pretend = 0, frame = 0
+ 318              		@ frame_needed = 1, uses_anonymous_args = 0
+ 319 0000 80B5     		push	{r7, lr}
+ 320              		.cfi_def_cfa_offset 8
+ 321              		.cfi_offset 7, -8
+ 322              		.cfi_offset 14, -4
+ 323 0002 00AF     		add	r7, sp, #0
+ 324              		.cfi_def_cfa_register 7
+  68:SDI12.c       ****     SDI12_UART_Start();
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 9
+
+
+ 325              		.loc 1 68 0
+ 326 0004 FFF7FEFF 		bl	SDI12_UART_Start
+  69:SDI12.c       ****     isr_SDI12_StartEx(isr_SDI12_data); 
+ 327              		.loc 1 69 0
+ 328 0008 0248     		ldr	r0, .L2
+ 329 000a FFF7FEFF 		bl	isr_SDI12_StartEx
+  70:SDI12.c       **** }
+ 330              		.loc 1 70 0
+ 331 000e 00BF     		nop
+ 332 0010 80BD     		pop	{r7, pc}
+ 333              	.L3:
+ 334 0012 00BF     		.align	2
+ 335              	.L2:
+ 336 0014 00000000 		.word	isr_SDI12_data
+ 337              		.cfi_endproc
+ 338              	.LFE64:
+ 339              		.size	SDI12_start, .-SDI12_start
+ 340              		.section	.text.SDI12_stop,"ax",%progbits
+ 341              		.align	2
+ 342              		.global	SDI12_stop
+ 343              		.thumb
+ 344              		.thumb_func
+ 345              		.type	SDI12_stop, %function
+ 346              	SDI12_stop:
+ 347              	.LFB65:
+  71:SDI12.c       **** 
+  72:SDI12.c       **** void SDI12_stop(){
+ 348              		.loc 1 72 0
+ 349              		.cfi_startproc
+ 350              		@ args = 0, pretend = 0, frame = 0
+ 351              		@ frame_needed = 1, uses_anonymous_args = 0
+ 352 0000 80B5     		push	{r7, lr}
+ 353              		.cfi_def_cfa_offset 8
+ 354              		.cfi_offset 7, -8
+ 355              		.cfi_offset 14, -4
+ 356 0002 00AF     		add	r7, sp, #0
+ 357              		.cfi_def_cfa_register 7
+  73:SDI12.c       ****     isr_SDI12_Stop(); 
+ 358              		.loc 1 73 0
+ 359 0004 FFF7FEFF 		bl	isr_SDI12_Stop
+  74:SDI12.c       ****     SDI12_UART_Stop();
+ 360              		.loc 1 74 0
+ 361 0008 FFF7FEFF 		bl	SDI12_UART_Stop
+  75:SDI12.c       **** }
+ 362              		.loc 1 75 0
+ 363 000c 00BF     		nop
+ 364 000e 80BD     		pop	{r7, pc}
+ 365              		.cfi_endproc
+ 366              	.LFE65:
+ 367              		.size	SDI12_stop, .-SDI12_stop
+ 368              		.section	.text.clear_str,"ax",%progbits
+ 369              		.align	2
+ 370              		.global	clear_str
+ 371              		.thumb
+ 372              		.thumb_func
+ 373              		.type	clear_str, %function
+ 374              	clear_str:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 10
+
+
+ 375              	.LFB66:
+  76:SDI12.c       **** 
+  77:SDI12.c       **** uint8_t clear_str(char *str) {
+ 376              		.loc 1 77 0
+ 377              		.cfi_startproc
+ 378              		@ args = 0, pretend = 0, frame = 8
+ 379              		@ frame_needed = 1, uses_anonymous_args = 0
+ 380 0000 80B5     		push	{r7, lr}
+ 381              		.cfi_def_cfa_offset 8
+ 382              		.cfi_offset 7, -8
+ 383              		.cfi_offset 14, -4
+ 384 0002 82B0     		sub	sp, sp, #8
+ 385              		.cfi_def_cfa_offset 16
+ 386 0004 00AF     		add	r7, sp, #0
+ 387              		.cfi_def_cfa_register 7
+ 388 0006 7860     		str	r0, [r7, #4]
+  78:SDI12.c       ****     memset(str, '\0', strlen(str));
+ 389              		.loc 1 78 0
+ 390 0008 7868     		ldr	r0, [r7, #4]
+ 391 000a FFF7FEFF 		bl	strlen
+ 392 000e 0346     		mov	r3, r0
+ 393 0010 1A46     		mov	r2, r3
+ 394 0012 0021     		movs	r1, #0
+ 395 0014 7868     		ldr	r0, [r7, #4]
+ 396 0016 FFF7FEFF 		bl	memset
+  79:SDI12.c       ****     return 1u;
+ 397              		.loc 1 79 0
+ 398 001a 0123     		movs	r3, #1
+  80:SDI12.c       **** }
+ 399              		.loc 1 80 0
+ 400 001c 1846     		mov	r0, r3
+ 401 001e 0837     		adds	r7, r7, #8
+ 402              		.cfi_def_cfa_offset 8
+ 403 0020 BD46     		mov	sp, r7
+ 404              		.cfi_def_cfa_register 13
+ 405              		@ sp needed
+ 406 0022 80BD     		pop	{r7, pc}
+ 407              		.cfi_endproc
+ 408              	.LFE66:
+ 409              		.size	clear_str, .-clear_str
+ 410              		.section	.text.SDI12_uart_clear_string,"ax",%progbits
+ 411              		.align	2
+ 412              		.global	SDI12_uart_clear_string
+ 413              		.thumb
+ 414              		.thumb_func
+ 415              		.type	SDI12_uart_clear_string, %function
+ 416              	SDI12_uart_clear_string:
+ 417              	.LFB67:
+  81:SDI12.c       **** 
+  82:SDI12.c       **** 
+  83:SDI12.c       ****                 
+  84:SDI12.c       ****                 
+  85:SDI12.c       **** /**
+  86:SDI12.c       ****  * @brief 
+  87:SDI12.c       ****  */
+  88:SDI12.c       **** void SDI12_uart_clear_string() {
+ 418              		.loc 1 88 0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 11
+
+
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 0
+ 421              		@ frame_needed = 1, uses_anonymous_args = 0
+ 422 0000 80B5     		push	{r7, lr}
+ 423              		.cfi_def_cfa_offset 8
+ 424              		.cfi_offset 7, -8
+ 425              		.cfi_offset 14, -4
+ 426 0002 00AF     		add	r7, sp, #0
+ 427              		.cfi_def_cfa_register 7
+  89:SDI12.c       ****     SDI12_UART_ClearRxBuffer();
+ 428              		.loc 1 89 0
+ 429 0004 FFF7FEFF 		bl	SDI12_UART_ClearRxBuffer
+  90:SDI12.c       ****     memset(SDI12_uart_buf, '\0', sizeof(SDI12_uart_buf));
+ 430              		.loc 1 90 0
+ 431 0008 40F20112 		movw	r2, #257
+ 432 000c 0021     		movs	r1, #0
+ 433 000e 0448     		ldr	r0, .L8
+ 434 0010 FFF7FEFF 		bl	memset
+  91:SDI12.c       ****     SDI12_buf_idx = 0u;
+ 435              		.loc 1 91 0
+ 436 0014 034B     		ldr	r3, .L8+4
+ 437 0016 0022     		movs	r2, #0
+ 438 0018 1A70     		strb	r2, [r3]
+  92:SDI12.c       **** }
+ 439              		.loc 1 92 0
+ 440 001a 00BF     		nop
+ 441 001c 80BD     		pop	{r7, pc}
+ 442              	.L9:
+ 443 001e 00BF     		.align	2
+ 444              	.L8:
+ 445 0020 00000000 		.word	SDI12_uart_buf
+ 446 0024 01010000 		.word	SDI12_buf_idx
+ 447              		.cfi_endproc
+ 448              	.LFE67:
+ 449              		.size	SDI12_uart_clear_string, .-SDI12_uart_clear_string
+ 450              		.section	.text.sensors_uart_get_string,"ax",%progbits
+ 451              		.align	2
+ 452              		.global	sensors_uart_get_string
+ 453              		.thumb
+ 454              		.thumb_func
+ 455              		.type	sensors_uart_get_string, %function
+ 456              	sensors_uart_get_string:
+ 457              	.LFB68:
+  93:SDI12.c       **** 
+  94:SDI12.c       **** char* sensors_uart_get_string() {
+ 458              		.loc 1 94 0
+ 459              		.cfi_startproc
+ 460              		@ args = 0, pretend = 0, frame = 0
+ 461              		@ frame_needed = 1, uses_anonymous_args = 0
+ 462              		@ link register save eliminated.
+ 463 0000 80B4     		push	{r7}
+ 464              		.cfi_def_cfa_offset 4
+ 465              		.cfi_offset 7, -4
+ 466 0002 00AF     		add	r7, sp, #0
+ 467              		.cfi_def_cfa_register 7
+  95:SDI12.c       ****     return SDI12_uart_buf; 
+ 468              		.loc 1 95 0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 12
+
+
+ 469 0004 024B     		ldr	r3, .L12
+  96:SDI12.c       **** }
+ 470              		.loc 1 96 0
+ 471 0006 1846     		mov	r0, r3
+ 472 0008 BD46     		mov	sp, r7
+ 473              		.cfi_def_cfa_register 13
+ 474              		@ sp needed
+ 475 000a 80BC     		pop	{r7}
+ 476              		.cfi_restore 7
+ 477              		.cfi_def_cfa_offset 0
+ 478 000c 7047     		bx	lr
+ 479              	.L13:
+ 480 000e 00BF     		.align	2
+ 481              	.L12:
+ 482 0010 00000000 		.word	SDI12_uart_buf
+ 483              		.cfi_endproc
+ 484              	.LFE68:
+ 485              		.size	sensors_uart_get_string, .-sensors_uart_get_string
+ 486              		.section	.text.SDI12_send_command,"ax",%progbits
+ 487              		.align	2
+ 488              		.global	SDI12_send_command
+ 489              		.thumb
+ 490              		.thumb_func
+ 491              		.type	SDI12_send_command, %function
+ 492              	SDI12_send_command:
+ 493              	.LFB69:
+  97:SDI12.c       **** 
+  98:SDI12.c       **** 
+  99:SDI12.c       **** /**
+ 100:SDI12.c       ****  * @brief Send an SDI12-formatted command. A command always starts with
+ 101:SDI12.c       ****  *        the address of the sensor, followed by the command, and is terminated by 
+ 102:SDI12.c       ****  *        and exclamation point: <address><command>!
+ 103:SDI12.c       ****  * 
+ 104:SDI12.c       ****  * @param command String of the command to send
+ 105:SDI12.c       ****  *
+ 106:SDI12.c       ****  */
+ 107:SDI12.c       **** void SDI12_send_command(char command[]) {
+ 494              		.loc 1 107 0
+ 495              		.cfi_startproc
+ 496              		@ args = 0, pretend = 0, frame = 8
+ 497              		@ frame_needed = 1, uses_anonymous_args = 0
+ 498 0000 80B5     		push	{r7, lr}
+ 499              		.cfi_def_cfa_offset 8
+ 500              		.cfi_offset 7, -8
+ 501              		.cfi_offset 14, -4
+ 502 0002 82B0     		sub	sp, sp, #8
+ 503              		.cfi_def_cfa_offset 16
+ 504 0004 00AF     		add	r7, sp, #0
+ 505              		.cfi_def_cfa_register 7
+ 506 0006 7860     		str	r0, [r7, #4]
+ 108:SDI12.c       ****     // Wake up the sensors
+ 109:SDI12.c       ****     // Pull the Data pin high for 12 milliseconds
+ 110:SDI12.c       ****     SDI12_control_reg_Write(1u);
+ 507              		.loc 1 110 0
+ 508 0008 0120     		movs	r0, #1
+ 509 000a FFF7FEFF 		bl	SDI12_control_reg_Write
+ 111:SDI12.c       ****     CyDelayUs(12000u);  // 12 milliseconds = 12 x 10^3 microseconds
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 13
+
+
+ 510              		.loc 1 111 0
+ 511 000e 42F6E060 		movw	r0, #12000
+ 512 0012 FFF7FEFF 		bl	CyDelayUs
+ 112:SDI12.c       **** 
+ 113:SDI12.c       ****     // Pull the Data pin low for 8.4 milliseconds
+ 114:SDI12.c       ****     SDI12_control_reg_Write(0u);
+ 513              		.loc 1 114 0
+ 514 0016 0020     		movs	r0, #0
+ 515 0018 FFF7FEFF 		bl	SDI12_control_reg_Write
+ 115:SDI12.c       ****     CyDelayUs(8400u);   // 8.4 milliseconds = 8.4 x 10^3 microseconds
+ 516              		.loc 1 115 0
+ 517 001c 42F2D000 		movw	r0, #8400
+ 518 0020 FFF7FEFF 		bl	CyDelayUs
+ 116:SDI12.c       ****         
+ 117:SDI12.c       ****     // Write the command to the Data pin
+ 118:SDI12.c       ****     SDI12_UART_PutString(command);
+ 519              		.loc 1 118 0
+ 520 0024 7868     		ldr	r0, [r7, #4]
+ 521 0026 FFF7FEFF 		bl	SDI12_UART_PutString
+ 119:SDI12.c       **** }
+ 522              		.loc 1 119 0
+ 523 002a 00BF     		nop
+ 524 002c 0837     		adds	r7, r7, #8
+ 525              		.cfi_def_cfa_offset 8
+ 526 002e BD46     		mov	sp, r7
+ 527              		.cfi_def_cfa_register 13
+ 528              		@ sp needed
+ 529 0030 80BD     		pop	{r7, pc}
+ 530              		.cfi_endproc
+ 531              	.LFE69:
+ 532              		.size	SDI12_send_command, .-SDI12_send_command
+ 533 0032 00BF     		.section	.rodata
+ 534 011e 0000     		.align	2
+ 535              	.LC34:
+ 536 0120 00       		.ascii	"\000"
+ 537 0121 000000   		.align	2
+ 538              	.LC35:
+ 539 0124 25732573 		.ascii	"%s%s%s\000"
+ 539      257300
+ 540 012b 00       		.align	2
+ 541              	.LC36:
+ 542 012c 2100     		.ascii	"!\000"
+ 543 012e 0000     		.align	2
+ 544              	.LC37:
+ 545 0130 0D0A00   		.ascii	"\015\012\000"
+ 546              		.section	.text.SDI12_is_active,"ax",%progbits
+ 547              		.align	2
+ 548              		.global	SDI12_is_active
+ 549              		.thumb
+ 550              		.thumb_func
+ 551              		.type	SDI12_is_active, %function
+ 552              	SDI12_is_active:
+ 553              	.LFB70:
+ 120:SDI12.c       **** 
+ 121:SDI12.c       **** /**
+ 122:SDI12.c       ****  * @brief Check if an SDI12 sensor is on, given its address
+ 123:SDI12.c       ****  * 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 14
+
+
+ 124:SDI12.c       ****  * @param sensor SDI12_sensor that we want to check the status of
+ 125:SDI12.c       ****  *
+ 126:SDI12.c       ****  * @return 1u if active, 0u if inactive
+ 127:SDI12.c       ****  */
+ 128:SDI12.c       **** uint8 SDI12_is_active(SDI12_sensor* sensor) {
+ 554              		.loc 1 128 0
+ 555              		.cfi_startproc
+ 556              		@ args = 0, pretend = 0, frame = 8
+ 557              		@ frame_needed = 1, uses_anonymous_args = 0
+ 558 0000 80B5     		push	{r7, lr}
+ 559              		.cfi_def_cfa_offset 8
+ 560              		.cfi_offset 7, -8
+ 561              		.cfi_offset 14, -4
+ 562 0002 84B0     		sub	sp, sp, #16
+ 563              		.cfi_def_cfa_offset 24
+ 564 0004 02AF     		add	r7, sp, #8
+ 565              		.cfi_def_cfa 7, 16
+ 566 0006 7860     		str	r0, [r7, #4]
+ 129:SDI12.c       ****     /* 1. Request if SDI12 sensor is active */
+ 130:SDI12.c       ****     clear_str(command);
+ 567              		.loc 1 130 0
+ 568 0008 1348     		ldr	r0, .L18
+ 569 000a FFF7FEFF 		bl	clear_str
+ 131:SDI12.c       ****     
+ 132:SDI12.c       ****     /* 2. Construct the command <address><command><!> */
+ 133:SDI12.c       ****     sprintf(command,"%s%s%s",(*sensor).address,ACK_ACTIVE,"!");
+ 570              		.loc 1 133 0
+ 571 000e 7B68     		ldr	r3, [r7, #4]
+ 572 0010 1A68     		ldr	r2, [r3]
+ 573 0012 124B     		ldr	r3, .L18+4
+ 574 0014 0093     		str	r3, [sp]
+ 575 0016 124B     		ldr	r3, .L18+8
+ 576 0018 1249     		ldr	r1, .L18+12
+ 577 001a 0F48     		ldr	r0, .L18
+ 578 001c FFF7FEFF 		bl	sprintf
+ 134:SDI12.c       ****     SDI12_uart_clear_string();
+ 579              		.loc 1 134 0
+ 580 0020 FFF7FEFF 		bl	SDI12_uart_clear_string
+ 135:SDI12.c       ****     
+ 136:SDI12.c       ****     /* 3. Send the command to the sensor */
+ 137:SDI12.c       ****     SDI12_send_command(command);
+ 581              		.loc 1 137 0
+ 582 0024 0C48     		ldr	r0, .L18
+ 583 0026 FFF7FEFF 		bl	SDI12_send_command
+ 138:SDI12.c       ****     
+ 139:SDI12.c       ****     /* 4. Parse the received data, if any */
+ 140:SDI12.c       ****     /* TODO: This can be shortened using a for-loop like in SDI12_take_measurement() */
+ 141:SDI12.c       ****     CyDelay(1000u); // Delay for readings to be transmitted
+ 584              		.loc 1 141 0
+ 585 002a 4FF47A70 		mov	r0, #1000
+ 586 002e FFF7FEFF 		bl	CyDelay
+ 142:SDI12.c       ****     
+ 143:SDI12.c       ****     // Copy the SDI12 UART buffer into temporary buffer
+ 144:SDI12.c       ****     // *TODO: Parse sensor address from the response
+ 145:SDI12.c       ****     clear_str(value_str);
+ 587              		.loc 1 145 0
+ 588 0032 0D48     		ldr	r0, .L18+16
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 15
+
+
+ 589 0034 FFF7FEFF 		bl	clear_str
+ 146:SDI12.c       ****     if (strextract(SDI12_uart_buf, value_str, "!" ,"\r\n")) {
+ 590              		.loc 1 146 0
+ 591 0038 0C4B     		ldr	r3, .L18+20
+ 592 003a 084A     		ldr	r2, .L18+4
+ 593 003c 0A49     		ldr	r1, .L18+16
+ 594 003e 0C48     		ldr	r0, .L18+24
+ 595 0040 FFF7FEFF 		bl	strextract
+ 596 0044 0346     		mov	r3, r0
+ 597 0046 002B     		cmp	r3, #0
+ 598 0048 01D0     		beq	.L16
+ 147:SDI12.c       ****         // If "\r\n" is in the response, the sensor is active
+ 148:SDI12.c       ****         return 1u;
+ 599              		.loc 1 148 0
+ 600 004a 0123     		movs	r3, #1
+ 601 004c 00E0     		b	.L17
+ 602              	.L16:
+ 149:SDI12.c       ****     }
+ 150:SDI12.c       ****     
+ 151:SDI12.c       ****     return 0u;
+ 603              		.loc 1 151 0
+ 604 004e 0023     		movs	r3, #0
+ 605              	.L17:
+ 152:SDI12.c       **** }
+ 606              		.loc 1 152 0
+ 607 0050 1846     		mov	r0, r3
+ 608 0052 0837     		adds	r7, r7, #8
+ 609              		.cfi_def_cfa_offset 8
+ 610 0054 BD46     		mov	sp, r7
+ 611              		.cfi_def_cfa_register 13
+ 612              		@ sp needed
+ 613 0056 80BD     		pop	{r7, pc}
+ 614              	.L19:
+ 615              		.align	2
+ 616              	.L18:
+ 617 0058 00000000 		.word	command
+ 618 005c 2C010000 		.word	.LC36
+ 619 0060 20010000 		.word	.LC34
+ 620 0064 24010000 		.word	.LC35
+ 621 0068 00000000 		.word	value_str
+ 622 006c 30010000 		.word	.LC37
+ 623 0070 00000000 		.word	SDI12_uart_buf
+ 624              		.cfi_endproc
+ 625              	.LFE70:
+ 626              		.size	SDI12_is_active, .-SDI12_is_active
+ 627              		.section	.rodata
+ 628 0133 00       		.align	2
+ 629              	.LC38:
+ 630 0134 4100     		.ascii	"A\000"
+ 631 0136 0000     		.align	2
+ 632              	.LC39:
+ 633 0138 25732573 		.ascii	"%s%s%s%s\000"
+ 633      25732573 
+ 633      00
+ 634 0141 000000   		.align	2
+ 635              	.LC40:
+ 636 0144 25730D0A 		.ascii	"%s\015\012\000"
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 16
+
+
+ 636      00
+ 637              		.section	.text.SDI12_change_address,"ax",%progbits
+ 638              		.align	2
+ 639              		.global	SDI12_change_address
+ 640              		.thumb
+ 641              		.thumb_func
+ 642              		.type	SDI12_change_address, %function
+ 643              	SDI12_change_address:
+ 644              	.LFB71:
+ 153:SDI12.c       **** 
+ 154:SDI12.c       **** /** 
+ 155:SDI12.c       ****  * @brief Change the address of an SDI12 sensor
+ 156:SDI12.c       ****  *
+ 157:SDI12.c       ****  * @param sensor SDI12_sensor that we want to change the address of
+ 158:SDI12.c       ****  * @param new_address String (single char, either 0-9, a-z, A-Z) of the desired address
+ 159:SDI12.c       ****  *
+ 160:SDI12.c       ****  * @return 1u if successful, 0u if unsuccessful
+ 161:SDI12.c       ****  */
+ 162:SDI12.c       **** uint8 SDI12_change_address(SDI12_sensor* sensor, char new_address[]) {
+ 645              		.loc 1 162 0
+ 646              		.cfi_startproc
+ 647              		@ args = 0, pretend = 0, frame = 8
+ 648              		@ frame_needed = 1, uses_anonymous_args = 0
+ 649 0000 80B5     		push	{r7, lr}
+ 650              		.cfi_def_cfa_offset 8
+ 651              		.cfi_offset 7, -8
+ 652              		.cfi_offset 14, -4
+ 653 0002 84B0     		sub	sp, sp, #16
+ 654              		.cfi_def_cfa_offset 24
+ 655 0004 02AF     		add	r7, sp, #8
+ 656              		.cfi_def_cfa 7, 16
+ 657 0006 7860     		str	r0, [r7, #4]
+ 658 0008 3960     		str	r1, [r7]
+ 163:SDI12.c       ****  
+ 164:SDI12.c       ****     /* 1. Request measurement from addressed SDI12 sensor */
+ 165:SDI12.c       ****     clear_str(command);
+ 659              		.loc 1 165 0
+ 660 000a 1E48     		ldr	r0, .L25
+ 661 000c FFF7FEFF 		bl	clear_str
+ 166:SDI12.c       ****     sprintf(command,"%s%s%s%s",(*sensor).address,CHANGE_ADDR,new_address,"!");
+ 662              		.loc 1 166 0
+ 663 0010 7B68     		ldr	r3, [r7, #4]
+ 664 0012 1A68     		ldr	r2, [r3]
+ 665 0014 1C4B     		ldr	r3, .L25+4
+ 666 0016 0193     		str	r3, [sp, #4]
+ 667 0018 3B68     		ldr	r3, [r7]
+ 668 001a 0093     		str	r3, [sp]
+ 669 001c 1B4B     		ldr	r3, .L25+8
+ 670 001e 1C49     		ldr	r1, .L25+12
+ 671 0020 1848     		ldr	r0, .L25
+ 672 0022 FFF7FEFF 		bl	sprintf
+ 167:SDI12.c       ****     
+ 168:SDI12.c       ****     SDI12_uart_clear_string();
+ 673              		.loc 1 168 0
+ 674 0026 FFF7FEFF 		bl	SDI12_uart_clear_string
+ 169:SDI12.c       ****     SDI12_send_command(command);    
+ 675              		.loc 1 169 0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 17
+
+
+ 676 002a 1648     		ldr	r0, .L25
+ 677 002c FFF7FEFF 		bl	SDI12_send_command
+ 170:SDI12.c       ****         
+ 171:SDI12.c       ****     // Delay max 1000 ms
+ 172:SDI12.c       ****     // Look for <new address><CR><LF> in the buffer
+ 173:SDI12.c       ****     clear_str(value_str);
+ 678              		.loc 1 173 0
+ 679 0030 1848     		ldr	r0, .L25+16
+ 680 0032 FFF7FEFF 		bl	clear_str
+ 174:SDI12.c       ****     sprintf(value_str, "%s\r\n", new_address);
+ 681              		.loc 1 174 0
+ 682 0036 3A68     		ldr	r2, [r7]
+ 683 0038 1749     		ldr	r1, .L25+20
+ 684 003a 1648     		ldr	r0, .L25+16
+ 685 003c FFF7FEFF 		bl	sprintf
+ 175:SDI12.c       ****     for (i = 0; i < 200; i++) { 
+ 686              		.loc 1 175 0
+ 687 0040 164B     		ldr	r3, .L25+24
+ 688 0042 0022     		movs	r2, #0
+ 689 0044 1A70     		strb	r2, [r3]
+ 690 0046 14E0     		b	.L21
+ 691              	.L24:
+ 176:SDI12.c       ****         CyDelay(5u);
+ 692              		.loc 1 176 0
+ 693 0048 0520     		movs	r0, #5
+ 694 004a FFF7FEFF 		bl	CyDelay
+ 177:SDI12.c       ****         if ( strstr(SDI12_uart_buf, value_str) ) {
+ 695              		.loc 1 177 0
+ 696 004e 1149     		ldr	r1, .L25+16
+ 697 0050 1348     		ldr	r0, .L25+28
+ 698 0052 FFF7FEFF 		bl	strstr
+ 699 0056 0346     		mov	r3, r0
+ 700 0058 002B     		cmp	r3, #0
+ 701 005a 04D0     		beq	.L22
+ 178:SDI12.c       ****             (*sensor).address = new_address;
+ 702              		.loc 1 178 0
+ 703 005c 7B68     		ldr	r3, [r7, #4]
+ 704 005e 3A68     		ldr	r2, [r7]
+ 705 0060 1A60     		str	r2, [r3]
+ 179:SDI12.c       ****             return 1u;
+ 706              		.loc 1 179 0
+ 707 0062 0123     		movs	r3, #1
+ 708 0064 0AE0     		b	.L23
+ 709              	.L22:
+ 175:SDI12.c       ****         CyDelay(5u);
+ 710              		.loc 1 175 0 discriminator 2
+ 711 0066 0D4B     		ldr	r3, .L25+24
+ 712 0068 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 713 006a 0133     		adds	r3, r3, #1
+ 714 006c DAB2     		uxtb	r2, r3
+ 715 006e 0B4B     		ldr	r3, .L25+24
+ 716 0070 1A70     		strb	r2, [r3]
+ 717              	.L21:
+ 175:SDI12.c       ****         CyDelay(5u);
+ 718              		.loc 1 175 0 is_stmt 0 discriminator 1
+ 719 0072 0A4B     		ldr	r3, .L25+24
+ 720 0074 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 18
+
+
+ 721 0076 C72B     		cmp	r3, #199
+ 722 0078 E6D9     		bls	.L24
+ 180:SDI12.c       ****         }
+ 181:SDI12.c       ****     }
+ 182:SDI12.c       ****     
+ 183:SDI12.c       ****     return 0u;
+ 723              		.loc 1 183 0 is_stmt 1
+ 724 007a 0023     		movs	r3, #0
+ 725              	.L23:
+ 184:SDI12.c       **** }
+ 726              		.loc 1 184 0
+ 727 007c 1846     		mov	r0, r3
+ 728 007e 0837     		adds	r7, r7, #8
+ 729              		.cfi_def_cfa_offset 8
+ 730 0080 BD46     		mov	sp, r7
+ 731              		.cfi_def_cfa_register 13
+ 732              		@ sp needed
+ 733 0082 80BD     		pop	{r7, pc}
+ 734              	.L26:
+ 735              		.align	2
+ 736              	.L25:
+ 737 0084 00000000 		.word	command
+ 738 0088 2C010000 		.word	.LC36
+ 739 008c 34010000 		.word	.LC38
+ 740 0090 38010000 		.word	.LC39
+ 741 0094 00000000 		.word	value_str
+ 742 0098 44010000 		.word	.LC40
+ 743 009c 00000000 		.word	i
+ 744 00a0 00000000 		.word	SDI12_uart_buf
+ 745              		.cfi_endproc
+ 746              	.LFE71:
+ 747              		.size	SDI12_change_address, .-SDI12_change_address
+ 748              		.section	.rodata
+ 749 0149 000000   		.align	2
+ 750              	.LC41:
+ 751 014c 4D00     		.ascii	"M\000"
+ 752              		.global	__aeabi_d2uiz
+ 753 014e 0000     		.align	2
+ 754              	.LC42:
+ 755 0150 443000   		.ascii	"D0\000"
+ 756              		.global	__aeabi_d2f
+ 757              		.section	.text.SDI12_take_measurement,"ax",%progbits
+ 758              		.align	2
+ 759              		.global	SDI12_take_measurement
+ 760              		.thumb
+ 761              		.thumb_func
+ 762              		.type	SDI12_take_measurement, %function
+ 763              	SDI12_take_measurement:
+ 764              	.LFB72:
+ 185:SDI12.c       **** 
+ 186:SDI12.c       **** 
+ 187:SDI12.c       **** /**
+ 188:SDI12.c       ****  * @brief Take a measurement for an SDI12 sensor, given its address
+ 189:SDI12.c       ****  * 
+ 190:SDI12.c       ****  * @param sensor SDI12_sensor that we want to request measurements from
+ 191:SDI12.c       ****  *
+ 192:SDI12.c       ****  * @ return 1u if measurements were successfully taken, 0u if there was a communication error
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 19
+
+
+ 193:SDI12.c       ****  */
+ 194:SDI12.c       **** uint8 SDI12_take_measurement(SDI12_sensor* sensor) {
+ 765              		.loc 1 194 0
+ 766              		.cfi_startproc
+ 767              		@ args = 0, pretend = 0, frame = 8
+ 768              		@ frame_needed = 1, uses_anonymous_args = 0
+ 769 0000 90B5     		push	{r4, r7, lr}
+ 770              		.cfi_def_cfa_offset 12
+ 771              		.cfi_offset 4, -12
+ 772              		.cfi_offset 7, -8
+ 773              		.cfi_offset 14, -4
+ 774 0002 85B0     		sub	sp, sp, #20
+ 775              		.cfi_def_cfa_offset 32
+ 776 0004 02AF     		add	r7, sp, #8
+ 777              		.cfi_def_cfa 7, 24
+ 778 0006 7860     		str	r0, [r7, #4]
+ 195:SDI12.c       ****         
+ 196:SDI12.c       ****     /* 1. Request measurement from addressed SDI12 sensor */
+ 197:SDI12.c       ****     clear_str(command);
+ 779              		.loc 1 197 0
+ 780 0008 7448     		ldr	r0, .L44
+ 781 000a FFF7FEFF 		bl	clear_str
+ 198:SDI12.c       ****     sprintf(command,"%s%s%s",(*sensor).address,TAKE_MEASUREMENT,"!");
+ 782              		.loc 1 198 0
+ 783 000e 7B68     		ldr	r3, [r7, #4]
+ 784 0010 1A68     		ldr	r2, [r3]
+ 785 0012 734B     		ldr	r3, .L44+4
+ 786 0014 0093     		str	r3, [sp]
+ 787 0016 734B     		ldr	r3, .L44+8
+ 788 0018 7349     		ldr	r1, .L44+12
+ 789 001a 7048     		ldr	r0, .L44
+ 790 001c FFF7FEFF 		bl	sprintf
+ 199:SDI12.c       ****     
+ 200:SDI12.c       ****     SDI12_uart_clear_string();
+ 791              		.loc 1 200 0
+ 792 0020 FFF7FEFF 		bl	SDI12_uart_clear_string
+ 201:SDI12.c       ****     SDI12_send_command(command);
+ 793              		.loc 1 201 0
+ 794 0024 6D48     		ldr	r0, .L44
+ 795 0026 FFF7FEFF 		bl	SDI12_send_command
+ 202:SDI12.c       ****     
+ 203:SDI12.c       ****     /* 2. Delay for measurement to be taken */
+ 204:SDI12.c       ****     /*
+ 205:SDI12.c       ****      * The address sensor responds within 15.0 ms, returning the
+ 206:SDI12.c       ****      * maximum time until the measurement data will be ready and the
+ 207:SDI12.c       ****      * number of data values it will return
+ 208:SDI12.c       ****      */
+ 209:SDI12.c       ****     clear_str(value_str); 
+ 796              		.loc 1 209 0
+ 797 002a 7048     		ldr	r0, .L44+16
+ 798 002c FFF7FEFF 		bl	clear_str
+ 210:SDI12.c       ****     clear_str(delay_str);
+ 799              		.loc 1 210 0
+ 800 0030 6F48     		ldr	r0, .L44+20
+ 801 0032 FFF7FEFF 		bl	clear_str
+ 211:SDI12.c       ****     
+ 212:SDI12.c       ****     // supposedly response time is 15 ms, but delaying max 1000 ms to be safe
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 20
+
+
+ 213:SDI12.c       ****     // TODO: When taking concurrent measurements, look for <address><CR><LF>
+ 214:SDI12.c       ****     for (i = 0; i < 200; i++) { 
+ 802              		.loc 1 214 0
+ 803 0036 6F4B     		ldr	r3, .L44+24
+ 804 0038 0022     		movs	r2, #0
+ 805 003a 1A70     		strb	r2, [r3]
+ 806 003c 11E0     		b	.L28
+ 807              	.L31:
+ 215:SDI12.c       ****         CyDelay(5u);
+ 808              		.loc 1 215 0
+ 809 003e 0520     		movs	r0, #5
+ 810 0040 FFF7FEFF 		bl	CyDelay
+ 216:SDI12.c       ****         if ( strextract(SDI12_uart_buf, value_str, "!","\r\n") ) {
+ 811              		.loc 1 216 0
+ 812 0044 6C4B     		ldr	r3, .L44+28
+ 813 0046 664A     		ldr	r2, .L44+4
+ 814 0048 6849     		ldr	r1, .L44+16
+ 815 004a 6C48     		ldr	r0, .L44+32
+ 816 004c FFF7FEFF 		bl	strextract
+ 817 0050 0346     		mov	r3, r0
+ 818 0052 002B     		cmp	r3, #0
+ 819 0054 0AD1     		bne	.L42
+ 214:SDI12.c       ****         CyDelay(5u);
+ 820              		.loc 1 214 0 discriminator 2
+ 821 0056 674B     		ldr	r3, .L44+24
+ 822 0058 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 823 005a 0133     		adds	r3, r3, #1
+ 824 005c DAB2     		uxtb	r2, r3
+ 825 005e 654B     		ldr	r3, .L44+24
+ 826 0060 1A70     		strb	r2, [r3]
+ 827              	.L28:
+ 214:SDI12.c       ****         CyDelay(5u);
+ 828              		.loc 1 214 0 is_stmt 0 discriminator 1
+ 829 0062 644B     		ldr	r3, .L44+24
+ 830 0064 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 831 0066 C72B     		cmp	r3, #199
+ 832 0068 E9D9     		bls	.L31
+ 833 006a 00E0     		b	.L30
+ 834              	.L42:
+ 217:SDI12.c       ****             break;
+ 835              		.loc 1 217 0 is_stmt 1
+ 836 006c 00BF     		nop
+ 837              	.L30:
+ 218:SDI12.c       ****         }
+ 219:SDI12.c       ****     }
+ 220:SDI12.c       ****     
+ 221:SDI12.c       ****     /* Delay while measurements are being prepared */
+ 222:SDI12.c       ****     /*
+ 223:SDI12.c       ****      * The returned format for <address>M! is atttn<CR><LF>
+ 224:SDI12.c       ****      * (NOTE: The returned format for <address>C! is atttnn<CR><LF> -- this will be useful when req
+ 225:SDI12.c       ****      *        concurrent measurements in the future)
+ 226:SDI12.c       ****      * Where,
+ 227:SDI12.c       ****      * -    a: sensor address
+ 228:SDI12.c       ****      * -  ttt: maximum time until measurement is ready
+ 229:SDI12.c       ****      * - n(n): number of data values that will be returned
+ 230:SDI12.c       ****      */
+ 231:SDI12.c       ****     strncpy(delay_str, value_str+strlen((*sensor).address), 3); // shift ptr by strlen(...) to skip
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 21
+
+
+ 838              		.loc 1 231 0
+ 839 006e 7B68     		ldr	r3, [r7, #4]
+ 840 0070 1B68     		ldr	r3, [r3]
+ 841 0072 1846     		mov	r0, r3
+ 842 0074 FFF7FEFF 		bl	strlen
+ 843 0078 0246     		mov	r2, r0
+ 844 007a 5C4B     		ldr	r3, .L44+16
+ 845 007c 1344     		add	r3, r3, r2
+ 846 007e 0322     		movs	r2, #3
+ 847 0080 1946     		mov	r1, r3
+ 848 0082 5B48     		ldr	r0, .L44+20
+ 849 0084 FFF7FEFF 		bl	strncpy
+ 232:SDI12.c       ****     ms_delay = ( (uint32) strtod(delay_str,(char**) NULL) ) * 1000u;
+ 850              		.loc 1 232 0
+ 851 0088 0021     		movs	r1, #0
+ 852 008a 5948     		ldr	r0, .L44+20
+ 853 008c FFF7FEFF 		bl	strtod
+ 854 0090 0346     		mov	r3, r0
+ 855 0092 0C46     		mov	r4, r1
+ 856 0094 1846     		mov	r0, r3
+ 857 0096 2146     		mov	r1, r4
+ 858 0098 FFF7FEFF 		bl	__aeabi_d2uiz
+ 859 009c 0246     		mov	r2, r0
+ 860 009e 4FF47A73 		mov	r3, #1000
+ 861 00a2 03FB02F3 		mul	r3, r3, r2
+ 862 00a6 564A     		ldr	r2, .L44+36
+ 863 00a8 1360     		str	r3, [r2]
+ 233:SDI12.c       ****     CyDelay(ms_delay);
+ 864              		.loc 1 233 0
+ 865 00aa 554B     		ldr	r3, .L44+36
+ 866 00ac 1B68     		ldr	r3, [r3]
+ 867 00ae 1846     		mov	r0, r3
+ 868 00b0 FFF7FEFF 		bl	CyDelay
+ 234:SDI12.c       ****     
+ 235:SDI12.c       ****     /* 3. Request data from SDI12 sensor */
+ 236:SDI12.c       ****     clear_str(command);    
+ 869              		.loc 1 236 0
+ 870 00b4 4948     		ldr	r0, .L44
+ 871 00b6 FFF7FEFF 		bl	clear_str
+ 237:SDI12.c       ****     clear_str(value_str);
+ 872              		.loc 1 237 0
+ 873 00ba 4C48     		ldr	r0, .L44+16
+ 874 00bc FFF7FEFF 		bl	clear_str
+ 238:SDI12.c       ****     sprintf(command,"%s%s%s",(*sensor).address,READ_MEASUREMENT,"!");   
+ 875              		.loc 1 238 0
+ 876 00c0 7B68     		ldr	r3, [r7, #4]
+ 877 00c2 1A68     		ldr	r2, [r3]
+ 878 00c4 464B     		ldr	r3, .L44+4
+ 879 00c6 0093     		str	r3, [sp]
+ 880 00c8 4E4B     		ldr	r3, .L44+40
+ 881 00ca 4749     		ldr	r1, .L44+12
+ 882 00cc 4348     		ldr	r0, .L44
+ 883 00ce FFF7FEFF 		bl	sprintf
+ 239:SDI12.c       ****     
+ 240:SDI12.c       ****     SDI12_uart_clear_string();
+ 884              		.loc 1 240 0
+ 885 00d2 FFF7FEFF 		bl	SDI12_uart_clear_string
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 22
+
+
+ 241:SDI12.c       ****     SDI12_send_command(command);
+ 886              		.loc 1 241 0
+ 887 00d6 4148     		ldr	r0, .L44
+ 888 00d8 FFF7FEFF 		bl	SDI12_send_command
+ 242:SDI12.c       ****     
+ 243:SDI12.c       ****     // Delay a maximum of 1000 ms as readings are transmitted
+ 244:SDI12.c       ****     for (i = 0; i < 200; i++) {
+ 889              		.loc 1 244 0
+ 890 00dc 454B     		ldr	r3, .L44+24
+ 891 00de 0022     		movs	r2, #0
+ 892 00e0 1A70     		strb	r2, [r3]
+ 893 00e2 11E0     		b	.L32
+ 894              	.L35:
+ 245:SDI12.c       ****         CyDelay(5u);
+ 895              		.loc 1 245 0
+ 896 00e4 0520     		movs	r0, #5
+ 897 00e6 FFF7FEFF 		bl	CyDelay
+ 246:SDI12.c       ****         
+ 247:SDI12.c       ****         // Copy the SDI12 UART buffer into temporary buffer, value_str
+ 248:SDI12.c       ****         // and break once "\r\n" is returned
+ 249:SDI12.c       ****         if ( strextract(SDI12_uart_buf, value_str, "!","\r\n") ) {
+ 898              		.loc 1 249 0
+ 899 00ea 434B     		ldr	r3, .L44+28
+ 900 00ec 3C4A     		ldr	r2, .L44+4
+ 901 00ee 3F49     		ldr	r1, .L44+16
+ 902 00f0 4248     		ldr	r0, .L44+32
+ 903 00f2 FFF7FEFF 		bl	strextract
+ 904 00f6 0346     		mov	r3, r0
+ 905 00f8 002B     		cmp	r3, #0
+ 906 00fa 0AD1     		bne	.L43
+ 244:SDI12.c       ****         CyDelay(5u);
+ 907              		.loc 1 244 0 discriminator 2
+ 908 00fc 3D4B     		ldr	r3, .L44+24
+ 909 00fe 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 910 0100 0133     		adds	r3, r3, #1
+ 911 0102 DAB2     		uxtb	r2, r3
+ 912 0104 3B4B     		ldr	r3, .L44+24
+ 913 0106 1A70     		strb	r2, [r3]
+ 914              	.L32:
+ 244:SDI12.c       ****         CyDelay(5u);
+ 915              		.loc 1 244 0 is_stmt 0 discriminator 1
+ 916 0108 3A4B     		ldr	r3, .L44+24
+ 917 010a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 918 010c C72B     		cmp	r3, #199
+ 919 010e E9D9     		bls	.L35
+ 920 0110 00E0     		b	.L34
+ 921              	.L43:
+ 250:SDI12.c       ****             break;
+ 922              		.loc 1 250 0 is_stmt 1
+ 923 0112 00BF     		nop
+ 924              	.L34:
+ 251:SDI12.c       ****         }
+ 252:SDI12.c       ****     }
+ 253:SDI12.c       ****     
+ 254:SDI12.c       ****     
+ 255:SDI12.c       ****     /* 4. Parse the received data */    
+ 256:SDI12.c       ****     // Check for "+" or "-" signs to ensure data was sent
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 23
+
+
+ 257:SDI12.c       ****     // First check for "+"
+ 258:SDI12.c       ****     sign = strstr(value_str,"+");
+ 925              		.loc 1 258 0
+ 926 0114 2B21     		movs	r1, #43
+ 927 0116 3548     		ldr	r0, .L44+16
+ 928 0118 FFF7FEFF 		bl	strchr
+ 929 011c 0246     		mov	r2, r0
+ 930 011e 3A4B     		ldr	r3, .L44+44
+ 931 0120 1A60     		str	r2, [r3]
+ 259:SDI12.c       ****     if (sign == NULL) {
+ 932              		.loc 1 259 0
+ 933 0122 394B     		ldr	r3, .L44+44
+ 934 0124 1B68     		ldr	r3, [r3]
+ 935 0126 002B     		cmp	r3, #0
+ 936 0128 24D1     		bne	.L36
+ 260:SDI12.c       ****         // If there is no + sign, check for "-"
+ 261:SDI12.c       ****         sign = strstr(value_str,"-");
+ 937              		.loc 1 261 0
+ 938 012a 2D21     		movs	r1, #45
+ 939 012c 2F48     		ldr	r0, .L44+16
+ 940 012e FFF7FEFF 		bl	strchr
+ 941 0132 0246     		mov	r2, r0
+ 942 0134 344B     		ldr	r3, .L44+44
+ 943 0136 1A60     		str	r2, [r3]
+ 262:SDI12.c       ****         
+ 263:SDI12.c       ****         // The absence of "+" or "-" indicates no data was sent yet
+ 264:SDI12.c       ****         // Return 0 and try querying the sensor again later
+ 265:SDI12.c       ****         if (sign == NULL) {
+ 944              		.loc 1 265 0
+ 945 0138 334B     		ldr	r3, .L44+44
+ 946 013a 1B68     		ldr	r3, [r3]
+ 947 013c 002B     		cmp	r3, #0
+ 948 013e 19D1     		bne	.L36
+ 266:SDI12.c       ****             for (i = 0; i < (*sensor).nvars; i++) {
+ 949              		.loc 1 266 0
+ 950 0140 2C4B     		ldr	r3, .L44+24
+ 951 0142 0022     		movs	r2, #0
+ 952 0144 1A70     		strb	r2, [r3]
+ 953 0146 0DE0     		b	.L37
+ 954              	.L38:
+ 267:SDI12.c       ****                 (*sensor).values[i] = -9999.0f;
+ 955              		.loc 1 267 0 discriminator 3
+ 956 0148 7B68     		ldr	r3, [r7, #4]
+ 957 014a 9A68     		ldr	r2, [r3, #8]
+ 958 014c 294B     		ldr	r3, .L44+24
+ 959 014e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 960 0150 9B00     		lsls	r3, r3, #2
+ 961 0152 1344     		add	r3, r3, r2
+ 962 0154 2D4A     		ldr	r2, .L44+48
+ 963 0156 1A60     		str	r2, [r3]	@ float
+ 266:SDI12.c       ****             for (i = 0; i < (*sensor).nvars; i++) {
+ 964              		.loc 1 266 0 discriminator 3
+ 965 0158 264B     		ldr	r3, .L44+24
+ 966 015a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 967 015c 0133     		adds	r3, r3, #1
+ 968 015e DAB2     		uxtb	r2, r3
+ 969 0160 244B     		ldr	r3, .L44+24
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 24
+
+
+ 970 0162 1A70     		strb	r2, [r3]
+ 971              	.L37:
+ 266:SDI12.c       ****             for (i = 0; i < (*sensor).nvars; i++) {
+ 972              		.loc 1 266 0 is_stmt 0 discriminator 1
+ 973 0164 7B68     		ldr	r3, [r7, #4]
+ 974 0166 1A7B     		ldrb	r2, [r3, #12]	@ zero_extendqisi2
+ 975 0168 224B     		ldr	r3, .L44+24
+ 976 016a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 977 016c 9A42     		cmp	r2, r3
+ 978 016e EBD8     		bhi	.L38
+ 268:SDI12.c       ****             }
+ 269:SDI12.c       ****             return 0u;
+ 979              		.loc 1 269 0 is_stmt 1
+ 980 0170 0023     		movs	r3, #0
+ 981 0172 2EE0     		b	.L39
+ 982              	.L36:
+ 270:SDI12.c       ****         }
+ 271:SDI12.c       ****     }
+ 272:SDI12.c       ****     
+ 273:SDI12.c       ****     // Set the pointer to the start of the returned results
+ 274:SDI12.c       ****     // and shift forward past the address byte
+ 275:SDI12.c       ****     ptr_end = value_str + strlen((*sensor).address);
+ 983              		.loc 1 275 0
+ 984 0174 7B68     		ldr	r3, [r7, #4]
+ 985 0176 1B68     		ldr	r3, [r3]
+ 986 0178 1846     		mov	r0, r3
+ 987 017a FFF7FEFF 		bl	strlen
+ 988 017e 0246     		mov	r2, r0
+ 989 0180 1A4B     		ldr	r3, .L44+16
+ 990 0182 1344     		add	r3, r3, r2
+ 991 0184 224A     		ldr	r2, .L44+52
+ 992 0186 1360     		str	r3, [r2]
+ 276:SDI12.c       ****     
+ 277:SDI12.c       ****     // Parse and store all values returned from the sensor
+ 278:SDI12.c       ****     for (i = 0; i < (*sensor).nvars; i++) {
+ 993              		.loc 1 278 0
+ 994 0188 1A4B     		ldr	r3, .L44+24
+ 995 018a 0022     		movs	r2, #0
+ 996 018c 1A70     		strb	r2, [r3]
+ 997 018e 19E0     		b	.L40
+ 998              	.L41:
+ 279:SDI12.c       ****         (*sensor).values[i] = (float) strtod(ptr_end, &ptr_end);
+ 999              		.loc 1 279 0 discriminator 3
+ 1000 0190 7B68     		ldr	r3, [r7, #4]
+ 1001 0192 9A68     		ldr	r2, [r3, #8]
+ 1002 0194 174B     		ldr	r3, .L44+24
+ 1003 0196 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1004 0198 9B00     		lsls	r3, r3, #2
+ 1005 019a D418     		adds	r4, r2, r3
+ 1006 019c 1C4B     		ldr	r3, .L44+52
+ 1007 019e 1B68     		ldr	r3, [r3]
+ 1008 01a0 1B49     		ldr	r1, .L44+52
+ 1009 01a2 1846     		mov	r0, r3
+ 1010 01a4 FFF7FEFF 		bl	strtod
+ 1011 01a8 0246     		mov	r2, r0
+ 1012 01aa 0B46     		mov	r3, r1
+ 1013 01ac 1046     		mov	r0, r2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 25
+
+
+ 1014 01ae 1946     		mov	r1, r3
+ 1015 01b0 FFF7FEFF 		bl	__aeabi_d2f
+ 1016 01b4 0346     		mov	r3, r0
+ 1017 01b6 2360     		str	r3, [r4]	@ float
+ 278:SDI12.c       ****         (*sensor).values[i] = (float) strtod(ptr_end, &ptr_end);
+ 1018              		.loc 1 278 0 discriminator 3
+ 1019 01b8 0E4B     		ldr	r3, .L44+24
+ 1020 01ba 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1021 01bc 0133     		adds	r3, r3, #1
+ 1022 01be DAB2     		uxtb	r2, r3
+ 1023 01c0 0C4B     		ldr	r3, .L44+24
+ 1024 01c2 1A70     		strb	r2, [r3]
+ 1025              	.L40:
+ 278:SDI12.c       ****         (*sensor).values[i] = (float) strtod(ptr_end, &ptr_end);
+ 1026              		.loc 1 278 0 is_stmt 0 discriminator 1
+ 1027 01c4 7B68     		ldr	r3, [r7, #4]
+ 1028 01c6 1A7B     		ldrb	r2, [r3, #12]	@ zero_extendqisi2
+ 1029 01c8 0A4B     		ldr	r3, .L44+24
+ 1030 01ca 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1031 01cc 9A42     		cmp	r2, r3
+ 1032 01ce DFD8     		bhi	.L41
+ 280:SDI12.c       ****     }
+ 281:SDI12.c       ****     
+ 282:SDI12.c       ****     return 1u;
+ 1033              		.loc 1 282 0 is_stmt 1
+ 1034 01d0 0123     		movs	r3, #1
+ 1035              	.L39:
+ 283:SDI12.c       ****     
+ 284:SDI12.c       **** }
+ 1036              		.loc 1 284 0
+ 1037 01d2 1846     		mov	r0, r3
+ 1038 01d4 0C37     		adds	r7, r7, #12
+ 1039              		.cfi_def_cfa_offset 12
+ 1040 01d6 BD46     		mov	sp, r7
+ 1041              		.cfi_def_cfa_register 13
+ 1042              		@ sp needed
+ 1043 01d8 90BD     		pop	{r4, r7, pc}
+ 1044              	.L45:
+ 1045 01da 00BF     		.align	2
+ 1046              	.L44:
+ 1047 01dc 00000000 		.word	command
+ 1048 01e0 2C010000 		.word	.LC36
+ 1049 01e4 4C010000 		.word	.LC41
+ 1050 01e8 24010000 		.word	.LC35
+ 1051 01ec 00000000 		.word	value_str
+ 1052 01f0 00000000 		.word	delay_str
+ 1053 01f4 00000000 		.word	i
+ 1054 01f8 30010000 		.word	.LC37
+ 1055 01fc 00000000 		.word	SDI12_uart_buf
+ 1056 0200 00000000 		.word	ms_delay
+ 1057 0204 50010000 		.word	.LC42
+ 1058 0208 00000000 		.word	sign
+ 1059 020c 003C1CC6 		.word	-971228160
+ 1060 0210 00000000 		.word	ptr_end
+ 1061              		.cfi_endproc
+ 1062              	.LFE72:
+ 1063              		.size	SDI12_take_measurement, .-SDI12_take_measurement
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 26
+
+
+ 1064              		.section	.text.SDI12_take_concurrent_measurement,"ax",%progbits
+ 1065              		.align	2
+ 1066              		.global	SDI12_take_concurrent_measurement
+ 1067              		.thumb
+ 1068              		.thumb_func
+ 1069              		.type	SDI12_take_concurrent_measurement, %function
+ 1070              	SDI12_take_concurrent_measurement:
+ 1071              	.LFB73:
+ 285:SDI12.c       **** 
+ 286:SDI12.c       **** /**
+ 287:SDI12.c       ****  * @brief TODO: Take a concurrent measurement for an SDI12 sensor, given its address
+ 288:SDI12.c       ****  * 
+ 289:SDI12.c       ****  * @param sensor SDI12_sensor that we want to request measurements from
+ 290:SDI12.c       ****  *
+ 291:SDI12.c       ****  * @ return if sensor is active
+ 292:SDI12.c       ****  */
+ 293:SDI12.c       **** uint8 SDI12_take_concurrent_measurement(SDI12_sensor* sensor) {
+ 1072              		.loc 1 293 0
+ 1073              		.cfi_startproc
+ 1074              		@ args = 0, pretend = 0, frame = 8
+ 1075              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1076 0000 80B5     		push	{r7, lr}
+ 1077              		.cfi_def_cfa_offset 8
+ 1078              		.cfi_offset 7, -8
+ 1079              		.cfi_offset 14, -4
+ 1080 0002 82B0     		sub	sp, sp, #8
+ 1081              		.cfi_def_cfa_offset 16
+ 1082 0004 00AF     		add	r7, sp, #0
+ 1083              		.cfi_def_cfa_register 7
+ 1084 0006 7860     		str	r0, [r7, #4]
+ 294:SDI12.c       ****     /* TODO */
+ 295:SDI12.c       ****     /*
+ 296:SDI12.c       ****      * Concurrent measurements enable measurements to be triggered for
+ 297:SDI12.c       ****      * multiple sensors, rather than doing one at a time.
+ 298:SDI12.c       ****      * 
+ 299:SDI12.c       ****      * Requires SDI12 V1.2 or greater.
+ 300:SDI12.c       ****      *
+ 301:SDI12.c       ****      * Currently returning a dummy response for now.
+ 302:SDI12.c       ****      */
+ 303:SDI12.c       ****     return SDI12_is_active(sensor);
+ 1085              		.loc 1 303 0
+ 1086 0008 7868     		ldr	r0, [r7, #4]
+ 1087 000a FFF7FEFF 		bl	SDI12_is_active
+ 1088 000e 0346     		mov	r3, r0
+ 304:SDI12.c       **** }
+ 1089              		.loc 1 304 0
+ 1090 0010 1846     		mov	r0, r3
+ 1091 0012 0837     		adds	r7, r7, #8
+ 1092              		.cfi_def_cfa_offset 8
+ 1093 0014 BD46     		mov	sp, r7
+ 1094              		.cfi_def_cfa_register 13
+ 1095              		@ sp needed
+ 1096 0016 80BD     		pop	{r7, pc}
+ 1097              		.cfi_endproc
+ 1098              	.LFE73:
+ 1099              		.size	SDI12_take_concurrent_measurement, .-SDI12_take_concurrent_measurement
+ 1100              		.section	.rodata
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 27
+
+
+ 1101 0153 00       		.align	2
+ 1102              	.LC43:
+ 1103 0154 4900     		.ascii	"I\000"
+ 1104              		.section	.text.SDI12_info,"ax",%progbits
+ 1105              		.align	2
+ 1106              		.global	SDI12_info
+ 1107              		.thumb
+ 1108              		.thumb_func
+ 1109              		.type	SDI12_info, %function
+ 1110              	SDI12_info:
+ 1111              	.LFB74:
+ 305:SDI12.c       **** 
+ 306:SDI12.c       **** /**
+ 307:SDI12.c       ****  * @brief Obtain detailed info about an SDI12 sensor, given its address
+ 308:SDI12.c       ****  * 
+ 309:SDI12.c       ****  * @param sensor SDI12_sensor that we want to request info from
+ 310:SDI12.c       ****  *
+ 311:SDI12.c       ****  * @ return 1u if successful, 0u if unsuccessful
+ 312:SDI12.c       ****  */
+ 313:SDI12.c       **** uint8 SDI12_info(SDI12_sensor* sensor) {
+ 1112              		.loc 1 313 0
+ 1113              		.cfi_startproc
+ 1114              		@ args = 0, pretend = 0, frame = 8
+ 1115              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1116 0000 90B5     		push	{r4, r7, lr}
+ 1117              		.cfi_def_cfa_offset 12
+ 1118              		.cfi_offset 4, -12
+ 1119              		.cfi_offset 7, -8
+ 1120              		.cfi_offset 14, -4
+ 1121 0002 85B0     		sub	sp, sp, #20
+ 1122              		.cfi_def_cfa_offset 32
+ 1123 0004 02AF     		add	r7, sp, #8
+ 1124              		.cfi_def_cfa 7, 24
+ 1125 0006 7860     		str	r0, [r7, #4]
+ 314:SDI12.c       **** 
+ 315:SDI12.c       ****     /* 1. Request measurement from addressed SDI12 sensor */
+ 316:SDI12.c       ****     clear_str(command);
+ 1126              		.loc 1 316 0
+ 1127 0008 4148     		ldr	r0, .L53
+ 1128 000a FFF7FEFF 		bl	clear_str
+ 317:SDI12.c       ****     sprintf(command,"%s%s%s",(*sensor).address,INFO,"!");
+ 1129              		.loc 1 317 0
+ 1130 000e 7B68     		ldr	r3, [r7, #4]
+ 1131 0010 1A68     		ldr	r2, [r3]
+ 1132 0012 404B     		ldr	r3, .L53+4
+ 1133 0014 0093     		str	r3, [sp]
+ 1134 0016 404B     		ldr	r3, .L53+8
+ 1135 0018 4049     		ldr	r1, .L53+12
+ 1136 001a 3D48     		ldr	r0, .L53
+ 1137 001c FFF7FEFF 		bl	sprintf
+ 318:SDI12.c       ****     
+ 319:SDI12.c       ****     SDI12_uart_clear_string();
+ 1138              		.loc 1 319 0
+ 1139 0020 FFF7FEFF 		bl	SDI12_uart_clear_string
+ 320:SDI12.c       ****     SDI12_send_command(command);    
+ 1140              		.loc 1 320 0
+ 1141 0024 3A48     		ldr	r0, .L53
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 28
+
+
+ 1142 0026 FFF7FEFF 		bl	SDI12_send_command
+ 321:SDI12.c       **** 
+ 322:SDI12.c       ****     clear_str(value_str);
+ 1143              		.loc 1 322 0
+ 1144 002a 3D48     		ldr	r0, .L53+16
+ 1145 002c FFF7FEFF 		bl	clear_str
+ 323:SDI12.c       ****     
+ 324:SDI12.c       ****     // Look for <CR><LF> in the buffer since <CR><LR> terminates all responses, if there is one 
+ 325:SDI12.c       ****     // Delay max 1000 ms while doing so
+ 326:SDI12.c       ****     for (i = 0; i < 200; i++) { 
+ 1146              		.loc 1 326 0
+ 1147 0030 3C4B     		ldr	r3, .L53+20
+ 1148 0032 0022     		movs	r2, #0
+ 1149 0034 1A70     		strb	r2, [r3]
+ 1150 0036 62E0     		b	.L49
+ 1151              	.L52:
+ 327:SDI12.c       ****         CyDelay(5u);
+ 1152              		.loc 1 327 0
+ 1153 0038 0520     		movs	r0, #5
+ 1154 003a FFF7FEFF 		bl	CyDelay
+ 328:SDI12.c       ****         if (strextract(SDI12_uart_buf, value_str, "!" ,"\r\n")) {
+ 1155              		.loc 1 328 0
+ 1156 003e 3A4B     		ldr	r3, .L53+24
+ 1157 0040 344A     		ldr	r2, .L53+4
+ 1158 0042 3749     		ldr	r1, .L53+16
+ 1159 0044 3948     		ldr	r0, .L53+28
+ 1160 0046 FFF7FEFF 		bl	strextract
+ 1161 004a 0346     		mov	r3, r0
+ 1162 004c 002B     		cmp	r3, #0
+ 1163 004e 50D0     		beq	.L50
+ 329:SDI12.c       ****         // If "\r\n" is in the response, then the sensor is active
+ 330:SDI12.c       ****             
+ 331:SDI12.c       ****             ptr_end = value_str;
+ 1164              		.loc 1 331 0
+ 1165 0050 374B     		ldr	r3, .L53+32
+ 1166 0052 334A     		ldr	r2, .L53+16
+ 1167 0054 1A60     		str	r2, [r3]
+ 332:SDI12.c       ****             // Attempt to parse the information and store in "sensor"
+ 333:SDI12.c       ****             // Move the pointer past the address 
+ 334:SDI12.c       ****             ptr_end += strlen((*sensor).address);
+ 1168              		.loc 1 334 0
+ 1169 0056 364B     		ldr	r3, .L53+32
+ 1170 0058 1C68     		ldr	r4, [r3]
+ 1171 005a 7B68     		ldr	r3, [r7, #4]
+ 1172 005c 1B68     		ldr	r3, [r3]
+ 1173 005e 1846     		mov	r0, r3
+ 1174 0060 FFF7FEFF 		bl	strlen
+ 1175 0064 0346     		mov	r3, r0
+ 1176 0066 2344     		add	r3, r3, r4
+ 1177 0068 314A     		ldr	r2, .L53+32
+ 1178 006a 1360     		str	r3, [r2]
+ 335:SDI12.c       ****             
+ 336:SDI12.c       ****             // SDI-12 specification (2 chars)
+ 337:SDI12.c       ****             strncpy((*sensor).v_SDI12, ptr_end, 2);
+ 1179              		.loc 1 337 0
+ 1180 006c 7B68     		ldr	r3, [r7, #4]
+ 1181 006e 03F10D00 		add	r0, r3, #13
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 29
+
+
+ 1182 0072 2F4B     		ldr	r3, .L53+32
+ 1183 0074 1B68     		ldr	r3, [r3]
+ 1184 0076 0222     		movs	r2, #2
+ 1185 0078 1946     		mov	r1, r3
+ 1186 007a FFF7FEFF 		bl	strncpy
+ 338:SDI12.c       ****             ptr_end += 2;
+ 1187              		.loc 1 338 0
+ 1188 007e 2C4B     		ldr	r3, .L53+32
+ 1189 0080 1B68     		ldr	r3, [r3]
+ 1190 0082 0233     		adds	r3, r3, #2
+ 1191 0084 2A4A     		ldr	r2, .L53+32
+ 1192 0086 1360     		str	r3, [r2]
+ 339:SDI12.c       ****             
+ 340:SDI12.c       ****             // Vendor identification (8 chars)
+ 341:SDI12.c       ****             strncpy((*sensor).vendor, ptr_end, 8);
+ 1193              		.loc 1 341 0
+ 1194 0088 7B68     		ldr	r3, [r7, #4]
+ 1195 008a 03F11000 		add	r0, r3, #16
+ 1196 008e 284B     		ldr	r3, .L53+32
+ 1197 0090 1B68     		ldr	r3, [r3]
+ 1198 0092 0822     		movs	r2, #8
+ 1199 0094 1946     		mov	r1, r3
+ 1200 0096 FFF7FEFF 		bl	strncpy
+ 342:SDI12.c       ****             ptr_end += 8;
+ 1201              		.loc 1 342 0
+ 1202 009a 254B     		ldr	r3, .L53+32
+ 1203 009c 1B68     		ldr	r3, [r3]
+ 1204 009e 0833     		adds	r3, r3, #8
+ 1205 00a0 234A     		ldr	r2, .L53+32
+ 1206 00a2 1360     		str	r3, [r2]
+ 343:SDI12.c       ****             
+ 344:SDI12.c       ****             // Sensor Model (6 chars)
+ 345:SDI12.c       ****             strncpy((*sensor).model, ptr_end, 6);
+ 1207              		.loc 1 345 0
+ 1208 00a4 7B68     		ldr	r3, [r7, #4]
+ 1209 00a6 03F11900 		add	r0, r3, #25
+ 1210 00aa 214B     		ldr	r3, .L53+32
+ 1211 00ac 1B68     		ldr	r3, [r3]
+ 1212 00ae 0622     		movs	r2, #6
+ 1213 00b0 1946     		mov	r1, r3
+ 1214 00b2 FFF7FEFF 		bl	strncpy
+ 346:SDI12.c       ****             ptr_end += 6;
+ 1215              		.loc 1 346 0
+ 1216 00b6 1E4B     		ldr	r3, .L53+32
+ 1217 00b8 1B68     		ldr	r3, [r3]
+ 1218 00ba 0633     		adds	r3, r3, #6
+ 1219 00bc 1C4A     		ldr	r2, .L53+32
+ 1220 00be 1360     		str	r3, [r2]
+ 347:SDI12.c       ****             
+ 348:SDI12.c       ****             // Sensor Version (3 chars)
+ 349:SDI12.c       ****             strncpy((*sensor).version, ptr_end, 3);
+ 1221              		.loc 1 349 0
+ 1222 00c0 7B68     		ldr	r3, [r7, #4]
+ 1223 00c2 03F12000 		add	r0, r3, #32
+ 1224 00c6 1A4B     		ldr	r3, .L53+32
+ 1225 00c8 1B68     		ldr	r3, [r3]
+ 1226 00ca 0322     		movs	r2, #3
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 30
+
+
+ 1227 00cc 1946     		mov	r1, r3
+ 1228 00ce FFF7FEFF 		bl	strncpy
+ 350:SDI12.c       ****             ptr_end += 3;
+ 1229              		.loc 1 350 0
+ 1230 00d2 174B     		ldr	r3, .L53+32
+ 1231 00d4 1B68     		ldr	r3, [r3]
+ 1232 00d6 0333     		adds	r3, r3, #3
+ 1233 00d8 154A     		ldr	r2, .L53+32
+ 1234 00da 1360     		str	r3, [r2]
+ 351:SDI12.c       ****             
+ 352:SDI12.c       ****             // Sensor Serial number / misc info (up to 13 chars)
+ 353:SDI12.c       ****             strncpy((*sensor).serial, ptr_end, 13);
+ 1235              		.loc 1 353 0
+ 1236 00dc 7B68     		ldr	r3, [r7, #4]
+ 1237 00de 03F12400 		add	r0, r3, #36
+ 1238 00e2 134B     		ldr	r3, .L53+32
+ 1239 00e4 1B68     		ldr	r3, [r3]
+ 1240 00e6 0D22     		movs	r2, #13
+ 1241 00e8 1946     		mov	r1, r3
+ 1242 00ea FFF7FEFF 		bl	strncpy
+ 354:SDI12.c       ****             
+ 355:SDI12.c       ****             // Assume successful if we reached this point
+ 356:SDI12.c       ****             return 1u;
+ 1243              		.loc 1 356 0
+ 1244 00ee 0123     		movs	r3, #1
+ 1245 00f0 0AE0     		b	.L51
+ 1246              	.L50:
+ 326:SDI12.c       ****         CyDelay(5u);
+ 1247              		.loc 1 326 0 discriminator 2
+ 1248 00f2 0C4B     		ldr	r3, .L53+20
+ 1249 00f4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1250 00f6 0133     		adds	r3, r3, #1
+ 1251 00f8 DAB2     		uxtb	r2, r3
+ 1252 00fa 0A4B     		ldr	r3, .L53+20
+ 1253 00fc 1A70     		strb	r2, [r3]
+ 1254              	.L49:
+ 326:SDI12.c       ****         CyDelay(5u);
+ 1255              		.loc 1 326 0 is_stmt 0 discriminator 1
+ 1256 00fe 094B     		ldr	r3, .L53+20
+ 1257 0100 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1258 0102 C72B     		cmp	r3, #199
+ 1259 0104 98D9     		bls	.L52
+ 357:SDI12.c       ****         }
+ 358:SDI12.c       ****     }
+ 359:SDI12.c       ****     
+ 360:SDI12.c       ****     return 0u;
+ 1260              		.loc 1 360 0 is_stmt 1
+ 1261 0106 0023     		movs	r3, #0
+ 1262              	.L51:
+ 361:SDI12.c       **** }
+ 1263              		.loc 1 361 0
+ 1264 0108 1846     		mov	r0, r3
+ 1265 010a 0C37     		adds	r7, r7, #12
+ 1266              		.cfi_def_cfa_offset 12
+ 1267 010c BD46     		mov	sp, r7
+ 1268              		.cfi_def_cfa_register 13
+ 1269              		@ sp needed
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 31
+
+
+ 1270 010e 90BD     		pop	{r4, r7, pc}
+ 1271              	.L54:
+ 1272              		.align	2
+ 1273              	.L53:
+ 1274 0110 00000000 		.word	command
+ 1275 0114 2C010000 		.word	.LC36
+ 1276 0118 54010000 		.word	.LC43
+ 1277 011c 24010000 		.word	.LC35
+ 1278 0120 00000000 		.word	value_str
+ 1279 0124 00000000 		.word	i
+ 1280 0128 30010000 		.word	.LC37
+ 1281 012c 00000000 		.word	SDI12_uart_buf
+ 1282 0130 00000000 		.word	ptr_end
+ 1283              		.cfi_endproc
+ 1284              	.LFE74:
+ 1285              		.size	SDI12_info, .-SDI12_info
+ 1286              		.global	__aeabi_ui2f
+ 1287              		.global	__aeabi_f2d
+ 1288              		.section	.rodata
+ 1289 0156 0000     		.align	2
+ 1290              	.LC44:
+ 1291 0158 25732025 		.ascii	"%s %s %f\000"
+ 1291      73202566 
+ 1291      00
+ 1292              		.section	.text.zip_SDI12,"ax",%progbits
+ 1293              		.align	2
+ 1294              		.global	zip_SDI12
+ 1295              		.thumb
+ 1296              		.thumb_func
+ 1297              		.type	zip_SDI12, %function
+ 1298              	zip_SDI12:
+ 1299              	.LFB75:
+ 362:SDI12.c       **** 
+ 363:SDI12.c       **** uint8 zip_SDI12(int SDI12_flag) {
+ 1300              		.loc 1 363 0
+ 1301              		.cfi_startproc
+ 1302              		@ args = 0, pretend = 0, frame = 112
+ 1303              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1304 0000 B0B5     		push	{r4, r5, r7, lr}
+ 1305              		.cfi_def_cfa_offset 16
+ 1306              		.cfi_offset 4, -16
+ 1307              		.cfi_offset 5, -12
+ 1308              		.cfi_offset 7, -8
+ 1309              		.cfi_offset 14, -4
+ 1310 0002 9EB0     		sub	sp, sp, #120
+ 1311              		.cfi_def_cfa_offset 136
+ 1312 0004 02AF     		add	r7, sp, #8
+ 1313              		.cfi_def_cfa 7, 128
+ 1314 0006 7860     		str	r0, [r7, #4]
+ 364:SDI12.c       ****     char output[100] = {'\0'}; // For debugging
+ 1315              		.loc 1 364 0
+ 1316 0008 07F10803 		add	r3, r7, #8
+ 1317 000c 6422     		movs	r2, #100
+ 1318 000e 0021     		movs	r1, #0
+ 1319 0010 1846     		mov	r0, r3
+ 1320 0012 FFF7FEFF 		bl	memset
+ 365:SDI12.c       ****     uint8 i, j, k, valid;
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 32
+
+
+ 366:SDI12.c       ****     
+ 367:SDI12.c       ****     sensors[0] = sontek;
+ 1321              		.loc 1 367 0
+ 1322 0016 A04A     		ldr	r2, .L72
+ 1323 0018 A04B     		ldr	r3, .L72+4
+ 1324 001a 1446     		mov	r4, r2
+ 1325 001c 1D46     		mov	r5, r3
+ 1326 001e 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1327 0020 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1328 0022 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1329 0024 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1330 0026 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1331 0028 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1332 002a 2B68     		ldr	r3, [r5]
+ 1333 002c 2360     		str	r3, [r4]
+ 368:SDI12.c       ****     sensors[1] = solinst;
+ 1334              		.loc 1 368 0
+ 1335 002e 9A4B     		ldr	r3, .L72
+ 1336 0030 9B4A     		ldr	r2, .L72+8
+ 1337 0032 03F13404 		add	r4, r3, #52
+ 1338 0036 1546     		mov	r5, r2
+ 1339 0038 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1340 003a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1341 003c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1342 003e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1343 0040 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1344 0042 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1345 0044 2B68     		ldr	r3, [r5]
+ 1346 0046 2360     		str	r3, [r4]
+ 369:SDI12.c       ****     sensors[1] = GS3;
+ 1347              		.loc 1 369 0
+ 1348 0048 934B     		ldr	r3, .L72
+ 1349 004a 964A     		ldr	r2, .L72+12
+ 1350 004c 03F13404 		add	r4, r3, #52
+ 1351 0050 1546     		mov	r5, r2
+ 1352 0052 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1353 0054 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1354 0056 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1355 0058 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1356 005a 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 1357 005c 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 1358 005e 2B68     		ldr	r3, [r5]
+ 1359 0060 2360     		str	r3, [r4]
+ 370:SDI12.c       ****     
+ 371:SDI12.c       ****     SDI12_start();
+ 1360              		.loc 1 371 0
+ 1361 0062 FFF7FEFF 		bl	SDI12_start
+ 372:SDI12.c       ****     SDI12_Power_Write(1u);
+ 1362              		.loc 1 372 0
+ 1363 0066 0120     		movs	r0, #1
+ 1364 0068 FFF7FEFF 		bl	SDI12_Power_Write
+ 373:SDI12.c       ****       
+ 374:SDI12.c       ****     // Iterate through each SDI12 sensor
+ 375:SDI12.c       ****     // TODO: Reconstruct to go thorugh each bit of SDI12_flag if
+ 376:SDI12.c       ****     //       SDI12_flag is used to flag multiple SDI-12 sensors
+ 377:SDI12.c       ****     //       (This assumes the number of bits < N_SDI12_SENSORS)
+ 378:SDI12.c       ****     for (k = 0; k < N_SDI12_SENSORS;  k++) {
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 33
+
+
+ 1365              		.loc 1 378 0
+ 1366 006c 0023     		movs	r3, #0
+ 1367 006e 87F86D30 		strb	r3, [r7, #109]
+ 1368 0072 01E1     		b	.L56
+ 1369              	.L70:
+ 379:SDI12.c       ****         if (0x00000001 & SDI12_flag>>k)  {
+ 1370              		.loc 1 379 0
+ 1371 0074 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1372 0078 7A68     		ldr	r2, [r7, #4]
+ 1373 007a 42FA03F3 		asr	r3, r2, r3
+ 1374 007e 03F00103 		and	r3, r3, #1
+ 1375 0082 002B     		cmp	r3, #0
+ 1376 0084 00F0F380 		beq	.L57
+ 380:SDI12.c       ****             /*/ Ensure we don't access nonexistent array index
+ 381:SDI12.c       ****             if(*array_ix + (sensors[k]).nvars >= max_size){
+ 382:SDI12.c       ****                 return *array_ix;
+ 383:SDI12.c       ****             }    
+ 384:SDI12.c       ****             //*/
+ 385:SDI12.c       ****             
+ 386:SDI12.c       ****             //* ---------- Take measurement(s) from k'th SDI-12 sesnor ---------- //
+ 387:SDI12.c       ****             valid = 0; // Reinitialize sensor status
+ 1377              		.loc 1 387 0
+ 1378 0088 0023     		movs	r3, #0
+ 1379 008a 87F86C30 		strb	r3, [r7, #108]
+ 388:SDI12.c       ****             
+ 389:SDI12.c       ****             // Let the sensor power up max 10000 ms = 10 * 1000 ms
+ 390:SDI12.c       ****             for (i = 0; i < 50; i++) {
+ 1380              		.loc 1 390 0
+ 1381 008e 0023     		movs	r3, #0
+ 1382 0090 87F86F30 		strb	r3, [r7, #111]
+ 1383 0094 9DE0     		b	.L58
+ 1384              	.L67:
+ 391:SDI12.c       ****                 CyDelay(200u);
+ 1385              		.loc 1 391 0
+ 1386 0096 C820     		movs	r0, #200
+ 1387 0098 FFF7FEFF 		bl	CyDelay
+ 392:SDI12.c       ****                 
+ 393:SDI12.c       ****                 valid = SDI12_is_active(&sensors[k]); 
+ 1388              		.loc 1 393 0
+ 1389 009c 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1390 00a0 3422     		movs	r2, #52
+ 1391 00a2 02FB03F3 		mul	r3, r2, r3
+ 1392 00a6 7C4A     		ldr	r2, .L72
+ 1393 00a8 1344     		add	r3, r3, r2
+ 1394 00aa 1846     		mov	r0, r3
+ 1395 00ac FFF7FEFF 		bl	SDI12_is_active
+ 1396 00b0 0346     		mov	r3, r0
+ 1397 00b2 87F86C30 		strb	r3, [r7, #108]
+ 394:SDI12.c       ****                 if (valid == 1u){  
+ 1398              		.loc 1 394 0
+ 1399 00b6 97F86C30 		ldrb	r3, [r7, #108]	@ zero_extendqisi2
+ 1400 00ba 012B     		cmp	r3, #1
+ 1401 00bc 54D1     		bne	.L59
+ 395:SDI12.c       ****                     
+ 396:SDI12.c       ****                     LED_Write(0u);
+ 1402              		.loc 1 396 0
+ 1403 00be 0020     		movs	r0, #0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 34
+
+
+ 1404 00c0 FFF7FEFF 		bl	LED_Write
+ 397:SDI12.c       ****                     
+ 398:SDI12.c       ****                     
+ 399:SDI12.c       ****                     //valid = SDI12_change_address(&sensors[0],"0");
+ 400:SDI12.c       ****                     CyDelay(200u); 
+ 1405              		.loc 1 400 0
+ 1406 00c4 C820     		movs	r0, #200
+ 1407 00c6 FFF7FEFF 		bl	CyDelay
+ 401:SDI12.c       ****                     valid = SDI12_info(&sensors[k]); 
+ 1408              		.loc 1 401 0
+ 1409 00ca 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1410 00ce 3422     		movs	r2, #52
+ 1411 00d0 02FB03F3 		mul	r3, r2, r3
+ 1412 00d4 704A     		ldr	r2, .L72
+ 1413 00d6 1344     		add	r3, r3, r2
+ 1414 00d8 1846     		mov	r0, r3
+ 1415 00da FFF7FEFF 		bl	SDI12_info
+ 1416 00de 0346     		mov	r3, r0
+ 1417 00e0 87F86C30 		strb	r3, [r7, #108]
+ 402:SDI12.c       ****                     CyDelay(200u);
+ 1418              		.loc 1 402 0
+ 1419 00e4 C820     		movs	r0, #200
+ 1420 00e6 FFF7FEFF 		bl	CyDelay
+ 403:SDI12.c       **** 
+ 404:SDI12.c       ****                     if (SDI12_take_measurement(&sensors[k])) {
+ 1421              		.loc 1 404 0
+ 1422 00ea 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1423 00ee 3422     		movs	r2, #52
+ 1424 00f0 02FB03F3 		mul	r3, r2, r3
+ 1425 00f4 684A     		ldr	r2, .L72
+ 1426 00f6 1344     		add	r3, r3, r2
+ 1427 00f8 1846     		mov	r0, r3
+ 1428 00fa FFF7FEFF 		bl	SDI12_take_measurement
+ 1429 00fe 0346     		mov	r3, r0
+ 1430 0100 002B     		cmp	r3, #0
+ 1431 0102 03D0     		beq	.L60
+ 405:SDI12.c       ****                         valid = 1; // Successfully took a measurement
+ 1432              		.loc 1 405 0
+ 1433 0104 0123     		movs	r3, #1
+ 1434 0106 87F86C30 		strb	r3, [r7, #108]
+ 406:SDI12.c       ****                         break;                    
+ 1435              		.loc 1 406 0
+ 1436 010a 67E0     		b	.L61
+ 1437              	.L60:
+ 407:SDI12.c       ****                     } else {
+ 408:SDI12.c       ****                         // SDI12 sensor powered on, but unable to parse response
+ 409:SDI12.c       ****                         valid = -2;                    
+ 1438              		.loc 1 409 0
+ 1439 010c FE23     		movs	r3, #254
+ 1440 010e 87F86C30 		strb	r3, [r7, #108]
+ 410:SDI12.c       ****                         for (j = 0; j < (sensors[k]).nvars; j++) {
+ 1441              		.loc 1 410 0
+ 1442 0112 0023     		movs	r3, #0
+ 1443 0114 87F86E30 		strb	r3, [r7, #110]
+ 1444 0118 18E0     		b	.L62
+ 1445              	.L63:
+ 411:SDI12.c       ****                             (sensors[k]).values[j] = (float) valid;
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 35
+
+
+ 1446              		.loc 1 411 0 discriminator 3
+ 1447 011a 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1448 011e 5E4A     		ldr	r2, .L72
+ 1449 0120 3421     		movs	r1, #52
+ 1450 0122 01FB03F3 		mul	r3, r1, r3
+ 1451 0126 1344     		add	r3, r3, r2
+ 1452 0128 0833     		adds	r3, r3, #8
+ 1453 012a 1A68     		ldr	r2, [r3]
+ 1454 012c 97F86E30 		ldrb	r3, [r7, #110]	@ zero_extendqisi2
+ 1455 0130 9B00     		lsls	r3, r3, #2
+ 1456 0132 D418     		adds	r4, r2, r3
+ 1457 0134 97F86C30 		ldrb	r3, [r7, #108]	@ zero_extendqisi2
+ 1458 0138 1846     		mov	r0, r3
+ 1459 013a FFF7FEFF 		bl	__aeabi_ui2f
+ 1460 013e 0346     		mov	r3, r0
+ 1461 0140 2360     		str	r3, [r4]	@ float
+ 410:SDI12.c       ****                         for (j = 0; j < (sensors[k]).nvars; j++) {
+ 1462              		.loc 1 410 0 discriminator 3
+ 1463 0142 97F86E30 		ldrb	r3, [r7, #110]	@ zero_extendqisi2
+ 1464 0146 0133     		adds	r3, r3, #1
+ 1465 0148 87F86E30 		strb	r3, [r7, #110]
+ 1466              	.L62:
+ 410:SDI12.c       ****                         for (j = 0; j < (sensors[k]).nvars; j++) {
+ 1467              		.loc 1 410 0 is_stmt 0 discriminator 1
+ 1468 014c 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1469 0150 514A     		ldr	r2, .L72
+ 1470 0152 3421     		movs	r1, #52
+ 1471 0154 01FB03F3 		mul	r3, r1, r3
+ 1472 0158 1344     		add	r3, r3, r2
+ 1473 015a 0C33     		adds	r3, r3, #12
+ 1474 015c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1475 015e 97F86E20 		ldrb	r2, [r7, #110]	@ zero_extendqisi2
+ 1476 0162 9A42     		cmp	r2, r3
+ 1477 0164 D9D3     		bcc	.L63
+ 1478 0166 2FE0     		b	.L64
+ 1479              	.L59:
+ 412:SDI12.c       ****                         }
+ 413:SDI12.c       ****                        
+ 414:SDI12.c       ****                     }            
+ 415:SDI12.c       ****                                             
+ 416:SDI12.c       ****                 } else {
+ 417:SDI12.c       ****                     // SDI12 sensor not responding. It may be powered off or have a different addre
+ 418:SDI12.c       ****                     valid = -1;
+ 1480              		.loc 1 418 0 is_stmt 1
+ 1481 0168 FF23     		movs	r3, #255
+ 1482 016a 87F86C30 		strb	r3, [r7, #108]
+ 419:SDI12.c       ****                     for (j = 0; j < (sensors[k]).nvars; j++) {
+ 1483              		.loc 1 419 0
+ 1484 016e 0023     		movs	r3, #0
+ 1485 0170 87F86E30 		strb	r3, [r7, #110]
+ 1486 0174 18E0     		b	.L65
+ 1487              	.L66:
+ 420:SDI12.c       ****                         (sensors[k]).values[j] = (float) valid;
+ 1488              		.loc 1 420 0 discriminator 3
+ 1489 0176 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1490 017a 474A     		ldr	r2, .L72
+ 1491 017c 3421     		movs	r1, #52
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 36
+
+
+ 1492 017e 01FB03F3 		mul	r3, r1, r3
+ 1493 0182 1344     		add	r3, r3, r2
+ 1494 0184 0833     		adds	r3, r3, #8
+ 1495 0186 1A68     		ldr	r2, [r3]
+ 1496 0188 97F86E30 		ldrb	r3, [r7, #110]	@ zero_extendqisi2
+ 1497 018c 9B00     		lsls	r3, r3, #2
+ 1498 018e D418     		adds	r4, r2, r3
+ 1499 0190 97F86C30 		ldrb	r3, [r7, #108]	@ zero_extendqisi2
+ 1500 0194 1846     		mov	r0, r3
+ 1501 0196 FFF7FEFF 		bl	__aeabi_ui2f
+ 1502 019a 0346     		mov	r3, r0
+ 1503 019c 2360     		str	r3, [r4]	@ float
+ 419:SDI12.c       ****                     for (j = 0; j < (sensors[k]).nvars; j++) {
+ 1504              		.loc 1 419 0 discriminator 3
+ 1505 019e 97F86E30 		ldrb	r3, [r7, #110]	@ zero_extendqisi2
+ 1506 01a2 0133     		adds	r3, r3, #1
+ 1507 01a4 87F86E30 		strb	r3, [r7, #110]
+ 1508              	.L65:
+ 419:SDI12.c       ****                     for (j = 0; j < (sensors[k]).nvars; j++) {
+ 1509              		.loc 1 419 0 is_stmt 0 discriminator 1
+ 1510 01a8 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1511 01ac 3A4A     		ldr	r2, .L72
+ 1512 01ae 3421     		movs	r1, #52
+ 1513 01b0 01FB03F3 		mul	r3, r1, r3
+ 1514 01b4 1344     		add	r3, r3, r2
+ 1515 01b6 0C33     		adds	r3, r3, #12
+ 1516 01b8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1517 01ba 97F86E20 		ldrb	r2, [r7, #110]	@ zero_extendqisi2
+ 1518 01be 9A42     		cmp	r2, r3
+ 1519 01c0 D9D3     		bcc	.L66
+ 421:SDI12.c       ****                     }
+ 422:SDI12.c       ****                     LED_Write(1u);
+ 1520              		.loc 1 422 0 is_stmt 1
+ 1521 01c2 0120     		movs	r0, #1
+ 1522 01c4 FFF7FEFF 		bl	LED_Write
+ 1523              	.L64:
+ 390:SDI12.c       ****                 CyDelay(200u);
+ 1524              		.loc 1 390 0 discriminator 2
+ 1525 01c8 97F86F30 		ldrb	r3, [r7, #111]	@ zero_extendqisi2
+ 1526 01cc 0133     		adds	r3, r3, #1
+ 1527 01ce 87F86F30 		strb	r3, [r7, #111]
+ 1528              	.L58:
+ 390:SDI12.c       ****                 CyDelay(200u);
+ 1529              		.loc 1 390 0 is_stmt 0 discriminator 1
+ 1530 01d2 97F86F30 		ldrb	r3, [r7, #111]	@ zero_extendqisi2
+ 1531 01d6 312B     		cmp	r3, #49
+ 1532 01d8 7FF65DAF 		bls	.L67
+ 1533              	.L61:
+ 423:SDI12.c       ****                     
+ 424:SDI12.c       ****                 }
+ 425:SDI12.c       ****             }
+ 426:SDI12.c       ****             
+ 427:SDI12.c       ****             LED_Write(0u);
+ 1534              		.loc 1 427 0 is_stmt 1
+ 1535 01dc 0020     		movs	r0, #0
+ 1536 01de FFF7FEFF 		bl	LED_Write
+ 428:SDI12.c       ****             
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 37
+
+
+ 429:SDI12.c       ****             //* ---------- Insert measurement(s) from k'th SDI-12 sesnor ---------- //
+ 430:SDI12.c       ****             // char[] output is used for debugging purposes
+ 431:SDI12.c       ****             clear_str(output); 
+ 1537              		.loc 1 431 0
+ 1538 01e2 07F10803 		add	r3, r7, #8
+ 1539 01e6 1846     		mov	r0, r3
+ 1540 01e8 FFF7FEFF 		bl	clear_str
+ 432:SDI12.c       ****             
+ 433:SDI12.c       ****             // Insert current values in labels[] and readings[]
+ 434:SDI12.c       ****             for (j = 0; j < (sensors[k]).nvars; j++) {
+ 1541              		.loc 1 434 0
+ 1542 01ec 0023     		movs	r3, #0
+ 1543 01ee 87F86E30 		strb	r3, [r7, #110]
+ 1544 01f2 2FE0     		b	.L68
+ 1545              	.L69:
+ 435:SDI12.c       ****                 // char[] output is used for debugging purposes
+ 436:SDI12.c       ****                 sprintf(output,"%s %s %f", output, (sensors[k]).labels[j], (sensors[k]).values[j]);
+ 1546              		.loc 1 436 0 discriminator 3
+ 1547 01f4 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1548 01f8 274A     		ldr	r2, .L72
+ 1549 01fa 3421     		movs	r1, #52
+ 1550 01fc 01FB03F3 		mul	r3, r1, r3
+ 1551 0200 1344     		add	r3, r3, r2
+ 1552 0202 0433     		adds	r3, r3, #4
+ 1553 0204 1A68     		ldr	r2, [r3]
+ 1554 0206 97F86E30 		ldrb	r3, [r7, #110]	@ zero_extendqisi2
+ 1555 020a 9B00     		lsls	r3, r3, #2
+ 1556 020c 1344     		add	r3, r3, r2
+ 1557 020e 1D68     		ldr	r5, [r3]
+ 1558 0210 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1559 0214 204A     		ldr	r2, .L72
+ 1560 0216 3421     		movs	r1, #52
+ 1561 0218 01FB03F3 		mul	r3, r1, r3
+ 1562 021c 1344     		add	r3, r3, r2
+ 1563 021e 0833     		adds	r3, r3, #8
+ 1564 0220 1A68     		ldr	r2, [r3]
+ 1565 0222 97F86E30 		ldrb	r3, [r7, #110]	@ zero_extendqisi2
+ 1566 0226 9B00     		lsls	r3, r3, #2
+ 1567 0228 1344     		add	r3, r3, r2
+ 1568 022a 1B68     		ldr	r3, [r3]	@ float
+ 1569 022c 1846     		mov	r0, r3
+ 1570 022e FFF7FEFF 		bl	__aeabi_f2d
+ 1571 0232 0346     		mov	r3, r0
+ 1572 0234 0C46     		mov	r4, r1
+ 1573 0236 07F10802 		add	r2, r7, #8
+ 1574 023a 07F10800 		add	r0, r7, #8
+ 1575 023e CDE90034 		strd	r3, [sp]
+ 1576 0242 2B46     		mov	r3, r5
+ 1577 0244 1849     		ldr	r1, .L72+16
+ 1578 0246 FFF7FEFF 		bl	sprintf
+ 434:SDI12.c       ****                 // char[] output is used for debugging purposes
+ 1579              		.loc 1 434 0 discriminator 3
+ 1580 024a 97F86E30 		ldrb	r3, [r7, #110]	@ zero_extendqisi2
+ 1581 024e 0133     		adds	r3, r3, #1
+ 1582 0250 87F86E30 		strb	r3, [r7, #110]
+ 1583              	.L68:
+ 434:SDI12.c       ****                 // char[] output is used for debugging purposes
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 38
+
+
+ 1584              		.loc 1 434 0 is_stmt 0 discriminator 1
+ 1585 0254 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1586 0258 0F4A     		ldr	r2, .L72
+ 1587 025a 3421     		movs	r1, #52
+ 1588 025c 01FB03F3 		mul	r3, r1, r3
+ 1589 0260 1344     		add	r3, r3, r2
+ 1590 0262 0C33     		adds	r3, r3, #12
+ 1591 0264 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1592 0266 97F86E20 		ldrb	r2, [r7, #110]	@ zero_extendqisi2
+ 1593 026a 9A42     		cmp	r2, r3
+ 1594 026c C2D3     		bcc	.L69
+ 1595              	.L57:
+ 378:SDI12.c       ****         if (0x00000001 & SDI12_flag>>k)  {
+ 1596              		.loc 1 378 0 is_stmt 1 discriminator 2
+ 1597 026e 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1598 0272 0133     		adds	r3, r3, #1
+ 1599 0274 87F86D30 		strb	r3, [r7, #109]
+ 1600              	.L56:
+ 378:SDI12.c       ****         if (0x00000001 & SDI12_flag>>k)  {
+ 1601              		.loc 1 378 0 is_stmt 0 discriminator 1
+ 1602 0278 97F86D30 		ldrb	r3, [r7, #109]	@ zero_extendqisi2
+ 1603 027c 022B     		cmp	r3, #2
+ 1604 027e 7FF6F9AE 		bls	.L70
+ 437:SDI12.c       ****                 
+ 438:SDI12.c       ****                 /*/
+ 439:SDI12.c       ****                 labels[*array_ix] = (sensors[k]).labels[j];
+ 440:SDI12.c       ****                 readings[*array_ix] = (sensors[k]).values[j];
+ 441:SDI12.c       ****                 (*array_ix) += 1;
+ 442:SDI12.c       ****                 //*/
+ 443:SDI12.c       ****             }              
+ 444:SDI12.c       ****             
+ 445:SDI12.c       ****         }
+ 446:SDI12.c       ****           
+ 447:SDI12.c       ****     }
+ 448:SDI12.c       ****                 
+ 449:SDI12.c       ****     SDI12_Power_Write(0u);
+ 1605              		.loc 1 449 0 is_stmt 1
+ 1606 0282 0020     		movs	r0, #0
+ 1607 0284 FFF7FEFF 		bl	SDI12_Power_Write
+ 450:SDI12.c       ****     SDI12_stop(); 
+ 1608              		.loc 1 450 0
+ 1609 0288 FFF7FEFF 		bl	SDI12_stop
+ 451:SDI12.c       ****     
+ 452:SDI12.c       ****     return 0;//*array_ix;
+ 1610              		.loc 1 452 0
+ 1611 028c 0023     		movs	r3, #0
+ 453:SDI12.c       **** }
+ 1612              		.loc 1 453 0
+ 1613 028e 1846     		mov	r0, r3
+ 1614 0290 7037     		adds	r7, r7, #112
+ 1615              		.cfi_def_cfa_offset 16
+ 1616 0292 BD46     		mov	sp, r7
+ 1617              		.cfi_def_cfa_register 13
+ 1618              		@ sp needed
+ 1619 0294 B0BD     		pop	{r4, r5, r7, pc}
+ 1620              	.L73:
+ 1621 0296 00BF     		.align	2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 39
+
+
+ 1622              	.L72:
+ 1623 0298 00000000 		.word	sensors
+ 1624 029c 00000000 		.word	sontek
+ 1625 02a0 00000000 		.word	solinst
+ 1626 02a4 00000000 		.word	GS3
+ 1627 02a8 58010000 		.word	.LC44
+ 1628              		.cfi_endproc
+ 1629              	.LFE75:
+ 1630              		.size	zip_SDI12, .-zip_SDI12
+ 1631              		.section	.text.isr_SDI12_data,"ax",%progbits
+ 1632              		.align	2
+ 1633              		.global	isr_SDI12_data
+ 1634              		.thumb
+ 1635              		.thumb_func
+ 1636              		.type	isr_SDI12_data, %function
+ 1637              	isr_SDI12_data:
+ 1638              	.LFB76:
+ 454:SDI12.c       **** 
+ 455:SDI12.c       **** CY_ISR(isr_SDI12_data) {
+ 1639              		.loc 1 455 0
+ 1640              		.cfi_startproc
+ 1641              		@ args = 0, pretend = 0, frame = 8
+ 1642              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1643 0000 80B5     		push	{r7, lr}
+ 1644              		.cfi_def_cfa_offset 8
+ 1645              		.cfi_offset 7, -8
+ 1646              		.cfi_offset 14, -4
+ 1647 0002 82B0     		sub	sp, sp, #8
+ 1648              		.cfi_def_cfa_offset 16
+ 1649 0004 00AF     		add	r7, sp, #0
+ 1650              		.cfi_def_cfa_register 7
+ 456:SDI12.c       ****     // hold the next char in the rx register as a temporary variable
+ 457:SDI12.c       ****     char rx_char = SDI12_UART_GetChar();
+ 1651              		.loc 1 457 0
+ 1652 0006 FFF7FEFF 		bl	SDI12_UART_GetChar
+ 1653 000a 0346     		mov	r3, r0
+ 1654 000c FB71     		strb	r3, [r7, #7]
+ 458:SDI12.c       **** 
+ 459:SDI12.c       ****     // store the char in SDI12_uart_buf
+ 460:SDI12.c       ****     if (rx_char) {
+ 1655              		.loc 1 460 0
+ 1656 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 1657 0010 002B     		cmp	r3, #0
+ 1658 0012 09D0     		beq	.L76
+ 461:SDI12.c       ****         // unsigned ints don't `overflow`, they reset at 0 if they are
+ 462:SDI12.c       ****         // incremented one more than it's max value. It will be obvious if an
+ 463:SDI12.c       ****         // `overflow` occurs
+ 464:SDI12.c       ****         SDI12_uart_buf[SDI12_buf_idx++] = rx_char;
+ 1659              		.loc 1 464 0
+ 1660 0014 064B     		ldr	r3, .L77
+ 1661 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 1662 0018 5A1C     		adds	r2, r3, #1
+ 1663 001a D1B2     		uxtb	r1, r2
+ 1664 001c 044A     		ldr	r2, .L77
+ 1665 001e 1170     		strb	r1, [r2]
+ 1666 0020 1946     		mov	r1, r3
+ 1667 0022 044A     		ldr	r2, .L77+4
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 40
+
+
+ 1668 0024 FB79     		ldrb	r3, [r7, #7]
+ 1669 0026 5354     		strb	r3, [r2, r1]
+ 1670              	.L76:
+ 465:SDI12.c       ****     }
+ 466:SDI12.c       **** }
+ 1671              		.loc 1 466 0
+ 1672 0028 00BF     		nop
+ 1673 002a 0837     		adds	r7, r7, #8
+ 1674              		.cfi_def_cfa_offset 8
+ 1675 002c BD46     		mov	sp, r7
+ 1676              		.cfi_def_cfa_register 13
+ 1677              		@ sp needed
+ 1678 002e 80BD     		pop	{r7, pc}
+ 1679              	.L78:
+ 1680              		.align	2
+ 1681              	.L77:
+ 1682 0030 01010000 		.word	SDI12_buf_idx
+ 1683 0034 00000000 		.word	SDI12_uart_buf
+ 1684              		.cfi_endproc
+ 1685              	.LFE76:
+ 1686              		.size	isr_SDI12_data, .-isr_SDI12_data
+ 1687              		.text
+ 1688              	.Letext0:
+ 1689              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1690              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 1691              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 1692              		.file 5 "SDI12.h"
+ 1693              		.file 6 "data.h"
+ 1694              		.file 7 "modem.h"
+ 1695              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 1696              		.section	.debug_info,"",%progbits
+ 1697              	.Ldebug_info0:
+ 1698 0000 BB070000 		.4byte	0x7bb
+ 1699 0004 0400     		.2byte	0x4
+ 1700 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1701 000a 04       		.byte	0x4
+ 1702 000b 01       		.uleb128 0x1
+ 1703 000c 76000000 		.4byte	.LASF97
+ 1704 0010 0C       		.byte	0xc
+ 1705 0011 DD020000 		.4byte	.LASF98
+ 1706 0015 DE030000 		.4byte	.LASF99
+ 1707 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 1708 001d 00000000 		.4byte	0
+ 1709 0021 00000000 		.4byte	.Ldebug_line0
+ 1710 0025 02       		.uleb128 0x2
+ 1711 0026 01       		.byte	0x1
+ 1712 0027 06       		.byte	0x6
+ 1713 0028 89020000 		.4byte	.LASF0
+ 1714 002c 03       		.uleb128 0x3
+ 1715 002d 0F020000 		.4byte	.LASF4
+ 1716 0031 02       		.byte	0x2
+ 1717 0032 1D       		.byte	0x1d
+ 1718 0033 37000000 		.4byte	0x37
+ 1719 0037 02       		.uleb128 0x2
+ 1720 0038 01       		.byte	0x1
+ 1721 0039 08       		.byte	0x8
+ 1722 003a 4A020000 		.4byte	.LASF1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 41
+
+
+ 1723 003e 02       		.uleb128 0x2
+ 1724 003f 02       		.byte	0x2
+ 1725 0040 05       		.byte	0x5
+ 1726 0041 20010000 		.4byte	.LASF2
+ 1727 0045 02       		.uleb128 0x2
+ 1728 0046 02       		.byte	0x2
+ 1729 0047 07       		.byte	0x7
+ 1730 0048 EE020000 		.4byte	.LASF3
+ 1731 004c 03       		.uleb128 0x3
+ 1732 004d 3B040000 		.4byte	.LASF5
+ 1733 0051 02       		.byte	0x2
+ 1734 0052 3F       		.byte	0x3f
+ 1735 0053 57000000 		.4byte	0x57
+ 1736 0057 02       		.uleb128 0x2
+ 1737 0058 04       		.byte	0x4
+ 1738 0059 05       		.byte	0x5
+ 1739 005a E4010000 		.4byte	.LASF6
+ 1740 005e 02       		.uleb128 0x2
+ 1741 005f 04       		.byte	0x4
+ 1742 0060 07       		.byte	0x7
+ 1743 0061 A2030000 		.4byte	.LASF7
+ 1744 0065 02       		.uleb128 0x2
+ 1745 0066 08       		.byte	0x8
+ 1746 0067 05       		.byte	0x5
+ 1747 0068 AD010000 		.4byte	.LASF8
+ 1748 006c 02       		.uleb128 0x2
+ 1749 006d 08       		.byte	0x8
+ 1750 006e 07       		.byte	0x7
+ 1751 006f BB010000 		.4byte	.LASF9
+ 1752 0073 04       		.uleb128 0x4
+ 1753 0074 04       		.byte	0x4
+ 1754 0075 05       		.byte	0x5
+ 1755 0076 696E7400 		.ascii	"int\000"
+ 1756 007a 02       		.uleb128 0x2
+ 1757 007b 04       		.byte	0x4
+ 1758 007c 07       		.byte	0x7
+ 1759 007d 9D020000 		.4byte	.LASF10
+ 1760 0081 03       		.uleb128 0x3
+ 1761 0082 37010000 		.4byte	.LASF11
+ 1762 0086 03       		.byte	0x3
+ 1763 0087 18       		.byte	0x18
+ 1764 0088 2C000000 		.4byte	0x2c
+ 1765 008c 03       		.uleb128 0x3
+ 1766 008d 4E030000 		.4byte	.LASF12
+ 1767 0091 03       		.byte	0x3
+ 1768 0092 2C       		.byte	0x2c
+ 1769 0093 4C000000 		.4byte	0x4c
+ 1770 0097 05       		.uleb128 0x5
+ 1771 0098 61010000 		.4byte	.LASF13
+ 1772 009c 04       		.byte	0x4
+ 1773 009d 9201     		.2byte	0x192
+ 1774 009f 37000000 		.4byte	0x37
+ 1775 00a3 05       		.uleb128 0x5
+ 1776 00a4 30010000 		.4byte	.LASF14
+ 1777 00a8 04       		.byte	0x4
+ 1778 00a9 9301     		.2byte	0x193
+ 1779 00ab 45000000 		.4byte	0x45
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 42
+
+
+ 1780 00af 05       		.uleb128 0x5
+ 1781 00b0 9B030000 		.4byte	.LASF15
+ 1782 00b4 04       		.byte	0x4
+ 1783 00b5 9401     		.2byte	0x194
+ 1784 00b7 5E000000 		.4byte	0x5e
+ 1785 00bb 05       		.uleb128 0x5
+ 1786 00bc A7010000 		.4byte	.LASF16
+ 1787 00c0 04       		.byte	0x4
+ 1788 00c1 9701     		.2byte	0x197
+ 1789 00c3 57000000 		.4byte	0x57
+ 1790 00c7 02       		.uleb128 0x2
+ 1791 00c8 04       		.byte	0x4
+ 1792 00c9 04       		.byte	0x4
+ 1793 00ca A1010000 		.4byte	.LASF17
+ 1794 00ce 02       		.uleb128 0x2
+ 1795 00cf 08       		.byte	0x8
+ 1796 00d0 04       		.byte	0x4
+ 1797 00d1 8D040000 		.4byte	.LASF18
+ 1798 00d5 02       		.uleb128 0x2
+ 1799 00d6 01       		.byte	0x1
+ 1800 00d7 08       		.byte	0x8
+ 1801 00d8 D2010000 		.4byte	.LASF19
+ 1802 00dc 02       		.uleb128 0x2
+ 1803 00dd 08       		.byte	0x8
+ 1804 00de 04       		.byte	0x4
+ 1805 00df 3E020000 		.4byte	.LASF20
+ 1806 00e3 02       		.uleb128 0x2
+ 1807 00e4 04       		.byte	0x4
+ 1808 00e5 07       		.byte	0x7
+ 1809 00e6 49000000 		.4byte	.LASF21
+ 1810 00ea 06       		.uleb128 0x6
+ 1811 00eb 04       		.byte	0x4
+ 1812 00ec D5000000 		.4byte	0xd5
+ 1813 00f0 07       		.uleb128 0x7
+ 1814 00f1 34       		.byte	0x34
+ 1815 00f2 05       		.byte	0x5
+ 1816 00f3 23       		.byte	0x23
+ 1817 00f4 65010000 		.4byte	0x165
+ 1818 00f8 08       		.uleb128 0x8
+ 1819 00f9 95020000 		.4byte	.LASF22
+ 1820 00fd 05       		.byte	0x5
+ 1821 00fe 25       		.byte	0x25
+ 1822 00ff EA000000 		.4byte	0xea
+ 1823 0103 00       		.byte	0
+ 1824 0104 08       		.uleb128 0x8
+ 1825 0105 34000000 		.4byte	.LASF23
+ 1826 0109 05       		.byte	0x5
+ 1827 010a 26       		.byte	0x26
+ 1828 010b 65010000 		.4byte	0x165
+ 1829 010f 04       		.byte	0x4
+ 1830 0110 08       		.uleb128 0x8
+ 1831 0111 08020000 		.4byte	.LASF24
+ 1832 0115 05       		.byte	0x5
+ 1833 0116 27       		.byte	0x27
+ 1834 0117 6B010000 		.4byte	0x16b
+ 1835 011b 08       		.byte	0x8
+ 1836 011c 08       		.uleb128 0x8
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 43
+
+
+ 1837 011d 75040000 		.4byte	.LASF25
+ 1838 0121 05       		.byte	0x5
+ 1839 0122 28       		.byte	0x28
+ 1840 0123 97000000 		.4byte	0x97
+ 1841 0127 0C       		.byte	0xc
+ 1842 0128 08       		.uleb128 0x8
+ 1843 0129 D2040000 		.4byte	.LASF26
+ 1844 012d 05       		.byte	0x5
+ 1845 012e 2A       		.byte	0x2a
+ 1846 012f 71010000 		.4byte	0x171
+ 1847 0133 0D       		.byte	0xd
+ 1848 0134 08       		.uleb128 0x8
+ 1849 0135 DA040000 		.4byte	.LASF27
+ 1850 0139 05       		.byte	0x5
+ 1851 013a 2B       		.byte	0x2b
+ 1852 013b 81010000 		.4byte	0x181
+ 1853 013f 10       		.byte	0x10
+ 1854 0140 08       		.uleb128 0x8
+ 1855 0141 6F040000 		.4byte	.LASF28
+ 1856 0145 05       		.byte	0x5
+ 1857 0146 2C       		.byte	0x2c
+ 1858 0147 91010000 		.4byte	0x191
+ 1859 014b 19       		.byte	0x19
+ 1860 014c 08       		.uleb128 0x8
+ 1861 014d 2C000000 		.4byte	.LASF29
+ 1862 0151 05       		.byte	0x5
+ 1863 0152 2D       		.byte	0x2d
+ 1864 0153 A1010000 		.4byte	0x1a1
+ 1865 0157 20       		.byte	0x20
+ 1866 0158 08       		.uleb128 0x8
+ 1867 0159 5E030000 		.4byte	.LASF30
+ 1868 015d 05       		.byte	0x5
+ 1869 015e 2E       		.byte	0x2e
+ 1870 015f B1010000 		.4byte	0x1b1
+ 1871 0163 24       		.byte	0x24
+ 1872 0164 00       		.byte	0
+ 1873 0165 06       		.uleb128 0x6
+ 1874 0166 04       		.byte	0x4
+ 1875 0167 EA000000 		.4byte	0xea
+ 1876 016b 06       		.uleb128 0x6
+ 1877 016c 04       		.byte	0x4
+ 1878 016d C7000000 		.4byte	0xc7
+ 1879 0171 09       		.uleb128 0x9
+ 1880 0172 D5000000 		.4byte	0xd5
+ 1881 0176 81010000 		.4byte	0x181
+ 1882 017a 0A       		.uleb128 0xa
+ 1883 017b E3000000 		.4byte	0xe3
+ 1884 017f 02       		.byte	0x2
+ 1885 0180 00       		.byte	0
+ 1886 0181 09       		.uleb128 0x9
+ 1887 0182 D5000000 		.4byte	0xd5
+ 1888 0186 91010000 		.4byte	0x191
+ 1889 018a 0A       		.uleb128 0xa
+ 1890 018b E3000000 		.4byte	0xe3
+ 1891 018f 08       		.byte	0x8
+ 1892 0190 00       		.byte	0
+ 1893 0191 09       		.uleb128 0x9
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 44
+
+
+ 1894 0192 D5000000 		.4byte	0xd5
+ 1895 0196 A1010000 		.4byte	0x1a1
+ 1896 019a 0A       		.uleb128 0xa
+ 1897 019b E3000000 		.4byte	0xe3
+ 1898 019f 06       		.byte	0x6
+ 1899 01a0 00       		.byte	0
+ 1900 01a1 09       		.uleb128 0x9
+ 1901 01a2 D5000000 		.4byte	0xd5
+ 1902 01a6 B1010000 		.4byte	0x1b1
+ 1903 01aa 0A       		.uleb128 0xa
+ 1904 01ab E3000000 		.4byte	0xe3
+ 1905 01af 03       		.byte	0x3
+ 1906 01b0 00       		.byte	0
+ 1907 01b1 09       		.uleb128 0x9
+ 1908 01b2 D5000000 		.4byte	0xd5
+ 1909 01b6 C1010000 		.4byte	0x1c1
+ 1910 01ba 0A       		.uleb128 0xa
+ 1911 01bb E3000000 		.4byte	0xe3
+ 1912 01bf 0D       		.byte	0xd
+ 1913 01c0 00       		.byte	0
+ 1914 01c1 03       		.uleb128 0x3
+ 1915 01c2 67010000 		.4byte	.LASF31
+ 1916 01c6 05       		.byte	0x5
+ 1917 01c7 2F       		.byte	0x2f
+ 1918 01c8 F0000000 		.4byte	0xf0
+ 1919 01cc 07       		.uleb128 0x7
+ 1920 01cd 2C       		.byte	0x2c
+ 1921 01ce 06       		.byte	0x6
+ 1922 01cf 14       		.byte	0x14
+ 1923 01d0 F9010000 		.4byte	0x1f9
+ 1924 01d4 0B       		.uleb128 0xb
+ 1925 01d5 6B657900 		.ascii	"key\000"
+ 1926 01d9 06       		.byte	0x6
+ 1927 01da 15       		.byte	0x15
+ 1928 01db F9010000 		.4byte	0x1f9
+ 1929 01df 00       		.byte	0
+ 1930 01e0 08       		.uleb128 0x8
+ 1931 01e1 2A010000 		.4byte	.LASF32
+ 1932 01e5 06       		.byte	0x6
+ 1933 01e6 16       		.byte	0x16
+ 1934 01e7 F9010000 		.4byte	0x1f9
+ 1935 01eb 14       		.byte	0x14
+ 1936 01ec 08       		.uleb128 0x8
+ 1937 01ed 7E010000 		.4byte	.LASF33
+ 1938 01f1 06       		.byte	0x6
+ 1939 01f2 17       		.byte	0x17
+ 1940 01f3 BB000000 		.4byte	0xbb
+ 1941 01f7 28       		.byte	0x28
+ 1942 01f8 00       		.byte	0
+ 1943 01f9 09       		.uleb128 0x9
+ 1944 01fa D5000000 		.4byte	0xd5
+ 1945 01fe 09020000 		.4byte	0x209
+ 1946 0202 0A       		.uleb128 0xa
+ 1947 0203 E3000000 		.4byte	0xe3
+ 1948 0207 13       		.byte	0x13
+ 1949 0208 00       		.byte	0
+ 1950 0209 03       		.uleb128 0x3
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 45
+
+
+ 1951 020a AA020000 		.4byte	.LASF34
+ 1952 020e 06       		.byte	0x6
+ 1953 020f 19       		.byte	0x19
+ 1954 0210 CC010000 		.4byte	0x1cc
+ 1955 0214 07       		.uleb128 0x7
+ 1956 0215 3C       		.byte	0x3c
+ 1957 0216 07       		.byte	0x7
+ 1958 0217 35       		.byte	0x35
+ 1959 0218 41020000 		.4byte	0x241
+ 1960 021c 08       		.uleb128 0x8
+ 1961 021d 25000000 		.4byte	.LASF35
+ 1962 0221 07       		.byte	0x7
+ 1963 0222 36       		.byte	0x36
+ 1964 0223 F9010000 		.4byte	0x1f9
+ 1965 0227 00       		.byte	0
+ 1966 0228 08       		.uleb128 0x8
+ 1967 0229 06000000 		.4byte	.LASF36
+ 1968 022d 07       		.byte	0x7
+ 1969 022e 37       		.byte	0x37
+ 1970 022f F9010000 		.4byte	0x1f9
+ 1971 0233 14       		.byte	0x14
+ 1972 0234 08       		.uleb128 0x8
+ 1973 0235 41030000 		.4byte	.LASF37
+ 1974 0239 07       		.byte	0x7
+ 1975 023a 38       		.byte	0x38
+ 1976 023b F9010000 		.4byte	0x1f9
+ 1977 023f 28       		.byte	0x28
+ 1978 0240 00       		.byte	0
+ 1979 0241 03       		.uleb128 0x3
+ 1980 0242 D7010000 		.4byte	.LASF38
+ 1981 0246 07       		.byte	0x7
+ 1982 0247 3A       		.byte	0x3a
+ 1983 0248 14020000 		.4byte	0x214
+ 1984 024c 07       		.uleb128 0x7
+ 1985 024d 20       		.byte	0x20
+ 1986 024e 07       		.byte	0x7
+ 1987 024f 3C       		.byte	0x3c
+ 1988 0250 B5020000 		.4byte	0x2b5
+ 1989 0254 08       		.uleb128 0x8
+ 1990 0255 B6020000 		.4byte	.LASF39
+ 1991 0259 07       		.byte	0x7
+ 1992 025a 3D       		.byte	0x3d
+ 1993 025b 73000000 		.4byte	0x73
+ 1994 025f 00       		.byte	0
+ 1995 0260 0B       		.uleb128 0xb
+ 1996 0261 62657200 		.ascii	"ber\000"
+ 1997 0265 07       		.byte	0x7
+ 1998 0266 3E       		.byte	0x3e
+ 1999 0267 73000000 		.4byte	0x73
+ 2000 026b 04       		.byte	0x4
+ 2001 026c 08       		.uleb128 0x8
+ 2002 026d 74010000 		.4byte	.LASF40
+ 2003 0271 07       		.byte	0x7
+ 2004 0272 3F       		.byte	0x3f
+ 2005 0273 73000000 		.4byte	0x73
+ 2006 0277 08       		.byte	0x8
+ 2007 0278 08       		.uleb128 0x8
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 46
+
+
+ 2008 0279 1B010000 		.4byte	.LASF41
+ 2009 027d 07       		.byte	0x7
+ 2010 027e 40       		.byte	0x40
+ 2011 027f 73000000 		.4byte	0x73
+ 2012 0283 0C       		.byte	0xc
+ 2013 0284 08       		.uleb128 0x8
+ 2014 0285 96030000 		.4byte	.LASF42
+ 2015 0289 07       		.byte	0x7
+ 2016 028a 41       		.byte	0x41
+ 2017 028b 73000000 		.4byte	0x73
+ 2018 028f 10       		.byte	0x10
+ 2019 0290 08       		.uleb128 0x8
+ 2020 0291 79010000 		.4byte	.LASF43
+ 2021 0295 07       		.byte	0x7
+ 2022 0296 42       		.byte	0x42
+ 2023 0297 73000000 		.4byte	0x73
+ 2024 029b 14       		.byte	0x14
+ 2025 029c 08       		.uleb128 0x8
+ 2026 029d 01030000 		.4byte	.LASF44
+ 2027 02a1 07       		.byte	0x7
+ 2028 02a2 43       		.byte	0x43
+ 2029 02a3 73000000 		.4byte	0x73
+ 2030 02a7 18       		.byte	0x18
+ 2031 02a8 08       		.uleb128 0x8
+ 2032 02a9 2E030000 		.4byte	.LASF45
+ 2033 02ad 07       		.byte	0x7
+ 2034 02ae 44       		.byte	0x44
+ 2035 02af 73000000 		.4byte	0x73
+ 2036 02b3 1C       		.byte	0x1c
+ 2037 02b4 00       		.byte	0
+ 2038 02b5 03       		.uleb128 0x3
+ 2039 02b6 65030000 		.4byte	.LASF46
+ 2040 02ba 07       		.byte	0x7
+ 2041 02bb 46       		.byte	0x46
+ 2042 02bc 4C020000 		.4byte	0x24c
+ 2043 02c0 07       		.uleb128 0x7
+ 2044 02c1 05       		.byte	0x5
+ 2045 02c2 07       		.byte	0x7
+ 2046 02c3 52       		.byte	0x52
+ 2047 02c4 05030000 		.4byte	0x305
+ 2048 02c8 08       		.uleb128 0x8
+ 2049 02c9 E1040000 		.4byte	.LASF47
+ 2050 02cd 07       		.byte	0x7
+ 2051 02ce 54       		.byte	0x54
+ 2052 02cf 97000000 		.4byte	0x97
+ 2053 02d3 00       		.byte	0
+ 2054 02d4 08       		.uleb128 0x8
+ 2055 02d5 E5020000 		.4byte	.LASF48
+ 2056 02d9 07       		.byte	0x7
+ 2057 02da 56       		.byte	0x56
+ 2058 02db 05030000 		.4byte	0x305
+ 2059 02df 01       		.byte	0x1
+ 2060 02e0 08       		.uleb128 0x8
+ 2061 02e1 31020000 		.4byte	.LASF49
+ 2062 02e5 07       		.byte	0x7
+ 2063 02e6 58       		.byte	0x58
+ 2064 02e7 97000000 		.4byte	0x97
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 47
+
+
+ 2065 02eb 02       		.byte	0x2
+ 2066 02ec 08       		.uleb128 0x8
+ 2067 02ed BC020000 		.4byte	.LASF50
+ 2068 02f1 07       		.byte	0x7
+ 2069 02f2 5A       		.byte	0x5a
+ 2070 02f3 97000000 		.4byte	0x97
+ 2071 02f7 03       		.byte	0x3
+ 2072 02f8 08       		.uleb128 0x8
+ 2073 02f9 0C040000 		.4byte	.LASF51
+ 2074 02fd 07       		.byte	0x7
+ 2075 02fe 5D       		.byte	0x5d
+ 2076 02ff 97000000 		.4byte	0x97
+ 2077 0303 04       		.byte	0x4
+ 2078 0304 00       		.byte	0
+ 2079 0305 02       		.uleb128 0x2
+ 2080 0306 01       		.byte	0x1
+ 2081 0307 02       		.byte	0x2
+ 2082 0308 73030000 		.4byte	.LASF52
+ 2083 030c 03       		.uleb128 0x3
+ 2084 030d C6020000 		.4byte	.LASF53
+ 2085 0311 07       		.byte	0x7
+ 2086 0312 5F       		.byte	0x5f
+ 2087 0313 C0020000 		.4byte	0x2c0
+ 2088 0317 0C       		.uleb128 0xc
+ 2089 0318 25020000 		.4byte	.LASF54
+ 2090 031c 01       		.byte	0x1
+ 2091 031d 43       		.byte	0x43
+ 2092 031e 00000000 		.4byte	.LFB64
+ 2093 0322 18000000 		.4byte	.LFE64-.LFB64
+ 2094 0326 01       		.uleb128 0x1
+ 2095 0327 9C       		.byte	0x9c
+ 2096 0328 0C       		.uleb128 0xc
+ 2097 0329 52000000 		.4byte	.LASF55
+ 2098 032d 01       		.byte	0x1
+ 2099 032e 48       		.byte	0x48
+ 2100 032f 00000000 		.4byte	.LFB65
+ 2101 0333 10000000 		.4byte	.LFE65-.LFB65
+ 2102 0337 01       		.uleb128 0x1
+ 2103 0338 9C       		.byte	0x9c
+ 2104 0339 0D       		.uleb128 0xd
+ 2105 033a 6C000000 		.4byte	.LASF58
+ 2106 033e 01       		.byte	0x1
+ 2107 033f 4D       		.byte	0x4d
+ 2108 0340 81000000 		.4byte	0x81
+ 2109 0344 00000000 		.4byte	.LFB66
+ 2110 0348 24000000 		.4byte	.LFE66-.LFB66
+ 2111 034c 01       		.uleb128 0x1
+ 2112 034d 9C       		.byte	0x9c
+ 2113 034e 61030000 		.4byte	0x361
+ 2114 0352 0E       		.uleb128 0xe
+ 2115 0353 73747200 		.ascii	"str\000"
+ 2116 0357 01       		.byte	0x1
+ 2117 0358 4D       		.byte	0x4d
+ 2118 0359 EA000000 		.4byte	0xea
+ 2119 035d 02       		.uleb128 0x2
+ 2120 035e 91       		.byte	0x91
+ 2121 035f 74       		.sleb128 -12
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 48
+
+
+ 2122 0360 00       		.byte	0
+ 2123 0361 0C       		.uleb128 0xc
+ 2124 0362 18040000 		.4byte	.LASF56
+ 2125 0366 01       		.byte	0x1
+ 2126 0367 58       		.byte	0x58
+ 2127 0368 00000000 		.4byte	.LFB67
+ 2128 036c 28000000 		.4byte	.LFE67-.LFB67
+ 2129 0370 01       		.uleb128 0x1
+ 2130 0371 9C       		.byte	0x9c
+ 2131 0372 0F       		.uleb128 0xf
+ 2132 0373 79030000 		.4byte	.LASF100
+ 2133 0377 01       		.byte	0x1
+ 2134 0378 5E       		.byte	0x5e
+ 2135 0379 EA000000 		.4byte	0xea
+ 2136 037d 00000000 		.4byte	.LFB68
+ 2137 0381 14000000 		.4byte	.LFE68-.LFB68
+ 2138 0385 01       		.uleb128 0x1
+ 2139 0386 9C       		.byte	0x9c
+ 2140 0387 10       		.uleb128 0x10
+ 2141 0388 F9030000 		.4byte	.LASF70
+ 2142 038c 01       		.byte	0x1
+ 2143 038d 6B       		.byte	0x6b
+ 2144 038e 00000000 		.4byte	.LFB69
+ 2145 0392 32000000 		.4byte	.LFE69-.LFB69
+ 2146 0396 01       		.uleb128 0x1
+ 2147 0397 9C       		.byte	0x9c
+ 2148 0398 AB030000 		.4byte	0x3ab
+ 2149 039c 11       		.uleb128 0x11
+ 2150 039d EB040000 		.4byte	.LASF57
+ 2151 03a1 01       		.byte	0x1
+ 2152 03a2 6B       		.byte	0x6b
+ 2153 03a3 EA000000 		.4byte	0xea
+ 2154 03a7 02       		.uleb128 0x2
+ 2155 03a8 91       		.byte	0x91
+ 2156 03a9 74       		.sleb128 -12
+ 2157 03aa 00       		.byte	0
+ 2158 03ab 0D       		.uleb128 0xd
+ 2159 03ac 3F010000 		.4byte	.LASF59
+ 2160 03b0 01       		.byte	0x1
+ 2161 03b1 80       		.byte	0x80
+ 2162 03b2 97000000 		.4byte	0x97
+ 2163 03b6 00000000 		.4byte	.LFB70
+ 2164 03ba 74000000 		.4byte	.LFE70-.LFB70
+ 2165 03be 01       		.uleb128 0x1
+ 2166 03bf 9C       		.byte	0x9c
+ 2167 03c0 D3030000 		.4byte	0x3d3
+ 2168 03c4 11       		.uleb128 0x11
+ 2169 03c5 08050000 		.4byte	.LASF60
+ 2170 03c9 01       		.byte	0x1
+ 2171 03ca 80       		.byte	0x80
+ 2172 03cb D3030000 		.4byte	0x3d3
+ 2173 03cf 02       		.uleb128 0x2
+ 2174 03d0 91       		.byte	0x91
+ 2175 03d1 74       		.sleb128 -12
+ 2176 03d2 00       		.byte	0
+ 2177 03d3 06       		.uleb128 0x6
+ 2178 03d4 04       		.byte	0x4
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 49
+
+
+ 2179 03d5 C1010000 		.4byte	0x1c1
+ 2180 03d9 0D       		.uleb128 0xd
+ 2181 03da F3040000 		.4byte	.LASF61
+ 2182 03de 01       		.byte	0x1
+ 2183 03df A2       		.byte	0xa2
+ 2184 03e0 97000000 		.4byte	0x97
+ 2185 03e4 00000000 		.4byte	.LFB71
+ 2186 03e8 A4000000 		.4byte	.LFE71-.LFB71
+ 2187 03ec 01       		.uleb128 0x1
+ 2188 03ed 9C       		.byte	0x9c
+ 2189 03ee 0F040000 		.4byte	0x40f
+ 2190 03f2 11       		.uleb128 0x11
+ 2191 03f3 08050000 		.4byte	.LASF60
+ 2192 03f7 01       		.byte	0x1
+ 2193 03f8 A2       		.byte	0xa2
+ 2194 03f9 D3030000 		.4byte	0x3d3
+ 2195 03fd 02       		.uleb128 0x2
+ 2196 03fe 91       		.byte	0x91
+ 2197 03ff 74       		.sleb128 -12
+ 2198 0400 11       		.uleb128 0x11
+ 2199 0401 19000000 		.4byte	.LASF62
+ 2200 0405 01       		.byte	0x1
+ 2201 0406 A2       		.byte	0xa2
+ 2202 0407 EA000000 		.4byte	0xea
+ 2203 040b 02       		.uleb128 0x2
+ 2204 040c 91       		.byte	0x91
+ 2205 040d 70       		.sleb128 -16
+ 2206 040e 00       		.byte	0
+ 2207 040f 0D       		.uleb128 0xd
+ 2208 0410 BB040000 		.4byte	.LASF63
+ 2209 0414 01       		.byte	0x1
+ 2210 0415 C2       		.byte	0xc2
+ 2211 0416 97000000 		.4byte	0x97
+ 2212 041a 00000000 		.4byte	.LFB72
+ 2213 041e 14020000 		.4byte	.LFE72-.LFB72
+ 2214 0422 01       		.uleb128 0x1
+ 2215 0423 9C       		.byte	0x9c
+ 2216 0424 37040000 		.4byte	0x437
+ 2217 0428 11       		.uleb128 0x11
+ 2218 0429 08050000 		.4byte	.LASF60
+ 2219 042d 01       		.byte	0x1
+ 2220 042e C2       		.byte	0xc2
+ 2221 042f D3030000 		.4byte	0x3d3
+ 2222 0433 02       		.uleb128 0x2
+ 2223 0434 91       		.byte	0x91
+ 2224 0435 6C       		.sleb128 -20
+ 2225 0436 00       		.byte	0
+ 2226 0437 12       		.uleb128 0x12
+ 2227 0438 4D040000 		.4byte	.LASF64
+ 2228 043c 01       		.byte	0x1
+ 2229 043d 2501     		.2byte	0x125
+ 2230 043f 97000000 		.4byte	0x97
+ 2231 0443 00000000 		.4byte	.LFB73
+ 2232 0447 18000000 		.4byte	.LFE73-.LFB73
+ 2233 044b 01       		.uleb128 0x1
+ 2234 044c 9C       		.byte	0x9c
+ 2235 044d 61040000 		.4byte	0x461
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 50
+
+
+ 2236 0451 13       		.uleb128 0x13
+ 2237 0452 08050000 		.4byte	.LASF60
+ 2238 0456 01       		.byte	0x1
+ 2239 0457 2501     		.2byte	0x125
+ 2240 0459 D3030000 		.4byte	0x3d3
+ 2241 045d 02       		.uleb128 0x2
+ 2242 045e 91       		.byte	0x91
+ 2243 045f 74       		.sleb128 -12
+ 2244 0460 00       		.byte	0
+ 2245 0461 12       		.uleb128 0x12
+ 2246 0462 30040000 		.4byte	.LASF65
+ 2247 0466 01       		.byte	0x1
+ 2248 0467 3901     		.2byte	0x139
+ 2249 0469 97000000 		.4byte	0x97
+ 2250 046d 00000000 		.4byte	.LFB74
+ 2251 0471 34010000 		.4byte	.LFE74-.LFB74
+ 2252 0475 01       		.uleb128 0x1
+ 2253 0476 9C       		.byte	0x9c
+ 2254 0477 8B040000 		.4byte	0x48b
+ 2255 047b 13       		.uleb128 0x13
+ 2256 047c 08050000 		.4byte	.LASF60
+ 2257 0480 01       		.byte	0x1
+ 2258 0481 3901     		.2byte	0x139
+ 2259 0483 D3030000 		.4byte	0x3d3
+ 2260 0487 02       		.uleb128 0x2
+ 2261 0488 91       		.byte	0x91
+ 2262 0489 6C       		.sleb128 -20
+ 2263 048a 00       		.byte	0
+ 2264 048b 12       		.uleb128 0x12
+ 2265 048c B9030000 		.4byte	.LASF66
+ 2266 0490 01       		.byte	0x1
+ 2267 0491 6B01     		.2byte	0x16b
+ 2268 0493 97000000 		.4byte	0x97
+ 2269 0497 00000000 		.4byte	.LFB75
+ 2270 049b AC020000 		.4byte	.LFE75-.LFB75
+ 2271 049f 01       		.uleb128 0x1
+ 2272 04a0 9C       		.byte	0x9c
+ 2273 04a1 FC040000 		.4byte	0x4fc
+ 2274 04a5 13       		.uleb128 0x13
+ 2275 04a6 94040000 		.4byte	.LASF67
+ 2276 04aa 01       		.byte	0x1
+ 2277 04ab 6B01     		.2byte	0x16b
+ 2278 04ad 73000000 		.4byte	0x73
+ 2279 04b1 03       		.uleb128 0x3
+ 2280 04b2 91       		.byte	0x91
+ 2281 04b3 847F     		.sleb128 -124
+ 2282 04b5 14       		.uleb128 0x14
+ 2283 04b6 86040000 		.4byte	.LASF68
+ 2284 04ba 01       		.byte	0x1
+ 2285 04bb 6C01     		.2byte	0x16c
+ 2286 04bd FC040000 		.4byte	0x4fc
+ 2287 04c1 03       		.uleb128 0x3
+ 2288 04c2 91       		.byte	0x91
+ 2289 04c3 887F     		.sleb128 -120
+ 2290 04c5 15       		.uleb128 0x15
+ 2291 04c6 6900     		.ascii	"i\000"
+ 2292 04c8 01       		.byte	0x1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 51
+
+
+ 2293 04c9 6D01     		.2byte	0x16d
+ 2294 04cb 97000000 		.4byte	0x97
+ 2295 04cf 02       		.uleb128 0x2
+ 2296 04d0 91       		.byte	0x91
+ 2297 04d1 6F       		.sleb128 -17
+ 2298 04d2 15       		.uleb128 0x15
+ 2299 04d3 6A00     		.ascii	"j\000"
+ 2300 04d5 01       		.byte	0x1
+ 2301 04d6 6D01     		.2byte	0x16d
+ 2302 04d8 97000000 		.4byte	0x97
+ 2303 04dc 02       		.uleb128 0x2
+ 2304 04dd 91       		.byte	0x91
+ 2305 04de 6E       		.sleb128 -18
+ 2306 04df 15       		.uleb128 0x15
+ 2307 04e0 6B00     		.ascii	"k\000"
+ 2308 04e2 01       		.byte	0x1
+ 2309 04e3 6D01     		.2byte	0x16d
+ 2310 04e5 97000000 		.4byte	0x97
+ 2311 04e9 02       		.uleb128 0x2
+ 2312 04ea 91       		.byte	0x91
+ 2313 04eb 6D       		.sleb128 -19
+ 2314 04ec 14       		.uleb128 0x14
+ 2315 04ed 00000000 		.4byte	.LASF69
+ 2316 04f1 01       		.byte	0x1
+ 2317 04f2 6D01     		.2byte	0x16d
+ 2318 04f4 97000000 		.4byte	0x97
+ 2319 04f8 02       		.uleb128 0x2
+ 2320 04f9 91       		.byte	0x91
+ 2321 04fa 6C       		.sleb128 -20
+ 2322 04fb 00       		.byte	0
+ 2323 04fc 09       		.uleb128 0x9
+ 2324 04fd D5000000 		.4byte	0xd5
+ 2325 0501 0C050000 		.4byte	0x50c
+ 2326 0505 0A       		.uleb128 0xa
+ 2327 0506 E3000000 		.4byte	0xe3
+ 2328 050a 63       		.byte	0x63
+ 2329 050b 00       		.byte	0
+ 2330 050c 16       		.uleb128 0x16
+ 2331 050d 0C010000 		.4byte	.LASF71
+ 2332 0511 01       		.byte	0x1
+ 2333 0512 C701     		.2byte	0x1c7
+ 2334 0514 00000000 		.4byte	.LFB76
+ 2335 0518 38000000 		.4byte	.LFE76-.LFB76
+ 2336 051c 01       		.uleb128 0x1
+ 2337 051d 9C       		.byte	0x9c
+ 2338 051e 32050000 		.4byte	0x532
+ 2339 0522 14       		.uleb128 0x14
+ 2340 0523 45040000 		.4byte	.LASF72
+ 2341 0527 01       		.byte	0x1
+ 2342 0528 C901     		.2byte	0x1c9
+ 2343 052a D5000000 		.4byte	0xd5
+ 2344 052e 02       		.uleb128 0x2
+ 2345 052f 91       		.byte	0x91
+ 2346 0530 77       		.sleb128 -9
+ 2347 0531 00       		.byte	0
+ 2348 0532 09       		.uleb128 0x9
+ 2349 0533 D5000000 		.4byte	0xd5
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 52
+
+
+ 2350 0537 43050000 		.4byte	0x543
+ 2351 053b 17       		.uleb128 0x17
+ 2352 053c E3000000 		.4byte	0xe3
+ 2353 0540 0001     		.2byte	0x100
+ 2354 0542 00       		.byte	0
+ 2355 0543 18       		.uleb128 0x18
+ 2356 0544 5D000000 		.4byte	.LASF73
+ 2357 0548 01       		.byte	0x1
+ 2358 0549 35       		.byte	0x35
+ 2359 054a 32050000 		.4byte	0x532
+ 2360 054e 05       		.uleb128 0x5
+ 2361 054f 03       		.byte	0x3
+ 2362 0550 00000000 		.4byte	SDI12_uart_buf
+ 2363 0554 18       		.uleb128 0x18
+ 2364 0555 58020000 		.4byte	.LASF74
+ 2365 0559 01       		.byte	0x1
+ 2366 055a 36       		.byte	0x36
+ 2367 055b 81000000 		.4byte	0x81
+ 2368 055f 05       		.uleb128 0x5
+ 2369 0560 03       		.byte	0x3
+ 2370 0561 01010000 		.4byte	SDI12_buf_idx
+ 2371 0565 19       		.uleb128 0x19
+ 2372 0566 C3030000 		.4byte	.LASF75
+ 2373 056a 08       		.byte	0x8
+ 2374 056b 1207     		.2byte	0x712
+ 2375 056d 71050000 		.4byte	0x571
+ 2376 0571 1A       		.uleb128 0x1a
+ 2377 0572 8C000000 		.4byte	0x8c
+ 2378 0576 1B       		.uleb128 0x1b
+ 2379 0577 ED010000 		.4byte	.LASF76
+ 2380 057b 06       		.byte	0x6
+ 2381 057c 11       		.byte	0x11
+ 2382 057d 05030000 		.4byte	0x305
+ 2383 0581 05       		.uleb128 0x5
+ 2384 0582 03       		.byte	0x3
+ 2385 0583 00000000 		.4byte	buffer_overflow
+ 2386 0587 1B       		.uleb128 0x1b
+ 2387 0588 4F010000 		.4byte	.LASF77
+ 2388 058c 06       		.byte	0x6
+ 2389 058d 22       		.byte	0x22
+ 2390 058e A3000000 		.4byte	0xa3
+ 2391 0592 05       		.uleb128 0x5
+ 2392 0593 03       		.byte	0x3
+ 2393 0594 00000000 		.4byte	dataPointsInStack
+ 2394 0598 1B       		.uleb128 0x1b
+ 2395 0599 88010000 		.4byte	.LASF78
+ 2396 059d 06       		.byte	0x6
+ 2397 059e 23       		.byte	0x23
+ 2398 059f A3000000 		.4byte	0xa3
+ 2399 05a3 05       		.uleb128 0x5
+ 2400 05a4 03       		.byte	0x3
+ 2401 05a5 00000000 		.4byte	dataPointsInStackDesired
+ 2402 05a9 09       		.uleb128 0x9
+ 2403 05aa 09020000 		.4byte	0x209
+ 2404 05ae B9050000 		.4byte	0x5b9
+ 2405 05b2 0A       		.uleb128 0xa
+ 2406 05b3 E3000000 		.4byte	0xe3
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 53
+
+
+ 2407 05b7 95       		.byte	0x95
+ 2408 05b8 00       		.byte	0
+ 2409 05b9 1B       		.uleb128 0x1b
+ 2410 05ba 91030000 		.4byte	.LASF79
+ 2411 05be 06       		.byte	0x6
+ 2412 05bf 24       		.byte	0x24
+ 2413 05c0 A9050000 		.4byte	0x5a9
+ 2414 05c4 05       		.uleb128 0x5
+ 2415 05c5 03       		.byte	0x3
+ 2416 05c6 00000000 		.4byte	data
+ 2417 05ca 1B       		.uleb128 0x1b
+ 2418 05cb 7D020000 		.4byte	.LASF80
+ 2419 05cf 07       		.byte	0x7
+ 2420 05d0 1F       		.byte	0x1f
+ 2421 05d1 97000000 		.4byte	0x97
+ 2422 05d5 05       		.uleb128 0x5
+ 2423 05d6 03       		.byte	0x3
+ 2424 05d7 00000000 		.4byte	modem_state
+ 2425 05db 1B       		.uleb128 0x1b
+ 2426 05dc 66020000 		.4byte	.LASF81
+ 2427 05e0 07       		.byte	0x7
+ 2428 05e1 62       		.byte	0x62
+ 2429 05e2 BB000000 		.4byte	0xbb
+ 2430 05e6 05       		.uleb128 0x5
+ 2431 05e7 03       		.byte	0x3
+ 2432 05e8 00000000 		.4byte	modem_start_time_stamp
+ 2433 05ec 1B       		.uleb128 0x1b
+ 2434 05ed FD010000 		.4byte	.LASF82
+ 2435 05f1 07       		.byte	0x7
+ 2436 05f2 63       		.byte	0x63
+ 2437 05f3 41020000 		.4byte	0x241
+ 2438 05f7 05       		.uleb128 0x5
+ 2439 05f8 03       		.byte	0x3
+ 2440 05f9 00000000 		.4byte	modem_info
+ 2441 05fd 1B       		.uleb128 0x1b
+ 2442 05fe 19020000 		.4byte	.LASF83
+ 2443 0602 07       		.byte	0x7
+ 2444 0603 64       		.byte	0x64
+ 2445 0604 B5020000 		.4byte	0x2b5
+ 2446 0608 05       		.uleb128 0x5
+ 2447 0609 03       		.byte	0x3
+ 2448 060a 00000000 		.4byte	modem_stats
+ 2449 060e 1B       		.uleb128 0x1b
+ 2450 060f 9F040000 		.4byte	.LASF84
+ 2451 0613 07       		.byte	0x7
+ 2452 0614 65       		.byte	0x65
+ 2453 0615 0C030000 		.4byte	0x30c
+ 2454 0619 05       		.uleb128 0x5
+ 2455 061a 03       		.byte	0x3
+ 2456 061b 00000000 		.4byte	updatable_parameters
+ 2457 061f 09       		.uleb128 0x9
+ 2458 0620 C1010000 		.4byte	0x1c1
+ 2459 0624 2F060000 		.4byte	0x62f
+ 2460 0628 0A       		.uleb128 0xa
+ 2461 0629 E3000000 		.4byte	0xe3
+ 2462 062d 02       		.byte	0x2
+ 2463 062e 00       		.byte	0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 54
+
+
+ 2464 062f 1B       		.uleb128 0x1b
+ 2465 0630 46030000 		.4byte	.LASF85
+ 2466 0634 01       		.byte	0x1
+ 2467 0635 10       		.byte	0x10
+ 2468 0636 1F060000 		.4byte	0x61f
+ 2469 063a 05       		.uleb128 0x5
+ 2470 063b 03       		.byte	0x3
+ 2471 063c 00000000 		.4byte	sensors
+ 2472 0640 09       		.uleb128 0x9
+ 2473 0641 EA000000 		.4byte	0xea
+ 2474 0645 50060000 		.4byte	0x650
+ 2475 0649 0A       		.uleb128 0xa
+ 2476 064a E3000000 		.4byte	0xe3
+ 2477 064e 19       		.byte	0x19
+ 2478 064f 00       		.byte	0
+ 2479 0650 1B       		.uleb128 0x1b
+ 2480 0651 D0030000 		.4byte	.LASF86
+ 2481 0655 01       		.byte	0x1
+ 2482 0656 13       		.byte	0x13
+ 2483 0657 40060000 		.4byte	0x640
+ 2484 065b 05       		.uleb128 0x5
+ 2485 065c 03       		.byte	0x3
+ 2486 065d 00000000 		.4byte	sontek_labels
+ 2487 0661 09       		.uleb128 0x9
+ 2488 0662 C7000000 		.4byte	0xc7
+ 2489 0666 71060000 		.4byte	0x671
+ 2490 066a 0A       		.uleb128 0xa
+ 2491 066b E3000000 		.4byte	0xe3
+ 2492 066f 19       		.byte	0x19
+ 2493 0670 00       		.byte	0
+ 2494 0671 1B       		.uleb128 0x1b
+ 2495 0672 3B000000 		.4byte	.LASF87
+ 2496 0676 01       		.byte	0x1
+ 2497 0677 14       		.byte	0x14
+ 2498 0678 61060000 		.4byte	0x661
+ 2499 067c 05       		.uleb128 0x5
+ 2500 067d 03       		.byte	0x3
+ 2501 067e 00000000 		.4byte	sontek_values
+ 2502 0682 1B       		.uleb128 0x1b
+ 2503 0683 B4040000 		.4byte	.LASF88
+ 2504 0687 01       		.byte	0x1
+ 2505 0688 15       		.byte	0x15
+ 2506 0689 C1010000 		.4byte	0x1c1
+ 2507 068d 05       		.uleb128 0x5
+ 2508 068e 03       		.byte	0x3
+ 2509 068f 00000000 		.4byte	sontek
+ 2510 0693 09       		.uleb128 0x9
+ 2511 0694 EA000000 		.4byte	0xea
+ 2512 0698 A3060000 		.4byte	0x6a3
+ 2513 069c 0A       		.uleb128 0xa
+ 2514 069d E3000000 		.4byte	0xe3
+ 2515 06a1 01       		.byte	0x1
+ 2516 06a2 00       		.byte	0
+ 2517 06a3 1B       		.uleb128 0x1b
+ 2518 06a4 34000000 		.4byte	.LASF23
+ 2519 06a8 01       		.byte	0x1
+ 2520 06a9 1D       		.byte	0x1d
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 55
+
+
+ 2521 06aa 93060000 		.4byte	0x693
+ 2522 06ae 05       		.uleb128 0x5
+ 2523 06af 03       		.byte	0x3
+ 2524 06b0 00000000 		.4byte	labels
+ 2525 06b4 09       		.uleb128 0x9
+ 2526 06b5 C7000000 		.4byte	0xc7
+ 2527 06b9 C4060000 		.4byte	0x6c4
+ 2528 06bd 0A       		.uleb128 0xa
+ 2529 06be E3000000 		.4byte	0xe3
+ 2530 06c2 01       		.byte	0x1
+ 2531 06c3 00       		.byte	0
+ 2532 06c4 1B       		.uleb128 0x1b
+ 2533 06c5 08020000 		.4byte	.LASF24
+ 2534 06c9 01       		.byte	0x1
+ 2535 06ca 1E       		.byte	0x1e
+ 2536 06cb B4060000 		.4byte	0x6b4
+ 2537 06cf 05       		.uleb128 0x5
+ 2538 06d0 03       		.byte	0x3
+ 2539 06d1 00000000 		.4byte	values
+ 2540 06d5 1B       		.uleb128 0x1b
+ 2541 06d6 56030000 		.4byte	.LASF89
+ 2542 06da 01       		.byte	0x1
+ 2543 06db 1F       		.byte	0x1f
+ 2544 06dc C1010000 		.4byte	0x1c1
+ 2545 06e0 05       		.uleb128 0x5
+ 2546 06e1 03       		.byte	0x3
+ 2547 06e2 00000000 		.4byte	solinst
+ 2548 06e6 09       		.uleb128 0x9
+ 2549 06e7 EA000000 		.4byte	0xea
+ 2550 06eb F6060000 		.4byte	0x6f6
+ 2551 06ef 0A       		.uleb128 0xa
+ 2552 06f0 E3000000 		.4byte	0xe3
+ 2553 06f4 02       		.byte	0x2
+ 2554 06f5 00       		.byte	0
+ 2555 06f6 1B       		.uleb128 0x1b
+ 2556 06f7 19030000 		.4byte	.LASF90
+ 2557 06fb 01       		.byte	0x1
+ 2558 06fc 28       		.byte	0x28
+ 2559 06fd E6060000 		.4byte	0x6e6
+ 2560 0701 05       		.uleb128 0x5
+ 2561 0702 03       		.byte	0x3
+ 2562 0703 00000000 		.4byte	GS3_labels
+ 2563 0707 09       		.uleb128 0x9
+ 2564 0708 C7000000 		.4byte	0xc7
+ 2565 070c 17070000 		.4byte	0x717
+ 2566 0710 0A       		.uleb128 0xa
+ 2567 0711 E3000000 		.4byte	0xe3
+ 2568 0715 02       		.byte	0x2
+ 2569 0716 00       		.byte	0
+ 2570 0717 1B       		.uleb128 0x1b
+ 2571 0718 7B040000 		.4byte	.LASF91
+ 2572 071c 01       		.byte	0x1
+ 2573 071d 29       		.byte	0x29
+ 2574 071e 07070000 		.4byte	0x707
+ 2575 0722 05       		.uleb128 0x5
+ 2576 0723 03       		.byte	0x3
+ 2577 0724 00000000 		.4byte	GS3_values
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 56
+
+
+ 2578 0728 1C       		.uleb128 0x1c
+ 2579 0729 47533300 		.ascii	"GS3\000"
+ 2580 072d 01       		.byte	0x1
+ 2581 072e 2A       		.byte	0x2a
+ 2582 072f C1010000 		.4byte	0x1c1
+ 2583 0733 05       		.uleb128 0x5
+ 2584 0734 03       		.byte	0x3
+ 2585 0735 00000000 		.4byte	GS3
+ 2586 0739 1C       		.uleb128 0x1c
+ 2587 073a 6900     		.ascii	"i\000"
+ 2588 073c 01       		.byte	0x1
+ 2589 073d 39       		.byte	0x39
+ 2590 073e 97000000 		.4byte	0x97
+ 2591 0742 05       		.uleb128 0x5
+ 2592 0743 03       		.byte	0x3
+ 2593 0744 00000000 		.4byte	i
+ 2594 0748 1B       		.uleb128 0x1b
+ 2595 0749 0F050000 		.4byte	.LASF92
+ 2596 074d 01       		.byte	0x1
+ 2597 074e 3A       		.byte	0x3a
+ 2598 074f AF000000 		.4byte	0xaf
+ 2599 0753 05       		.uleb128 0x5
+ 2600 0754 03       		.byte	0x3
+ 2601 0755 00000000 		.4byte	ms_delay
+ 2602 0759 1B       		.uleb128 0x1b
+ 2603 075a EB040000 		.4byte	.LASF57
+ 2604 075e 01       		.byte	0x1
+ 2605 075f 3D       		.byte	0x3d
+ 2606 0760 FC040000 		.4byte	0x4fc
+ 2607 0764 05       		.uleb128 0x5
+ 2608 0765 03       		.byte	0x3
+ 2609 0766 00000000 		.4byte	command
+ 2610 076a 1B       		.uleb128 0x1b
+ 2611 076b 24030000 		.4byte	.LASF93
+ 2612 076f 01       		.byte	0x1
+ 2613 0770 40       		.byte	0x40
+ 2614 0771 FC040000 		.4byte	0x4fc
+ 2615 0775 05       		.uleb128 0x5
+ 2616 0776 03       		.byte	0x3
+ 2617 0777 00000000 		.4byte	value_str
+ 2618 077b 09       		.uleb128 0x9
+ 2619 077c D5000000 		.4byte	0xd5
+ 2620 0780 8B070000 		.4byte	0x78b
+ 2621 0784 0A       		.uleb128 0xa
+ 2622 0785 E3000000 		.4byte	0xe3
+ 2623 0789 09       		.byte	0x9
+ 2624 078a 00       		.byte	0
+ 2625 078b 1B       		.uleb128 0x1b
+ 2626 078c 0F000000 		.4byte	.LASF94
+ 2627 0790 01       		.byte	0x1
+ 2628 0791 40       		.byte	0x40
+ 2629 0792 7B070000 		.4byte	0x77b
+ 2630 0796 05       		.uleb128 0x5
+ 2631 0797 03       		.byte	0x3
+ 2632 0798 00000000 		.4byte	delay_str
+ 2633 079c 1B       		.uleb128 0x1b
+ 2634 079d 04010000 		.4byte	.LASF95
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 57
+
+
+ 2635 07a1 01       		.byte	0x1
+ 2636 07a2 40       		.byte	0x40
+ 2637 07a3 EA000000 		.4byte	0xea
+ 2638 07a7 05       		.uleb128 0x5
+ 2639 07a8 03       		.byte	0x3
+ 2640 07a9 00000000 		.4byte	ptr_end
+ 2641 07ad 1B       		.uleb128 0x1b
+ 2642 07ae B4030000 		.4byte	.LASF96
+ 2643 07b2 01       		.byte	0x1
+ 2644 07b3 40       		.byte	0x40
+ 2645 07b4 EA000000 		.4byte	0xea
+ 2646 07b8 05       		.uleb128 0x5
+ 2647 07b9 03       		.byte	0x3
+ 2648 07ba 00000000 		.4byte	sign
+ 2649 07be 00       		.byte	0
+ 2650              		.section	.debug_abbrev,"",%progbits
+ 2651              	.Ldebug_abbrev0:
+ 2652 0000 01       		.uleb128 0x1
+ 2653 0001 11       		.uleb128 0x11
+ 2654 0002 01       		.byte	0x1
+ 2655 0003 25       		.uleb128 0x25
+ 2656 0004 0E       		.uleb128 0xe
+ 2657 0005 13       		.uleb128 0x13
+ 2658 0006 0B       		.uleb128 0xb
+ 2659 0007 03       		.uleb128 0x3
+ 2660 0008 0E       		.uleb128 0xe
+ 2661 0009 1B       		.uleb128 0x1b
+ 2662 000a 0E       		.uleb128 0xe
+ 2663 000b 55       		.uleb128 0x55
+ 2664 000c 17       		.uleb128 0x17
+ 2665 000d 11       		.uleb128 0x11
+ 2666 000e 01       		.uleb128 0x1
+ 2667 000f 10       		.uleb128 0x10
+ 2668 0010 17       		.uleb128 0x17
+ 2669 0011 00       		.byte	0
+ 2670 0012 00       		.byte	0
+ 2671 0013 02       		.uleb128 0x2
+ 2672 0014 24       		.uleb128 0x24
+ 2673 0015 00       		.byte	0
+ 2674 0016 0B       		.uleb128 0xb
+ 2675 0017 0B       		.uleb128 0xb
+ 2676 0018 3E       		.uleb128 0x3e
+ 2677 0019 0B       		.uleb128 0xb
+ 2678 001a 03       		.uleb128 0x3
+ 2679 001b 0E       		.uleb128 0xe
+ 2680 001c 00       		.byte	0
+ 2681 001d 00       		.byte	0
+ 2682 001e 03       		.uleb128 0x3
+ 2683 001f 16       		.uleb128 0x16
+ 2684 0020 00       		.byte	0
+ 2685 0021 03       		.uleb128 0x3
+ 2686 0022 0E       		.uleb128 0xe
+ 2687 0023 3A       		.uleb128 0x3a
+ 2688 0024 0B       		.uleb128 0xb
+ 2689 0025 3B       		.uleb128 0x3b
+ 2690 0026 0B       		.uleb128 0xb
+ 2691 0027 49       		.uleb128 0x49
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 58
+
+
+ 2692 0028 13       		.uleb128 0x13
+ 2693 0029 00       		.byte	0
+ 2694 002a 00       		.byte	0
+ 2695 002b 04       		.uleb128 0x4
+ 2696 002c 24       		.uleb128 0x24
+ 2697 002d 00       		.byte	0
+ 2698 002e 0B       		.uleb128 0xb
+ 2699 002f 0B       		.uleb128 0xb
+ 2700 0030 3E       		.uleb128 0x3e
+ 2701 0031 0B       		.uleb128 0xb
+ 2702 0032 03       		.uleb128 0x3
+ 2703 0033 08       		.uleb128 0x8
+ 2704 0034 00       		.byte	0
+ 2705 0035 00       		.byte	0
+ 2706 0036 05       		.uleb128 0x5
+ 2707 0037 16       		.uleb128 0x16
+ 2708 0038 00       		.byte	0
+ 2709 0039 03       		.uleb128 0x3
+ 2710 003a 0E       		.uleb128 0xe
+ 2711 003b 3A       		.uleb128 0x3a
+ 2712 003c 0B       		.uleb128 0xb
+ 2713 003d 3B       		.uleb128 0x3b
+ 2714 003e 05       		.uleb128 0x5
+ 2715 003f 49       		.uleb128 0x49
+ 2716 0040 13       		.uleb128 0x13
+ 2717 0041 00       		.byte	0
+ 2718 0042 00       		.byte	0
+ 2719 0043 06       		.uleb128 0x6
+ 2720 0044 0F       		.uleb128 0xf
+ 2721 0045 00       		.byte	0
+ 2722 0046 0B       		.uleb128 0xb
+ 2723 0047 0B       		.uleb128 0xb
+ 2724 0048 49       		.uleb128 0x49
+ 2725 0049 13       		.uleb128 0x13
+ 2726 004a 00       		.byte	0
+ 2727 004b 00       		.byte	0
+ 2728 004c 07       		.uleb128 0x7
+ 2729 004d 13       		.uleb128 0x13
+ 2730 004e 01       		.byte	0x1
+ 2731 004f 0B       		.uleb128 0xb
+ 2732 0050 0B       		.uleb128 0xb
+ 2733 0051 3A       		.uleb128 0x3a
+ 2734 0052 0B       		.uleb128 0xb
+ 2735 0053 3B       		.uleb128 0x3b
+ 2736 0054 0B       		.uleb128 0xb
+ 2737 0055 01       		.uleb128 0x1
+ 2738 0056 13       		.uleb128 0x13
+ 2739 0057 00       		.byte	0
+ 2740 0058 00       		.byte	0
+ 2741 0059 08       		.uleb128 0x8
+ 2742 005a 0D       		.uleb128 0xd
+ 2743 005b 00       		.byte	0
+ 2744 005c 03       		.uleb128 0x3
+ 2745 005d 0E       		.uleb128 0xe
+ 2746 005e 3A       		.uleb128 0x3a
+ 2747 005f 0B       		.uleb128 0xb
+ 2748 0060 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 59
+
+
+ 2749 0061 0B       		.uleb128 0xb
+ 2750 0062 49       		.uleb128 0x49
+ 2751 0063 13       		.uleb128 0x13
+ 2752 0064 38       		.uleb128 0x38
+ 2753 0065 0B       		.uleb128 0xb
+ 2754 0066 00       		.byte	0
+ 2755 0067 00       		.byte	0
+ 2756 0068 09       		.uleb128 0x9
+ 2757 0069 01       		.uleb128 0x1
+ 2758 006a 01       		.byte	0x1
+ 2759 006b 49       		.uleb128 0x49
+ 2760 006c 13       		.uleb128 0x13
+ 2761 006d 01       		.uleb128 0x1
+ 2762 006e 13       		.uleb128 0x13
+ 2763 006f 00       		.byte	0
+ 2764 0070 00       		.byte	0
+ 2765 0071 0A       		.uleb128 0xa
+ 2766 0072 21       		.uleb128 0x21
+ 2767 0073 00       		.byte	0
+ 2768 0074 49       		.uleb128 0x49
+ 2769 0075 13       		.uleb128 0x13
+ 2770 0076 2F       		.uleb128 0x2f
+ 2771 0077 0B       		.uleb128 0xb
+ 2772 0078 00       		.byte	0
+ 2773 0079 00       		.byte	0
+ 2774 007a 0B       		.uleb128 0xb
+ 2775 007b 0D       		.uleb128 0xd
+ 2776 007c 00       		.byte	0
+ 2777 007d 03       		.uleb128 0x3
+ 2778 007e 08       		.uleb128 0x8
+ 2779 007f 3A       		.uleb128 0x3a
+ 2780 0080 0B       		.uleb128 0xb
+ 2781 0081 3B       		.uleb128 0x3b
+ 2782 0082 0B       		.uleb128 0xb
+ 2783 0083 49       		.uleb128 0x49
+ 2784 0084 13       		.uleb128 0x13
+ 2785 0085 38       		.uleb128 0x38
+ 2786 0086 0B       		.uleb128 0xb
+ 2787 0087 00       		.byte	0
+ 2788 0088 00       		.byte	0
+ 2789 0089 0C       		.uleb128 0xc
+ 2790 008a 2E       		.uleb128 0x2e
+ 2791 008b 00       		.byte	0
+ 2792 008c 3F       		.uleb128 0x3f
+ 2793 008d 19       		.uleb128 0x19
+ 2794 008e 03       		.uleb128 0x3
+ 2795 008f 0E       		.uleb128 0xe
+ 2796 0090 3A       		.uleb128 0x3a
+ 2797 0091 0B       		.uleb128 0xb
+ 2798 0092 3B       		.uleb128 0x3b
+ 2799 0093 0B       		.uleb128 0xb
+ 2800 0094 11       		.uleb128 0x11
+ 2801 0095 01       		.uleb128 0x1
+ 2802 0096 12       		.uleb128 0x12
+ 2803 0097 06       		.uleb128 0x6
+ 2804 0098 40       		.uleb128 0x40
+ 2805 0099 18       		.uleb128 0x18
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 60
+
+
+ 2806 009a 9642     		.uleb128 0x2116
+ 2807 009c 19       		.uleb128 0x19
+ 2808 009d 00       		.byte	0
+ 2809 009e 00       		.byte	0
+ 2810 009f 0D       		.uleb128 0xd
+ 2811 00a0 2E       		.uleb128 0x2e
+ 2812 00a1 01       		.byte	0x1
+ 2813 00a2 3F       		.uleb128 0x3f
+ 2814 00a3 19       		.uleb128 0x19
+ 2815 00a4 03       		.uleb128 0x3
+ 2816 00a5 0E       		.uleb128 0xe
+ 2817 00a6 3A       		.uleb128 0x3a
+ 2818 00a7 0B       		.uleb128 0xb
+ 2819 00a8 3B       		.uleb128 0x3b
+ 2820 00a9 0B       		.uleb128 0xb
+ 2821 00aa 27       		.uleb128 0x27
+ 2822 00ab 19       		.uleb128 0x19
+ 2823 00ac 49       		.uleb128 0x49
+ 2824 00ad 13       		.uleb128 0x13
+ 2825 00ae 11       		.uleb128 0x11
+ 2826 00af 01       		.uleb128 0x1
+ 2827 00b0 12       		.uleb128 0x12
+ 2828 00b1 06       		.uleb128 0x6
+ 2829 00b2 40       		.uleb128 0x40
+ 2830 00b3 18       		.uleb128 0x18
+ 2831 00b4 9642     		.uleb128 0x2116
+ 2832 00b6 19       		.uleb128 0x19
+ 2833 00b7 01       		.uleb128 0x1
+ 2834 00b8 13       		.uleb128 0x13
+ 2835 00b9 00       		.byte	0
+ 2836 00ba 00       		.byte	0
+ 2837 00bb 0E       		.uleb128 0xe
+ 2838 00bc 05       		.uleb128 0x5
+ 2839 00bd 00       		.byte	0
+ 2840 00be 03       		.uleb128 0x3
+ 2841 00bf 08       		.uleb128 0x8
+ 2842 00c0 3A       		.uleb128 0x3a
+ 2843 00c1 0B       		.uleb128 0xb
+ 2844 00c2 3B       		.uleb128 0x3b
+ 2845 00c3 0B       		.uleb128 0xb
+ 2846 00c4 49       		.uleb128 0x49
+ 2847 00c5 13       		.uleb128 0x13
+ 2848 00c6 02       		.uleb128 0x2
+ 2849 00c7 18       		.uleb128 0x18
+ 2850 00c8 00       		.byte	0
+ 2851 00c9 00       		.byte	0
+ 2852 00ca 0F       		.uleb128 0xf
+ 2853 00cb 2E       		.uleb128 0x2e
+ 2854 00cc 00       		.byte	0
+ 2855 00cd 3F       		.uleb128 0x3f
+ 2856 00ce 19       		.uleb128 0x19
+ 2857 00cf 03       		.uleb128 0x3
+ 2858 00d0 0E       		.uleb128 0xe
+ 2859 00d1 3A       		.uleb128 0x3a
+ 2860 00d2 0B       		.uleb128 0xb
+ 2861 00d3 3B       		.uleb128 0x3b
+ 2862 00d4 0B       		.uleb128 0xb
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 61
+
+
+ 2863 00d5 49       		.uleb128 0x49
+ 2864 00d6 13       		.uleb128 0x13
+ 2865 00d7 11       		.uleb128 0x11
+ 2866 00d8 01       		.uleb128 0x1
+ 2867 00d9 12       		.uleb128 0x12
+ 2868 00da 06       		.uleb128 0x6
+ 2869 00db 40       		.uleb128 0x40
+ 2870 00dc 18       		.uleb128 0x18
+ 2871 00dd 9742     		.uleb128 0x2117
+ 2872 00df 19       		.uleb128 0x19
+ 2873 00e0 00       		.byte	0
+ 2874 00e1 00       		.byte	0
+ 2875 00e2 10       		.uleb128 0x10
+ 2876 00e3 2E       		.uleb128 0x2e
+ 2877 00e4 01       		.byte	0x1
+ 2878 00e5 3F       		.uleb128 0x3f
+ 2879 00e6 19       		.uleb128 0x19
+ 2880 00e7 03       		.uleb128 0x3
+ 2881 00e8 0E       		.uleb128 0xe
+ 2882 00e9 3A       		.uleb128 0x3a
+ 2883 00ea 0B       		.uleb128 0xb
+ 2884 00eb 3B       		.uleb128 0x3b
+ 2885 00ec 0B       		.uleb128 0xb
+ 2886 00ed 27       		.uleb128 0x27
+ 2887 00ee 19       		.uleb128 0x19
+ 2888 00ef 11       		.uleb128 0x11
+ 2889 00f0 01       		.uleb128 0x1
+ 2890 00f1 12       		.uleb128 0x12
+ 2891 00f2 06       		.uleb128 0x6
+ 2892 00f3 40       		.uleb128 0x40
+ 2893 00f4 18       		.uleb128 0x18
+ 2894 00f5 9642     		.uleb128 0x2116
+ 2895 00f7 19       		.uleb128 0x19
+ 2896 00f8 01       		.uleb128 0x1
+ 2897 00f9 13       		.uleb128 0x13
+ 2898 00fa 00       		.byte	0
+ 2899 00fb 00       		.byte	0
+ 2900 00fc 11       		.uleb128 0x11
+ 2901 00fd 05       		.uleb128 0x5
+ 2902 00fe 00       		.byte	0
+ 2903 00ff 03       		.uleb128 0x3
+ 2904 0100 0E       		.uleb128 0xe
+ 2905 0101 3A       		.uleb128 0x3a
+ 2906 0102 0B       		.uleb128 0xb
+ 2907 0103 3B       		.uleb128 0x3b
+ 2908 0104 0B       		.uleb128 0xb
+ 2909 0105 49       		.uleb128 0x49
+ 2910 0106 13       		.uleb128 0x13
+ 2911 0107 02       		.uleb128 0x2
+ 2912 0108 18       		.uleb128 0x18
+ 2913 0109 00       		.byte	0
+ 2914 010a 00       		.byte	0
+ 2915 010b 12       		.uleb128 0x12
+ 2916 010c 2E       		.uleb128 0x2e
+ 2917 010d 01       		.byte	0x1
+ 2918 010e 3F       		.uleb128 0x3f
+ 2919 010f 19       		.uleb128 0x19
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 62
+
+
+ 2920 0110 03       		.uleb128 0x3
+ 2921 0111 0E       		.uleb128 0xe
+ 2922 0112 3A       		.uleb128 0x3a
+ 2923 0113 0B       		.uleb128 0xb
+ 2924 0114 3B       		.uleb128 0x3b
+ 2925 0115 05       		.uleb128 0x5
+ 2926 0116 27       		.uleb128 0x27
+ 2927 0117 19       		.uleb128 0x19
+ 2928 0118 49       		.uleb128 0x49
+ 2929 0119 13       		.uleb128 0x13
+ 2930 011a 11       		.uleb128 0x11
+ 2931 011b 01       		.uleb128 0x1
+ 2932 011c 12       		.uleb128 0x12
+ 2933 011d 06       		.uleb128 0x6
+ 2934 011e 40       		.uleb128 0x40
+ 2935 011f 18       		.uleb128 0x18
+ 2936 0120 9642     		.uleb128 0x2116
+ 2937 0122 19       		.uleb128 0x19
+ 2938 0123 01       		.uleb128 0x1
+ 2939 0124 13       		.uleb128 0x13
+ 2940 0125 00       		.byte	0
+ 2941 0126 00       		.byte	0
+ 2942 0127 13       		.uleb128 0x13
+ 2943 0128 05       		.uleb128 0x5
+ 2944 0129 00       		.byte	0
+ 2945 012a 03       		.uleb128 0x3
+ 2946 012b 0E       		.uleb128 0xe
+ 2947 012c 3A       		.uleb128 0x3a
+ 2948 012d 0B       		.uleb128 0xb
+ 2949 012e 3B       		.uleb128 0x3b
+ 2950 012f 05       		.uleb128 0x5
+ 2951 0130 49       		.uleb128 0x49
+ 2952 0131 13       		.uleb128 0x13
+ 2953 0132 02       		.uleb128 0x2
+ 2954 0133 18       		.uleb128 0x18
+ 2955 0134 00       		.byte	0
+ 2956 0135 00       		.byte	0
+ 2957 0136 14       		.uleb128 0x14
+ 2958 0137 34       		.uleb128 0x34
+ 2959 0138 00       		.byte	0
+ 2960 0139 03       		.uleb128 0x3
+ 2961 013a 0E       		.uleb128 0xe
+ 2962 013b 3A       		.uleb128 0x3a
+ 2963 013c 0B       		.uleb128 0xb
+ 2964 013d 3B       		.uleb128 0x3b
+ 2965 013e 05       		.uleb128 0x5
+ 2966 013f 49       		.uleb128 0x49
+ 2967 0140 13       		.uleb128 0x13
+ 2968 0141 02       		.uleb128 0x2
+ 2969 0142 18       		.uleb128 0x18
+ 2970 0143 00       		.byte	0
+ 2971 0144 00       		.byte	0
+ 2972 0145 15       		.uleb128 0x15
+ 2973 0146 34       		.uleb128 0x34
+ 2974 0147 00       		.byte	0
+ 2975 0148 03       		.uleb128 0x3
+ 2976 0149 08       		.uleb128 0x8
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 63
+
+
+ 2977 014a 3A       		.uleb128 0x3a
+ 2978 014b 0B       		.uleb128 0xb
+ 2979 014c 3B       		.uleb128 0x3b
+ 2980 014d 05       		.uleb128 0x5
+ 2981 014e 49       		.uleb128 0x49
+ 2982 014f 13       		.uleb128 0x13
+ 2983 0150 02       		.uleb128 0x2
+ 2984 0151 18       		.uleb128 0x18
+ 2985 0152 00       		.byte	0
+ 2986 0153 00       		.byte	0
+ 2987 0154 16       		.uleb128 0x16
+ 2988 0155 2E       		.uleb128 0x2e
+ 2989 0156 01       		.byte	0x1
+ 2990 0157 3F       		.uleb128 0x3f
+ 2991 0158 19       		.uleb128 0x19
+ 2992 0159 03       		.uleb128 0x3
+ 2993 015a 0E       		.uleb128 0xe
+ 2994 015b 3A       		.uleb128 0x3a
+ 2995 015c 0B       		.uleb128 0xb
+ 2996 015d 3B       		.uleb128 0x3b
+ 2997 015e 05       		.uleb128 0x5
+ 2998 015f 27       		.uleb128 0x27
+ 2999 0160 19       		.uleb128 0x19
+ 3000 0161 11       		.uleb128 0x11
+ 3001 0162 01       		.uleb128 0x1
+ 3002 0163 12       		.uleb128 0x12
+ 3003 0164 06       		.uleb128 0x6
+ 3004 0165 40       		.uleb128 0x40
+ 3005 0166 18       		.uleb128 0x18
+ 3006 0167 9642     		.uleb128 0x2116
+ 3007 0169 19       		.uleb128 0x19
+ 3008 016a 01       		.uleb128 0x1
+ 3009 016b 13       		.uleb128 0x13
+ 3010 016c 00       		.byte	0
+ 3011 016d 00       		.byte	0
+ 3012 016e 17       		.uleb128 0x17
+ 3013 016f 21       		.uleb128 0x21
+ 3014 0170 00       		.byte	0
+ 3015 0171 49       		.uleb128 0x49
+ 3016 0172 13       		.uleb128 0x13
+ 3017 0173 2F       		.uleb128 0x2f
+ 3018 0174 05       		.uleb128 0x5
+ 3019 0175 00       		.byte	0
+ 3020 0176 00       		.byte	0
+ 3021 0177 18       		.uleb128 0x18
+ 3022 0178 34       		.uleb128 0x34
+ 3023 0179 00       		.byte	0
+ 3024 017a 03       		.uleb128 0x3
+ 3025 017b 0E       		.uleb128 0xe
+ 3026 017c 3A       		.uleb128 0x3a
+ 3027 017d 0B       		.uleb128 0xb
+ 3028 017e 3B       		.uleb128 0x3b
+ 3029 017f 0B       		.uleb128 0xb
+ 3030 0180 49       		.uleb128 0x49
+ 3031 0181 13       		.uleb128 0x13
+ 3032 0182 02       		.uleb128 0x2
+ 3033 0183 18       		.uleb128 0x18
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 64
+
+
+ 3034 0184 00       		.byte	0
+ 3035 0185 00       		.byte	0
+ 3036 0186 19       		.uleb128 0x19
+ 3037 0187 34       		.uleb128 0x34
+ 3038 0188 00       		.byte	0
+ 3039 0189 03       		.uleb128 0x3
+ 3040 018a 0E       		.uleb128 0xe
+ 3041 018b 3A       		.uleb128 0x3a
+ 3042 018c 0B       		.uleb128 0xb
+ 3043 018d 3B       		.uleb128 0x3b
+ 3044 018e 05       		.uleb128 0x5
+ 3045 018f 49       		.uleb128 0x49
+ 3046 0190 13       		.uleb128 0x13
+ 3047 0191 3F       		.uleb128 0x3f
+ 3048 0192 19       		.uleb128 0x19
+ 3049 0193 3C       		.uleb128 0x3c
+ 3050 0194 19       		.uleb128 0x19
+ 3051 0195 00       		.byte	0
+ 3052 0196 00       		.byte	0
+ 3053 0197 1A       		.uleb128 0x1a
+ 3054 0198 35       		.uleb128 0x35
+ 3055 0199 00       		.byte	0
+ 3056 019a 49       		.uleb128 0x49
+ 3057 019b 13       		.uleb128 0x13
+ 3058 019c 00       		.byte	0
+ 3059 019d 00       		.byte	0
+ 3060 019e 1B       		.uleb128 0x1b
+ 3061 019f 34       		.uleb128 0x34
+ 3062 01a0 00       		.byte	0
+ 3063 01a1 03       		.uleb128 0x3
+ 3064 01a2 0E       		.uleb128 0xe
+ 3065 01a3 3A       		.uleb128 0x3a
+ 3066 01a4 0B       		.uleb128 0xb
+ 3067 01a5 3B       		.uleb128 0x3b
+ 3068 01a6 0B       		.uleb128 0xb
+ 3069 01a7 49       		.uleb128 0x49
+ 3070 01a8 13       		.uleb128 0x13
+ 3071 01a9 3F       		.uleb128 0x3f
+ 3072 01aa 19       		.uleb128 0x19
+ 3073 01ab 02       		.uleb128 0x2
+ 3074 01ac 18       		.uleb128 0x18
+ 3075 01ad 00       		.byte	0
+ 3076 01ae 00       		.byte	0
+ 3077 01af 1C       		.uleb128 0x1c
+ 3078 01b0 34       		.uleb128 0x34
+ 3079 01b1 00       		.byte	0
+ 3080 01b2 03       		.uleb128 0x3
+ 3081 01b3 08       		.uleb128 0x8
+ 3082 01b4 3A       		.uleb128 0x3a
+ 3083 01b5 0B       		.uleb128 0xb
+ 3084 01b6 3B       		.uleb128 0x3b
+ 3085 01b7 0B       		.uleb128 0xb
+ 3086 01b8 49       		.uleb128 0x49
+ 3087 01b9 13       		.uleb128 0x13
+ 3088 01ba 3F       		.uleb128 0x3f
+ 3089 01bb 19       		.uleb128 0x19
+ 3090 01bc 02       		.uleb128 0x2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 65
+
+
+ 3091 01bd 18       		.uleb128 0x18
+ 3092 01be 00       		.byte	0
+ 3093 01bf 00       		.byte	0
+ 3094 01c0 00       		.byte	0
+ 3095              		.section	.debug_aranges,"",%progbits
+ 3096 0000 7C000000 		.4byte	0x7c
+ 3097 0004 0200     		.2byte	0x2
+ 3098 0006 00000000 		.4byte	.Ldebug_info0
+ 3099 000a 04       		.byte	0x4
+ 3100 000b 00       		.byte	0
+ 3101 000c 0000     		.2byte	0
+ 3102 000e 0000     		.2byte	0
+ 3103 0010 00000000 		.4byte	.LFB64
+ 3104 0014 18000000 		.4byte	.LFE64-.LFB64
+ 3105 0018 00000000 		.4byte	.LFB65
+ 3106 001c 10000000 		.4byte	.LFE65-.LFB65
+ 3107 0020 00000000 		.4byte	.LFB66
+ 3108 0024 24000000 		.4byte	.LFE66-.LFB66
+ 3109 0028 00000000 		.4byte	.LFB67
+ 3110 002c 28000000 		.4byte	.LFE67-.LFB67
+ 3111 0030 00000000 		.4byte	.LFB68
+ 3112 0034 14000000 		.4byte	.LFE68-.LFB68
+ 3113 0038 00000000 		.4byte	.LFB69
+ 3114 003c 32000000 		.4byte	.LFE69-.LFB69
+ 3115 0040 00000000 		.4byte	.LFB70
+ 3116 0044 74000000 		.4byte	.LFE70-.LFB70
+ 3117 0048 00000000 		.4byte	.LFB71
+ 3118 004c A4000000 		.4byte	.LFE71-.LFB71
+ 3119 0050 00000000 		.4byte	.LFB72
+ 3120 0054 14020000 		.4byte	.LFE72-.LFB72
+ 3121 0058 00000000 		.4byte	.LFB73
+ 3122 005c 18000000 		.4byte	.LFE73-.LFB73
+ 3123 0060 00000000 		.4byte	.LFB74
+ 3124 0064 34010000 		.4byte	.LFE74-.LFB74
+ 3125 0068 00000000 		.4byte	.LFB75
+ 3126 006c AC020000 		.4byte	.LFE75-.LFB75
+ 3127 0070 00000000 		.4byte	.LFB76
+ 3128 0074 38000000 		.4byte	.LFE76-.LFB76
+ 3129 0078 00000000 		.4byte	0
+ 3130 007c 00000000 		.4byte	0
+ 3131              		.section	.debug_ranges,"",%progbits
+ 3132              	.Ldebug_ranges0:
+ 3133 0000 00000000 		.4byte	.LFB64
+ 3134 0004 18000000 		.4byte	.LFE64
+ 3135 0008 00000000 		.4byte	.LFB65
+ 3136 000c 10000000 		.4byte	.LFE65
+ 3137 0010 00000000 		.4byte	.LFB66
+ 3138 0014 24000000 		.4byte	.LFE66
+ 3139 0018 00000000 		.4byte	.LFB67
+ 3140 001c 28000000 		.4byte	.LFE67
+ 3141 0020 00000000 		.4byte	.LFB68
+ 3142 0024 14000000 		.4byte	.LFE68
+ 3143 0028 00000000 		.4byte	.LFB69
+ 3144 002c 32000000 		.4byte	.LFE69
+ 3145 0030 00000000 		.4byte	.LFB70
+ 3146 0034 74000000 		.4byte	.LFE70
+ 3147 0038 00000000 		.4byte	.LFB71
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 66
+
+
+ 3148 003c A4000000 		.4byte	.LFE71
+ 3149 0040 00000000 		.4byte	.LFB72
+ 3150 0044 14020000 		.4byte	.LFE72
+ 3151 0048 00000000 		.4byte	.LFB73
+ 3152 004c 18000000 		.4byte	.LFE73
+ 3153 0050 00000000 		.4byte	.LFB74
+ 3154 0054 34010000 		.4byte	.LFE74
+ 3155 0058 00000000 		.4byte	.LFB75
+ 3156 005c AC020000 		.4byte	.LFE75
+ 3157 0060 00000000 		.4byte	.LFB76
+ 3158 0064 38000000 		.4byte	.LFE76
+ 3159 0068 00000000 		.4byte	0
+ 3160 006c 00000000 		.4byte	0
+ 3161              		.section	.debug_line,"",%progbits
+ 3162              	.Ldebug_line0:
+ 3163 0000 7F030000 		.section	.debug_str,"MS",%progbits,1
+ 3163      02006D01 
+ 3163      00000201 
+ 3163      FB0E0D00 
+ 3163      01010101 
+ 3164              	.LASF69:
+ 3165 0000 76616C69 		.ascii	"valid\000"
+ 3165      6400
+ 3166              	.LASF36:
+ 3167 0006 6D6F6465 		.ascii	"model_id\000"
+ 3167      6C5F6964 
+ 3167      00
+ 3168              	.LASF94:
+ 3169 000f 64656C61 		.ascii	"delay_str\000"
+ 3169      795F7374 
+ 3169      7200
+ 3170              	.LASF62:
+ 3171 0019 6E65775F 		.ascii	"new_address\000"
+ 3171      61646472 
+ 3171      65737300 
+ 3172              	.LASF35:
+ 3173 0025 73696D5F 		.ascii	"sim_id\000"
+ 3173      696400
+ 3174              	.LASF29:
+ 3175 002c 76657273 		.ascii	"version\000"
+ 3175      696F6E00 
+ 3176              	.LASF23:
+ 3177 0034 6C616265 		.ascii	"labels\000"
+ 3177      6C7300
+ 3178              	.LASF87:
+ 3179 003b 736F6E74 		.ascii	"sontek_values\000"
+ 3179      656B5F76 
+ 3179      616C7565 
+ 3179      7300
+ 3180              	.LASF21:
+ 3181 0049 73697A65 		.ascii	"sizetype\000"
+ 3181      74797065 
+ 3181      00
+ 3182              	.LASF55:
+ 3183 0052 53444931 		.ascii	"SDI12_stop\000"
+ 3183      325F7374 
+ 3183      6F7000
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 67
+
+
+ 3184              	.LASF73:
+ 3185 005d 53444931 		.ascii	"SDI12_uart_buf\000"
+ 3185      325F7561 
+ 3185      72745F62 
+ 3185      756600
+ 3186              	.LASF58:
+ 3187 006c 636C6561 		.ascii	"clear_str\000"
+ 3187      725F7374 
+ 3187      7200
+ 3188              	.LASF97:
+ 3189 0076 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 3189      43313120 
+ 3189      352E342E 
+ 3189      31203230 
+ 3189      31363036 
+ 3190 00a9 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 3190      20726576 
+ 3190      6973696F 
+ 3190      6E203233 
+ 3190      37373135 
+ 3191 00dc 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 3191      66756E63 
+ 3191      74696F6E 
+ 3191      2D736563 
+ 3191      74696F6E 
+ 3192              	.LASF95:
+ 3193 0104 7074725F 		.ascii	"ptr_end\000"
+ 3193      656E6400 
+ 3194              	.LASF71:
+ 3195 010c 6973725F 		.ascii	"isr_SDI12_data\000"
+ 3195      53444931 
+ 3195      325F6461 
+ 3195      746100
+ 3196              	.LASF41:
+ 3197 011b 65636E6F 		.ascii	"ecno\000"
+ 3197      00
+ 3198              	.LASF2:
+ 3199 0120 73686F72 		.ascii	"short int\000"
+ 3199      7420696E 
+ 3199      7400
+ 3200              	.LASF32:
+ 3201 012a 76616C75 		.ascii	"value\000"
+ 3201      6500
+ 3202              	.LASF14:
+ 3203 0130 75696E74 		.ascii	"uint16\000"
+ 3203      313600
+ 3204              	.LASF11:
+ 3205 0137 75696E74 		.ascii	"uint8_t\000"
+ 3205      385F7400 
+ 3206              	.LASF59:
+ 3207 013f 53444931 		.ascii	"SDI12_is_active\000"
+ 3207      325F6973 
+ 3207      5F616374 
+ 3207      69766500 
+ 3208              	.LASF77:
+ 3209 014f 64617461 		.ascii	"dataPointsInStack\000"
+ 3209      506F696E 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 68
+
+
+ 3209      7473496E 
+ 3209      53746163 
+ 3209      6B00
+ 3210              	.LASF13:
+ 3211 0161 75696E74 		.ascii	"uint8\000"
+ 3211      3800
+ 3212              	.LASF31:
+ 3213 0167 53444931 		.ascii	"SDI12_sensor\000"
+ 3213      325F7365 
+ 3213      6E736F72 
+ 3213      00
+ 3214              	.LASF40:
+ 3215 0174 72736370 		.ascii	"rscp\000"
+ 3215      00
+ 3216              	.LASF43:
+ 3217 0179 72737270 		.ascii	"rsrp\000"
+ 3217      00
+ 3218              	.LASF33:
+ 3219 017e 74696D65 		.ascii	"timeStamp\000"
+ 3219      5374616D 
+ 3219      7000
+ 3220              	.LASF78:
+ 3221 0188 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 3221      506F696E 
+ 3221      7473496E 
+ 3221      53746163 
+ 3221      6B446573 
+ 3222              	.LASF17:
+ 3223 01a1 666C6F61 		.ascii	"float\000"
+ 3223      7400
+ 3224              	.LASF16:
+ 3225 01a7 696E7433 		.ascii	"int32\000"
+ 3225      3200
+ 3226              	.LASF8:
+ 3227 01ad 6C6F6E67 		.ascii	"long long int\000"
+ 3227      206C6F6E 
+ 3227      6720696E 
+ 3227      7400
+ 3228              	.LASF9:
+ 3229 01bb 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3229      206C6F6E 
+ 3229      6720756E 
+ 3229      7369676E 
+ 3229      65642069 
+ 3230              	.LASF19:
+ 3231 01d2 63686172 		.ascii	"char\000"
+ 3231      00
+ 3232              	.LASF38:
+ 3233 01d7 6D6F6465 		.ascii	"modem_info_t\000"
+ 3233      6D5F696E 
+ 3233      666F5F74 
+ 3233      00
+ 3234              	.LASF6:
+ 3235 01e4 6C6F6E67 		.ascii	"long int\000"
+ 3235      20696E74 
+ 3235      00
+ 3236              	.LASF76:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 69
+
+
+ 3237 01ed 62756666 		.ascii	"buffer_overflow\000"
+ 3237      65725F6F 
+ 3237      76657266 
+ 3237      6C6F7700 
+ 3238              	.LASF82:
+ 3239 01fd 6D6F6465 		.ascii	"modem_info\000"
+ 3239      6D5F696E 
+ 3239      666F00
+ 3240              	.LASF24:
+ 3241 0208 76616C75 		.ascii	"values\000"
+ 3241      657300
+ 3242              	.LASF4:
+ 3243 020f 5F5F7569 		.ascii	"__uint8_t\000"
+ 3243      6E74385F 
+ 3243      7400
+ 3244              	.LASF83:
+ 3245 0219 6D6F6465 		.ascii	"modem_stats\000"
+ 3245      6D5F7374 
+ 3245      61747300 
+ 3246              	.LASF54:
+ 3247 0225 53444931 		.ascii	"SDI12_start\000"
+ 3247      325F7374 
+ 3247      61727400 
+ 3248              	.LASF49:
+ 3249 0231 6D656173 		.ascii	"measure_time\000"
+ 3249      7572655F 
+ 3249      74696D65 
+ 3249      00
+ 3250              	.LASF20:
+ 3251 023e 6C6F6E67 		.ascii	"long double\000"
+ 3251      20646F75 
+ 3251      626C6500 
+ 3252              	.LASF1:
+ 3253 024a 756E7369 		.ascii	"unsigned char\000"
+ 3253      676E6564 
+ 3253      20636861 
+ 3253      7200
+ 3254              	.LASF74:
+ 3255 0258 53444931 		.ascii	"SDI12_buf_idx\000"
+ 3255      325F6275 
+ 3255      665F6964 
+ 3255      7800
+ 3256              	.LASF81:
+ 3257 0266 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 3257      6D5F7374 
+ 3257      6172745F 
+ 3257      74696D65 
+ 3257      5F737461 
+ 3258              	.LASF80:
+ 3259 027d 6D6F6465 		.ascii	"modem_state\000"
+ 3259      6D5F7374 
+ 3259      61746500 
+ 3260              	.LASF0:
+ 3261 0289 7369676E 		.ascii	"signed char\000"
+ 3261      65642063 
+ 3261      68617200 
+ 3262              	.LASF22:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 70
+
+
+ 3263 0295 61646472 		.ascii	"address\000"
+ 3263      65737300 
+ 3264              	.LASF10:
+ 3265 029d 756E7369 		.ascii	"unsigned int\000"
+ 3265      676E6564 
+ 3265      20696E74 
+ 3265      00
+ 3266              	.LASF34:
+ 3267 02aa 6B65795F 		.ascii	"key_value_t\000"
+ 3267      76616C75 
+ 3267      655F7400 
+ 3268              	.LASF39:
+ 3269 02b6 72786C65 		.ascii	"rxlev\000"
+ 3269      7600
+ 3270              	.LASF50:
+ 3271 02bc 73796E63 		.ascii	"sync_time\000"
+ 3271      5F74696D 
+ 3271      6500
+ 3272              	.LASF53:
+ 3273 02c6 75706461 		.ascii	"updatable_parameters_t\000"
+ 3273      7461626C 
+ 3273      655F7061 
+ 3273      72616D65 
+ 3273      74657273 
+ 3274              	.LASF98:
+ 3275 02dd 53444931 		.ascii	"SDI12.c\000"
+ 3275      322E6300 
+ 3276              	.LASF48:
+ 3277 02e5 73696D5F 		.ascii	"sim_type\000"
+ 3277      74797065 
+ 3277      00
+ 3278              	.LASF3:
+ 3279 02ee 73686F72 		.ascii	"short unsigned int\000"
+ 3279      7420756E 
+ 3279      7369676E 
+ 3279      65642069 
+ 3279      6E7400
+ 3280              	.LASF44:
+ 3281 0301 74696D65 		.ascii	"time_to_network_connect\000"
+ 3281      5F746F5F 
+ 3281      6E657477 
+ 3281      6F726B5F 
+ 3281      636F6E6E 
+ 3282              	.LASF90:
+ 3283 0319 4753335F 		.ascii	"GS3_labels\000"
+ 3283      6C616265 
+ 3283      6C7300
+ 3284              	.LASF93:
+ 3285 0324 76616C75 		.ascii	"value_str\000"
+ 3285      655F7374 
+ 3285      7200
+ 3286              	.LASF45:
+ 3287 032e 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 3287      5F746F5F 
+ 3287      61637175 
+ 3287      6972655F 
+ 3287      697000
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 71
+
+
+ 3288              	.LASF37:
+ 3289 0341 696D6569 		.ascii	"imei\000"
+ 3289      00
+ 3290              	.LASF85:
+ 3291 0346 73656E73 		.ascii	"sensors\000"
+ 3291      6F727300 
+ 3292              	.LASF12:
+ 3293 034e 696E7433 		.ascii	"int32_t\000"
+ 3293      325F7400 
+ 3294              	.LASF89:
+ 3295 0356 736F6C69 		.ascii	"solinst\000"
+ 3295      6E737400 
+ 3296              	.LASF30:
+ 3297 035e 73657269 		.ascii	"serial\000"
+ 3297      616C00
+ 3298              	.LASF46:
+ 3299 0365 6D6F6465 		.ascii	"modem_stats_t\000"
+ 3299      6D5F7374 
+ 3299      6174735F 
+ 3299      7400
+ 3300              	.LASF52:
+ 3301 0373 5F426F6F 		.ascii	"_Bool\000"
+ 3301      6C00
+ 3302              	.LASF100:
+ 3303 0379 73656E73 		.ascii	"sensors_uart_get_string\000"
+ 3303      6F72735F 
+ 3303      75617274 
+ 3303      5F676574 
+ 3303      5F737472 
+ 3304              	.LASF79:
+ 3305 0391 64617461 		.ascii	"data\000"
+ 3305      00
+ 3306              	.LASF42:
+ 3307 0396 72737271 		.ascii	"rsrq\000"
+ 3307      00
+ 3308              	.LASF15:
+ 3309 039b 75696E74 		.ascii	"uint32\000"
+ 3309      333200
+ 3310              	.LASF7:
+ 3311 03a2 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3311      20756E73 
+ 3311      69676E65 
+ 3311      6420696E 
+ 3311      7400
+ 3312              	.LASF96:
+ 3313 03b4 7369676E 		.ascii	"sign\000"
+ 3313      00
+ 3314              	.LASF66:
+ 3315 03b9 7A69705F 		.ascii	"zip_SDI12\000"
+ 3315      53444931 
+ 3315      3200
+ 3316              	.LASF75:
+ 3317 03c3 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3317      52784275 
+ 3317      66666572 
+ 3317      00
+ 3318              	.LASF86:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 72
+
+
+ 3319 03d0 736F6E74 		.ascii	"sontek_labels\000"
+ 3319      656B5F6C 
+ 3319      6162656C 
+ 3319      7300
+ 3320              	.LASF99:
+ 3321 03de 433A5C6E 		.ascii	"C:\\notoriOS\\notoriOS.cydsn\000"
+ 3321      6F746F72 
+ 3321      694F535C 
+ 3321      6E6F746F 
+ 3321      72694F53 
+ 3322              	.LASF70:
+ 3323 03f9 53444931 		.ascii	"SDI12_send_command\000"
+ 3323      325F7365 
+ 3323      6E645F63 
+ 3323      6F6D6D61 
+ 3323      6E6400
+ 3324              	.LASF51:
+ 3325 040c 64656275 		.ascii	"debug_level\000"
+ 3325      675F6C65 
+ 3325      76656C00 
+ 3326              	.LASF56:
+ 3327 0418 53444931 		.ascii	"SDI12_uart_clear_string\000"
+ 3327      325F7561 
+ 3327      72745F63 
+ 3327      6C656172 
+ 3327      5F737472 
+ 3328              	.LASF65:
+ 3329 0430 53444931 		.ascii	"SDI12_info\000"
+ 3329      325F696E 
+ 3329      666F00
+ 3330              	.LASF5:
+ 3331 043b 5F5F696E 		.ascii	"__int32_t\000"
+ 3331      7433325F 
+ 3331      7400
+ 3332              	.LASF72:
+ 3333 0445 72785F63 		.ascii	"rx_char\000"
+ 3333      68617200 
+ 3334              	.LASF64:
+ 3335 044d 53444931 		.ascii	"SDI12_take_concurrent_measurement\000"
+ 3335      325F7461 
+ 3335      6B655F63 
+ 3335      6F6E6375 
+ 3335      7272656E 
+ 3336              	.LASF28:
+ 3337 046f 6D6F6465 		.ascii	"model\000"
+ 3337      6C00
+ 3338              	.LASF25:
+ 3339 0475 6E766172 		.ascii	"nvars\000"
+ 3339      7300
+ 3340              	.LASF91:
+ 3341 047b 4753335F 		.ascii	"GS3_values\000"
+ 3341      76616C75 
+ 3341      657300
+ 3342              	.LASF68:
+ 3343 0486 6F757470 		.ascii	"output\000"
+ 3343      757400
+ 3344              	.LASF18:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccEAhyiN.s 			page 73
+
+
+ 3345 048d 646F7562 		.ascii	"double\000"
+ 3345      6C6500
+ 3346              	.LASF67:
+ 3347 0494 53444931 		.ascii	"SDI12_flag\000"
+ 3347      325F666C 
+ 3347      616700
+ 3348              	.LASF84:
+ 3349 049f 75706461 		.ascii	"updatable_parameters\000"
+ 3349      7461626C 
+ 3349      655F7061 
+ 3349      72616D65 
+ 3349      74657273 
+ 3350              	.LASF88:
+ 3351 04b4 736F6E74 		.ascii	"sontek\000"
+ 3351      656B00
+ 3352              	.LASF63:
+ 3353 04bb 53444931 		.ascii	"SDI12_take_measurement\000"
+ 3353      325F7461 
+ 3353      6B655F6D 
+ 3353      65617375 
+ 3353      72656D65 
+ 3354              	.LASF26:
+ 3355 04d2 765F5344 		.ascii	"v_SDI12\000"
+ 3355      49313200 
+ 3356              	.LASF27:
+ 3357 04da 76656E64 		.ascii	"vendor\000"
+ 3357      6F7200
+ 3358              	.LASF47:
+ 3359 04e1 6E6F6465 		.ascii	"node_type\000"
+ 3359      5F747970 
+ 3359      6500
+ 3360              	.LASF57:
+ 3361 04eb 636F6D6D 		.ascii	"command\000"
+ 3361      616E6400 
+ 3362              	.LASF61:
+ 3363 04f3 53444931 		.ascii	"SDI12_change_address\000"
+ 3363      325F6368 
+ 3363      616E6765 
+ 3363      5F616464 
+ 3363      72657373 
+ 3364              	.LASF60:
+ 3365 0508 73656E73 		.ascii	"sensor\000"
+ 3365      6F7200
+ 3366              	.LASF92:
+ 3367 050f 6D735F64 		.ascii	"ms_delay\000"
+ 3367      656C6179 
+ 3367      00
+ 3368              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

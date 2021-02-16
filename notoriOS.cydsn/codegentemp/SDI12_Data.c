@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Power_VBAT1.c  
+* File Name: SDI12_Data.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Power_VBAT1.h"
+#include "SDI12_Data.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Power_VBAT1__PORT == 15 && ((Power_VBAT1__MASK & 0xC0) != 0))
+	 SDI12_Data__PORT == 15 && ((SDI12_Data__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Power_VBAT1_Write
+* Function Name: SDI12_Data_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Power_VBAT1_SUT.c usage_Power_VBAT1_Write
+*  \snippet SDI12_Data_SUT.c usage_SDI12_Data_Write
 *******************************************************************************/
-void Power_VBAT1_Write(uint8 value)
+void SDI12_Data_Write(uint8 value)
 {
-    uint8 staticBits = (Power_VBAT1_DR & (uint8)(~Power_VBAT1_MASK));
-    Power_VBAT1_DR = staticBits | ((uint8)(value << Power_VBAT1_SHIFT) & Power_VBAT1_MASK);
+    uint8 staticBits = (SDI12_Data_DR & (uint8)(~SDI12_Data_MASK));
+    SDI12_Data_DR = staticBits | ((uint8)(value << SDI12_Data_SHIFT) & SDI12_Data_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Power_VBAT1_SetDriveMode
+* Function Name: SDI12_Data_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Power_VBAT1_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Power_VBAT1_SUT.c usage_Power_VBAT1_SetDriveMode
+*  \snippet SDI12_Data_SUT.c usage_SDI12_Data_SetDriveMode
 *******************************************************************************/
-void Power_VBAT1_SetDriveMode(uint8 mode)
+void SDI12_Data_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Power_VBAT1_0, mode);
+	CyPins_SetPinDriveMode(SDI12_Data_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Power_VBAT1_Read
+* Function Name: SDI12_Data_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Power_VBAT1_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Power_VBAT1_SUT.c usage_Power_VBAT1_Read  
+*  \snippet SDI12_Data_SUT.c usage_SDI12_Data_Read  
 *******************************************************************************/
-uint8 Power_VBAT1_Read(void)
+uint8 SDI12_Data_Read(void)
 {
-    return (Power_VBAT1_PS & Power_VBAT1_MASK) >> Power_VBAT1_SHIFT;
+    return (SDI12_Data_PS & SDI12_Data_MASK) >> SDI12_Data_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Power_VBAT1_ReadDataReg
+* Function Name: SDI12_Data_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Power_VBAT1_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Power_VBAT1_Read() API because the 
-* Power_VBAT1_ReadDataReg() reads the data register instead of the status 
+* preferred SDI12_Data_Read() API because the 
+* SDI12_Data_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Power_VBAT1_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Power_VBAT1_SUT.c usage_Power_VBAT1_ReadDataReg 
+*  \snippet SDI12_Data_SUT.c usage_SDI12_Data_ReadDataReg 
 *******************************************************************************/
-uint8 Power_VBAT1_ReadDataReg(void)
+uint8 SDI12_Data_ReadDataReg(void)
 {
-    return (Power_VBAT1_DR & Power_VBAT1_MASK) >> Power_VBAT1_SHIFT;
+    return (SDI12_Data_DR & SDI12_Data_MASK) >> SDI12_Data_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Power_VBAT1_INTSTAT) 
+#if defined(SDI12_Data_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Power_VBAT1_SetInterruptMode
+    * Function Name: SDI12_Data_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Power_VBAT1_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Power_VBAT1_INTR_ALL to configure the
+    *  component. Or you may use SDI12_Data_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Power_VBAT1_0_INTR       (First pin in the list)
-    *  - Power_VBAT1_1_INTR       (Second pin in the list)
+    *  - SDI12_Data_0_INTR       (First pin in the list)
+    *  - SDI12_Data_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Power_VBAT1_INTR_ALL     (All pins in Pins component)
+    *  - SDI12_Data_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Power_VBAT1_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Power_VBAT1_SUT.c usage_Power_VBAT1_SetInterruptMode
+    *  \snippet SDI12_Data_SUT.c usage_SDI12_Data_SetInterruptMode
     *******************************************************************************/
-    void Power_VBAT1_SetInterruptMode(uint16 position, uint16 mode)
+    void SDI12_Data_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Power_VBAT1_0_INTR) != 0u) 
+		if((position & SDI12_Data_0_INTR) != 0u) 
 		{ 
-			 Power_VBAT1_0_INTTYPE_REG = (uint8)mode; 
+			 SDI12_Data_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Power_VBAT1_ClearInterrupt
+    * Function Name: SDI12_Data_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Power_VBAT1_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Power_VBAT1_SUT.c usage_Power_VBAT1_ClearInterrupt
+    *  \snippet SDI12_Data_SUT.c usage_SDI12_Data_ClearInterrupt
     *******************************************************************************/
-    uint8 Power_VBAT1_ClearInterrupt(void)
+    uint8 SDI12_Data_ClearInterrupt(void)
     {
-        return (Power_VBAT1_INTSTAT & Power_VBAT1_MASK) >> Power_VBAT1_SHIFT;
+        return (SDI12_Data_INTSTAT & SDI12_Data_MASK) >> SDI12_Data_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 
