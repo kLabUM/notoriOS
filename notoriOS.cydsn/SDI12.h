@@ -22,8 +22,13 @@
     - the last two bytes of a response are <CR><LF>
 */
 #define TAKE_MEASUREMENT    "M"  // Request Single Measurement
+#define TAKE_MEASUREMENT_1    "M1"  // Request Single Measurement
+#define TAKE_MEASUREMENT_2    "M2"  // Request Single Measurement  ------changes were made here----
+
 #define CONC_MEASUREMENT    "C"  // Request Concurrent Measurement
 #define READ_MEASUREMENT    "D0" // Read Completed Measurement
+#define READ_MEASUREMENT_1    "D1" // Read Completed Measurement
+#define READ_MEASUREMENT_2    "D2" // Read Completed Measurement
 #define ADDR_QUERY          "?"  // Get Sensor Address
 #define ACK_ACTIVE          ""   // Check if the sensor is active
 #define CHANGE_ADDR         "A"  // Change the addreess of the sensor
