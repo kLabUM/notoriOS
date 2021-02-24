@@ -23,6 +23,7 @@
 // Define node types
 #define NODE_TYPE_DEPTH                 0u
 #define NODE_TYPE_GREENINFRASTRUCTURE   1u  
+#define NODE_TYPE_SONTEK_FLOW           2u
     
 // Define sim types
 #define SIM_TYPE_STANDARD               0u

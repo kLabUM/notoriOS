@@ -16,10 +16,10 @@
 SDI12_sensor sensors[N_SDI12_SENSORS];  // GOTO zip_SDI12()
 
 //----------  (1/3) Sontek  ----------//
-char* sontek_labels[] = {"Q","stage","v_mean","total_vol","depth","v_index","x_area","T","stat","v_x","v_z","v_x_left","v_x_right","v_bat","pitch","roll","pct_sub","range","depth_adj","total_vol_pos","total_vol_neg","end_cell","snr1","snr2","snr3","snr4"};
-float sontek_values[] = {-1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -9.0, -10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0, -25.0, -26.0};
+char* sontek_labels[] = {"Q","stage","v_mean","total_vol","depth","v_index","x_area","T","stat","v_x","v_z","v_x_left","v_x_right","v_bat","pitch","roll","pct_sub","ice","range","depth_adj","total_vol_pos","total_vol_neg","end_cell","snr1","snr2","snr3","snr4"};
+float sontek_values[] = {-1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -9.0, -10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0, -25.0, -26.0, -27.0};
 SDI12_sensor sontek = {
-    .nvars = 26,
+    .nvars = 27,
     .address = "0",
     .labels = sontek_labels,
     .values = sontek_values
@@ -298,7 +298,7 @@ uint8 SDI12_take_measurement(SDI12_sensor* sensor) {
                 if(k==0){i=0; max=4+i;}///add the +i for the max so that the range of i matches with the var index for sontek
                 else if(k==1){i=4;max=4+i;}
                 else if(k==2){i=8;max=1+i;}
-                for (i ; i < max; i++) {                             //------------changes were made here
+                for (; i < max; i++) {                             //------------changes were made here
                     (*sensor).values[i] = (float) strtod(ptr_end, &ptr_end);
                 }
             }
@@ -306,7 +306,7 @@ uint8 SDI12_take_measurement(SDI12_sensor* sensor) {
                 if(k==0){i=9; max=4+i;}
                 else if(k==1){i=13; max=4+i;}
                 else if(k==2){i=17; max=1+i;}
-                for (i ; i < max; i++) {                             //------------changes were made here
+                for (; i < max; i++) {                             //------------changes were made here
                     (*sensor).values[i] = (float) strtod(ptr_end, &ptr_end);
                 }
             }
@@ -314,7 +314,7 @@ uint8 SDI12_take_measurement(SDI12_sensor* sensor) {
                 if(k==0){i=18; max=4+i;}
                 else if(k==1){i=22; max=4+i;}
                 else if(k==2){i=26; max=1+i;}
-                for (i ; i < max; i++) {                             //------------changes were made here
+                for (; i < max; i++) {                             //------------changes were made here
                     (*sensor).values[i] = (float) strtod(ptr_end, &ptr_end);
                 }
             }

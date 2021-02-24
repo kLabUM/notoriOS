@@ -268,9 +268,6 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
-    //---------------- temporary for debugging ----------------
-    sontek_take_reading(); 
-    
     // Test modem
     test_t t_modem = modem_test();
     printNotif(NOTIF_TYPE_STARTUP,"MEID=%s, SIMID=%s, DEVICEID=%s\n",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
@@ -558,8 +555,30 @@ uint8 makeMeasurements(){
             printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
             //pushData("maxbotix_depth","error",timeStamp);
         }
+    }else if(updatable_parameters.node_type == NODE_TYPE_SONTEK_FLOW){
+        
+        // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
+        sontek_t m_sontek;
+        
+        // Take sontek readings and save them to m_sontek
+        m_sontek = sontek_take_reading();
+        
+        // If valid flag is 1, then print the sontek readings and push the data to the data wheel
+        if(m_sontek.valid == 1){
+            snprintf(value,sizeof(value),"%f",m_sontek.depth);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_depth=%s",value);
+            pushData("sontek_depth",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " sontek_depth: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Sontek.");
+            //pushData("maxbotix_depth","error",timeStamp);
+        }
     }
-    
     
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;
@@ -591,7 +610,7 @@ uint8 makeMeasurements(){
             // pressure_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_pressure
             pressure_t m_pressure;
             
-            // Make pressure transducer calculators for current and depth
+            // Make pressure transducer calculators for current (mA) and depth
             m_pressure = pressure_calculations(m_voltage);
             
             // pressure transducer current (mA) data
