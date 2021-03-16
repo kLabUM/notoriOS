@@ -264,7 +264,30 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
 
     //test_t t_influx = influx_test();
     //printTestStatus(t_influx);
-    
+        SDI12_Power_Write(1u);
+        SDI12_Power_Write(0u);
+    // Take sontek readings and save them to m_sontek
+        char value[DATA_MAX_KEY_LENGTH];
+        // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
+        sontek_t m_sontek;
+        
+        // Take sontek readings and save them to m_sontek
+        m_sontek = sontek_take_reading();
+         snprintf(value,sizeof(value),"%f",m_sontek.depth);
+         printNotif(NOTIF_TYPE_EVENT,"sontek_depth=%s",value);
+        
+        snprintf(value,sizeof(value),"%f",m_sontek.SNR1);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR1=%s",value);
+            
+            
+            snprintf(value,sizeof(value),"%f",m_sontek.SNR2);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR2=%s",value);
+            
+
+            snprintf(value,sizeof(value),"%f",m_sontek.SNR3);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR3=%s",value);
+
+            
     
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
@@ -532,30 +555,30 @@ uint8 makeMeasurements(){
     char value[DATA_MAX_KEY_LENGTH];
     
     // If node type is depth node, take level sensor measurements
-    if(updatable_parameters.node_type == NODE_TYPE_DEPTH){
-        
-        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
-        level_sensor_t m_level_sensor;
-        
-        // Take level sensor readings and save them to m_level_sensor
-        m_level_sensor = level_sensor_take_reading();
-    
-        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
-        if(m_level_sensor.num_valid_readings > 0){
-            snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
-            printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
-            pushData("maxbotix_depth",value,timeStamp);
-            
-            // Print measurement to SD card to file called data.txt
-            SD_write(Data_fileName, "a+", c_timeStamp);
-            SD_write(Data_fileName, "a+", " maxbotix_depth: ");
-            SD_write(Data_fileName, "a+", value);
-            SD_write(Data_fileName, "a+", " ");
-        }else{
-            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
-            //pushData("maxbotix_depth","error",timeStamp);
-        }
-    }else if(updatable_parameters.node_type == NODE_TYPE_SONTEK_FLOW){
+//    if(updatable_parameters.node_type == NODE_TYPE_DEPTH){
+//        
+//        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+//        level_sensor_t m_level_sensor;
+//        
+//        // Take level sensor readings and save them to m_level_sensor
+//        m_level_sensor = level_sensor_take_reading();
+//    
+//        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+//        if(m_level_sensor.num_valid_readings > 0){
+//            snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
+//            printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
+//            pushData("maxbotix_depth",value,timeStamp);
+//            
+//            // Print measurement to SD card to file called data.txt
+//            SD_write(Data_fileName, "a+", c_timeStamp);
+//            SD_write(Data_fileName, "a+", " maxbotix_depth: ");
+//            SD_write(Data_fileName, "a+", value);
+//            SD_write(Data_fileName, "a+", " ");
+//        }else{
+//            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
+//            //pushData("maxbotix_depth","error",timeStamp);
+//        }
+//    }else if(updatable_parameters.node_type == NODE_TYPE_SONTEK_FLOW){
         
         // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
         sontek_t m_sontek;
@@ -574,11 +597,44 @@ uint8 makeMeasurements(){
             SD_write(Data_fileName, "a+", " sontek_depth: ");
             SD_write(Data_fileName, "a+", value);
             SD_write(Data_fileName, "a+", " ");
+            
+            
+            snprintf(value,sizeof(value),"%f",m_sontek.SNR1);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR1=%s",value);
+            pushData("sontek_SNR1",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " sontek_SNR1: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+            
+            
+            snprintf(value,sizeof(value),"%f",m_sontek.SNR2);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR2=%s",value);
+            pushData("sontek_SNR2",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " sontek_SNR2: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+            
+            
+            snprintf(value,sizeof(value),"%f",m_sontek.SNR3);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR3=%s",value);
+            pushData("sontek_SNR3",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " sontek_SNR3: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
         }else{
             printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Sontek.");
             //pushData("maxbotix_depth","error",timeStamp);
         }
-    }
+    //}         -------------------- to overwrite node types
     
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;

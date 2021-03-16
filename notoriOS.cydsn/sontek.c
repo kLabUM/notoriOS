@@ -210,18 +210,21 @@ sontek_t sontek_take_reading(){
             SDI12_info(&sontek); CyDelay(500u); // ------ I don't know what this does/it's purpose 
             //Trys to take a measurment
             if (SDI12_take_measurement(&sontek)){
-                sontek_output.valid = 1; // Successfully took a measurement
+                sontek_output.valid = SONTEK_READING_VALID; // Successfully took a measurement
                 sontek_output.depth = sontek.values[4];
+                sontek_output.SNR1 = sontek.values[23];
+                sontek_output.SNR2 = sontek.values[24];
+                sontek_output.SNR3 = sontek.values[25];
                
                 break;                    
             } 
             else {
-                sontek_output.valid = 2; // SDI12 sensor powered on, but unable to parse response
+                sontek_output.valid = SONTEK_READING_PARSE_ERROR; // SDI12 sensor powered on, but unable to parse response
             } 
         }
         
         else {
-            sontek_output.valid = 3; // SDI12 sensor not responding. It may be powered off or have a different address
+            sontek_output.valid = SONTEK_READING_NOT_RESPONDING; // SDI12 sensor not responding. It may be powered off or have a different address
         }
     }
             
@@ -233,6 +236,8 @@ sontek_t sontek_take_reading(){
     return sontek_output;
 }
     
-    
+
+
+
 
 /* [] END OF FILE */

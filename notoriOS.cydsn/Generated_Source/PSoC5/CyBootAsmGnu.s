@@ -45,7 +45,7 @@ CyDelayCycles:              /* cycles bytes */
     NOP                       /*  1    2   Loop alignment padding */
 
 CyDelayCycles_loop:
-    SUBS r0, r0, #1           /*  1    2 */
+SUBS r0, r0, #1           /*  1    2 */
     MOV r0, r0                /*  1    2   Pad loop to power of two cycles */
     BNE CyDelayCycles_loop    /*  2    2 */
 
