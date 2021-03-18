@@ -519,7 +519,7 @@ uint8 SDI12_take_measurement(SDI12_sensor* sensor) {
         /* 3. Request data from SDI12 sensor */
         //clear_str(command);    
         //clear_str(value_str);
-        for(uint8 k = 0; k<2; k++){                 //-------------------------------added only will do D0 D1
+        for(uint8 k = 0; k<3; k++){                 //-------------------------------added only will do D0 D1
             clear_str(command);    
             clear_str(value_str);
             

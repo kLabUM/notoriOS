@@ -4,6 +4,8 @@
 #include "project.h"
 #include "SDI12.h"
 
+#define SONTEK_NVARS 27         //Number of variables sontek sensor can return
+
 //"M" for sontek requests M parameter measurements (1-9 in sontek.values)
 #define TAKE_MEASUREMENT_1    "M1"  // Request M1 Parameters Measurements (10-18 in sontek.values)
 #define TAKE_MEASUREMENT_2    "M2"  // Request M2 Parameters Measurements (19-27 in sontek.value)
@@ -16,17 +18,16 @@
 #define SONTEK_READING_VALID 1      // Successfully took reading 
 #define SONTEK_READING_PARSE_ERROR 2//Sensor is on, but not parsing 
 #define SONTEK_READING_NOT_RESPONDING 3 
- 
+
 /* 
  * Define a struct to be used for readings
  */
 typedef struct {
-    uint8 valid;        //assign flags
-    float depth;
-    float SNR1;
-    float SNR2;
-    float SNR3;
-    float SNR4;
+    
+    uint8 nvars;
+    uint8 valid;                    //assign flags
+    float values[SONTEK_NVARS];     // Array of floats for the value returned for each measurement
+    
 } sontek_t;    
 
 /**

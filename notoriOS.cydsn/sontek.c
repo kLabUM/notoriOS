@@ -177,23 +177,25 @@ uint8 SDI12_sontek_take_measurement(SDI12_sensor* sensor) {
 //Powers on, takes readings, powers off sontek sensor
 sontek_t sontek_take_reading(){
     
-     // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable sontek_output.
-    sontek_t sontek_output;                                                             //----------- maybe make m_sontek
-    sontek_output.valid = SONTEK_READING_INIT; //to be determined/changed later what this means
+    // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek.
+    sontek_t m_sontek = {            //----------- maybe make m_sontek
+        .nvars = SONTEK_NVARS,
+        .valid = SONTEK_READING_INIT, //to be determined/changed later what this means
+        .values = {-1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -9.0, -10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0, -25.0, -26.0, -27.0}
+    };
     
-    
-    uint8 sontek_nvars = 27; //number of parameters the sontek sensor outputs -1
     char* sontek_address = "0"; //SDI12 address of sensor
     //parameter names
     char* sontek_labels[] = {"Q","stage","v_mean","total_vol","depth","v_index","x_area","T","stat","v_x","v_z","v_x_left","v_x_right","v_bat","pitch","roll","pct_sub","ice","range","depth_adj","total_vol_pos","total_vol_neg","end_cell","snr1","snr2","snr3","snr4"};
     //initialize values to be able to tell if/what parameters are not returned
     float sontek_values[] = {-1.0, -2.0, -3.0, -4.0, -5.0, -6.0, -7.0, -8.0, -9.0, -10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0, -21.0, -22.0, -23.0, -24.0, -25.0, -26.0, -27.0};
     //create SDI12_sensor struct of sontek specific values
+    
     SDI12_sensor sontek = {
-        .nvars = sontek_nvars,
+        .nvars = SONTEK_NVARS,
         .address = sontek_address,
         .labels = sontek_labels,
-        .values = sontek_values
+        .values = m_sontek.values //use same initial array as m_sontek
     };
     
     //Start UART connection and power up sensor
@@ -210,30 +212,46 @@ sontek_t sontek_take_reading(){
             SDI12_info(&sontek); CyDelay(500u); // ------ I don't know what this does/it's purpose 
             //Trys to take a measurment
             if (SDI12_take_measurement(&sontek)){
-                sontek_output.valid = SONTEK_READING_VALID; // Successfully took a measurement
-                sontek_output.depth = sontek.values[4];
-                sontek_output.SNR1 = sontek.values[23];
-                sontek_output.SNR2 = sontek.values[24];
-                sontek_output.SNR3 = sontek.values[25];
-               
+                m_sontek.valid = SONTEK_READING_VALID; // Successfully took a measurement
+                
+                //set sontek_t struct values equal to SDI12_sensor struct values
+                for(uint8 j; j < SONTEK_NVARS; j++){
+                    m_sontek.values[j] = sontek.values[j];
+                }
+                
                 break;                    
             } 
             else {
-                sontek_output.valid = SONTEK_READING_PARSE_ERROR; // SDI12 sensor powered on, but unable to parse response
+                m_sontek.valid = SONTEK_READING_PARSE_ERROR; // SDI12 sensor powered on, but unable to parse response
             } 
         }
         
         else {
-            sontek_output.valid = SONTEK_READING_NOT_RESPONDING; // SDI12 sensor not responding. It may be powered off or have a different address
+            m_sontek.valid = SONTEK_READING_NOT_RESPONDING; // SDI12 sensor not responding. It may be powered off or have a different address
         }
     }
             
     //shuts off sensor and turns of UART
     SDI12_Power_Write(0u);
     SDI12_stop();
+     // Take sontek readings and save them to m_sontek
+        char value[DATA_MAX_KEY_LENGTH];
+        char value1[DATA_MAX_KEY_LENGTH];
+            //put all sontek values in one thing
+        
+        //------------------tb deleted----------------------------------------------
+        snprintf(value,sizeof(value),"%f",m_sontek.values[4]);
+         printNotif(NOTIF_TYPE_EVENT,"sontek_depth=%s",value);
+        //23 is SNR1, 24 SNR2, 25, SNR3
+        snprintf(value,sizeof(value),"%f",m_sontek.values[23]);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR1=%s",value);
+            
+        snprintf(value,sizeof(value),"%f",m_sontek.values[5]); 
+        snprintf(value1,sizeof(value),"%f",m_sontek.values[23]); 
+        printNotif(NOTIF_TYPE_EVENT,"data=%s",value,",%s",value1);      //////---------------this is not what we want. this is not what we planned... but we don't stick to the status quo
     
     // this isn't set to any of the measurements yet
-    return sontek_output;
+    return m_sontek;
 }
     
 
