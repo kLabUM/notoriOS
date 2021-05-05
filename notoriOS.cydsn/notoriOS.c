@@ -263,6 +263,14 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     //test_t t_influx = influx_test();
     //printTestStatus(t_influx);
     
+    uint8 c = 1;
+    uint8 *count;
+    
+    count = &c;
+    uint8 sample_ok = autosampler_take_sample(count);
+        autosampler_power_off(); 
+        autosampler_stop();
+    
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
     // Test modem

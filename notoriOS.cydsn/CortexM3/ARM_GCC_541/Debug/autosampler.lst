@@ -1,0 +1,2172 @@
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"autosampler.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	buffer_overflow,1,1
+  20              		.comm	dataPointsInStack,2,2
+  21              		.comm	dataPointsInStackDesired,2,2
+  22              		.comm	data,6600,4
+  23              		.comm	modem_state,1,1
+  24              		.comm	modem_start_time_stamp,4,4
+  25              		.comm	modem_info,60,4
+  26              		.comm	modem_stats,32,4
+  27              		.comm	updatable_parameters,5,4
+  28              		.syntax unified
+  29              		.global _printf_float
+  30              		.thumb
+  31              		.syntax unified
+  32              		.global	SampleCount
+  33              		.bss
+  34              		.type	SampleCount, %object
+  35              		.size	SampleCount, 1
+  36              	SampleCount:
+  37 0000 00       		.space	1
+  38              		.global	SampleCount1
+  39              		.type	SampleCount1, %object
+  40              		.size	SampleCount1, 1
+  41              	SampleCount1:
+  42 0001 00       		.space	1
+  43              		.comm	autosampler_state,1,1
+  44              		.section	.text.autosampler_start,"ax",%progbits
+  45              		.align	2
+  46              		.global	autosampler_start
+  47              		.thumb
+  48              		.thumb_func
+  49              		.type	autosampler_start, %function
+  50              	autosampler_start:
+  51              	.LFB64:
+  52              		.file 1 "autosampler.c"
+   1:autosampler.c **** /**
+   2:autosampler.c ****  * @file autosampler.c
+   3:autosampler.c ****  * @brief Implements functions for ISCO autosampler
+   4:autosampler.c ****  * @author Brandon Wong, Matt Bartos, and Meagan Tobias
+   5:autosampler.c ****  * @version TODO
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 2
+
+
+   6:autosampler.c ****  * @date 2021-04-06
+   7:autosampler.c ****  */
+   8:autosampler.c **** 
+   9:autosampler.c **** #include "autosampler.h"
+  10:autosampler.c **** #include "debug.h"
+  11:autosampler.c **** 
+  12:autosampler.c **** // prototype bottle_count interrupt  isr_SamplerCounter is the address of the function to run when 
+  13:autosampler.c **** CY_ISR_PROTO(isr_SampleCounter);
+  14:autosampler.c **** 
+  15:autosampler.c **** // Declare variables
+  16:autosampler.c **** uint8 SampleCount = 0, SampleCount1 = 0, autosampler_state;;
+  17:autosampler.c **** 
+  18:autosampler.c **** void autosampler_start(){
+  53              		.loc 1 18 0
+  54              		.cfi_startproc
+  55              		@ args = 0, pretend = 0, frame = 0
+  56              		@ frame_needed = 1, uses_anonymous_args = 0
+  57 0000 80B5     		push	{r7, lr}
+  58              		.cfi_def_cfa_offset 8
+  59              		.cfi_offset 7, -8
+  60              		.cfi_offset 14, -4
+  61 0002 00AF     		add	r7, sp, #0
+  62              		.cfi_def_cfa_register 7
+  19:autosampler.c ****     isr_SampleCounter_StartEx(isr_SampleCounter);       //  start isr to count bottle number and ru
+  63              		.loc 1 19 0
+  64 0004 0448     		ldr	r0, .L2
+  65 0006 FFF7FEFF 		bl	isr_SampleCounter_StartEx
+  20:autosampler.c ****     BottleCounter_Start();
+  66              		.loc 1 20 0
+  67 000a FFF7FEFF 		bl	BottleCounter_Start
+  21:autosampler.c ****     autosampler_state = AUTOSAMPLER_STATE_OFF;
+  68              		.loc 1 21 0
+  69 000e 034B     		ldr	r3, .L2+4
+  70 0010 0022     		movs	r2, #0
+  71 0012 1A70     		strb	r2, [r3]
+  22:autosampler.c ****     
+  23:autosampler.c **** }
+  72              		.loc 1 23 0
+  73 0014 00BF     		nop
+  74 0016 80BD     		pop	{r7, pc}
+  75              	.L3:
+  76              		.align	2
+  77              	.L2:
+  78 0018 00000000 		.word	isr_SampleCounter
+  79 001c 00000000 		.word	autosampler_state
+  80              		.cfi_endproc
+  81              	.LFE64:
+  82              		.size	autosampler_start, .-autosampler_start
+  83              		.section	.text.autosampler_stop,"ax",%progbits
+  84              		.align	2
+  85              		.global	autosampler_stop
+  86              		.thumb
+  87              		.thumb_func
+  88              		.type	autosampler_stop, %function
+  89              	autosampler_stop:
+  90              	.LFB65:
+  24:autosampler.c **** 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 3
+
+
+  25:autosampler.c **** void autosampler_stop() {
+  91              		.loc 1 25 0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 1, uses_anonymous_args = 0
+  95 0000 80B5     		push	{r7, lr}
+  96              		.cfi_def_cfa_offset 8
+  97              		.cfi_offset 7, -8
+  98              		.cfi_offset 14, -4
+  99 0002 00AF     		add	r7, sp, #0
+ 100              		.cfi_def_cfa_register 7
+  26:autosampler.c ****     isr_SampleCounter_Stop();
+ 101              		.loc 1 26 0
+ 102 0004 FFF7FEFF 		bl	isr_SampleCounter_Stop
+  27:autosampler.c ****     BottleCounter_Stop();
+ 103              		.loc 1 27 0
+ 104 0008 FFF7FEFF 		bl	BottleCounter_Stop
+  28:autosampler.c ****     autosampler_state = AUTOSAMPLER_STATE_OFF;
+ 105              		.loc 1 28 0
+ 106 000c 024B     		ldr	r3, .L5
+ 107 000e 0022     		movs	r2, #0
+ 108 0010 1A70     		strb	r2, [r3]
+  29:autosampler.c **** }
+ 109              		.loc 1 29 0
+ 110 0012 00BF     		nop
+ 111 0014 80BD     		pop	{r7, pc}
+ 112              	.L6:
+ 113 0016 00BF     		.align	2
+ 114              	.L5:
+ 115 0018 00000000 		.word	autosampler_state
+ 116              		.cfi_endproc
+ 117              	.LFE65:
+ 118              		.size	autosampler_stop, .-autosampler_stop
+ 119              		.section	.text.autosampler_power_on,"ax",%progbits
+ 120              		.align	2
+ 121              		.global	autosampler_power_on
+ 122              		.thumb
+ 123              		.thumb_func
+ 124              		.type	autosampler_power_on, %function
+ 125              	autosampler_power_on:
+ 126              	.LFB66:
+  30:autosampler.c **** 
+  31:autosampler.c **** /*
+  32:autosampler.c **** Start the autosampler.  Then power it on.
+  33:autosampler.c **** */
+  34:autosampler.c **** void autosampler_power_on() {
+ 127              		.loc 1 34 0
+ 128              		.cfi_startproc
+ 129              		@ args = 0, pretend = 0, frame = 0
+ 130              		@ frame_needed = 1, uses_anonymous_args = 0
+ 131 0000 80B5     		push	{r7, lr}
+ 132              		.cfi_def_cfa_offset 8
+ 133              		.cfi_offset 7, -8
+ 134              		.cfi_offset 14, -4
+ 135 0002 00AF     		add	r7, sp, #0
+ 136              		.cfi_def_cfa_register 7
+  35:autosampler.c ****     Pin_Sampler_Power_Write(1u);
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 4
+
+
+ 137              		.loc 1 35 0
+ 138 0004 0120     		movs	r0, #1
+ 139 0006 FFF7FEFF 		bl	Pin_Sampler_Power_Write
+  36:autosampler.c ****     CyDelay(1000u);//give the sampler time to boot
+ 140              		.loc 1 36 0
+ 141 000a 4FF47A70 		mov	r0, #1000
+ 142 000e FFF7FEFF 		bl	CyDelay
+  37:autosampler.c ****     
+  38:autosampler.c ****     autosampler_state = AUTOSAMPLER_STATE_IDLE;
+ 143              		.loc 1 38 0
+ 144 0012 024B     		ldr	r3, .L8
+ 145 0014 0122     		movs	r2, #1
+ 146 0016 1A70     		strb	r2, [r3]
+  39:autosampler.c **** }
+ 147              		.loc 1 39 0
+ 148 0018 00BF     		nop
+ 149 001a 80BD     		pop	{r7, pc}
+ 150              	.L9:
+ 151              		.align	2
+ 152              	.L8:
+ 153 001c 00000000 		.word	autosampler_state
+ 154              		.cfi_endproc
+ 155              	.LFE66:
+ 156              		.size	autosampler_power_on, .-autosampler_power_on
+ 157              		.section	.text.autosampler_power_off,"ax",%progbits
+ 158              		.align	2
+ 159              		.global	autosampler_power_off
+ 160              		.thumb
+ 161              		.thumb_func
+ 162              		.type	autosampler_power_off, %function
+ 163              	autosampler_power_off:
+ 164              	.LFB67:
+  40:autosampler.c **** 
+  41:autosampler.c **** void autosampler_power_off() {
+ 165              		.loc 1 41 0
+ 166              		.cfi_startproc
+ 167              		@ args = 0, pretend = 0, frame = 0
+ 168              		@ frame_needed = 1, uses_anonymous_args = 0
+ 169 0000 80B5     		push	{r7, lr}
+ 170              		.cfi_def_cfa_offset 8
+ 171              		.cfi_offset 7, -8
+ 172              		.cfi_offset 14, -4
+ 173 0002 00AF     		add	r7, sp, #0
+ 174              		.cfi_def_cfa_register 7
+  42:autosampler.c ****     Pin_Sampler_Power_Write(0u);
+ 175              		.loc 1 42 0
+ 176 0004 0020     		movs	r0, #0
+ 177 0006 FFF7FEFF 		bl	Pin_Sampler_Power_Write
+  43:autosampler.c ****     autosampler_state = AUTOSAMPLER_STATE_OFF;
+ 178              		.loc 1 43 0
+ 179 000a 024B     		ldr	r3, .L11
+ 180 000c 0022     		movs	r2, #0
+ 181 000e 1A70     		strb	r2, [r3]
+  44:autosampler.c **** }
+ 182              		.loc 1 44 0
+ 183 0010 00BF     		nop
+ 184 0012 80BD     		pop	{r7, pc}
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 5
+
+
+ 185              	.L12:
+ 186              		.align	2
+ 187              	.L11:
+ 188 0014 00000000 		.word	autosampler_state
+ 189              		.cfi_endproc
+ 190              	.LFE67:
+ 191              		.size	autosampler_power_off, .-autosampler_power_off
+ 192              		.section	.rodata
+ 193              		.align	2
+ 194              	.LC0:
+ 195 0000 256C6400 		.ascii	"%ld\000"
+ 196              		.align	2
+ 197              	.LC1:
+ 198 0004 256400   		.ascii	"%d\000"
+ 199 0007 00       		.align	2
+ 200              	.LC2:
+ 201 0008 626F7474 		.ascii	"bottle_count=%s\000"
+ 201      6C655F63 
+ 201      6F756E74 
+ 201      3D257300 
+ 202              		.section	.text.autosampler_take_sample,"ax",%progbits
+ 203              		.align	2
+ 204              		.global	autosampler_take_sample
+ 205              		.thumb
+ 206              		.thumb_func
+ 207              		.type	autosampler_take_sample, %function
+ 208              	autosampler_take_sample:
+ 209              	.LFB68:
+  45:autosampler.c **** 
+  46:autosampler.c **** uint8 autosampler_take_sample(uint8 *count){
+ 210              		.loc 1 46 0
+ 211              		.cfi_startproc
+ 212              		@ args = 0, pretend = 0, frame = 80
+ 213              		@ frame_needed = 1, uses_anonymous_args = 0
+ 214 0000 80B5     		push	{r7, lr}
+ 215              		.cfi_def_cfa_offset 8
+ 216              		.cfi_offset 7, -8
+ 217              		.cfi_offset 14, -4
+ 218 0002 94B0     		sub	sp, sp, #80
+ 219              		.cfi_def_cfa_offset 88
+ 220 0004 00AF     		add	r7, sp, #0
+ 221              		.cfi_def_cfa_register 7
+ 222 0006 7860     		str	r0, [r7, #4]
+  47:autosampler.c ****     uint8 count2 = 0;
+ 223              		.loc 1 47 0
+ 224 0008 0023     		movs	r3, #0
+ 225 000a 87F84B30 		strb	r3, [r7, #75]
+  48:autosampler.c ****     
+  49:autosampler.c ****     autosampler_start();
+ 226              		.loc 1 49 0
+ 227 000e FFF7FEFF 		bl	autosampler_start
+  50:autosampler.c ****     autosampler_power_on();    
+ 228              		.loc 1 50 0
+ 229 0012 FFF7FEFF 		bl	autosampler_power_on
+  51:autosampler.c ****         
+  52:autosampler.c ****     if (*count >= MAX_BOTTLE_COUNT) {        
+ 230              		.loc 1 52 0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 6
+
+
+ 231 0016 7B68     		ldr	r3, [r7, #4]
+ 232 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 233 001a 172B     		cmp	r3, #23
+ 234 001c 01D9     		bls	.L14
+  53:autosampler.c ****         return 0;
+ 235              		.loc 1 53 0
+ 236 001e 0023     		movs	r3, #0
+ 237 0020 85E0     		b	.L26
+ 238              	.L14:
+  54:autosampler.c ****     }
+  55:autosampler.c ****     
+  56:autosampler.c ****     uint32 i = 0u, delay = 100u, interval;
+ 239              		.loc 1 56 0
+ 240 0022 0023     		movs	r3, #0
+ 241 0024 FB64     		str	r3, [r7, #76]
+ 242 0026 6423     		movs	r3, #100
+ 243 0028 7B64     		str	r3, [r7, #68]
+  57:autosampler.c ****     
+  58:autosampler.c ****     // Reset the bottle Counter
+  59:autosampler.c ****     BottleCounter_WriteCounter(0u);
+ 244              		.loc 1 59 0
+ 245 002a 0020     		movs	r0, #0
+ 246 002c FFF7FEFF 		bl	BottleCounter_WriteCounter
+  60:autosampler.c ****     autosampler_state = AUTOSAMPLER_STATE_BUSY;
+ 247              		.loc 1 60 0
+ 248 0030 414B     		ldr	r3, .L29
+ 249 0032 0222     		movs	r2, #2
+ 250 0034 1A70     		strb	r2, [r3]
+  61:autosampler.c ****             
+  62:autosampler.c ****     // Send PULSE_COUNT pulses @ 10Hz to trigger sampler
+  63:autosampler.c ****     for(i=0; i < PULSE_COUNT; i++){
+ 251              		.loc 1 63 0
+ 252 0036 0023     		movs	r3, #0
+ 253 0038 FB64     		str	r3, [r7, #76]
+ 254 003a 0EE0     		b	.L16
+ 255              	.L17:
+  64:autosampler.c ****         Pin_Sampler_Trigger_Write(1u);
+ 256              		.loc 1 64 0 discriminator 3
+ 257 003c 0120     		movs	r0, #1
+ 258 003e FFF7FEFF 		bl	Pin_Sampler_Trigger_Write
+  65:autosampler.c ****         CyDelay(100u);
+ 259              		.loc 1 65 0 discriminator 3
+ 260 0042 6420     		movs	r0, #100
+ 261 0044 FFF7FEFF 		bl	CyDelay
+  66:autosampler.c ****         Pin_Sampler_Trigger_Write(0u);
+ 262              		.loc 1 66 0 discriminator 3
+ 263 0048 0020     		movs	r0, #0
+ 264 004a FFF7FEFF 		bl	Pin_Sampler_Trigger_Write
+  67:autosampler.c ****         CyDelay(100u);
+ 265              		.loc 1 67 0 discriminator 3
+ 266 004e 6420     		movs	r0, #100
+ 267 0050 FFF7FEFF 		bl	CyDelay
+  63:autosampler.c ****         Pin_Sampler_Trigger_Write(1u);
+ 268              		.loc 1 63 0 discriminator 3
+ 269 0054 FB6C     		ldr	r3, [r7, #76]
+ 270 0056 0133     		adds	r3, r3, #1
+ 271 0058 FB64     		str	r3, [r7, #76]
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 7
+
+
+ 272              	.L16:
+  63:autosampler.c ****         Pin_Sampler_Trigger_Write(1u);
+ 273              		.loc 1 63 0 is_stmt 0 discriminator 1
+ 274 005a FB6C     		ldr	r3, [r7, #76]
+ 275 005c 122B     		cmp	r3, #18
+ 276 005e EDD9     		bls	.L17
+  68:autosampler.c ****     }
+  69:autosampler.c ****     
+  70:autosampler.c ****     interval =  2u*60*1000/delay;           // Wait Max of 2 Minutes for distributor arm to move
+ 277              		.loc 1 70 0 is_stmt 1
+ 278 0060 364A     		ldr	r2, .L29+4
+ 279 0062 7B6C     		ldr	r3, [r7, #68]
+ 280 0064 B2FBF3F3 		udiv	r3, r2, r3
+ 281 0068 3B64     		str	r3, [r7, #64]
+  71:autosampler.c ****     
+  72:autosampler.c ****     for (i = 0; i < interval ; i++) {  
+ 282              		.loc 1 72 0
+ 283 006a 0023     		movs	r3, #0
+ 284 006c FB64     		str	r3, [r7, #76]
+ 285 006e 0AE0     		b	.L18
+ 286              	.L21:
+  73:autosampler.c ****         CyDelay(delay);
+ 287              		.loc 1 73 0
+ 288 0070 786C     		ldr	r0, [r7, #68]
+ 289 0072 FFF7FEFF 		bl	CyDelay
+  74:autosampler.c ****         if (Pin_Sampler_Completed_Sample_Read()!=0) { // Event pin on autosampler is HI
+ 290              		.loc 1 74 0
+ 291 0076 FFF7FEFF 		bl	Pin_Sampler_Completed_Sample_Read
+ 292 007a 0346     		mov	r3, r0
+ 293 007c 002B     		cmp	r3, #0
+ 294 007e 07D1     		bne	.L27
+  72:autosampler.c ****         CyDelay(delay);
+ 295              		.loc 1 72 0 discriminator 2
+ 296 0080 FB6C     		ldr	r3, [r7, #76]
+ 297 0082 0133     		adds	r3, r3, #1
+ 298 0084 FB64     		str	r3, [r7, #76]
+ 299              	.L18:
+  72:autosampler.c ****         CyDelay(delay);
+ 300              		.loc 1 72 0 is_stmt 0 discriminator 1
+ 301 0086 FA6C     		ldr	r2, [r7, #76]
+ 302 0088 3B6C     		ldr	r3, [r7, #64]
+ 303 008a 9A42     		cmp	r2, r3
+ 304 008c F0D3     		bcc	.L21
+ 305 008e 00E0     		b	.L20
+ 306              	.L27:
+  75:autosampler.c ****             break;
+ 307              		.loc 1 75 0 is_stmt 1
+ 308 0090 00BF     		nop
+ 309              	.L20:
+  76:autosampler.c ****         }
+  77:autosampler.c ****     }
+  78:autosampler.c ****     
+  79:autosampler.c ****     
+  80:autosampler.c ****     if (Pin_Sampler_Completed_Sample_Read() != 0) {
+ 310              		.loc 1 80 0
+ 311 0092 FFF7FEFF 		bl	Pin_Sampler_Completed_Sample_Read
+ 312 0096 0346     		mov	r3, r0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 8
+
+
+ 313 0098 002B     		cmp	r3, #0
+ 314 009a 1ED0     		beq	.L22
+  81:autosampler.c ****         
+  82:autosampler.c ****         interval =  4u*60*1000/delay;       // Wait Max of 4 Minutes for pumping to complete -- is 
+ 315              		.loc 1 82 0
+ 316 009c 284A     		ldr	r2, .L29+8
+ 317 009e 7B6C     		ldr	r3, [r7, #68]
+ 318 00a0 B2FBF3F3 		udiv	r3, r2, r3
+ 319 00a4 3B64     		str	r3, [r7, #64]
+  83:autosampler.c ****         interval = 5u*100/delay; //wait 0.5 second for pumping to compelete FOR TESTING ONLY
+ 320              		.loc 1 83 0
+ 321 00a6 4FF4FA72 		mov	r2, #500
+ 322 00aa 7B6C     		ldr	r3, [r7, #68]
+ 323 00ac B2FBF3F3 		udiv	r3, r2, r3
+ 324 00b0 3B64     		str	r3, [r7, #64]
+  84:autosampler.c ****         for (i = 0; i < interval ; i++) { 
+ 325              		.loc 1 84 0
+ 326 00b2 0023     		movs	r3, #0
+ 327 00b4 FB64     		str	r3, [r7, #76]
+ 328 00b6 0AE0     		b	.L23
+ 329              	.L25:
+  85:autosampler.c ****             CyDelay(delay);
+ 330              		.loc 1 85 0
+ 331 00b8 786C     		ldr	r0, [r7, #68]
+ 332 00ba FFF7FEFF 		bl	CyDelay
+  86:autosampler.c ****             if (Pin_Sampler_Completed_Sample_Read()==0) { // Event pin on autosampler is HI
+ 333              		.loc 1 86 0
+ 334 00be FFF7FEFF 		bl	Pin_Sampler_Completed_Sample_Read
+ 335 00c2 0346     		mov	r3, r0
+ 336 00c4 002B     		cmp	r3, #0
+ 337 00c6 07D0     		beq	.L28
+  84:autosampler.c ****         for (i = 0; i < interval ; i++) { 
+ 338              		.loc 1 84 0 discriminator 2
+ 339 00c8 FB6C     		ldr	r3, [r7, #76]
+ 340 00ca 0133     		adds	r3, r3, #1
+ 341 00cc FB64     		str	r3, [r7, #76]
+ 342              	.L23:
+  84:autosampler.c ****         for (i = 0; i < interval ; i++) { 
+ 343              		.loc 1 84 0 is_stmt 0 discriminator 1
+ 344 00ce FA6C     		ldr	r2, [r7, #76]
+ 345 00d0 3B6C     		ldr	r3, [r7, #64]
+ 346 00d2 9A42     		cmp	r2, r3
+ 347 00d4 F0D3     		bcc	.L25
+ 348 00d6 00E0     		b	.L22
+ 349              	.L28:
+  87:autosampler.c ****                 break;
+ 350              		.loc 1 87 0 is_stmt 1
+ 351 00d8 00BF     		nop
+ 352              	.L22:
+  88:autosampler.c ****             }
+  89:autosampler.c ****         }
+  90:autosampler.c ****     }
+  91:autosampler.c ****     
+  92:autosampler.c ****     autosampler_state = AUTOSAMPLER_STATE_IDLE;
+ 353              		.loc 1 92 0
+ 354 00da 174B     		ldr	r3, .L29
+ 355 00dc 0122     		movs	r2, #1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 9
+
+
+ 356 00de 1A70     		strb	r2, [r3]
+  93:autosampler.c ****     
+  94:autosampler.c ****     //*count = BottleCount_Read(); //this function throws and error
+  95:autosampler.c ****     count2 = BottleCounter_ReadCounter(); //set count2 equal to the number of pulses sent for bottl
+ 357              		.loc 1 95 0
+ 358 00e0 FFF7FEFF 		bl	BottleCounter_ReadCounter
+ 359 00e4 0346     		mov	r3, r0
+ 360 00e6 87F84B30 		strb	r3, [r7, #75]
+  96:autosampler.c ****     *count = count2;
+ 361              		.loc 1 96 0
+ 362 00ea 7B68     		ldr	r3, [r7, #4]
+ 363 00ec 97F84B20 		ldrb	r2, [r7, #75]
+ 364 00f0 1A70     		strb	r2, [r3]
+  97:autosampler.c ****                                                   
+  98:autosampler.c ****         autosampler_power_off(); 
+ 365              		.loc 1 98 0
+ 366 00f2 FFF7FEFF 		bl	autosampler_power_off
+  99:autosampler.c ****         autosampler_stop();
+ 367              		.loc 1 99 0
+ 368 00f6 FFF7FEFF 		bl	autosampler_stop
+ 100:autosampler.c ****     //to bypass everything and just get bottle countss
+ 101:autosampler.c ****     // Get clock time and save to timeStamp
+ 102:autosampler.c ****     long timeStamp = getTimeStamp();
+ 369              		.loc 1 102 0
+ 370 00fa FFF7FEFF 		bl	getTimeStamp
+ 371 00fe F863     		str	r0, [r7, #60]
+ 103:autosampler.c ****     char c_timeStamp[32];
+ 104:autosampler.c ****     snprintf(c_timeStamp,sizeof(c_timeStamp),"%ld",timeStamp);
+ 372              		.loc 1 104 0
+ 373 0100 07F11C00 		add	r0, r7, #28
+ 374 0104 FB6B     		ldr	r3, [r7, #60]
+ 375 0106 0F4A     		ldr	r2, .L29+12
+ 376 0108 2021     		movs	r1, #32
+ 377 010a FFF7FEFF 		bl	snprintf
+ 105:autosampler.c ****     
+ 106:autosampler.c ****     // Holds string for value that will be written 
+ 107:autosampler.c ****     char value[DATA_MAX_KEY_LENGTH];
+ 108:autosampler.c ****     snprintf(value,sizeof(value),"%d",count2);
+ 378              		.loc 1 108 0
+ 379 010e 97F84B30 		ldrb	r3, [r7, #75]	@ zero_extendqisi2
+ 380 0112 07F10800 		add	r0, r7, #8
+ 381 0116 0C4A     		ldr	r2, .L29+16
+ 382 0118 1421     		movs	r1, #20
+ 383 011a FFF7FEFF 		bl	snprintf
+ 109:autosampler.c ****      printNotif(NOTIF_TYPE_EVENT,"bottle_count=%s",value);
+ 384              		.loc 1 109 0
+ 385 011e 07F10803 		add	r3, r7, #8
+ 386 0122 1A46     		mov	r2, r3
+ 387 0124 0949     		ldr	r1, .L29+20
+ 388 0126 0020     		movs	r0, #0
+ 389 0128 FFF7FEFF 		bl	printNotif
+ 110:autosampler.c ****     return 1u;
+ 390              		.loc 1 110 0
+ 391 012c 0123     		movs	r3, #1
+ 392              	.L26:
+ 111:autosampler.c **** }
+ 393              		.loc 1 111 0 discriminator 1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 10
+
+
+ 394 012e 1846     		mov	r0, r3
+ 395 0130 5037     		adds	r7, r7, #80
+ 396              		.cfi_def_cfa_offset 8
+ 397 0132 BD46     		mov	sp, r7
+ 398              		.cfi_def_cfa_register 13
+ 399              		@ sp needed
+ 400 0134 80BD     		pop	{r7, pc}
+ 401              	.L30:
+ 402 0136 00BF     		.align	2
+ 403              	.L29:
+ 404 0138 00000000 		.word	autosampler_state
+ 405 013c C0D40100 		.word	120000
+ 406 0140 80A90300 		.word	240000
+ 407 0144 00000000 		.word	.LC0
+ 408 0148 04000000 		.word	.LC1
+ 409 014c 08000000 		.word	.LC2
+ 410              		.cfi_endproc
+ 411              	.LFE68:
+ 412              		.size	autosampler_take_sample, .-autosampler_take_sample
+ 413              		.section	.rodata
+ 414              		.align	2
+ 415              	.LC3:
+ 416 0018 6175746F 		.ascii	"autosampler_trigger\000"
+ 416      73616D70 
+ 416      6C65725F 
+ 416      74726967 
+ 416      67657200 
+ 417              		.align	2
+ 418              	.LC4:
+ 419 002c 6973636F 		.ascii	"isco_bottle\000"
+ 419      5F626F74 
+ 419      746C6500 
+ 420              		.global	__aeabi_ui2f
+ 421              		.section	.text.zip_autosampler,"ax",%progbits
+ 422              		.align	2
+ 423              		.global	zip_autosampler
+ 424              		.thumb
+ 425              		.thumb_func
+ 426              		.type	zip_autosampler, %function
+ 427              	zip_autosampler:
+ 428              	.LFB69:
+ 112:autosampler.c **** 
+ 113:autosampler.c **** uint8 zip_autosampler(char *labels[], float readings[], uint8 *array_ix, int *autosampler_trigger, 
+ 429              		.loc 1 113 0
+ 430              		.cfi_startproc
+ 431              		@ args = 8, pretend = 0, frame = 24
+ 432              		@ frame_needed = 1, uses_anonymous_args = 0
+ 433 0000 90B5     		push	{r4, r7, lr}
+ 434              		.cfi_def_cfa_offset 12
+ 435              		.cfi_offset 4, -12
+ 436              		.cfi_offset 7, -8
+ 437              		.cfi_offset 14, -4
+ 438 0002 87B0     		sub	sp, sp, #28
+ 439              		.cfi_def_cfa_offset 40
+ 440 0004 00AF     		add	r7, sp, #0
+ 441              		.cfi_def_cfa_register 7
+ 442 0006 F860     		str	r0, [r7, #12]
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 11
+
+
+ 443 0008 B960     		str	r1, [r7, #8]
+ 444 000a 7A60     		str	r2, [r7, #4]
+ 445 000c 3B60     		str	r3, [r7]
+ 114:autosampler.c ****     // Ensure we don't access nonexistent array index
+ 115:autosampler.c ****     uint8 nvars = 2;
+ 446              		.loc 1 115 0
+ 447 000e 0223     		movs	r3, #2
+ 448 0010 FB75     		strb	r3, [r7, #23]
+ 116:autosampler.c ****     if(*array_ix + nvars >= max_size){
+ 449              		.loc 1 116 0
+ 450 0012 7B68     		ldr	r3, [r7, #4]
+ 451 0014 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 452 0016 1A46     		mov	r2, r3
+ 453 0018 FB7D     		ldrb	r3, [r7, #23]	@ zero_extendqisi2
+ 454 001a 1A44     		add	r2, r2, r3
+ 455 001c 97F82C30 		ldrb	r3, [r7, #44]	@ zero_extendqisi2
+ 456 0020 9A42     		cmp	r2, r3
+ 457 0022 02DB     		blt	.L32
+ 117:autosampler.c ****         return *array_ix;
+ 458              		.loc 1 117 0
+ 459 0024 7B68     		ldr	r3, [r7, #4]
+ 460 0026 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 461 0028 4CE0     		b	.L33
+ 462              	.L32:
+ 118:autosampler.c ****     }
+ 119:autosampler.c ****     (*autosampler_trigger) = 0u; // Update the value locally
+ 463              		.loc 1 119 0
+ 464 002a 3B68     		ldr	r3, [r7]
+ 465 002c 0022     		movs	r2, #0
+ 466 002e 1A60     		str	r2, [r3]
+ 120:autosampler.c ****     labels[*array_ix] = "autosampler_trigger"; // Update the database
+ 467              		.loc 1 120 0
+ 468 0030 7B68     		ldr	r3, [r7, #4]
+ 469 0032 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 470 0034 9B00     		lsls	r3, r3, #2
+ 471 0036 FA68     		ldr	r2, [r7, #12]
+ 472 0038 1344     		add	r3, r3, r2
+ 473 003a 244A     		ldr	r2, .L37
+ 474 003c 1A60     		str	r2, [r3]
+ 121:autosampler.c ****     readings[*array_ix] = 0;
+ 475              		.loc 1 121 0
+ 476 003e 7B68     		ldr	r3, [r7, #4]
+ 477 0040 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 478 0042 9B00     		lsls	r3, r3, #2
+ 479 0044 BA68     		ldr	r2, [r7, #8]
+ 480 0046 1344     		add	r3, r3, r2
+ 481 0048 4FF00002 		mov	r2, #0
+ 482 004c 1A60     		str	r2, [r3]	@ float
+ 122:autosampler.c ****     (*array_ix)++;
+ 483              		.loc 1 122 0
+ 484 004e 7B68     		ldr	r3, [r7, #4]
+ 485 0050 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 486 0052 0133     		adds	r3, r3, #1
+ 487 0054 DAB2     		uxtb	r2, r3
+ 488 0056 7B68     		ldr	r3, [r7, #4]
+ 489 0058 1A70     		strb	r2, [r3]
+ 123:autosampler.c ****         
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 12
+
+
+ 124:autosampler.c ****     if (*bottle_count < MAX_BOTTLE_COUNT) {
+ 490              		.loc 1 124 0
+ 491 005a BB6A     		ldr	r3, [r7, #40]
+ 492 005c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 493 005e 172B     		cmp	r3, #23
+ 494 0060 2ED8     		bhi	.L34
+ 125:autosampler.c **** 	    labels[*array_ix] = "isco_bottle";
+ 495              		.loc 1 125 0
+ 496 0062 7B68     		ldr	r3, [r7, #4]
+ 497 0064 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 498 0066 9B00     		lsls	r3, r3, #2
+ 499 0068 FA68     		ldr	r2, [r7, #12]
+ 500 006a 1344     		add	r3, r3, r2
+ 501 006c 184A     		ldr	r2, .L37+4
+ 502 006e 1A60     		str	r2, [r3]
+ 126:autosampler.c ****         autosampler_start();
+ 503              		.loc 1 126 0
+ 504 0070 FFF7FEFF 		bl	autosampler_start
+ 127:autosampler.c ****         autosampler_power_on();                                    
+ 505              		.loc 1 127 0
+ 506 0074 FFF7FEFF 		bl	autosampler_power_on
+ 128:autosampler.c ****         if (autosampler_take_sample(bottle_count) ) {
+ 507              		.loc 1 128 0
+ 508 0078 B86A     		ldr	r0, [r7, #40]
+ 509 007a FFF7FEFF 		bl	autosampler_take_sample
+ 510 007e 0346     		mov	r3, r0
+ 511 0080 002B     		cmp	r3, #0
+ 512 0082 0CD0     		beq	.L35
+ 129:autosampler.c **** 			readings[*array_ix] = *bottle_count;
+ 513              		.loc 1 129 0
+ 514 0084 7B68     		ldr	r3, [r7, #4]
+ 515 0086 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 516 0088 9B00     		lsls	r3, r3, #2
+ 517 008a BA68     		ldr	r2, [r7, #8]
+ 518 008c D418     		adds	r4, r2, r3
+ 519 008e BB6A     		ldr	r3, [r7, #40]
+ 520 0090 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 521 0092 1846     		mov	r0, r3
+ 522 0094 FFF7FEFF 		bl	__aeabi_ui2f
+ 523 0098 0346     		mov	r3, r0
+ 524 009a 2360     		str	r3, [r4]	@ float
+ 525 009c 06E0     		b	.L36
+ 526              	.L35:
+ 130:autosampler.c **** 		}
+ 131:autosampler.c **** 		else {
+ 132:autosampler.c **** 			// Use -1 to flag when a triggered sample failed
+ 133:autosampler.c ****             readings[*array_ix] = -1;
+ 527              		.loc 1 133 0
+ 528 009e 7B68     		ldr	r3, [r7, #4]
+ 529 00a0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 530 00a2 9B00     		lsls	r3, r3, #2
+ 531 00a4 BA68     		ldr	r2, [r7, #8]
+ 532 00a6 1344     		add	r3, r3, r2
+ 533 00a8 0A4A     		ldr	r2, .L37+8
+ 534 00aa 1A60     		str	r2, [r3]	@ float
+ 535              	.L36:
+ 134:autosampler.c **** 		}                        
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 13
+
+
+ 135:autosampler.c ****         autosampler_power_off(); 
+ 536              		.loc 1 135 0
+ 537 00ac FFF7FEFF 		bl	autosampler_power_off
+ 136:autosampler.c ****         autosampler_stop();
+ 538              		.loc 1 136 0
+ 539 00b0 FFF7FEFF 		bl	autosampler_stop
+ 137:autosampler.c **** 	    (*array_ix)++;
+ 540              		.loc 1 137 0
+ 541 00b4 7B68     		ldr	r3, [r7, #4]
+ 542 00b6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 543 00b8 0133     		adds	r3, r3, #1
+ 544 00ba DAB2     		uxtb	r2, r3
+ 545 00bc 7B68     		ldr	r3, [r7, #4]
+ 546 00be 1A70     		strb	r2, [r3]
+ 547              	.L34:
+ 138:autosampler.c **** 		}
+ 139:autosampler.c **** 	else {
+ 140:autosampler.c ****         //debug_write("bottle_count >= MAX_BOTTLE_COUNT");
+ 141:autosampler.c **** 		}
+ 142:autosampler.c ****     return *array_ix;
+ 548              		.loc 1 142 0
+ 549 00c0 7B68     		ldr	r3, [r7, #4]
+ 550 00c2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 551              	.L33:
+ 143:autosampler.c **** }
+ 552              		.loc 1 143 0
+ 553 00c4 1846     		mov	r0, r3
+ 554 00c6 1C37     		adds	r7, r7, #28
+ 555              		.cfi_def_cfa_offset 12
+ 556 00c8 BD46     		mov	sp, r7
+ 557              		.cfi_def_cfa_register 13
+ 558              		@ sp needed
+ 559 00ca 90BD     		pop	{r4, r7, pc}
+ 560              	.L38:
+ 561              		.align	2
+ 562              	.L37:
+ 563 00cc 18000000 		.word	.LC3
+ 564 00d0 2C000000 		.word	.LC4
+ 565 00d4 000080BF 		.word	-1082130432
+ 566              		.cfi_endproc
+ 567              	.LFE69:
+ 568              		.size	zip_autosampler, .-zip_autosampler
+ 569              		.section	.text.isr_SampleCounter,"ax",%progbits
+ 570              		.align	2
+ 571              		.global	isr_SampleCounter
+ 572              		.thumb
+ 573              		.thumb_func
+ 574              		.type	isr_SampleCounter, %function
+ 575              	isr_SampleCounter:
+ 576              	.LFB70:
+ 144:autosampler.c **** 
+ 145:autosampler.c **** CY_ISR(isr_SampleCounter){
+ 577              		.loc 1 145 0
+ 578              		.cfi_startproc
+ 579              		@ args = 0, pretend = 0, frame = 0
+ 580              		@ frame_needed = 1, uses_anonymous_args = 0
+ 581              		@ link register save eliminated.
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 14
+
+
+ 582 0000 80B4     		push	{r7}
+ 583              		.cfi_def_cfa_offset 4
+ 584              		.cfi_offset 7, -4
+ 585 0002 00AF     		add	r7, sp, #0
+ 586              		.cfi_def_cfa_register 7
+ 146:autosampler.c ****     SampleCount1++;
+ 587              		.loc 1 146 0
+ 588 0004 044B     		ldr	r3, .L40
+ 589 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 590 0008 0133     		adds	r3, r3, #1
+ 591 000a DAB2     		uxtb	r2, r3
+ 592 000c 024B     		ldr	r3, .L40
+ 593 000e 1A70     		strb	r2, [r3]
+ 147:autosampler.c **** }
+ 594              		.loc 1 147 0
+ 595 0010 00BF     		nop
+ 596 0012 BD46     		mov	sp, r7
+ 597              		.cfi_def_cfa_register 13
+ 598              		@ sp needed
+ 599 0014 80BC     		pop	{r7}
+ 600              		.cfi_restore 7
+ 601              		.cfi_def_cfa_offset 0
+ 602 0016 7047     		bx	lr
+ 603              	.L41:
+ 604              		.align	2
+ 605              	.L40:
+ 606 0018 00000000 		.word	SampleCount1
+ 607              		.cfi_endproc
+ 608              	.LFE70:
+ 609              		.size	isr_SampleCounter, .-isr_SampleCounter
+ 610              		.text
+ 611              	.Letext0:
+ 612              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 613              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 614              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 615              		.file 5 "data.h"
+ 616              		.file 6 "modem.h"
+ 617              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 618              		.section	.debug_info,"",%progbits
+ 619              	.Ldebug_info0:
+ 620 0000 92040000 		.4byte	0x492
+ 621 0004 0400     		.2byte	0x4
+ 622 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 623 000a 04       		.byte	0x4
+ 624 000b 01       		.uleb128 0x1
+ 625 000c 46000000 		.4byte	.LASF73
+ 626 0010 0C       		.byte	0xc
+ 627 0011 5A030000 		.4byte	.LASF74
+ 628 0015 71030000 		.4byte	.LASF75
+ 629 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 630 001d 00000000 		.4byte	0
+ 631 0021 00000000 		.4byte	.Ldebug_line0
+ 632 0025 02       		.uleb128 0x2
+ 633 0026 01       		.byte	0x1
+ 634 0027 06       		.byte	0x6
+ 635 0028 12020000 		.4byte	.LASF0
+ 636 002c 02       		.uleb128 0x2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 15
+
+
+ 637 002d 01       		.byte	0x1
+ 638 002e 08       		.byte	0x8
+ 639 002f E1010000 		.4byte	.LASF1
+ 640 0033 02       		.uleb128 0x2
+ 641 0034 02       		.byte	0x2
+ 642 0035 05       		.byte	0x5
+ 643 0036 02010000 		.4byte	.LASF2
+ 644 003a 02       		.uleb128 0x2
+ 645 003b 02       		.byte	0x2
+ 646 003c 07       		.byte	0x7
+ 647 003d 8A020000 		.4byte	.LASF3
+ 648 0041 03       		.uleb128 0x3
+ 649 0042 A5030000 		.4byte	.LASF9
+ 650 0046 02       		.byte	0x2
+ 651 0047 3F       		.byte	0x3f
+ 652 0048 4C000000 		.4byte	0x4c
+ 653 004c 02       		.uleb128 0x2
+ 654 004d 04       		.byte	0x4
+ 655 004e 05       		.byte	0x5
+ 656 004f 84010000 		.4byte	.LASF4
+ 657 0053 02       		.uleb128 0x2
+ 658 0054 04       		.byte	0x4
+ 659 0055 07       		.byte	0x7
+ 660 0056 3B030000 		.4byte	.LASF5
+ 661 005a 02       		.uleb128 0x2
+ 662 005b 08       		.byte	0x8
+ 663 005c 05       		.byte	0x5
+ 664 005d 64010000 		.4byte	.LASF6
+ 665 0061 02       		.uleb128 0x2
+ 666 0062 08       		.byte	0x8
+ 667 0063 07       		.byte	0x7
+ 668 0064 1E020000 		.4byte	.LASF7
+ 669 0068 04       		.uleb128 0x4
+ 670 0069 04       		.byte	0x4
+ 671 006a 05       		.byte	0x5
+ 672 006b 696E7400 		.ascii	"int\000"
+ 673 006f 02       		.uleb128 0x2
+ 674 0070 04       		.byte	0x4
+ 675 0071 07       		.byte	0x7
+ 676 0072 35020000 		.4byte	.LASF8
+ 677 0076 03       		.uleb128 0x3
+ 678 0077 DF020000 		.4byte	.LASF10
+ 679 007b 03       		.byte	0x3
+ 680 007c 2C       		.byte	0x2c
+ 681 007d 41000000 		.4byte	0x41
+ 682 0081 05       		.uleb128 0x5
+ 683 0082 2B010000 		.4byte	.LASF11
+ 684 0086 04       		.byte	0x4
+ 685 0087 9201     		.2byte	0x192
+ 686 0089 2C000000 		.4byte	0x2c
+ 687 008d 05       		.uleb128 0x5
+ 688 008e 12010000 		.4byte	.LASF12
+ 689 0092 04       		.byte	0x4
+ 690 0093 9301     		.2byte	0x193
+ 691 0095 3A000000 		.4byte	0x3a
+ 692 0099 05       		.uleb128 0x5
+ 693 009a 34030000 		.4byte	.LASF13
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 16
+
+
+ 694 009e 04       		.byte	0x4
+ 695 009f 9401     		.2byte	0x194
+ 696 00a1 53000000 		.4byte	0x53
+ 697 00a5 05       		.uleb128 0x5
+ 698 00a6 4D030000 		.4byte	.LASF14
+ 699 00aa 04       		.byte	0x4
+ 700 00ab 9701     		.2byte	0x197
+ 701 00ad 4C000000 		.4byte	0x4c
+ 702 00b1 02       		.uleb128 0x2
+ 703 00b2 04       		.byte	0x4
+ 704 00b3 04       		.byte	0x4
+ 705 00b4 5E010000 		.4byte	.LASF15
+ 706 00b8 02       		.uleb128 0x2
+ 707 00b9 08       		.byte	0x8
+ 708 00ba 04       		.byte	0x4
+ 709 00bb 53030000 		.4byte	.LASF16
+ 710 00bf 02       		.uleb128 0x2
+ 711 00c0 01       		.byte	0x1
+ 712 00c1 08       		.byte	0x8
+ 713 00c2 72010000 		.4byte	.LASF17
+ 714 00c6 02       		.uleb128 0x2
+ 715 00c7 08       		.byte	0x8
+ 716 00c8 04       		.byte	0x4
+ 717 00c9 D5010000 		.4byte	.LASF18
+ 718 00cd 02       		.uleb128 0x2
+ 719 00ce 04       		.byte	0x4
+ 720 00cf 07       		.byte	0x7
+ 721 00d0 3D000000 		.4byte	.LASF19
+ 722 00d4 06       		.uleb128 0x6
+ 723 00d5 04       		.byte	0x4
+ 724 00d6 BF000000 		.4byte	0xbf
+ 725 00da 07       		.uleb128 0x7
+ 726 00db 2C       		.byte	0x2c
+ 727 00dc 05       		.byte	0x5
+ 728 00dd 14       		.byte	0x14
+ 729 00de 07010000 		.4byte	0x107
+ 730 00e2 08       		.uleb128 0x8
+ 731 00e3 6B657900 		.ascii	"key\000"
+ 732 00e7 05       		.byte	0x5
+ 733 00e8 15       		.byte	0x15
+ 734 00e9 07010000 		.4byte	0x107
+ 735 00ed 00       		.byte	0
+ 736 00ee 09       		.uleb128 0x9
+ 737 00ef 0C010000 		.4byte	.LASF20
+ 738 00f3 05       		.byte	0x5
+ 739 00f4 16       		.byte	0x16
+ 740 00f5 07010000 		.4byte	0x107
+ 741 00f9 14       		.byte	0x14
+ 742 00fa 09       		.uleb128 0x9
+ 743 00fb 3B010000 		.4byte	.LASF21
+ 744 00ff 05       		.byte	0x5
+ 745 0100 17       		.byte	0x17
+ 746 0101 A5000000 		.4byte	0xa5
+ 747 0105 28       		.byte	0x28
+ 748 0106 00       		.byte	0
+ 749 0107 0A       		.uleb128 0xa
+ 750 0108 BF000000 		.4byte	0xbf
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 17
+
+
+ 751 010c 17010000 		.4byte	0x117
+ 752 0110 0B       		.uleb128 0xb
+ 753 0111 CD000000 		.4byte	0xcd
+ 754 0115 13       		.byte	0x13
+ 755 0116 00       		.byte	0
+ 756 0117 03       		.uleb128 0x3
+ 757 0118 42020000 		.4byte	.LASF22
+ 758 011c 05       		.byte	0x5
+ 759 011d 19       		.byte	0x19
+ 760 011e DA000000 		.4byte	0xda
+ 761 0122 07       		.uleb128 0x7
+ 762 0123 3C       		.byte	0x3c
+ 763 0124 06       		.byte	0x6
+ 764 0125 35       		.byte	0x35
+ 765 0126 4F010000 		.4byte	0x14f
+ 766 012a 09       		.uleb128 0x9
+ 767 012b 09000000 		.4byte	.LASF23
+ 768 012f 06       		.byte	0x6
+ 769 0130 36       		.byte	0x36
+ 770 0131 07010000 		.4byte	0x107
+ 771 0135 00       		.byte	0
+ 772 0136 09       		.uleb128 0x9
+ 773 0137 00000000 		.4byte	.LASF24
+ 774 013b 06       		.byte	0x6
+ 775 013c 37       		.byte	0x37
+ 776 013d 07010000 		.4byte	0x107
+ 777 0141 14       		.byte	0x14
+ 778 0142 09       		.uleb128 0x9
+ 779 0143 DA020000 		.4byte	.LASF25
+ 780 0147 06       		.byte	0x6
+ 781 0148 38       		.byte	0x38
+ 782 0149 07010000 		.4byte	0x107
+ 783 014d 28       		.byte	0x28
+ 784 014e 00       		.byte	0
+ 785 014f 03       		.uleb128 0x3
+ 786 0150 77010000 		.4byte	.LASF26
+ 787 0154 06       		.byte	0x6
+ 788 0155 3A       		.byte	0x3a
+ 789 0156 22010000 		.4byte	0x122
+ 790 015a 07       		.uleb128 0x7
+ 791 015b 20       		.byte	0x20
+ 792 015c 06       		.byte	0x6
+ 793 015d 3C       		.byte	0x3c
+ 794 015e C3010000 		.4byte	0x1c3
+ 795 0162 09       		.uleb128 0x9
+ 796 0163 4E020000 		.4byte	.LASF27
+ 797 0167 06       		.byte	0x6
+ 798 0168 3D       		.byte	0x3d
+ 799 0169 68000000 		.4byte	0x68
+ 800 016d 00       		.byte	0
+ 801 016e 08       		.uleb128 0x8
+ 802 016f 62657200 		.ascii	"ber\000"
+ 803 0173 06       		.byte	0x6
+ 804 0174 3E       		.byte	0x3e
+ 805 0175 68000000 		.4byte	0x68
+ 806 0179 04       		.byte	0x4
+ 807 017a 09       		.uleb128 0x9
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 18
+
+
+ 808 017b 31010000 		.4byte	.LASF28
+ 809 017f 06       		.byte	0x6
+ 810 0180 3F       		.byte	0x3f
+ 811 0181 68000000 		.4byte	0x68
+ 812 0185 08       		.byte	0x8
+ 813 0186 09       		.uleb128 0x9
+ 814 0187 FD000000 		.4byte	.LASF29
+ 815 018b 06       		.byte	0x6
+ 816 018c 40       		.byte	0x40
+ 817 018d 68000000 		.4byte	0x68
+ 818 0191 0C       		.byte	0xc
+ 819 0192 09       		.uleb128 0x9
+ 820 0193 2F030000 		.4byte	.LASF30
+ 821 0197 06       		.byte	0x6
+ 822 0198 41       		.byte	0x41
+ 823 0199 68000000 		.4byte	0x68
+ 824 019d 10       		.byte	0x10
+ 825 019e 09       		.uleb128 0x9
+ 826 019f 36010000 		.4byte	.LASF31
+ 827 01a3 06       		.byte	0x6
+ 828 01a4 42       		.byte	0x42
+ 829 01a5 68000000 		.4byte	0x68
+ 830 01a9 14       		.byte	0x14
+ 831 01aa 09       		.uleb128 0x9
+ 832 01ab 9D020000 		.4byte	.LASF32
+ 833 01af 06       		.byte	0x6
+ 834 01b0 43       		.byte	0x43
+ 835 01b1 68000000 		.4byte	0x68
+ 836 01b5 18       		.byte	0x18
+ 837 01b6 09       		.uleb128 0x9
+ 838 01b7 C7020000 		.4byte	.LASF33
+ 839 01bb 06       		.byte	0x6
+ 840 01bc 44       		.byte	0x44
+ 841 01bd 68000000 		.4byte	0x68
+ 842 01c1 1C       		.byte	0x1c
+ 843 01c2 00       		.byte	0
+ 844 01c3 03       		.uleb128 0x3
+ 845 01c4 E7020000 		.4byte	.LASF34
+ 846 01c8 06       		.byte	0x6
+ 847 01c9 46       		.byte	0x46
+ 848 01ca 5A010000 		.4byte	0x15a
+ 849 01ce 07       		.uleb128 0x7
+ 850 01cf 05       		.byte	0x5
+ 851 01d0 06       		.byte	0x6
+ 852 01d1 52       		.byte	0x52
+ 853 01d2 13020000 		.4byte	0x213
+ 854 01d6 09       		.uleb128 0x9
+ 855 01d7 04040000 		.4byte	.LASF35
+ 856 01db 06       		.byte	0x6
+ 857 01dc 54       		.byte	0x54
+ 858 01dd 81000000 		.4byte	0x81
+ 859 01e1 00       		.byte	0
+ 860 01e2 09       		.uleb128 0x9
+ 861 01e3 81020000 		.4byte	.LASF36
+ 862 01e7 06       		.byte	0x6
+ 863 01e8 56       		.byte	0x56
+ 864 01e9 13020000 		.4byte	0x213
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 19
+
+
+ 865 01ed 01       		.byte	0x1
+ 866 01ee 09       		.uleb128 0x9
+ 867 01ef C8010000 		.4byte	.LASF37
+ 868 01f3 06       		.byte	0x6
+ 869 01f4 58       		.byte	0x58
+ 870 01f5 81000000 		.4byte	0x81
+ 871 01f9 02       		.byte	0x2
+ 872 01fa 09       		.uleb128 0x9
+ 873 01fb 54020000 		.4byte	.LASF38
+ 874 01ff 06       		.byte	0x6
+ 875 0200 5A       		.byte	0x5a
+ 876 0201 81000000 		.4byte	0x81
+ 877 0205 03       		.byte	0x3
+ 878 0206 09       		.uleb128 0x9
+ 879 0207 8C030000 		.4byte	.LASF39
+ 880 020b 06       		.byte	0x6
+ 881 020c 5D       		.byte	0x5d
+ 882 020d 81000000 		.4byte	0x81
+ 883 0211 04       		.byte	0x4
+ 884 0212 00       		.byte	0
+ 885 0213 02       		.uleb128 0x2
+ 886 0214 01       		.byte	0x1
+ 887 0215 02       		.byte	0x2
+ 888 0216 0A030000 		.4byte	.LASF40
+ 889 021a 03       		.uleb128 0x3
+ 890 021b 6A020000 		.4byte	.LASF41
+ 891 021f 06       		.byte	0x6
+ 892 0220 5F       		.byte	0x5f
+ 893 0221 CE010000 		.4byte	0x1ce
+ 894 0225 0C       		.uleb128 0xc
+ 895 0226 D4000000 		.4byte	.LASF42
+ 896 022a 01       		.byte	0x1
+ 897 022b 12       		.byte	0x12
+ 898 022c 00000000 		.4byte	.LFB64
+ 899 0230 20000000 		.4byte	.LFE64-.LFB64
+ 900 0234 01       		.uleb128 0x1
+ 901 0235 9C       		.byte	0x9c
+ 902 0236 0C       		.uleb128 0xc
+ 903 0237 E6000000 		.4byte	.LASF43
+ 904 023b 01       		.byte	0x1
+ 905 023c 19       		.byte	0x19
+ 906 023d 00000000 		.4byte	.LFB65
+ 907 0241 1C000000 		.4byte	.LFE65-.LFB65
+ 908 0245 01       		.uleb128 0x1
+ 909 0246 9C       		.byte	0x9c
+ 910 0247 0C       		.uleb128 0xc
+ 911 0248 F5020000 		.4byte	.LASF44
+ 912 024c 01       		.byte	0x1
+ 913 024d 22       		.byte	0x22
+ 914 024e 00000000 		.4byte	.LFB66
+ 915 0252 20000000 		.4byte	.LFE66-.LFB66
+ 916 0256 01       		.uleb128 0x1
+ 917 0257 9C       		.byte	0x9c
+ 918 0258 0C       		.uleb128 0xc
+ 919 0259 20000000 		.4byte	.LASF45
+ 920 025d 01       		.byte	0x1
+ 921 025e 29       		.byte	0x29
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 20
+
+
+ 922 025f 00000000 		.4byte	.LFB67
+ 923 0263 18000000 		.4byte	.LFE67-.LFB67
+ 924 0267 01       		.uleb128 0x1
+ 925 0268 9C       		.byte	0x9c
+ 926 0269 0D       		.uleb128 0xd
+ 927 026a B5030000 		.4byte	.LASF50
+ 928 026e 01       		.byte	0x1
+ 929 026f 2E       		.byte	0x2e
+ 930 0270 81000000 		.4byte	0x81
+ 931 0274 00000000 		.4byte	.LFB68
+ 932 0278 50010000 		.4byte	.LFE68-.LFB68
+ 933 027c 01       		.uleb128 0x1
+ 934 027d 9C       		.byte	0x9c
+ 935 027e F3020000 		.4byte	0x2f3
+ 936 0282 0E       		.uleb128 0xe
+ 937 0283 98030000 		.4byte	.LASF52
+ 938 0287 01       		.byte	0x1
+ 939 0288 2E       		.byte	0x2e
+ 940 0289 F3020000 		.4byte	0x2f3
+ 941 028d 03       		.uleb128 0x3
+ 942 028e 91       		.byte	0x91
+ 943 028f AC7F     		.sleb128 -84
+ 944 0291 0F       		.uleb128 0xf
+ 945 0292 9E030000 		.4byte	.LASF46
+ 946 0296 01       		.byte	0x1
+ 947 0297 2F       		.byte	0x2f
+ 948 0298 81000000 		.4byte	0x81
+ 949 029c 02       		.uleb128 0x2
+ 950 029d 91       		.byte	0x91
+ 951 029e 73       		.sleb128 -13
+ 952 029f 10       		.uleb128 0x10
+ 953 02a0 6900     		.ascii	"i\000"
+ 954 02a2 01       		.byte	0x1
+ 955 02a3 38       		.byte	0x38
+ 956 02a4 99000000 		.4byte	0x99
+ 957 02a8 02       		.uleb128 0x2
+ 958 02a9 91       		.byte	0x91
+ 959 02aa 74       		.sleb128 -12
+ 960 02ab 0F       		.uleb128 0xf
+ 961 02ac F7000000 		.4byte	.LASF47
+ 962 02b0 01       		.byte	0x1
+ 963 02b1 38       		.byte	0x38
+ 964 02b2 99000000 		.4byte	0x99
+ 965 02b6 02       		.uleb128 0x2
+ 966 02b7 91       		.byte	0x91
+ 967 02b8 6C       		.sleb128 -20
+ 968 02b9 0F       		.uleb128 0xf
+ 969 02ba 68030000 		.4byte	.LASF48
+ 970 02be 01       		.byte	0x1
+ 971 02bf 38       		.byte	0x38
+ 972 02c0 99000000 		.4byte	0x99
+ 973 02c4 02       		.uleb128 0x2
+ 974 02c5 91       		.byte	0x91
+ 975 02c6 68       		.sleb128 -24
+ 976 02c7 0F       		.uleb128 0xf
+ 977 02c8 3B010000 		.4byte	.LASF21
+ 978 02cc 01       		.byte	0x1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 21
+
+
+ 979 02cd 66       		.byte	0x66
+ 980 02ce 4C000000 		.4byte	0x4c
+ 981 02d2 02       		.uleb128 0x2
+ 982 02d3 91       		.byte	0x91
+ 983 02d4 64       		.sleb128 -28
+ 984 02d5 0F       		.uleb128 0xf
+ 985 02d6 BC010000 		.4byte	.LASF49
+ 986 02da 01       		.byte	0x1
+ 987 02db 67       		.byte	0x67
+ 988 02dc F9020000 		.4byte	0x2f9
+ 989 02e0 02       		.uleb128 0x2
+ 990 02e1 91       		.byte	0x91
+ 991 02e2 44       		.sleb128 -60
+ 992 02e3 0F       		.uleb128 0xf
+ 993 02e4 0C010000 		.4byte	.LASF20
+ 994 02e8 01       		.byte	0x1
+ 995 02e9 6B       		.byte	0x6b
+ 996 02ea 07010000 		.4byte	0x107
+ 997 02ee 03       		.uleb128 0x3
+ 998 02ef 91       		.byte	0x91
+ 999 02f0 B07F     		.sleb128 -80
+ 1000 02f2 00       		.byte	0
+ 1001 02f3 06       		.uleb128 0x6
+ 1002 02f4 04       		.byte	0x4
+ 1003 02f5 81000000 		.4byte	0x81
+ 1004 02f9 0A       		.uleb128 0xa
+ 1005 02fa BF000000 		.4byte	0xbf
+ 1006 02fe 09030000 		.4byte	0x309
+ 1007 0302 0B       		.uleb128 0xb
+ 1008 0303 CD000000 		.4byte	0xcd
+ 1009 0307 1F       		.byte	0x1f
+ 1010 0308 00       		.byte	0
+ 1011 0309 0D       		.uleb128 0xd
+ 1012 030a 10000000 		.4byte	.LASF51
+ 1013 030e 01       		.byte	0x1
+ 1014 030f 71       		.byte	0x71
+ 1015 0310 81000000 		.4byte	0x81
+ 1016 0314 00000000 		.4byte	.LFB69
+ 1017 0318 D8000000 		.4byte	.LFE69-.LFB69
+ 1018 031c 01       		.uleb128 0x1
+ 1019 031d 9C       		.byte	0x9c
+ 1020 031e 85030000 		.4byte	0x385
+ 1021 0322 0E       		.uleb128 0xe
+ 1022 0323 36000000 		.4byte	.LASF53
+ 1023 0327 01       		.byte	0x1
+ 1024 0328 71       		.byte	0x71
+ 1025 0329 85030000 		.4byte	0x385
+ 1026 032d 02       		.uleb128 0x2
+ 1027 032e 91       		.byte	0x91
+ 1028 032f 64       		.sleb128 -28
+ 1029 0330 0E       		.uleb128 0xe
+ 1030 0331 29040000 		.4byte	.LASF54
+ 1031 0335 01       		.byte	0x1
+ 1032 0336 71       		.byte	0x71
+ 1033 0337 8B030000 		.4byte	0x38b
+ 1034 033b 02       		.uleb128 0x2
+ 1035 033c 91       		.byte	0x91
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 22
+
+
+ 1036 033d 60       		.sleb128 -32
+ 1037 033e 0E       		.uleb128 0xe
+ 1038 033f 0E040000 		.4byte	.LASF55
+ 1039 0343 01       		.byte	0x1
+ 1040 0344 71       		.byte	0x71
+ 1041 0345 F3020000 		.4byte	0x2f3
+ 1042 0349 02       		.uleb128 0x2
+ 1043 034a 91       		.byte	0x91
+ 1044 034b 5C       		.sleb128 -36
+ 1045 034c 0E       		.uleb128 0xe
+ 1046 034d A8010000 		.4byte	.LASF56
+ 1047 0351 01       		.byte	0x1
+ 1048 0352 71       		.byte	0x71
+ 1049 0353 91030000 		.4byte	0x391
+ 1050 0357 02       		.uleb128 0x2
+ 1051 0358 91       		.byte	0x91
+ 1052 0359 58       		.sleb128 -40
+ 1053 035a 0E       		.uleb128 0xe
+ 1054 035b 22030000 		.4byte	.LASF57
+ 1055 035f 01       		.byte	0x1
+ 1056 0360 71       		.byte	0x71
+ 1057 0361 F3020000 		.4byte	0x2f3
+ 1058 0365 02       		.uleb128 0x2
+ 1059 0366 91       		.byte	0x91
+ 1060 0367 00       		.sleb128 0
+ 1061 0368 0E       		.uleb128 0xe
+ 1062 0369 CD030000 		.4byte	.LASF58
+ 1063 036d 01       		.byte	0x1
+ 1064 036e 71       		.byte	0x71
+ 1065 036f 81000000 		.4byte	0x81
+ 1066 0373 02       		.uleb128 0x2
+ 1067 0374 91       		.byte	0x91
+ 1068 0375 04       		.sleb128 4
+ 1069 0376 0F       		.uleb128 0xf
+ 1070 0377 AF030000 		.4byte	.LASF59
+ 1071 037b 01       		.byte	0x1
+ 1072 037c 73       		.byte	0x73
+ 1073 037d 81000000 		.4byte	0x81
+ 1074 0381 02       		.uleb128 0x2
+ 1075 0382 91       		.byte	0x91
+ 1076 0383 6F       		.sleb128 -17
+ 1077 0384 00       		.byte	0
+ 1078 0385 06       		.uleb128 0x6
+ 1079 0386 04       		.byte	0x4
+ 1080 0387 D4000000 		.4byte	0xd4
+ 1081 038b 06       		.uleb128 0x6
+ 1082 038c 04       		.byte	0x4
+ 1083 038d B1000000 		.4byte	0xb1
+ 1084 0391 06       		.uleb128 0x6
+ 1085 0392 04       		.byte	0x4
+ 1086 0393 68000000 		.4byte	0x68
+ 1087 0397 11       		.uleb128 0x11
+ 1088 0398 17040000 		.4byte	.LASF76
+ 1089 039c 01       		.byte	0x1
+ 1090 039d 91       		.byte	0x91
+ 1091 039e 00000000 		.4byte	.LFB70
+ 1092 03a2 1C000000 		.4byte	.LFE70-.LFB70
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 23
+
+
+ 1093 03a6 01       		.uleb128 0x1
+ 1094 03a7 9C       		.byte	0x9c
+ 1095 03a8 12       		.uleb128 0x12
+ 1096 03a9 EB030000 		.4byte	.LASF60
+ 1097 03ad 07       		.byte	0x7
+ 1098 03ae 1207     		.2byte	0x712
+ 1099 03b0 B4030000 		.4byte	0x3b4
+ 1100 03b4 13       		.uleb128 0x13
+ 1101 03b5 76000000 		.4byte	0x76
+ 1102 03b9 14       		.uleb128 0x14
+ 1103 03ba B5020000 		.4byte	.LASF61
+ 1104 03be 01       		.byte	0x1
+ 1105 03bf 10       		.byte	0x10
+ 1106 03c0 81000000 		.4byte	0x81
+ 1107 03c4 05       		.uleb128 0x5
+ 1108 03c5 03       		.byte	0x3
+ 1109 03c6 00000000 		.4byte	autosampler_state
+ 1110 03ca 14       		.uleb128 0x14
+ 1111 03cb F8030000 		.4byte	.LASF62
+ 1112 03cf 01       		.byte	0x1
+ 1113 03d0 10       		.byte	0x10
+ 1114 03d1 81000000 		.4byte	0x81
+ 1115 03d5 05       		.uleb128 0x5
+ 1116 03d6 03       		.byte	0x3
+ 1117 03d7 00000000 		.4byte	SampleCount
+ 1118 03db 14       		.uleb128 0x14
+ 1119 03dc 8D010000 		.4byte	.LASF63
+ 1120 03e0 05       		.byte	0x5
+ 1121 03e1 11       		.byte	0x11
+ 1122 03e2 13020000 		.4byte	0x213
+ 1123 03e6 05       		.uleb128 0x5
+ 1124 03e7 03       		.byte	0x3
+ 1125 03e8 00000000 		.4byte	buffer_overflow
+ 1126 03ec 14       		.uleb128 0x14
+ 1127 03ed 19010000 		.4byte	.LASF64
+ 1128 03f1 05       		.byte	0x5
+ 1129 03f2 22       		.byte	0x22
+ 1130 03f3 8D000000 		.4byte	0x8d
+ 1131 03f7 05       		.uleb128 0x5
+ 1132 03f8 03       		.byte	0x3
+ 1133 03f9 00000000 		.4byte	dataPointsInStack
+ 1134 03fd 14       		.uleb128 0x14
+ 1135 03fe 45010000 		.4byte	.LASF65
+ 1136 0402 05       		.byte	0x5
+ 1137 0403 23       		.byte	0x23
+ 1138 0404 8D000000 		.4byte	0x8d
+ 1139 0408 05       		.uleb128 0x5
+ 1140 0409 03       		.byte	0x3
+ 1141 040a 00000000 		.4byte	dataPointsInStackDesired
+ 1142 040e 0A       		.uleb128 0xa
+ 1143 040f 17010000 		.4byte	0x117
+ 1144 0413 1E040000 		.4byte	0x41e
+ 1145 0417 0B       		.uleb128 0xb
+ 1146 0418 CD000000 		.4byte	0xcd
+ 1147 041c 95       		.byte	0x95
+ 1148 041d 00       		.byte	0
+ 1149 041e 14       		.uleb128 0x14
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 24
+
+
+ 1150 041f 1D030000 		.4byte	.LASF66
+ 1151 0423 05       		.byte	0x5
+ 1152 0424 24       		.byte	0x24
+ 1153 0425 0E040000 		.4byte	0x40e
+ 1154 0429 05       		.uleb128 0x5
+ 1155 042a 03       		.byte	0x3
+ 1156 042b 00000000 		.4byte	data
+ 1157 042f 14       		.uleb128 0x14
+ 1158 0430 06020000 		.4byte	.LASF67
+ 1159 0434 06       		.byte	0x6
+ 1160 0435 1F       		.byte	0x1f
+ 1161 0436 81000000 		.4byte	0x81
+ 1162 043a 05       		.uleb128 0x5
+ 1163 043b 03       		.byte	0x3
+ 1164 043c 00000000 		.4byte	modem_state
+ 1165 0440 14       		.uleb128 0x14
+ 1166 0441 EF010000 		.4byte	.LASF68
+ 1167 0445 06       		.byte	0x6
+ 1168 0446 62       		.byte	0x62
+ 1169 0447 A5000000 		.4byte	0xa5
+ 1170 044b 05       		.uleb128 0x5
+ 1171 044c 03       		.byte	0x3
+ 1172 044d 00000000 		.4byte	modem_start_time_stamp
+ 1173 0451 14       		.uleb128 0x14
+ 1174 0452 9D010000 		.4byte	.LASF69
+ 1175 0456 06       		.byte	0x6
+ 1176 0457 63       		.byte	0x63
+ 1177 0458 4F010000 		.4byte	0x14f
+ 1178 045c 05       		.uleb128 0x5
+ 1179 045d 03       		.byte	0x3
+ 1180 045e 00000000 		.4byte	modem_info
+ 1181 0462 14       		.uleb128 0x14
+ 1182 0463 5E020000 		.4byte	.LASF70
+ 1183 0467 06       		.byte	0x6
+ 1184 0468 64       		.byte	0x64
+ 1185 0469 C3010000 		.4byte	0x1c3
+ 1186 046d 05       		.uleb128 0x5
+ 1187 046e 03       		.byte	0x3
+ 1188 046f 00000000 		.4byte	modem_stats
+ 1189 0473 14       		.uleb128 0x14
+ 1190 0474 D6030000 		.4byte	.LASF71
+ 1191 0478 06       		.byte	0x6
+ 1192 0479 65       		.byte	0x65
+ 1193 047a 1A020000 		.4byte	0x21a
+ 1194 047e 05       		.uleb128 0x5
+ 1195 047f 03       		.byte	0x3
+ 1196 0480 00000000 		.4byte	updatable_parameters
+ 1197 0484 14       		.uleb128 0x14
+ 1198 0485 10030000 		.4byte	.LASF72
+ 1199 0489 01       		.byte	0x1
+ 1200 048a 10       		.byte	0x10
+ 1201 048b 81000000 		.4byte	0x81
+ 1202 048f 05       		.uleb128 0x5
+ 1203 0490 03       		.byte	0x3
+ 1204 0491 00000000 		.4byte	SampleCount1
+ 1205 0495 00       		.byte	0
+ 1206              		.section	.debug_abbrev,"",%progbits
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 25
+
+
+ 1207              	.Ldebug_abbrev0:
+ 1208 0000 01       		.uleb128 0x1
+ 1209 0001 11       		.uleb128 0x11
+ 1210 0002 01       		.byte	0x1
+ 1211 0003 25       		.uleb128 0x25
+ 1212 0004 0E       		.uleb128 0xe
+ 1213 0005 13       		.uleb128 0x13
+ 1214 0006 0B       		.uleb128 0xb
+ 1215 0007 03       		.uleb128 0x3
+ 1216 0008 0E       		.uleb128 0xe
+ 1217 0009 1B       		.uleb128 0x1b
+ 1218 000a 0E       		.uleb128 0xe
+ 1219 000b 55       		.uleb128 0x55
+ 1220 000c 17       		.uleb128 0x17
+ 1221 000d 11       		.uleb128 0x11
+ 1222 000e 01       		.uleb128 0x1
+ 1223 000f 10       		.uleb128 0x10
+ 1224 0010 17       		.uleb128 0x17
+ 1225 0011 00       		.byte	0
+ 1226 0012 00       		.byte	0
+ 1227 0013 02       		.uleb128 0x2
+ 1228 0014 24       		.uleb128 0x24
+ 1229 0015 00       		.byte	0
+ 1230 0016 0B       		.uleb128 0xb
+ 1231 0017 0B       		.uleb128 0xb
+ 1232 0018 3E       		.uleb128 0x3e
+ 1233 0019 0B       		.uleb128 0xb
+ 1234 001a 03       		.uleb128 0x3
+ 1235 001b 0E       		.uleb128 0xe
+ 1236 001c 00       		.byte	0
+ 1237 001d 00       		.byte	0
+ 1238 001e 03       		.uleb128 0x3
+ 1239 001f 16       		.uleb128 0x16
+ 1240 0020 00       		.byte	0
+ 1241 0021 03       		.uleb128 0x3
+ 1242 0022 0E       		.uleb128 0xe
+ 1243 0023 3A       		.uleb128 0x3a
+ 1244 0024 0B       		.uleb128 0xb
+ 1245 0025 3B       		.uleb128 0x3b
+ 1246 0026 0B       		.uleb128 0xb
+ 1247 0027 49       		.uleb128 0x49
+ 1248 0028 13       		.uleb128 0x13
+ 1249 0029 00       		.byte	0
+ 1250 002a 00       		.byte	0
+ 1251 002b 04       		.uleb128 0x4
+ 1252 002c 24       		.uleb128 0x24
+ 1253 002d 00       		.byte	0
+ 1254 002e 0B       		.uleb128 0xb
+ 1255 002f 0B       		.uleb128 0xb
+ 1256 0030 3E       		.uleb128 0x3e
+ 1257 0031 0B       		.uleb128 0xb
+ 1258 0032 03       		.uleb128 0x3
+ 1259 0033 08       		.uleb128 0x8
+ 1260 0034 00       		.byte	0
+ 1261 0035 00       		.byte	0
+ 1262 0036 05       		.uleb128 0x5
+ 1263 0037 16       		.uleb128 0x16
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 26
+
+
+ 1264 0038 00       		.byte	0
+ 1265 0039 03       		.uleb128 0x3
+ 1266 003a 0E       		.uleb128 0xe
+ 1267 003b 3A       		.uleb128 0x3a
+ 1268 003c 0B       		.uleb128 0xb
+ 1269 003d 3B       		.uleb128 0x3b
+ 1270 003e 05       		.uleb128 0x5
+ 1271 003f 49       		.uleb128 0x49
+ 1272 0040 13       		.uleb128 0x13
+ 1273 0041 00       		.byte	0
+ 1274 0042 00       		.byte	0
+ 1275 0043 06       		.uleb128 0x6
+ 1276 0044 0F       		.uleb128 0xf
+ 1277 0045 00       		.byte	0
+ 1278 0046 0B       		.uleb128 0xb
+ 1279 0047 0B       		.uleb128 0xb
+ 1280 0048 49       		.uleb128 0x49
+ 1281 0049 13       		.uleb128 0x13
+ 1282 004a 00       		.byte	0
+ 1283 004b 00       		.byte	0
+ 1284 004c 07       		.uleb128 0x7
+ 1285 004d 13       		.uleb128 0x13
+ 1286 004e 01       		.byte	0x1
+ 1287 004f 0B       		.uleb128 0xb
+ 1288 0050 0B       		.uleb128 0xb
+ 1289 0051 3A       		.uleb128 0x3a
+ 1290 0052 0B       		.uleb128 0xb
+ 1291 0053 3B       		.uleb128 0x3b
+ 1292 0054 0B       		.uleb128 0xb
+ 1293 0055 01       		.uleb128 0x1
+ 1294 0056 13       		.uleb128 0x13
+ 1295 0057 00       		.byte	0
+ 1296 0058 00       		.byte	0
+ 1297 0059 08       		.uleb128 0x8
+ 1298 005a 0D       		.uleb128 0xd
+ 1299 005b 00       		.byte	0
+ 1300 005c 03       		.uleb128 0x3
+ 1301 005d 08       		.uleb128 0x8
+ 1302 005e 3A       		.uleb128 0x3a
+ 1303 005f 0B       		.uleb128 0xb
+ 1304 0060 3B       		.uleb128 0x3b
+ 1305 0061 0B       		.uleb128 0xb
+ 1306 0062 49       		.uleb128 0x49
+ 1307 0063 13       		.uleb128 0x13
+ 1308 0064 38       		.uleb128 0x38
+ 1309 0065 0B       		.uleb128 0xb
+ 1310 0066 00       		.byte	0
+ 1311 0067 00       		.byte	0
+ 1312 0068 09       		.uleb128 0x9
+ 1313 0069 0D       		.uleb128 0xd
+ 1314 006a 00       		.byte	0
+ 1315 006b 03       		.uleb128 0x3
+ 1316 006c 0E       		.uleb128 0xe
+ 1317 006d 3A       		.uleb128 0x3a
+ 1318 006e 0B       		.uleb128 0xb
+ 1319 006f 3B       		.uleb128 0x3b
+ 1320 0070 0B       		.uleb128 0xb
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 27
+
+
+ 1321 0071 49       		.uleb128 0x49
+ 1322 0072 13       		.uleb128 0x13
+ 1323 0073 38       		.uleb128 0x38
+ 1324 0074 0B       		.uleb128 0xb
+ 1325 0075 00       		.byte	0
+ 1326 0076 00       		.byte	0
+ 1327 0077 0A       		.uleb128 0xa
+ 1328 0078 01       		.uleb128 0x1
+ 1329 0079 01       		.byte	0x1
+ 1330 007a 49       		.uleb128 0x49
+ 1331 007b 13       		.uleb128 0x13
+ 1332 007c 01       		.uleb128 0x1
+ 1333 007d 13       		.uleb128 0x13
+ 1334 007e 00       		.byte	0
+ 1335 007f 00       		.byte	0
+ 1336 0080 0B       		.uleb128 0xb
+ 1337 0081 21       		.uleb128 0x21
+ 1338 0082 00       		.byte	0
+ 1339 0083 49       		.uleb128 0x49
+ 1340 0084 13       		.uleb128 0x13
+ 1341 0085 2F       		.uleb128 0x2f
+ 1342 0086 0B       		.uleb128 0xb
+ 1343 0087 00       		.byte	0
+ 1344 0088 00       		.byte	0
+ 1345 0089 0C       		.uleb128 0xc
+ 1346 008a 2E       		.uleb128 0x2e
+ 1347 008b 00       		.byte	0
+ 1348 008c 3F       		.uleb128 0x3f
+ 1349 008d 19       		.uleb128 0x19
+ 1350 008e 03       		.uleb128 0x3
+ 1351 008f 0E       		.uleb128 0xe
+ 1352 0090 3A       		.uleb128 0x3a
+ 1353 0091 0B       		.uleb128 0xb
+ 1354 0092 3B       		.uleb128 0x3b
+ 1355 0093 0B       		.uleb128 0xb
+ 1356 0094 11       		.uleb128 0x11
+ 1357 0095 01       		.uleb128 0x1
+ 1358 0096 12       		.uleb128 0x12
+ 1359 0097 06       		.uleb128 0x6
+ 1360 0098 40       		.uleb128 0x40
+ 1361 0099 18       		.uleb128 0x18
+ 1362 009a 9642     		.uleb128 0x2116
+ 1363 009c 19       		.uleb128 0x19
+ 1364 009d 00       		.byte	0
+ 1365 009e 00       		.byte	0
+ 1366 009f 0D       		.uleb128 0xd
+ 1367 00a0 2E       		.uleb128 0x2e
+ 1368 00a1 01       		.byte	0x1
+ 1369 00a2 3F       		.uleb128 0x3f
+ 1370 00a3 19       		.uleb128 0x19
+ 1371 00a4 03       		.uleb128 0x3
+ 1372 00a5 0E       		.uleb128 0xe
+ 1373 00a6 3A       		.uleb128 0x3a
+ 1374 00a7 0B       		.uleb128 0xb
+ 1375 00a8 3B       		.uleb128 0x3b
+ 1376 00a9 0B       		.uleb128 0xb
+ 1377 00aa 27       		.uleb128 0x27
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 28
+
+
+ 1378 00ab 19       		.uleb128 0x19
+ 1379 00ac 49       		.uleb128 0x49
+ 1380 00ad 13       		.uleb128 0x13
+ 1381 00ae 11       		.uleb128 0x11
+ 1382 00af 01       		.uleb128 0x1
+ 1383 00b0 12       		.uleb128 0x12
+ 1384 00b1 06       		.uleb128 0x6
+ 1385 00b2 40       		.uleb128 0x40
+ 1386 00b3 18       		.uleb128 0x18
+ 1387 00b4 9642     		.uleb128 0x2116
+ 1388 00b6 19       		.uleb128 0x19
+ 1389 00b7 01       		.uleb128 0x1
+ 1390 00b8 13       		.uleb128 0x13
+ 1391 00b9 00       		.byte	0
+ 1392 00ba 00       		.byte	0
+ 1393 00bb 0E       		.uleb128 0xe
+ 1394 00bc 05       		.uleb128 0x5
+ 1395 00bd 00       		.byte	0
+ 1396 00be 03       		.uleb128 0x3
+ 1397 00bf 0E       		.uleb128 0xe
+ 1398 00c0 3A       		.uleb128 0x3a
+ 1399 00c1 0B       		.uleb128 0xb
+ 1400 00c2 3B       		.uleb128 0x3b
+ 1401 00c3 0B       		.uleb128 0xb
+ 1402 00c4 49       		.uleb128 0x49
+ 1403 00c5 13       		.uleb128 0x13
+ 1404 00c6 02       		.uleb128 0x2
+ 1405 00c7 18       		.uleb128 0x18
+ 1406 00c8 00       		.byte	0
+ 1407 00c9 00       		.byte	0
+ 1408 00ca 0F       		.uleb128 0xf
+ 1409 00cb 34       		.uleb128 0x34
+ 1410 00cc 00       		.byte	0
+ 1411 00cd 03       		.uleb128 0x3
+ 1412 00ce 0E       		.uleb128 0xe
+ 1413 00cf 3A       		.uleb128 0x3a
+ 1414 00d0 0B       		.uleb128 0xb
+ 1415 00d1 3B       		.uleb128 0x3b
+ 1416 00d2 0B       		.uleb128 0xb
+ 1417 00d3 49       		.uleb128 0x49
+ 1418 00d4 13       		.uleb128 0x13
+ 1419 00d5 02       		.uleb128 0x2
+ 1420 00d6 18       		.uleb128 0x18
+ 1421 00d7 00       		.byte	0
+ 1422 00d8 00       		.byte	0
+ 1423 00d9 10       		.uleb128 0x10
+ 1424 00da 34       		.uleb128 0x34
+ 1425 00db 00       		.byte	0
+ 1426 00dc 03       		.uleb128 0x3
+ 1427 00dd 08       		.uleb128 0x8
+ 1428 00de 3A       		.uleb128 0x3a
+ 1429 00df 0B       		.uleb128 0xb
+ 1430 00e0 3B       		.uleb128 0x3b
+ 1431 00e1 0B       		.uleb128 0xb
+ 1432 00e2 49       		.uleb128 0x49
+ 1433 00e3 13       		.uleb128 0x13
+ 1434 00e4 02       		.uleb128 0x2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 29
+
+
+ 1435 00e5 18       		.uleb128 0x18
+ 1436 00e6 00       		.byte	0
+ 1437 00e7 00       		.byte	0
+ 1438 00e8 11       		.uleb128 0x11
+ 1439 00e9 2E       		.uleb128 0x2e
+ 1440 00ea 00       		.byte	0
+ 1441 00eb 3F       		.uleb128 0x3f
+ 1442 00ec 19       		.uleb128 0x19
+ 1443 00ed 03       		.uleb128 0x3
+ 1444 00ee 0E       		.uleb128 0xe
+ 1445 00ef 3A       		.uleb128 0x3a
+ 1446 00f0 0B       		.uleb128 0xb
+ 1447 00f1 3B       		.uleb128 0x3b
+ 1448 00f2 0B       		.uleb128 0xb
+ 1449 00f3 27       		.uleb128 0x27
+ 1450 00f4 19       		.uleb128 0x19
+ 1451 00f5 11       		.uleb128 0x11
+ 1452 00f6 01       		.uleb128 0x1
+ 1453 00f7 12       		.uleb128 0x12
+ 1454 00f8 06       		.uleb128 0x6
+ 1455 00f9 40       		.uleb128 0x40
+ 1456 00fa 18       		.uleb128 0x18
+ 1457 00fb 9742     		.uleb128 0x2117
+ 1458 00fd 19       		.uleb128 0x19
+ 1459 00fe 00       		.byte	0
+ 1460 00ff 00       		.byte	0
+ 1461 0100 12       		.uleb128 0x12
+ 1462 0101 34       		.uleb128 0x34
+ 1463 0102 00       		.byte	0
+ 1464 0103 03       		.uleb128 0x3
+ 1465 0104 0E       		.uleb128 0xe
+ 1466 0105 3A       		.uleb128 0x3a
+ 1467 0106 0B       		.uleb128 0xb
+ 1468 0107 3B       		.uleb128 0x3b
+ 1469 0108 05       		.uleb128 0x5
+ 1470 0109 49       		.uleb128 0x49
+ 1471 010a 13       		.uleb128 0x13
+ 1472 010b 3F       		.uleb128 0x3f
+ 1473 010c 19       		.uleb128 0x19
+ 1474 010d 3C       		.uleb128 0x3c
+ 1475 010e 19       		.uleb128 0x19
+ 1476 010f 00       		.byte	0
+ 1477 0110 00       		.byte	0
+ 1478 0111 13       		.uleb128 0x13
+ 1479 0112 35       		.uleb128 0x35
+ 1480 0113 00       		.byte	0
+ 1481 0114 49       		.uleb128 0x49
+ 1482 0115 13       		.uleb128 0x13
+ 1483 0116 00       		.byte	0
+ 1484 0117 00       		.byte	0
+ 1485 0118 14       		.uleb128 0x14
+ 1486 0119 34       		.uleb128 0x34
+ 1487 011a 00       		.byte	0
+ 1488 011b 03       		.uleb128 0x3
+ 1489 011c 0E       		.uleb128 0xe
+ 1490 011d 3A       		.uleb128 0x3a
+ 1491 011e 0B       		.uleb128 0xb
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 30
+
+
+ 1492 011f 3B       		.uleb128 0x3b
+ 1493 0120 0B       		.uleb128 0xb
+ 1494 0121 49       		.uleb128 0x49
+ 1495 0122 13       		.uleb128 0x13
+ 1496 0123 3F       		.uleb128 0x3f
+ 1497 0124 19       		.uleb128 0x19
+ 1498 0125 02       		.uleb128 0x2
+ 1499 0126 18       		.uleb128 0x18
+ 1500 0127 00       		.byte	0
+ 1501 0128 00       		.byte	0
+ 1502 0129 00       		.byte	0
+ 1503              		.section	.debug_aranges,"",%progbits
+ 1504 0000 4C000000 		.4byte	0x4c
+ 1505 0004 0200     		.2byte	0x2
+ 1506 0006 00000000 		.4byte	.Ldebug_info0
+ 1507 000a 04       		.byte	0x4
+ 1508 000b 00       		.byte	0
+ 1509 000c 0000     		.2byte	0
+ 1510 000e 0000     		.2byte	0
+ 1511 0010 00000000 		.4byte	.LFB64
+ 1512 0014 20000000 		.4byte	.LFE64-.LFB64
+ 1513 0018 00000000 		.4byte	.LFB65
+ 1514 001c 1C000000 		.4byte	.LFE65-.LFB65
+ 1515 0020 00000000 		.4byte	.LFB66
+ 1516 0024 20000000 		.4byte	.LFE66-.LFB66
+ 1517 0028 00000000 		.4byte	.LFB67
+ 1518 002c 18000000 		.4byte	.LFE67-.LFB67
+ 1519 0030 00000000 		.4byte	.LFB68
+ 1520 0034 50010000 		.4byte	.LFE68-.LFB68
+ 1521 0038 00000000 		.4byte	.LFB69
+ 1522 003c D8000000 		.4byte	.LFE69-.LFB69
+ 1523 0040 00000000 		.4byte	.LFB70
+ 1524 0044 1C000000 		.4byte	.LFE70-.LFB70
+ 1525 0048 00000000 		.4byte	0
+ 1526 004c 00000000 		.4byte	0
+ 1527              		.section	.debug_ranges,"",%progbits
+ 1528              	.Ldebug_ranges0:
+ 1529 0000 00000000 		.4byte	.LFB64
+ 1530 0004 20000000 		.4byte	.LFE64
+ 1531 0008 00000000 		.4byte	.LFB65
+ 1532 000c 1C000000 		.4byte	.LFE65
+ 1533 0010 00000000 		.4byte	.LFB66
+ 1534 0014 20000000 		.4byte	.LFE66
+ 1535 0018 00000000 		.4byte	.LFB67
+ 1536 001c 18000000 		.4byte	.LFE67
+ 1537 0020 00000000 		.4byte	.LFB68
+ 1538 0024 50010000 		.4byte	.LFE68
+ 1539 0028 00000000 		.4byte	.LFB69
+ 1540 002c D8000000 		.4byte	.LFE69
+ 1541 0030 00000000 		.4byte	.LFB70
+ 1542 0034 1C000000 		.4byte	.LFE70
+ 1543 0038 00000000 		.4byte	0
+ 1544 003c 00000000 		.4byte	0
+ 1545              		.section	.debug_line,"",%progbits
+ 1546              	.Ldebug_line0:
+ 1547 0000 58020000 		.section	.debug_str,"MS",%progbits,1
+ 1547      02006801 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 31
+
+
+ 1547      00000201 
+ 1547      FB0E0D00 
+ 1547      01010101 
+ 1548              	.LASF24:
+ 1549 0000 6D6F6465 		.ascii	"model_id\000"
+ 1549      6C5F6964 
+ 1549      00
+ 1550              	.LASF23:
+ 1551 0009 73696D5F 		.ascii	"sim_id\000"
+ 1551      696400
+ 1552              	.LASF51:
+ 1553 0010 7A69705F 		.ascii	"zip_autosampler\000"
+ 1553      6175746F 
+ 1553      73616D70 
+ 1553      6C657200 
+ 1554              	.LASF45:
+ 1555 0020 6175746F 		.ascii	"autosampler_power_off\000"
+ 1555      73616D70 
+ 1555      6C65725F 
+ 1555      706F7765 
+ 1555      725F6F66 
+ 1556              	.LASF53:
+ 1557 0036 6C616265 		.ascii	"labels\000"
+ 1557      6C7300
+ 1558              	.LASF19:
+ 1559 003d 73697A65 		.ascii	"sizetype\000"
+ 1559      74797065 
+ 1559      00
+ 1560              	.LASF73:
+ 1561 0046 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1561      43313120 
+ 1561      352E342E 
+ 1561      31203230 
+ 1561      31363036 
+ 1562 0079 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1562      20726576 
+ 1562      6973696F 
+ 1562      6E203233 
+ 1562      37373135 
+ 1563 00ac 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1563      66756E63 
+ 1563      74696F6E 
+ 1563      2D736563 
+ 1563      74696F6E 
+ 1564              	.LASF42:
+ 1565 00d4 6175746F 		.ascii	"autosampler_start\000"
+ 1565      73616D70 
+ 1565      6C65725F 
+ 1565      73746172 
+ 1565      7400
+ 1566              	.LASF43:
+ 1567 00e6 6175746F 		.ascii	"autosampler_stop\000"
+ 1567      73616D70 
+ 1567      6C65725F 
+ 1567      73746F70 
+ 1567      00
+ 1568              	.LASF47:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 32
+
+
+ 1569 00f7 64656C61 		.ascii	"delay\000"
+ 1569      7900
+ 1570              	.LASF29:
+ 1571 00fd 65636E6F 		.ascii	"ecno\000"
+ 1571      00
+ 1572              	.LASF2:
+ 1573 0102 73686F72 		.ascii	"short int\000"
+ 1573      7420696E 
+ 1573      7400
+ 1574              	.LASF20:
+ 1575 010c 76616C75 		.ascii	"value\000"
+ 1575      6500
+ 1576              	.LASF12:
+ 1577 0112 75696E74 		.ascii	"uint16\000"
+ 1577      313600
+ 1578              	.LASF64:
+ 1579 0119 64617461 		.ascii	"dataPointsInStack\000"
+ 1579      506F696E 
+ 1579      7473496E 
+ 1579      53746163 
+ 1579      6B00
+ 1580              	.LASF11:
+ 1581 012b 75696E74 		.ascii	"uint8\000"
+ 1581      3800
+ 1582              	.LASF28:
+ 1583 0131 72736370 		.ascii	"rscp\000"
+ 1583      00
+ 1584              	.LASF31:
+ 1585 0136 72737270 		.ascii	"rsrp\000"
+ 1585      00
+ 1586              	.LASF21:
+ 1587 013b 74696D65 		.ascii	"timeStamp\000"
+ 1587      5374616D 
+ 1587      7000
+ 1588              	.LASF65:
+ 1589 0145 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 1589      506F696E 
+ 1589      7473496E 
+ 1589      53746163 
+ 1589      6B446573 
+ 1590              	.LASF15:
+ 1591 015e 666C6F61 		.ascii	"float\000"
+ 1591      7400
+ 1592              	.LASF6:
+ 1593 0164 6C6F6E67 		.ascii	"long long int\000"
+ 1593      206C6F6E 
+ 1593      6720696E 
+ 1593      7400
+ 1594              	.LASF17:
+ 1595 0172 63686172 		.ascii	"char\000"
+ 1595      00
+ 1596              	.LASF26:
+ 1597 0177 6D6F6465 		.ascii	"modem_info_t\000"
+ 1597      6D5F696E 
+ 1597      666F5F74 
+ 1597      00
+ 1598              	.LASF4:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 33
+
+
+ 1599 0184 6C6F6E67 		.ascii	"long int\000"
+ 1599      20696E74 
+ 1599      00
+ 1600              	.LASF63:
+ 1601 018d 62756666 		.ascii	"buffer_overflow\000"
+ 1601      65725F6F 
+ 1601      76657266 
+ 1601      6C6F7700 
+ 1602              	.LASF69:
+ 1603 019d 6D6F6465 		.ascii	"modem_info\000"
+ 1603      6D5F696E 
+ 1603      666F00
+ 1604              	.LASF56:
+ 1605 01a8 6175746F 		.ascii	"autosampler_trigger\000"
+ 1605      73616D70 
+ 1605      6C65725F 
+ 1605      74726967 
+ 1605      67657200 
+ 1606              	.LASF49:
+ 1607 01bc 635F7469 		.ascii	"c_timeStamp\000"
+ 1607      6D655374 
+ 1607      616D7000 
+ 1608              	.LASF37:
+ 1609 01c8 6D656173 		.ascii	"measure_time\000"
+ 1609      7572655F 
+ 1609      74696D65 
+ 1609      00
+ 1610              	.LASF18:
+ 1611 01d5 6C6F6E67 		.ascii	"long double\000"
+ 1611      20646F75 
+ 1611      626C6500 
+ 1612              	.LASF1:
+ 1613 01e1 756E7369 		.ascii	"unsigned char\000"
+ 1613      676E6564 
+ 1613      20636861 
+ 1613      7200
+ 1614              	.LASF68:
+ 1615 01ef 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 1615      6D5F7374 
+ 1615      6172745F 
+ 1615      74696D65 
+ 1615      5F737461 
+ 1616              	.LASF67:
+ 1617 0206 6D6F6465 		.ascii	"modem_state\000"
+ 1617      6D5F7374 
+ 1617      61746500 
+ 1618              	.LASF0:
+ 1619 0212 7369676E 		.ascii	"signed char\000"
+ 1619      65642063 
+ 1619      68617200 
+ 1620              	.LASF7:
+ 1621 021e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1621      206C6F6E 
+ 1621      6720756E 
+ 1621      7369676E 
+ 1621      65642069 
+ 1622              	.LASF8:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 34
+
+
+ 1623 0235 756E7369 		.ascii	"unsigned int\000"
+ 1623      676E6564 
+ 1623      20696E74 
+ 1623      00
+ 1624              	.LASF22:
+ 1625 0242 6B65795F 		.ascii	"key_value_t\000"
+ 1625      76616C75 
+ 1625      655F7400 
+ 1626              	.LASF27:
+ 1627 024e 72786C65 		.ascii	"rxlev\000"
+ 1627      7600
+ 1628              	.LASF38:
+ 1629 0254 73796E63 		.ascii	"sync_time\000"
+ 1629      5F74696D 
+ 1629      6500
+ 1630              	.LASF70:
+ 1631 025e 6D6F6465 		.ascii	"modem_stats\000"
+ 1631      6D5F7374 
+ 1631      61747300 
+ 1632              	.LASF41:
+ 1633 026a 75706461 		.ascii	"updatable_parameters_t\000"
+ 1633      7461626C 
+ 1633      655F7061 
+ 1633      72616D65 
+ 1633      74657273 
+ 1634              	.LASF36:
+ 1635 0281 73696D5F 		.ascii	"sim_type\000"
+ 1635      74797065 
+ 1635      00
+ 1636              	.LASF3:
+ 1637 028a 73686F72 		.ascii	"short unsigned int\000"
+ 1637      7420756E 
+ 1637      7369676E 
+ 1637      65642069 
+ 1637      6E7400
+ 1638              	.LASF32:
+ 1639 029d 74696D65 		.ascii	"time_to_network_connect\000"
+ 1639      5F746F5F 
+ 1639      6E657477 
+ 1639      6F726B5F 
+ 1639      636F6E6E 
+ 1640              	.LASF61:
+ 1641 02b5 6175746F 		.ascii	"autosampler_state\000"
+ 1641      73616D70 
+ 1641      6C65725F 
+ 1641      73746174 
+ 1641      6500
+ 1642              	.LASF33:
+ 1643 02c7 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1643      5F746F5F 
+ 1643      61637175 
+ 1643      6972655F 
+ 1643      697000
+ 1644              	.LASF25:
+ 1645 02da 696D6569 		.ascii	"imei\000"
+ 1645      00
+ 1646              	.LASF10:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 35
+
+
+ 1647 02df 696E7433 		.ascii	"int32_t\000"
+ 1647      325F7400 
+ 1648              	.LASF34:
+ 1649 02e7 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1649      6D5F7374 
+ 1649      6174735F 
+ 1649      7400
+ 1650              	.LASF44:
+ 1651 02f5 6175746F 		.ascii	"autosampler_power_on\000"
+ 1651      73616D70 
+ 1651      6C65725F 
+ 1651      706F7765 
+ 1651      725F6F6E 
+ 1652              	.LASF40:
+ 1653 030a 5F426F6F 		.ascii	"_Bool\000"
+ 1653      6C00
+ 1654              	.LASF72:
+ 1655 0310 53616D70 		.ascii	"SampleCount1\000"
+ 1655      6C65436F 
+ 1655      756E7431 
+ 1655      00
+ 1656              	.LASF66:
+ 1657 031d 64617461 		.ascii	"data\000"
+ 1657      00
+ 1658              	.LASF57:
+ 1659 0322 626F7474 		.ascii	"bottle_count\000"
+ 1659      6C655F63 
+ 1659      6F756E74 
+ 1659      00
+ 1660              	.LASF30:
+ 1661 032f 72737271 		.ascii	"rsrq\000"
+ 1661      00
+ 1662              	.LASF13:
+ 1663 0334 75696E74 		.ascii	"uint32\000"
+ 1663      333200
+ 1664              	.LASF5:
+ 1665 033b 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1665      20756E73 
+ 1665      69676E65 
+ 1665      6420696E 
+ 1665      7400
+ 1666              	.LASF14:
+ 1667 034d 696E7433 		.ascii	"int32\000"
+ 1667      3200
+ 1668              	.LASF16:
+ 1669 0353 646F7562 		.ascii	"double\000"
+ 1669      6C6500
+ 1670              	.LASF74:
+ 1671 035a 6175746F 		.ascii	"autosampler.c\000"
+ 1671      73616D70 
+ 1671      6C65722E 
+ 1671      6300
+ 1672              	.LASF48:
+ 1673 0368 696E7465 		.ascii	"interval\000"
+ 1673      7276616C 
+ 1673      00
+ 1674              	.LASF75:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 36
+
+
+ 1675 0371 433A5C6E 		.ascii	"C:\\notoriOS\\notoriOS.cydsn\000"
+ 1675      6F746F72 
+ 1675      694F535C 
+ 1675      6E6F746F 
+ 1675      72694F53 
+ 1676              	.LASF39:
+ 1677 038c 64656275 		.ascii	"debug_level\000"
+ 1677      675F6C65 
+ 1677      76656C00 
+ 1678              	.LASF52:
+ 1679 0398 636F756E 		.ascii	"count\000"
+ 1679      7400
+ 1680              	.LASF46:
+ 1681 039e 636F756E 		.ascii	"count2\000"
+ 1681      743200
+ 1682              	.LASF9:
+ 1683 03a5 5F5F696E 		.ascii	"__int32_t\000"
+ 1683      7433325F 
+ 1683      7400
+ 1684              	.LASF59:
+ 1685 03af 6E766172 		.ascii	"nvars\000"
+ 1685      7300
+ 1686              	.LASF50:
+ 1687 03b5 6175746F 		.ascii	"autosampler_take_sample\000"
+ 1687      73616D70 
+ 1687      6C65725F 
+ 1687      74616B65 
+ 1687      5F73616D 
+ 1688              	.LASF58:
+ 1689 03cd 6D61785F 		.ascii	"max_size\000"
+ 1689      73697A65 
+ 1689      00
+ 1690              	.LASF71:
+ 1691 03d6 75706461 		.ascii	"updatable_parameters\000"
+ 1691      7461626C 
+ 1691      655F7061 
+ 1691      72616D65 
+ 1691      74657273 
+ 1692              	.LASF60:
+ 1693 03eb 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1693      52784275 
+ 1693      66666572 
+ 1693      00
+ 1694              	.LASF62:
+ 1695 03f8 53616D70 		.ascii	"SampleCount\000"
+ 1695      6C65436F 
+ 1695      756E7400 
+ 1696              	.LASF35:
+ 1697 0404 6E6F6465 		.ascii	"node_type\000"
+ 1697      5F747970 
+ 1697      6500
+ 1698              	.LASF55:
+ 1699 040e 61727261 		.ascii	"array_ix\000"
+ 1699      795F6978 
+ 1699      00
+ 1700              	.LASF76:
+ 1701 0417 6973725F 		.ascii	"isr_SampleCounter\000"
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccpPcDql.s 			page 37
+
+
+ 1701      53616D70 
+ 1701      6C65436F 
+ 1701      756E7465 
+ 1701      7200
+ 1702              	.LASF54:
+ 1703 0429 72656164 		.ascii	"readings\000"
+ 1703      696E6773 
+ 1703      00
+ 1704              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

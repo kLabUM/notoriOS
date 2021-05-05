@@ -9,6 +9,7 @@
 #include "level_sensor.h"
 #include "sd_card.h"
 #include "voltages.h"
+#include "autosampler.h"
 #include "debug.h"
 #include "modem.h"
 #include "data.h"
