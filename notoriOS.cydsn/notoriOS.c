@@ -265,11 +265,6 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
-    // Test modem
-    test_t t_modem = modem_test();
-    printNotif(NOTIF_TYPE_STARTUP,"MEID=%s, SIMID=%s, DEVICEID=%s\n",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
-    printTestStatus(t_modem);
-    
     // Test level sensor
     test_t t_level_sensor = level_sensor_test();  
     printTestStatus(t_level_sensor);
@@ -281,6 +276,11 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     // Test SD card
     test_t t_sd_card = SD_card_test();
     printTestStatus(t_sd_card);
+    
+    // Test modem
+    test_t t_modem = modem_test();
+    printNotif(NOTIF_TYPE_STARTUP,"MEID=%s, SIMID=%s, DEVICEID=%s\n",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
+    printTestStatus(t_modem);
     
     printNotif(NOTIF_TYPE_STARTUP,"\n\n-------------END TESTS---------------\n\n");
 
