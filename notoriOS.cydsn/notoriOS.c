@@ -279,7 +279,7 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     
     // Test modem
     test_t t_modem = modem_test();
-    printNotif(NOTIF_TYPE_STARTUP,"MEID=%s, SIMID=%s, DEVICEID=%s\n",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
+    printNotif(NOTIF_TYPE_STARTUP,"MEID=%s, SIMID=%s, DEVICEID=%s",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
     printTestStatus(t_modem);
     
     printNotif(NOTIF_TYPE_STARTUP,"\n\n-------------END TESTS---------------\n\n");
