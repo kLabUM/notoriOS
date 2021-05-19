@@ -66,7 +66,7 @@ pressure_t pressure_calculations(voltage_t voltage){
     // Calculate the pressure transducer current output.
     // i=V/R where i= currrent, V= voltage, and R= resistance= 150 ohms. Divide by 1000 to get current in mA.
     // Should fall between 4 and 20mA
-    pressure.pressure_current = (voltage.voltage_pressure/ 150.0)*1000; 
+    pressure.pressure_current = (voltage.voltage_pressure/ 150.0)/1000; 
     // Calculate the estimated depth from the pressure transducer.
     // d = (Dmax*V/0.016R) - (Dmax/4) where d= depth, V= voltage, R= resistance= 150 ohms, Dmax = sensor max depth = 10 ft.
     // Should fall between 0 and 10 ft
