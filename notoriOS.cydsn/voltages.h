@@ -23,6 +23,8 @@ typedef struct {
 } voltage_t;
 
 typedef struct {
+    float pressure_voltage_on;
+    float pressure_voltage_off;
     float pressure_current;
     float pressure_depth;
 } pressure_t;
@@ -32,6 +34,8 @@ void swap32(int32 *p,int32 *q);
 int32 find_median32(int32 array[] , int32 n);
 test_t voltages_test();
 voltage_t voltage_take_readings();
+test_t pressure_sensor_test();
+pressure_t pressure_sensor_readings();
 pressure_t pressure_calculations(voltage_t voltage);
 
 #endif 
