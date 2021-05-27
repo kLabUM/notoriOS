@@ -272,6 +272,10 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     // Test voltages
     test_t t_voltages = voltages_test();
     printTestStatus(t_voltages);
+ 
+    // Test voltages
+    test_t t_pressure = pressure_sensor_test();
+    printTestStatus(t_pressure);
     
     // Test SD card
     test_t t_sd_card = SD_card_test();
