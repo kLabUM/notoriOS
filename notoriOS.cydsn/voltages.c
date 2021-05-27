@@ -180,11 +180,10 @@ test_t voltages_test(){
     
     //do some checks here if you want the test to meet some voltage requirement
     
-    snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f,PRESSURE=%.3f",
+    snprintf(test.reason,sizeof(test.reason),"VBAT=%.3f,VSOL=%.3f,CHRG=%.3f",
             voltage.voltage_battery,
             voltage.voltage_solar,
-            voltage.voltage_charge_current,
-            voltage.voltage_pressure);
+            voltage.voltage_charge_current);
     
     test.status = 1;
     
