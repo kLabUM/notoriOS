@@ -448,7 +448,7 @@ void get_cell_network_stats(){
 
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
-    updatable_parameters.node_type = NODE_TYPE_SONTEK_FLOW;         ///-------Changed from node_type_depth
+    updatable_parameters.node_type = NODE_TYPE_DEPTH;
     updatable_parameters.sim_type = SIM_TYPE_STANDARD;
     updatable_parameters.measure_time = 10u; //in minutes
     updatable_parameters.sync_time = 60u;   //in minutes

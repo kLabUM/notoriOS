@@ -21,19 +21,24 @@
     - The last character of a command is the "!" character
     - the last two bytes of a response are <CR><LF>
 */
-#define TAKE_MEASUREMENT    "M"  // Request Single Measurement
+//Sontek uses more than just "M" and "D0" commands for requesting and reading measurements so M and D commands are made in-function
+    //0 is used for the default "M" and "D" commands still
+#define TAKE_MEASUREMENT    0  // Request Single Measurement
+#define READ_MEASUREMENT    0 // Read Completed Measurement
 #define CONC_MEASUREMENT    "C"  // Request Concurrent Measurement
-#define READ_MEASUREMENT    "D0" // Read Completed Measurement
 #define ADDR_QUERY          "?"  // Get Sensor Address
 #define ACK_ACTIVE          ""   // Check if the sensor is active
 #define CHANGE_ADDR         "A"  // Change the addreess of the sensor
 #define INFO                "I"  // Get sensor info
     
-#define TAKE_MEASUREMENT_1    "M1"  // Request Single Measurement  -------delete these once SDI12 back to normal
-#define TAKE_MEASUREMENT_2    "M2"  // Request Single Measurement 
-#define READ_MEASUREMENT_1    "D1" // Read Completed Measurement
-#define READ_MEASUREMENT_2    "D2" // Read Completed Measurement
-
+#define SONTEK_ADDRESS      "0" // Address of Sontek sensor
+#define SONLIST_ADDRESS     "1" // Address of Sonlist sensor
+#define DECAGON_ADDRESS     "2" // Address of Decagon sensor
+    
+#define SONTEK_NVARS        54  //Number of variables sontek sensor can return 27 for Default mode, 54 for Beam profile
+#define SONLIST_NVARS       2  
+#define DECAGON_NVARS       3  
+    
 /* 
  * Define a struct to be used for each sensor
  */
@@ -89,10 +94,12 @@ uint8 SDI12_change_address(SDI12_sensor* sensor, char new_address[]);
  * @brief Take a measurement for an SDI12 sensor, given its address
  * 
  * @param sensor SDI12_sensor that we want to request measurements from
+ * @param take_meas_number int8 is the take measurement command number
+ * @param read_meas_number int8 is the read measurement command number
  *
  * @ return 1u if measurements were successfully taken, 0u if there was a communication error
  */
-uint8 SDI12_take_measurement(SDI12_sensor* sensor);
+uint8 SDI12_take_measurement(SDI12_sensor* sensor, int8 take_meas_number, int8 read_meas_number);
     
 /**
  * @brief TODO: Take a concurrent measurement for an SDI12 sensor, given its address
@@ -116,6 +123,8 @@ uint8 SDI12_info(SDI12_sensor* sensor);
  * @brief Inserts current values of all SDI12 sensors into labels and
  * readings arrays.
  *
+ * @param take_meas_number int8 is the take measurement command number
+ * @param read_meas_number int8 is the read measurement command number
  * @param labels Array to store labels corresponding to each sensor reading
  * @param readings Array to store sensor readings as floating point values
  * @param array_ix Array index to label and readings
@@ -124,7 +133,7 @@ uint8 SDI12_info(SDI12_sensor* sensor);
  *
  * @return (*array_ix) + number of entries filled
  */
-uint8 zip_SDI12(int SDI12_flag);
+uint8 zip_SDI12(int SDI12_flag, int8 take_meas_number, int8 read_meas_number);
 
 /**
  * @brief Resets a string to null bytes.

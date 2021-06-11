@@ -262,39 +262,61 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 // ==============================================
 void ChickityCheckYourselfBeforeYouWreckYourself(){
 
-    //test_t t_influx = influx_test();
     //printTestStatus(t_influx);
         SDI12_Power_Write(1u);
         SDI12_Power_Write(0u);
     // Take sontek readings and save them to m_sontek
-        char value[DATA_MAX_KEY_LENGTH];
-        char big_value[DATA_MAX_KEY_LENGTH*10];
+        char big_value[DATA_MAX_KEY_LENGTH*15];
         // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
         sontek_t m_sontek;
         
         // Take sontek readings and save them to m_sontek
         m_sontek = sontek_take_reading();
+        
+        snprintf(big_value,sizeof(big_value),"%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f",\
+                m_sontek.data0[0],m_sontek.data0[1],m_sontek.data0[2],m_sontek.data0[3],\
+                m_sontek.data1[0],m_sontek.data1[1],m_sontek.data1[2],m_sontek.data1[3],m_sontek.data1[4],\
+                m_sontek.data2[0],m_sontek.data2[1],m_sontek.data2[2],m_sontek.data2[3],m_sontek.data2[4],m_sontek.data2[5],\
+                m_sontek.data3[0],m_sontek.data3[1],m_sontek.data3[2],m_sontek.data3[3],m_sontek.data3[4],m_sontek.data3[5],\
+                m_sontek.data4[0],m_sontek.data4[1],m_sontek.data4[2],m_sontek.data4[3],m_sontek.data4[4],m_sontek.data4[5],\
+                m_sontek.data5[0],m_sontek.data5[1],m_sontek.data5[2],m_sontek.data5[3],m_sontek.data5[4],m_sontek.data5[5],\
+                m_sontek.data6[0],m_sontek.data6[1],m_sontek.data6[2],m_sontek.data6[3],m_sontek.data6[4],m_sontek.data6[5],\
+                m_sontek.data7[0],m_sontek.data7[1],m_sontek.data7[2],m_sontek.data7[3],m_sontek.data7[4],m_sontek.data7[5],\
+                m_sontek.data8[0],m_sontek.data8[1],m_sontek.data8[2],m_sontek.data8[3],\
+                m_sontek.data9[0],m_sontek.data9[1],m_sontek.data9[2],m_sontek.data9[3],m_sontek.data9[4]);
+            printNotif(NOTIF_TYPE_EVENT,"sontek=%s",big_value);
 
-        //4 is depth
-        //snprintf(value, sizeof(value),"%.2f,%.2f",m_sontek.values[4],m_sontek.values[23]);
-        snprintf(big_value,sizeof(big_value),"%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f",m_sontek.values[0],m_sontek.values[1],m_sontek.values[2],m_sontek.values[3],m_sontek.values[4],m_sontek.values[5],m_sontek.values[6],m_sontek.values[7],m_sontek.values[8],m_sontek.values[9],m_sontek.values[10],m_sontek.values[11],m_sontek.values[12],m_sontek.values[13],m_sontek.values[14],m_sontek.values[15],m_sontek.values[16],m_sontek.values[17],m_sontek.values[18],m_sontek.values[19],m_sontek.values[20],m_sontek.values[21],m_sontek.values[22],m_sontek.values[23],m_sontek.values[24],m_sontek.values[25],m_sontek.values[26]);
-         printNotif(NOTIF_TYPE_EVENT,"sontek=%s",big_value);
-        //23 is SNR1, 24 SNR2, 25, SNR3
-        snprintf(value,sizeof(value),"%.2f",(m_sontek).values[23]);
-            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR1=%s",value);
+        
+//            //temperature - 0 data0
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]); 
+//            printNotif(NOTIF_TYPE_EVENT,"sontek_temp=%s",value);
+//
+//            //stage - 2 data0
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[2]); 
+//            printNotif(NOTIF_TYPE_EVENT,"sontek_stage=%s",value);
+//            //mean velocity - 2 data1
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[2]);
+//            printNotif(NOTIF_TYPE_EVENT,"sontek_vel=%s",value);
+//            //SNR1 - 19
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[18]);
+//            printNotif(NOTIF_TYPE_EVENT,"sontek_snr1=%s",value);
+//            //Amp1 - 16
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[16]);
+//            printNotif(NOTIF_TYPE_EVENT,"sontek_amp1=%s",value);
+//            //bat - 49
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[49]);
+//            printNotif(NOTIF_TYPE_EVENT,"sontek_v_bat=%s",value);
             
-            snprintf(value,sizeof(value),"%f",m_sontek.values[24]);
-            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR2=%s",value);
-            
-            snprintf(value,sizeof(value),"%f",m_sontek.values[4]);
-            printNotif(NOTIF_TYPE_EVENT,"sontek_depth=%s",value);
-            
-
-            snprintf(value,sizeof(value),"%f",m_sontek.values[25]);
-            printNotif(NOTIF_TYPE_EVENT,"sontek_SNR3=%s",value);
-
-            
-    
+//////////////////////------------------------------------------------------------------------
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
     // Test modem
@@ -559,33 +581,34 @@ uint8 makeMeasurements(){
     
     // Holds string for value that will be written 
     char value[DATA_MAX_KEY_LENGTH];
-    char big_value[DATA_MAX_KEY_LENGTH*10];
+    char big_value[DATA_MAX_KEY_LENGTH*15];
     
     // If node type is depth node, take level sensor measurements
-//    if(updatable_parameters.node_type == NODE_TYPE_DEPTH){
-//        
-//        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
-//        level_sensor_t m_level_sensor;
-//        
-//        // Take level sensor readings and save them to m_level_sensor
-//        m_level_sensor = level_sensor_take_reading();
-//    
-//        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
-//        if(m_level_sensor.num_valid_readings > 0){
-//            snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
-//            printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
-//            pushData("maxbotix_depth",value,timeStamp);
-//            
-//            // Print measurement to SD card to file called data.txt
-//            SD_write(Data_fileName, "a+", c_timeStamp);
-//            SD_write(Data_fileName, "a+", " maxbotix_depth: ");
-//            SD_write(Data_fileName, "a+", value);
-//            SD_write(Data_fileName, "a+", " ");
-//        }else{
-//            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
-//            //pushData("maxbotix_depth","error",timeStamp);
-//        }
-//    }else if(updatable_parameters.node_type == NODE_TYPE_SONTEK_FLOW){
+    if(updatable_parameters.node_type == NODE_TYPE_DEPTH){
+        
+        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+        level_sensor_t m_level_sensor;
+        
+        // Take level sensor readings and save them to m_level_sensor
+        m_level_sensor = level_sensor_take_reading();
+    
+        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+        if(m_level_sensor.num_valid_readings > 0){
+            snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
+            printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
+            pushData("maxbotix_depth",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " maxbotix_depth: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
+            //pushData("maxbotix_depth","error",timeStamp);
+        }
+    // If node type is sontek flow node, take sontek sensor measurements
+    }else if(updatable_parameters.node_type == NODE_TYPE_SONTEK_FLOW){
         
         // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
         sontek_t m_sontek;
@@ -593,11 +616,31 @@ uint8 makeMeasurements(){
         // Take sontek readings and save them to m_sontek
         m_sontek = sontek_take_reading();
         
-        // If valid flag is 1, then print the sontek readings and push the data to the data wheel
-        if(m_sontek.valid == 1){
+        // If flag is valid (1), then print the sontek readings and push the data to the data wheel
+        if(m_sontek.flag == 1){
             
             //Print all measurements to serial and the SD card to file called data.txt
-            snprintf(big_value,sizeof(big_value),"%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f",m_sontek.values[0],m_sontek.values[1],m_sontek.values[2],m_sontek.values[3],m_sontek.values[4],m_sontek.values[5],m_sontek.values[6],m_sontek.values[7],m_sontek.values[8],m_sontek.values[9],m_sontek.values[10],m_sontek.values[11],m_sontek.values[12],m_sontek.values[13],m_sontek.values[14],m_sontek.values[15],m_sontek.values[16],m_sontek.values[17],m_sontek.values[18],m_sontek.values[19],m_sontek.values[20],m_sontek.values[21],m_sontek.values[22],m_sontek.values[23],m_sontek.values[24],m_sontek.values[25],m_sontek.values[26]);
+
+            snprintf(big_value,sizeof(big_value),"%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,\
+                %.2f,%.2f,%.2f,%.2f,%.2f",\
+                m_sontek.data0[0],m_sontek.data0[1],m_sontek.data0[2],m_sontek.data0[3],\
+                m_sontek.data1[0],m_sontek.data1[1],m_sontek.data1[2],m_sontek.data1[3],m_sontek.data1[4],\
+                m_sontek.data2[0],m_sontek.data2[1],m_sontek.data2[2],m_sontek.data2[3],m_sontek.data2[4],m_sontek.data2[5],\
+                m_sontek.data3[0],m_sontek.data3[1],m_sontek.data3[2],m_sontek.data3[3],m_sontek.data3[4],m_sontek.data3[5],\
+                m_sontek.data4[0],m_sontek.data4[1],m_sontek.data4[2],m_sontek.data4[3],m_sontek.data4[4],m_sontek.data4[5],\
+                m_sontek.data5[0],m_sontek.data5[1],m_sontek.data5[2],m_sontek.data5[3],m_sontek.data5[4],m_sontek.data5[5],\
+                m_sontek.data6[0],m_sontek.data6[1],m_sontek.data6[2],m_sontek.data6[3],m_sontek.data6[4],m_sontek.data6[5],\
+                m_sontek.data7[0],m_sontek.data7[1],m_sontek.data7[2],m_sontek.data7[3],m_sontek.data7[4],m_sontek.data7[5],\
+                m_sontek.data8[0],m_sontek.data8[1],m_sontek.data8[2],m_sontek.data8[3],\
+                m_sontek.data9[0],m_sontek.data9[1],m_sontek.data9[2],m_sontek.data9[3],m_sontek.data9[4]);
             printNotif(NOTIF_TYPE_EVENT,"sontek=%s",big_value);
 
             SD_write(Data_fileName, "a+", c_timeStamp);
@@ -605,41 +648,114 @@ uint8 makeMeasurements(){
             SD_write(Data_fileName, "a+", big_value);
             SD_write(Data_fileName, "a+", "\n");    //new line
             
-            //send specific measurements to influx
-            //temperature - 7
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[7]);
+            //send specific measurements from m_sontek.values array to influx
+            //temperature - 0 data0
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]);
             pushData("sontek_temp",value,timeStamp);
-            //depth - 4
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[4]);
-            pushData("sontek_depth",value,timeStamp);
-            //mean velocity - 2
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[2]);
+            //stage - 2 data0
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[2]);
+            pushData("sontek_stage",value,timeStamp);
+            //cell end - 3 data0
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[3]);
+            pushData("sontek_end_cell",value,timeStamp);
+            //mean velocity - 2 data1
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[2]);
             pushData("sontek_v_mean",value,timeStamp);
-            //pitch - 14
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[14]);
-            pushData("sontek_pitch",value,timeStamp);
-            //roll - 15
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[15]);
-            pushData("sontek_roll",value,timeStamp);
-            //SNR1 - 23
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[23]);
-            pushData("sontek_SNR1",value,timeStamp);
-            //SNR2 -24
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[24]);
-            pushData("sontek_SNR2",value,timeStamp);
-            //SNR3 - 25
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[25]);
-            pushData("sontek_SNR3",value,timeStamp);
-            //SNR4 - 26
-            snprintf(value,sizeof(value),"%.2f",m_sontek.values[26]);
-            pushData("sontek_SNR4",value,timeStamp);
+            //average SNR - 3 data1
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[3]);
+            pushData("sontek_avg_SNR",value,timeStamp);
+//            //pitch - 14
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[14]);
+//            pushData("sontek_pitch",value,timeStamp);
+//            //roll - 15
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[15]);
+//            pushData("sontek_roll",value,timeStamp);
+            //Amp1 - 0 data3
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data3[0]);
+            pushData("sontek_amp1",value,timeStamp);
+            //Amp2 - 1 data3
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data3[1]);
+            pushData("sontek_amp2",value,timeStamp);
+            //Amp3 - 2 data3
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data3[2]);
+            pushData("sontek_amp3",value,timeStamp);
+            //snr1 - 3 data3
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data3[3]);
+            pushData("sontek_snr1",value,timeStamp);
+            //snr2 - 4 data3
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data3[4]);
+            pushData("sontek_snr2",value,timeStamp);
+            //snr3 - 5 data3
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data3[5]);
+            pushData("sontek_snr3",value,timeStamp); 
+            
+            //Amp4 - 0 data5
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data5[0]);
+            pushData("sontek_amp4",value,timeStamp);
+            //Amp5 - 1 data5
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data5[1]);
+            pushData("sontek_amp5",value,timeStamp);
+            //Amp6 - 2 data5
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data5[2]);
+            pushData("sontek_amp6",value,timeStamp);
+            //snr4 - 3 data5
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data5[3]);
+            pushData("sontek_snr4",value,timeStamp);
+            //snr5 - 4 data5
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data5[4]);
+            pushData("sontek_snr5",value,timeStamp);
+            //snr6 - 5 data5
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data5[5]);
+            pushData("sontek_snr6",value,timeStamp);
+            
+            //Amp7 - 0 data7
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data7[0]);
+            pushData("sontek_amp7",value,timeStamp);
+            //Amp8 - 1 data7
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data7[1]);
+            pushData("sontek_amp8",value,timeStamp);
+            //Amp9 - 2 data7
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data7[2]);
+            pushData("sontek_amp9",value,timeStamp);
+            //snr7 - 3 data7
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data7[3]);
+            pushData("sontek_snr7",value,timeStamp);
+            //snr8 - 4 data7
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data7[4]);
+            pushData("sontek_snr8",value,timeStamp);
+            //snr9 - 5 data7
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data7[5]);
+            pushData("sontek_snr9",value,timeStamp);           
+            
+            //Amp10 - 2 data8
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data8[2]);
+            pushData("sontek_amp10",value,timeStamp);
+            //snr10 - 3 data8
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data8[3]);
+            pushData("sontek_snr10",value,timeStamp);
+            
+//            //SNR2 -24
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[24]);
+//            pushData("sontek_SNR2",value,timeStamp);
+//            //SNR3 - 25
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[25]);
+//            pushData("sontek_SNR3",value,timeStamp);
+//            //SNR4 - 26
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[26]);
+//            pushData("sontek_SNR4",value,timeStamp);
 
         }else{
-            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Sontek.");
-            //pushData("maxbotix_depth","error",timeStamp);
+            //publish error code if no valid readings given
+            snprintf(value,sizeof(value),"%c",m_sontek.flag);
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Sontek. Error: %c.", value);
+            pushData("sontek_flag",value,timeStamp);
+                
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " sontek error: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", "\n");
         }
-    //}         -------------------- to overwrite node types
-    
+    }
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;
     
