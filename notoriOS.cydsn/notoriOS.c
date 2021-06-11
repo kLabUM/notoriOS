@@ -261,61 +261,61 @@ alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownRese
 // If you make a new components, it could be good to call its tester function here 
 // ==============================================
 void ChickityCheckYourselfBeforeYouWreckYourself(){
-
-    //printTestStatus(t_influx);
-        SDI12_Power_Write(1u);
-        SDI12_Power_Write(0u);
-    // Take sontek readings and save them to m_sontek
-        char big_value[DATA_MAX_KEY_LENGTH*15];
-        // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
-        sontek_t m_sontek;
-        
-        // Take sontek readings and save them to m_sontek
-        m_sontek = sontek_take_reading();
-        
-        snprintf(big_value,sizeof(big_value),"%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,\
-                %.2f,%.2f,%.2f,%.2f,%.2f",\
-                m_sontek.data0[0],m_sontek.data0[1],m_sontek.data0[2],m_sontek.data0[3],\
-                m_sontek.data1[0],m_sontek.data1[1],m_sontek.data1[2],m_sontek.data1[3],m_sontek.data1[4],\
-                m_sontek.data2[0],m_sontek.data2[1],m_sontek.data2[2],m_sontek.data2[3],m_sontek.data2[4],m_sontek.data2[5],\
-                m_sontek.data3[0],m_sontek.data3[1],m_sontek.data3[2],m_sontek.data3[3],m_sontek.data3[4],m_sontek.data3[5],\
-                m_sontek.data4[0],m_sontek.data4[1],m_sontek.data4[2],m_sontek.data4[3],m_sontek.data4[4],m_sontek.data4[5],\
-                m_sontek.data5[0],m_sontek.data5[1],m_sontek.data5[2],m_sontek.data5[3],m_sontek.data5[4],m_sontek.data5[5],\
-                m_sontek.data6[0],m_sontek.data6[1],m_sontek.data6[2],m_sontek.data6[3],m_sontek.data6[4],m_sontek.data6[5],\
-                m_sontek.data7[0],m_sontek.data7[1],m_sontek.data7[2],m_sontek.data7[3],m_sontek.data7[4],m_sontek.data7[5],\
-                m_sontek.data8[0],m_sontek.data8[1],m_sontek.data8[2],m_sontek.data8[3],\
-                m_sontek.data9[0],m_sontek.data9[1],m_sontek.data9[2],m_sontek.data9[3],m_sontek.data9[4]);
-            printNotif(NOTIF_TYPE_EVENT,"sontek=%s",big_value);
-
-        
-//            //temperature - 0 data0
-//            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]); 
-//            printNotif(NOTIF_TYPE_EVENT,"sontek_temp=%s",value);
 //
-//            //stage - 2 data0
-//            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[2]); 
-//            printNotif(NOTIF_TYPE_EVENT,"sontek_stage=%s",value);
-//            //mean velocity - 2 data1
-//            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[2]);
-//            printNotif(NOTIF_TYPE_EVENT,"sontek_vel=%s",value);
-//            //SNR1 - 19
-//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[18]);
-//            printNotif(NOTIF_TYPE_EVENT,"sontek_snr1=%s",value);
-//            //Amp1 - 16
-//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[16]);
-//            printNotif(NOTIF_TYPE_EVENT,"sontek_amp1=%s",value);
-//            //bat - 49
-//            snprintf(value,sizeof(value),"%.2f",m_sontek.values[49]);
-//            printNotif(NOTIF_TYPE_EVENT,"sontek_v_bat=%s",value);
-            
+//    //printTestStatus(t_influx);
+//        SDI12_Power_Write(1u);
+//        SDI12_Power_Write(0u);
+//    // Take sontek readings and save them to m_sontek
+//        char big_value[DATA_MAX_KEY_LENGTH*15];
+//        // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
+//        sontek_t m_sontek;
+//        
+//        // Take sontek readings and save them to m_sontek
+//        m_sontek = sontek_take_reading();
+//        
+//        snprintf(big_value,sizeof(big_value),"%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,\
+//                %.2f,%.2f,%.2f,%.2f,%.2f",\
+//                m_sontek.data0[0],m_sontek.data0[1],m_sontek.data0[2],m_sontek.data0[3],\
+//                m_sontek.data1[0],m_sontek.data1[1],m_sontek.data1[2],m_sontek.data1[3],m_sontek.data1[4],\
+//                m_sontek.data2[0],m_sontek.data2[1],m_sontek.data2[2],m_sontek.data2[3],m_sontek.data2[4],m_sontek.data2[5],\
+//                m_sontek.data3[0],m_sontek.data3[1],m_sontek.data3[2],m_sontek.data3[3],m_sontek.data3[4],m_sontek.data3[5],\
+//                m_sontek.data4[0],m_sontek.data4[1],m_sontek.data4[2],m_sontek.data4[3],m_sontek.data4[4],m_sontek.data4[5],\
+//                m_sontek.data5[0],m_sontek.data5[1],m_sontek.data5[2],m_sontek.data5[3],m_sontek.data5[4],m_sontek.data5[5],\
+//                m_sontek.data6[0],m_sontek.data6[1],m_sontek.data6[2],m_sontek.data6[3],m_sontek.data6[4],m_sontek.data6[5],\
+//                m_sontek.data7[0],m_sontek.data7[1],m_sontek.data7[2],m_sontek.data7[3],m_sontek.data7[4],m_sontek.data7[5],\
+//                m_sontek.data8[0],m_sontek.data8[1],m_sontek.data8[2],m_sontek.data8[3],\
+//                m_sontek.data9[0],m_sontek.data9[1],m_sontek.data9[2],m_sontek.data9[3],m_sontek.data9[4]);
+//            printNotif(NOTIF_TYPE_EVENT,"sontek=%s",big_value);
+//
+//        
+////            //temperature - 0 data0
+////            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]); 
+////            printNotif(NOTIF_TYPE_EVENT,"sontek_temp=%s",value);
+////
+////            //stage - 2 data0
+////            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[2]); 
+////            printNotif(NOTIF_TYPE_EVENT,"sontek_stage=%s",value);
+////            //mean velocity - 2 data1
+////            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[2]);
+////            printNotif(NOTIF_TYPE_EVENT,"sontek_vel=%s",value);
+////            //SNR1 - 19
+////            snprintf(value,sizeof(value),"%.2f",m_sontek.values[18]);
+////            printNotif(NOTIF_TYPE_EVENT,"sontek_snr1=%s",value);
+////            //Amp1 - 16
+////            snprintf(value,sizeof(value),"%.2f",m_sontek.values[16]);
+////            printNotif(NOTIF_TYPE_EVENT,"sontek_amp1=%s",value);
+////            //bat - 49
+////            snprintf(value,sizeof(value),"%.2f",m_sontek.values[49]);
+////            printNotif(NOTIF_TYPE_EVENT,"sontek_v_bat=%s",value);
+//            
 //////////////////////------------------------------------------------------------------------
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
@@ -649,18 +649,18 @@ uint8 makeMeasurements(){
             SD_write(Data_fileName, "a+", "\n");    //new line
             
             //send specific measurements from m_sontek.values array to influx
-            //temperature - 0 data0
-            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]);
-            pushData("sontek_temp",value,timeStamp);
+//            //temperature - 0 data0
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]);
+//            pushData("sontek_temp",value,timeStamp);
             //stage - 2 data0
             snprintf(value,sizeof(value),"%.2f",m_sontek.data0[2]);
             pushData("sontek_stage",value,timeStamp);
-            //cell end - 3 data0
-            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[3]);
-            pushData("sontek_end_cell",value,timeStamp);
-            //mean velocity - 2 data1
-            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[2]);
-            pushData("sontek_v_mean",value,timeStamp);
+//            //cell end - 3 data0
+//            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[3]);
+//            pushData("sontek_end_cell",value,timeStamp);
+            //flow - 4 data1
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[4]);
+            pushData("sontek_Q",value,timeStamp);
             //average SNR - 3 data1
             snprintf(value,sizeof(value),"%.2f",m_sontek.data1[3]);
             pushData("sontek_avg_SNR",value,timeStamp);
