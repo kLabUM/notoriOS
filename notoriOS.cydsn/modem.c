@@ -453,6 +453,7 @@ void updatable_parameters_initialize(){
     updatable_parameters.measure_time = 10u;
     updatable_parameters.sync_time = 60u;
     updatable_parameters.debug_level = 1u;
+    updatable_parameters.gps = GPS_STOP;
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -464,12 +465,14 @@ void get_updated_parameters_from_malcom(){
     char s_sample_freq[10];
     char s_report_freq[10];
     char s_debug_freq[10];
+    char s_gps[10];
     
     s_node_type[0] = '\0';
     s_sim_type[0] = '\0';
     s_sample_freq[0] = '\0';
     s_report_freq[0] = '\0';
     s_debug_freq[0] = '\0';
+    s_gps[0] = '\0';
     
     // Extract UART string recieved from the modem and save to variables
     extract_string(uart_received_string,"Node_Type: ","\r",s_node_type);
@@ -477,9 +480,10 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
+    extract_string(uart_received_string,"gps: ","\r",s_gps);
     
     // Create variables for what is sent back from the server
-    int node_type, sim_type, sample_freq, report_freq, debug_freq;
+    int node_type, sim_type, sample_freq, report_freq, debug_freq, gps_check;
     
     // Scan character arrays and save values 
     if(sscanf(s_node_type, "%d", &node_type)==1){
@@ -507,11 +511,17 @@ void get_updated_parameters_from_malcom(){
         // Create a continuous alarm called alarmSync that triggers at the required time to sync the data to database
         alarmSync = CreateAlarm(updatable_parameters.sync_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
         printNotif(NOTIF_TYPE_EVENT, "Reporting frequency changed to: %d\r\n", report_freq);
-        }else{
+    }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new reporting frequency value.");
     }
+    if(sscanf(s_gps, "%d", &gps_check)==1){
+        updatable_parameters.gps = gps_check;
+        printNotif(NOTIF_TYPE_EVENT, "GPS bit changed to: %d\r\n", gps_check);
+    }else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not parse new GPS check bit value.");
+    }
     if(sscanf(s_debug_freq, "%d", &debug_freq)==1){
-        updatable_parameters.debug_level = debug_freq;
+        //updatable_parameters.debug_level = debug_freq;
         printNotif(NOTIF_TYPE_EVENT, "Debug printing frequency changed to: %d\r\n", debug_freq);
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new debugging frequency value.");
@@ -678,17 +688,17 @@ void modem_wakeup(){
 
     
 // Returns lat,lom,alt data from Assited GPS (AGPS) system
-gps_t modem_get_gps_coordinates(){
-    gps_t gps;
-    gps.altitude = 0;
-    gps.longitude = 0;
-    gps.latitude = 0;
-    gps.time_to_lock =0;
-    gps.valid = 0;
+int modem_get_gps_coordinates(){
+    /*gps_t gps;*/
+    gps_data.altitude = 0;
+    gps_data.longitude = 0;
+    gps_data.latitude = 0;
+    gps_data.time_to_lock =0;
+    gps_data.valid = 0;
     
     //AGPS will only work if we're connected to network, so don't call this fuction otherwise
     if(modem_state != MODEM_STATE_READY){
-        return gps;//where valid = 0
+        return 0;//where valid = 1
     }
     
     long lock_time = getTimeStamp();
@@ -723,6 +733,8 @@ gps_t modem_get_gps_coordinates(){
     //start AGPS service
     at_write_command("AT$GPSSLSR=1,1,,,,,2\r","OK",DEFAULT_AT_TIMEOUT); 
     
+    at_write_command("AT$GPSP=1\r","OK",DEFAULT_AT_TIMEOUT); 
+    
     
     // Start the AGPS service
     // Will keep receiving a buynch of commas without numbers, until GPS locks
@@ -732,10 +744,7 @@ gps_t modem_get_gps_coordinates(){
  
     uint8 gps_status = 0;
     for(uint16 i=0;i<200;i++){
-        gps_status = at_write_command("AT$GPSACP\r","N",DEFAULT_AT_TIMEOUT);//ATT
-        if(gps_status){
-            break;   
-        }
+        gps_status += at_write_command("AT$GPSACP\r","N",DEFAULT_AT_TIMEOUT);//ATT
         CyDelay(1000u);// Wait for a second -- BLOCKING. Could be more elegant to incorporate this into the modem state machine
     }
     
@@ -758,10 +767,10 @@ gps_t modem_get_gps_coordinates(){
         // fmod(double x, double y) returns the remainder of x divided by y.
         lat = floorf(lat/100) + fmod(lat,100)/60;
         lon = -(floorf(lon/100) + fmod(lon,100)/60);
-        gps.altitude = alt; // Save alt, lat, and lon to the variable gps.
-        gps.latitude = lat;
-        gps.longitude = lon;
-        gps.valid = 1;
+        gps_data.altitude = alt; // Save alt, lat, and lon to the variable gps.
+        gps_data.latitude = lat;
+        gps_data.longitude = lon;
+        gps_data.valid = 1;
     }
     
     // Disable LDO, just in case
@@ -824,9 +833,30 @@ gps_t modem_get_gps_coordinates(){
 
     // Calculate time to lock into GPS location and save in variable lock_time
     lock_time = getTimeStamp() - lock_time;
-    gps.time_to_lock = lock_time;
-    printNotif(NOTIF_TYPE_EVENT,"Time to lock GPS: %d", gps.time_to_lock);
+    gps_data.time_to_lock = lock_time;
+    printNotif(NOTIF_TYPE_EVENT,"Time to lock GPS: %d", gps_data.time_to_lock);
     
-    return gps;
+    return 1;
+}
+
+test_t gps_test(){
+    // Create variable test of the data structure test_t
+    test_t test;
+    test.status = 0;
+    snprintf(test.test_name,sizeof(test.test_name),"TEST_GPS");
     
+    modem_get_gps_coordinates();
+    
+    //do some checks here if you want the test to meet some voltage requirement
+    
+    snprintf(test.reason,sizeof(test.reason),"LAT=%f,LONG=%f,ALT=%f,TTL=%d,VALID=%d",
+            gps_data.latitude,
+            gps_data.longitude,
+            gps_data.altitude,
+            gps_data.time_to_lock,
+            gps_data.valid);
+    
+    test.status = 1;
+    
+    return test;
 }

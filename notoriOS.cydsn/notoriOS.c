@@ -129,6 +129,13 @@ int WorkWorkWorkWorkWorkWork()
     // Check modem state machine on every loop
     uint8 modem_status = modem_process_tasks();
 
+    //GPS Test
+    /*printf("MODEM STATUS IS: %d", modem_state);
+    if (modem_state == MODEM_STATE_READY) {
+    printf("GOING TO CHECK GPS DATA");
+    test_t t_gps_test = gps_test();
+    printTestStatus (t_gps_test);
+    }*/
     return 0u +  modem_status;  
 }
 
@@ -281,10 +288,15 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     test_t t_sd_card = SD_card_test();
     printTestStatus(t_sd_card);
     
+    
+    
     // Test modem
     test_t t_modem = modem_test();
     printNotif(NOTIF_TYPE_STARTUP,"MEID=%s, SIMID=%s, DEVICEID=%s",modem_info.imei,modem_info.sim_id,system_info.chip_uniqueId);
     printTestStatus(t_modem);
+    
+    
+    
     
     printNotif(NOTIF_TYPE_STARTUP,"\n\n-------------END TESTS---------------\n\n");
 
@@ -467,7 +479,12 @@ uint8 syncData(){
         }else{
             printNotif(NOTIF_TYPE_ERROR, "OS-NO: Could not receive data from server.");
         }
-         
+        
+        if(modem_get_gps_coordinates()) {
+            printNotif(NOTIF_TYPE_EVENT, "Collected GPS data");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR, "Failed GPS data collection (Modem not ready)");
+        }
         // Get time, and if it looks good, set the RTC with it
         long network_time = modem_get_network_time();
         if(network_time != 0){
@@ -618,6 +635,34 @@ uint8 makeMeasurements(){
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
     }
     
+    if(updatable_parameters.gps == 1){
+    
+        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+        //if(gps_read.valid == 1){
+            snprintf(value,sizeof(value),"%f", gps_data.latitude);
+            printNotif(NOTIF_TYPE_EVENT,"latitude=%s",value);
+            pushData("latitude",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", "GPS Latitude: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+            
+            snprintf(value,sizeof(value),"%f", gps_data.longitude);
+            printNotif(NOTIF_TYPE_EVENT,"longitude=%s",value);
+            pushData("longitude",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", "GPS Longitude: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        //}
+    }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from GPS sensor.");
+            //pushData("gps","1",timeStamp);
+    }
     return 0u;
 }
 

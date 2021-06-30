@@ -27,6 +27,10 @@
 // Define sim types
 #define SIM_TYPE_STANDARD               0u
 #define SIM_TYPE_SUPER                  1u
+    
+// Define GPS collection state
+#define GPS_STOP                        0u
+#define GPS_START                       1u
 
 uint8 modem_state;
 uint8 modem_process_tasks();
@@ -91,14 +95,18 @@ typedef struct{
     // what types of information you want printed to the terminal/ written to the SD card
     // 0u = errors, warnings, startup notifications , 1u = all notifications
     uint8 debug_level;
+    // Whether to collect and send GPS data or not
+    uint8 gps;
     
 } updatable_parameters_t;
 
-gps_t modem_get_gps_coordinates();
+int modem_get_gps_coordinates();
+test_t gps_test();
 int32 modem_start_time_stamp;
 modem_info_t modem_info;
 modem_stats_t modem_stats;
 updatable_parameters_t updatable_parameters;
+gps_t gps_data;
 
 void updatable_parameters_initialize();
 void get_updated_parameters_from_malcom();
