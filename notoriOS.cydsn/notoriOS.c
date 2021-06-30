@@ -560,7 +560,36 @@ uint8 makeMeasurements(){
             printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
             //pushData("maxbotix_depth","error",timeStamp);
         }
+    }else if(updatable_parameters.node_type == NODE_TYPE_AUTOSAMPLER){
+        
+        uint8 c = 1;    //update so it keeps it over time  --> move to config
+        uint8 *count;
+        
+        count = &c;
+        uint8 bottle_count = autosampler_take_sample(count);
+        
+        if(bottle_count != 0){
+                    //Print all measurements to serial and the SD card to file called data.txt
+
+            snprintf(value,sizeof(value),"%d",bottle_count);
+            printNotif(NOTIF_TYPE_EVENT,"bottle_count=%s",value);            
+            pushData("autosampler_bottle_count",value,timeStamp);
+
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " bottle_count: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");   //adds space
+        }
     }
+//        // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
+//        sontek_t m_sontek;
+//        
+//        // Take sontek readings and save them to m_sontek
+//        m_sontek = sontek_take_reading();
+//        
+//        // If flag is valid (1), then print the sontek readings and push the data to the data wheel
+//        if(m_sontek.flag == 1){
+             
     
     
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage

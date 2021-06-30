@@ -80,7 +80,7 @@ uint8 autosampler_take_sample(uint8 *count){
     if (Pin_Sampler_Completed_Sample_Read() != 0) {
         
         interval =  4u*60*1000/delay;       // Wait Max of 4 Minutes for pumping to complete -- is it really?
-        interval = 5u*100/delay; //wait 0.5 second for pumping to compelete FOR TESTING ONLY
+        //interval = 5u*100/delay; //wait 0.5 second for pumping to compelete FOR TESTING ONLY
         for (i = 0; i < interval ; i++) { 
             CyDelay(delay);
             if (Pin_Sampler_Completed_Sample_Read()==0) { // Event pin on autosampler is HI
@@ -107,7 +107,7 @@ uint8 autosampler_take_sample(uint8 *count){
     char value[DATA_MAX_KEY_LENGTH];
     snprintf(value,sizeof(value),"%d",count2);
      printNotif(NOTIF_TYPE_EVENT,"bottle_count=%s",value);
-    return 1u;
+    return count2;
 }
 
 uint8 zip_autosampler(char *labels[], float readings[], uint8 *array_ix, int *autosampler_trigger, uint8 *bottle_count, uint8 max_size){
