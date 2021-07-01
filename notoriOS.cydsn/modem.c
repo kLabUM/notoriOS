@@ -88,6 +88,7 @@ void modem_power_down(){
     UART_Telit_Stop(); // Disables the UART operation.
     isr_telit_rx_Stop(); // Disables and removes the interrupt.
     pins_configure_inactive(); // We want the modem power to be "killed" completely to conserve power.
+    Pin_Regulator_PWM_Write(0u);
     modem_state = MODEM_STATE_OFF;
     
 }
@@ -95,7 +96,7 @@ void modem_power_down(){
 // This puts all the modem pins into a state that won't leak power
 // Please call restore_pins() to bring them abck to function when they are needed for UART
 uint8 modem_power_up(){
-
+    Pin_Regulator_PWM_Write(1u);
     pins_configure_active(); // Turns on power and configures all UART pin modes
     UART_Telit_Start(); // Sets the initVar variable, calls the UART_Telit_Init() function, and then calls the UART_Telit_Enable() function.
     isr_telit_rx_StartEx(isr_telit_rx); // Sets up the interrupt and enables it. 
@@ -128,7 +129,7 @@ uint8 modem_power_up(){
     }
     // Calculate boot up time and save to variable boot_time.
     boot_time = getTimeStamp() - boot_time;
-    printNotif(NOTIF_TYPE_EVENT,"Modem boot time: %d",boot_time);
+    printNotif(NOTIF_TYPE_EVENT,"Modem boot time: %d",boot_time);Pin_Regulator_PWM
    
     if(at_ready == 1){
         printNotif(NOTIF_TYPE_EVENT,"Modem ready for AT commands after %d attempt(s).",attempts);
@@ -448,7 +449,7 @@ void get_cell_network_stats(){
 
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
-    updatable_parameters.node_type = NODE_TYPE_DEPTH;
+    updatable_parameters.node_type = NODE_TYPE_SONTEK_FLOW;
     updatable_parameters.sim_type = SIM_TYPE_STANDARD;
     updatable_parameters.measure_time = 10u; //in minutes
     updatable_parameters.sync_time = 60u;   //in minutes

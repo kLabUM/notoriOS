@@ -77,6 +77,8 @@
 #include "SDI12_Data_aliases.h"
 #include "SDI12_Data.h"
 #include "SDI12_control_reg.h"
+#include "Pin_Regulator_PWM_aliases.h"
+#include "Pin_Regulator_PWM.h"
 #include "emFile_SPI0.h"
 #include "emFile_SPI0_PVT.h"
 #include "emFile_mosi0_aliases.h"
