@@ -751,25 +751,27 @@ int modem_get_gps_coordinates(){
     //parse data here
     
     //example $GPSACP: 210926.000,4217.8003N,08341.3158W,2.3,258.2,3,17.8,4.8,2.6,220520,05,00
-    float lat;
-    float lon;
+    char lat[100];
+    char lon[100];
     float alt;
+    char lat_dir[2];
+    char lon_dir[2];
     
     // Look for $GPSACP:  in uart_received_string and save to sl
     // char *strstr(const char *haystack, const char *needle) function finds the first occurrence of the substring needle in the string haystack.
     char *s1 = strstr(uart_received_string,"$GPSACP: ");
     // Look in sl for lat, long, alt and save in match 
     // int sscanf(const char *str, const char *format, ...) reads formatted input from a string.
-    int match = sscanf(s1,"$GPSACP: %*f,%fN,%fW,%*f,%f,%*s",&lat,&lon,&alt);
+    int match = sscanf(s1,"$GPSACP: %*f,%[^A-Z]%[A-Z],%[^A-Z]%[A-Z],%*f,%f,%*s",lat ,lat_dir ,lon ,lon_dir ,&alt);
     if(match >= 3){
         // Calculate lat and lon
         // floorf(x) calculates the largest integer that is less than or equal to x. 
         // fmod(double x, double y) returns the remainder of x divided by y.
-        lat = floorf(lat/100) + fmod(lat,100)/60;
-        lon = -(floorf(lon/100) + fmod(lon,100)/60);
+        gps_data.latitude = floorf(strtof(lat, NULL)/100) + fmod(strtof(lat, NULL),100)/60;
+        gps_data.longitude = floorf(strtof(lon, NULL)/100) + fmod(strtof(lon, NULL),100)/60;
+        if(!strcmp(lat_dir,"S")){ gps_data.latitude = -1*(gps_data.latitude);}
+        if(!strcmp(lon_dir,"W")){ gps_data.longitude = -1*(gps_data.longitude);}
         gps_data.altitude = alt; // Save alt, lat, and lon to the variable gps.
-        gps_data.latitude = lat;
-        gps_data.longitude = lon;
         gps_data.valid = 1;
     }
     
