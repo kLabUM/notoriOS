@@ -1,3 +1,3 @@
-# Component constraints for D:\Github repo\notoriOS\notoriOS.cydsn\TopDesign\TopDesign.cysch
-# Project: D:\Github repo\notoriOS\notoriOS.cydsn\notoriOS.cyprj
-# Date: Thu, 27 May 2021 21:55:45 GMT
+# Component constraints for C:\notoriOS\notoriOS.cydsn\TopDesign\TopDesign.cysch
+# Project: C:\notoriOS\notoriOS.cydsn\notoriOS.cyprj
+# Date: Thu, 08 Jul 2021 19:33:58 GMT
