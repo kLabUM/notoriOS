@@ -448,10 +448,10 @@ void get_cell_network_stats(){
 
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
-    updatable_parameters.node_type = NODE_TYPE_DEPTH;
+    updatable_parameters.node_type = NODE_TYPE_VALVE;
     updatable_parameters.sim_type = SIM_TYPE_STANDARD;
-    updatable_parameters.measure_time = 10u;
-    updatable_parameters.sync_time = 60u;
+    updatable_parameters.measure_time = 2u;
+    updatable_parameters.sync_time = 10u;
     updatable_parameters.debug_level = 1u;
 }
 

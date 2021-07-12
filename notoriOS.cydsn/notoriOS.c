@@ -458,7 +458,8 @@ uint8 syncData(){
   
         // If it worked, clear the queue and clock how long the end-to-end tx took
         if(status == 1u){
-            get_updated_parameters_from_malcom();
+            //get_updated_parameters_from_malcom();
+            // commented out to eliminate automatically assigning as depth when reporting
             Clear_Data_Stack();
             int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
             char s_send_time[10];

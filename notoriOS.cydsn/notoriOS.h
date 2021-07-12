@@ -14,6 +14,7 @@
 #include "data.h"
 #include "influx.h"
 #include "commit.h"
+#include "valve.h"
 #include <math.h>       // designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 
 
 // Pre-allocate some memory for the HTTP requests
