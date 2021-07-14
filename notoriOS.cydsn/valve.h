@@ -8,8 +8,9 @@
 #include <project.h>
 #include "testing.h"
 
-void Valve_OPEN_Write(uint8);
-void Valve_CLOSE_Write(uint8);
+// for opening and clsing valve
+void Power_VDD1_Write(uint8);
+void Power_VDD2_Write(uint8);
 
-  
+// tests actuation and position reading
 test_t valve_test();
