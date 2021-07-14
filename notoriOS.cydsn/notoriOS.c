@@ -269,6 +269,10 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     test_t t_level_sensor = level_sensor_test();  
     printTestStatus(t_level_sensor);
     
+    // Test Valve
+    test_t t_valve = valve_test();
+    printTestStatus(t_valve);
+    
     // Test voltages
     test_t t_voltages = voltages_test();
     printTestStatus(t_voltages);
