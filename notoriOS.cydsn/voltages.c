@@ -18,6 +18,7 @@ voltage_t voltage_take_readings(){
     
     ADC_Start();        // Start the ADC
     
+    
     float channels[AMux_CHANNELS];
     
     for(uint8 c = 0; c< AMux_CHANNELS + 1; c++) // Sweep the MUX Channels
@@ -53,8 +54,13 @@ voltage_t voltage_take_readings(){
     //voltage.voltage_charge_current = 0.1*(channels[ADC_MUX_CHRG] - voltage.voltage_battery);
     voltage.voltage_pressure = channels[ADC_MUX_PRTRANS]; // Pressure transducer reading
 
+    // VALVE
+    voltage.voltage_valve_pos_blue = channels[ADC_MUX_Valve_POS_blue]; // blue wire reading (closed percentage)
+    voltage.voltage_valve_pos_brown = channels[ADC_MUX_Valve_POS_brown]; // brown wire reading (reference voltage)
+    
     voltage.valid = 1;
     
+
     return voltage;
 }
 

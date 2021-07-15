@@ -2,10 +2,6 @@
 
 //this files holds all the "business" callbacks, which are abstracted from the main OS
 
-
-
-
-
 /*
 TODO:
 
