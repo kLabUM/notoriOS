@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 1
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 1
 
 
    1              		.syntax unified
@@ -50,2200 +50,2404 @@ ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 1
   46      5F56414C 
   46      564500
   47              		.global	__aeabi_f2d
-  48              		.global	__aeabi_dcmplt
-  49              		.global	__aeabi_dcmpgt
-  50 000b 00       		.align	2
-  51              	.LC1:
-  52 000c 6E6F7420 		.ascii	"not fully closed or not fully opened\000"
-  52      66756C6C 
-  52      7920636C 
-  52      6F736564 
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 2
+  48 000b 00       		.align	2
+  49              	.LC1:
+  50 000c 6F70656E 		.ascii	"open_voltage:%f:::closed_voltage:%f:::pot_voltage:%"
+  50      5F766F6C 
+  50      74616765 
+  50      3A25663A 
+  50      3A3A636C 
+  51 003f 663A3A3A 		.ascii	"f::::positions:%f:%f:%f:%f:%f:%f:%f:%f\000"
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 2
 
 
-  52      206F7220 
-  53              		.global	__aeabi_fmul
-  54 0031 000000   		.align	2
-  55              	.LC2:
-  56 0034 766F6C74 		.ascii	"voltages_blue_brown:%f:%f:%f:%f:%f:%f:%f:%f\000"
-  56      61676573 
-  56      5F626C75 
-  56      655F6272 
-  56      6F776E3A 
-  57              		.section	.text.valve_test,"ax",%progbits
-  58              		.align	2
-  59              		.global	valve_test
-  60              		.thumb
-  61              		.thumb_func
-  62              		.type	valve_test, %function
-  63              	valve_test:
-  64              	.LFB64:
-  65              		.file 1 "valve.c"
+  51      3A706F73 
+  51      6974696F 
+  51      6E733A25 
+  51      663A2566 
+  52              		.section	.text.valve_test,"ax",%progbits
+  53              		.align	2
+  54              		.global	valve_test
+  55              		.thumb
+  56              		.thumb_func
+  57              		.type	valve_test, %function
+  58              	valve_test:
+  59              	.LFB64:
+  60              		.file 1 "valve.c"
    1:valve.c       **** #include "valve.h"
    2:valve.c       **** #include "notoriOS.h"
    3:valve.c       **** 
-   4:valve.c       **** 
-   5:valve.c       **** test_t valve_test(){
-  66              		.loc 1 5 0
-  67              		.cfi_startproc
-  68              		@ args = 0, pretend = 0, frame = 728
-  69              		@ frame_needed = 1, uses_anonymous_args = 0
-  70 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
-  71              		.cfi_def_cfa_offset 36
-  72              		.cfi_offset 4, -36
-  73              		.cfi_offset 5, -32
-  74              		.cfi_offset 6, -28
-  75              		.cfi_offset 7, -24
-  76              		.cfi_offset 8, -20
-  77              		.cfi_offset 9, -16
-  78              		.cfi_offset 10, -12
-  79              		.cfi_offset 11, -8
-  80              		.cfi_offset 14, -4
-  81 0004 ADF5477D 		sub	sp, sp, #796
-  82              		.cfi_def_cfa_offset 832
-  83 0008 10AF     		add	r7, sp, #64
-  84              		.cfi_def_cfa 7, 768
-  85 000a 07F14403 		add	r3, r7, #68
-  86 000e 1860     		str	r0, [r3]
-   6:valve.c       ****  
-   7:valve.c       ****      
-   8:valve.c       ****     test_t test; // test_t is a new data type we defined in test.h. We then use that data type to d
-   9:valve.c       ****     test.status = 0; // set test status to zero
-  87              		.loc 1 9 0
-  88 0010 07F5A673 		add	r3, r7, #332
-  89 0014 0022     		movs	r2, #0
-  90 0016 83F88020 		strb	r2, [r3, #128]
-  10:valve.c       ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_VALVE");
-  91              		.loc 1 10 0
-  92 001a 07F5A673 		add	r3, r7, #332
-  93 001e BC4A     		ldr	r2, .L14+16
-  94 0020 07CA     		ldmia	r2, {r0, r1, r2}
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 3
+   4:valve.c       **** // throughout, the percentages recorded in reference to the valve position ought to be
+   5:valve.c       **** // percent open-ness, not percent closed
+   6:valve.c       **** 
+   7:valve.c       **** test_t valve_test(){
+  61              		.loc 1 7 0
+  62              		.cfi_startproc
+  63              		@ args = 0, pretend = 0, frame = 744
+  64              		@ frame_needed = 1, uses_anonymous_args = 0
+  65 0000 2DE9B04F 		push	{r4, r5, r7, r8, r9, r10, fp, lr}
+  66              		.cfi_def_cfa_offset 32
+  67              		.cfi_offset 4, -32
+  68              		.cfi_offset 5, -28
+  69              		.cfi_offset 7, -24
+  70              		.cfi_offset 8, -20
+  71              		.cfi_offset 9, -16
+  72              		.cfi_offset 10, -12
+  73              		.cfi_offset 11, -8
+  74              		.cfi_offset 14, -4
+  75 0004 ADF5507D 		sub	sp, sp, #832
+  76              		.cfi_def_cfa_offset 864
+  77 0008 16AF     		add	r7, sp, #88
+  78              		.cfi_def_cfa 7, 776
+  79 000a 07F15C03 		add	r3, r7, #92
+  80 000e 1860     		str	r0, [r3]
+   8:valve.c       **** 
+   9:valve.c       ****     // activate 12V battery
+  10:valve.c       ****     Level_Sensor_Power_Write(ON);
+  81              		.loc 1 10 0
+  82 0010 0120     		movs	r0, #1
+  83 0012 FFF7FEFF 		bl	Level_Sensor_Power_Write
+  11:valve.c       ****      
+  12:valve.c       ****     test_t test; // test_t is a new data type we defined in test.h. We then use that data type to d
+  13:valve.c       ****     test.status = 0; // set test status to zero
+  84              		.loc 1 13 0
+  85 0016 07F5B273 		add	r3, r7, #356
+  86 001a 0022     		movs	r2, #0
+  87 001c 83F88020 		strb	r2, [r3, #128]
+  14:valve.c       ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_VALVE");
+  88              		.loc 1 14 0
+  89 0020 07F5B273 		add	r3, r7, #356
+  90 0024 8F4A     		ldr	r2, .L4
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 3
 
 
-  95 0022 03C3     		stmia	r3!, {r0, r1}
-  96 0024 1A80     		strh	r2, [r3]	@ movhi
-  97 0026 0233     		adds	r3, r3, #2
-  98 0028 120C     		lsrs	r2, r2, #16
-  99 002a 1A70     		strb	r2, [r3]
-  11:valve.c       **** 
-  12:valve.c       ****     float32 positions[8];
-  13:valve.c       ****     
-  14:valve.c       ****     voltage_t voltages[8];
-  15:valve.c       ****     
-  16:valve.c       ****     // all the way open
-  17:valve.c       ****     Power_VDD1_Write(1u);
- 100              		.loc 1 17 0
- 101 002c 0120     		movs	r0, #1
- 102 002e FFF7FEFF 		bl	Power_VDD1_Write
-  18:valve.c       ****     CyDelay(20000u); // check to confirm this is long enough
- 103              		.loc 1 18 0
- 104 0032 44F62060 		movw	r0, #20000
- 105 0036 FFF7FEFF 		bl	CyDelay
-  19:valve.c       ****     Power_VDD1_Write(0u);
- 106              		.loc 1 19 0
- 107 003a 0020     		movs	r0, #0
- 108 003c FFF7FEFF 		bl	Power_VDD1_Write
-  20:valve.c       ****     // take a position reading and verify that it's all the way open
-  21:valve.c       ****     positions[0] = read_Valve_pos();
- 109              		.loc 1 21 0
- 110 0040 FFF7FEFF 		bl	read_Valve_pos
- 111 0044 0246     		mov	r2, r0
- 112 0046 07F59673 		add	r3, r7, #300
- 113 004a 1A60     		str	r2, [r3]	@ float
-  22:valve.c       ****     voltages[0] = voltage_take_readings();
- 114              		.loc 1 22 0
- 115 004c 07F14C04 		add	r4, r7, #76
- 116 0050 07F12003 		add	r3, r7, #32
- 117 0054 1846     		mov	r0, r3
- 118 0056 FFF7FEFF 		bl	voltage_take_readings
- 119 005a 07F12003 		add	r3, r7, #32
- 120 005e 1D46     		mov	r5, r3
- 121 0060 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 122 0062 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 123 0064 95E80700 		ldmia	r5, {r0, r1, r2}
- 124 0068 84E80700 		stmia	r4, {r0, r1, r2}
-  23:valve.c       ****     // do the same for closed
-  24:valve.c       ****     Power_VDD2_Write(1u);
- 125              		.loc 1 24 0
- 126 006c 0120     		movs	r0, #1
- 127 006e FFF7FEFF 		bl	Power_VDD2_Write
-  25:valve.c       ****     CyDelay(20000u);
- 128              		.loc 1 25 0
- 129 0072 44F62060 		movw	r0, #20000
- 130 0076 FFF7FEFF 		bl	CyDelay
-  26:valve.c       ****     Power_VDD2_Write(0u);
- 131              		.loc 1 26 0
- 132 007a 0020     		movs	r0, #0
- 133 007c FFF7FEFF 		bl	Power_VDD2_Write
-  27:valve.c       ****     // take a position reading and verify that it's all the way closed
+  91 0026 07CA     		ldmia	r2, {r0, r1, r2}
+  92 0028 03C3     		stmia	r3!, {r0, r1}
+  93 002a 1A80     		strh	r2, [r3]	@ movhi
+  94 002c 0233     		adds	r3, r3, #2
+  95 002e 120C     		lsrs	r2, r2, #16
+  96 0030 1A70     		strb	r2, [r3]
+  15:valve.c       **** 
+  16:valve.c       ****     float32 positions[8];
+  17:valve.c       ****     
+  18:valve.c       ****     voltage_t voltages[8];
+  19:valve.c       ****     
+  20:valve.c       ****     // all the way open
+  21:valve.c       ****     move_valve(1);
+  97              		.loc 1 21 0
+  98 0032 4FF07E50 		mov	r0, #1065353216
+  99 0036 FFF7FEFF 		bl	move_valve
+  22:valve.c       ****     // take a position reading to verify that it's all the way open (later)
+  23:valve.c       ****     positions[0] = read_Valve_pos();
+ 100              		.loc 1 23 0
+ 101 003a FFF7FEFF 		bl	read_Valve_pos
+ 102 003e 0246     		mov	r2, r0
+ 103 0040 07F5A273 		add	r3, r7, #324
+ 104 0044 1A60     		str	r2, [r3]	@ float
+  24:valve.c       ****     voltages[0] = voltage_take_readings();
+ 105              		.loc 1 24 0
+ 106 0046 07F16404 		add	r4, r7, #100
+ 107 004a 07F13803 		add	r3, r7, #56
+ 108 004e 1846     		mov	r0, r3
+ 109 0050 FFF7FEFF 		bl	voltage_take_readings
+ 110 0054 07F13803 		add	r3, r7, #56
+ 111 0058 1D46     		mov	r5, r3
+ 112 005a 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 113 005c 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 114 005e 95E80700 		ldmia	r5, {r0, r1, r2}
+ 115 0062 84E80700 		stmia	r4, {r0, r1, r2}
+  25:valve.c       ****     // do the same for closed
+  26:valve.c       ****     test.status = move_valve(0);
+ 116              		.loc 1 26 0
+ 117 0066 4FF00000 		mov	r0, #0
+ 118 006a FFF7FEFF 		bl	move_valve
+ 119 006e 0346     		mov	r3, r0
+ 120 0070 1A46     		mov	r2, r3
+ 121 0072 07F5B273 		add	r3, r7, #356
+ 122 0076 83F88020 		strb	r2, [r3, #128]
+  27:valve.c       ****     // take a position reading to verify that it's all the way closed (later)
   28:valve.c       ****     positions[1] = read_Valve_pos();
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 4
-
-
- 134              		.loc 1 28 0
- 135 0080 FFF7FEFF 		bl	read_Valve_pos
- 136 0084 0246     		mov	r2, r0
- 137 0086 07F59673 		add	r3, r7, #300
- 138 008a 5A60     		str	r2, [r3, #4]	@ float
+ 123              		.loc 1 28 0
+ 124 007a FFF7FEFF 		bl	read_Valve_pos
+ 125 007e 0246     		mov	r2, r0
+ 126 0080 07F5A273 		add	r3, r7, #324
+ 127 0084 5A60     		str	r2, [r3, #4]	@ float
   29:valve.c       ****     voltages[1] = voltage_take_readings();
- 139              		.loc 1 29 0
- 140 008c 07F14C04 		add	r4, r7, #76
- 141 0090 07F12003 		add	r3, r7, #32
- 142 0094 1846     		mov	r0, r3
- 143 0096 FFF7FEFF 		bl	voltage_take_readings
- 144 009a 07F12003 		add	r3, r7, #32
- 145 009e 1C34     		adds	r4, r4, #28
- 146 00a0 1D46     		mov	r5, r3
- 147 00a2 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 148 00a4 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 149 00a6 95E80700 		ldmia	r5, {r0, r1, r2}
- 150 00aa 84E80700 		stmia	r4, {r0, r1, r2}
-  30:valve.c       ****     // initial displacement
-  31:valve.c       ****     // open valve on
-  32:valve.c       ****     Power_VDD1_Write(1u);
- 151              		.loc 1 32 0
- 152 00ae 0120     		movs	r0, #1
- 153 00b0 FFF7FEFF 		bl	Power_VDD1_Write
-  33:valve.c       ****     CyDelay(8000u);
- 154              		.loc 1 33 0
- 155 00b4 4FF4FA50 		mov	r0, #8000
- 156 00b8 FFF7FEFF 		bl	CyDelay
-  34:valve.c       ****     //open valve off
-  35:valve.c       ****     Power_VDD1_Write(0u);
- 157              		.loc 1 35 0
- 158 00bc 0020     		movs	r0, #0
- 159 00be FFF7FEFF 		bl	Power_VDD1_Write
- 160              	.LBB2:
-  36:valve.c       **** 
-  37:valve.c       ****     // these readings should repeat consistently somewhere in the middle range
-  38:valve.c       ****     
-  39:valve.c       ****     for (int i = 2; i < 8; i++){
- 161              		.loc 1 39 0
- 162 00c2 0223     		movs	r3, #2
- 163 00c4 C7F8D432 		str	r3, [r7, #724]
- 164 00c8 32E0     		b	.L2
- 165              	.L3:
-  40:valve.c       ****         /*
-  41:valve.c       ****         if ((i+1)%2){
-  42:valve.c       ****             // open valve on
-  43:valve.c       ****             Power_VDD1_Write(1u);
-  44:valve.c       **** 
-  45:valve.c       ****             CyDelay(4000u);
-  46:valve.c       ****      
-  47:valve.c       ****             //open valve off
-  48:valve.c       ****             Power_VDD1_Write(0u);
+ 128              		.loc 1 29 0
+ 129 0086 07F16404 		add	r4, r7, #100
+ 130 008a 07F13803 		add	r3, r7, #56
+ 131 008e 1846     		mov	r0, r3
+ 132 0090 FFF7FEFF 		bl	voltage_take_readings
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 4
+
+
+ 133 0094 07F13803 		add	r3, r7, #56
+ 134 0098 1C34     		adds	r4, r4, #28
+ 135 009a 1D46     		mov	r5, r3
+ 136 009c 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 137 009e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 138 00a0 95E80700 		ldmia	r5, {r0, r1, r2}
+ 139 00a4 84E80700 		stmia	r4, {r0, r1, r2}
+  30:valve.c       ****     if (test.status){ // don't do this if it's jammed (didn't close successfully)
+ 140              		.loc 1 30 0
+ 141 00a8 07F5B273 		add	r3, r7, #356
+ 142 00ac 93F88030 		ldrb	r3, [r3, #128]	@ zero_extendqisi2
+ 143 00b0 002B     		cmp	r3, #0
+ 144 00b2 3AD0     		beq	.L2
+  31:valve.c       ****         move_valve(0.125);
+ 145              		.loc 1 31 0
+ 146 00b4 4FF07850 		mov	r0, #1040187392
+ 147 00b8 FFF7FEFF 		bl	move_valve
+  32:valve.c       ****         positions[2] = read_Valve_pos();
+ 148              		.loc 1 32 0
+ 149 00bc FFF7FEFF 		bl	read_Valve_pos
+ 150 00c0 0246     		mov	r2, r0
+ 151 00c2 07F5A273 		add	r3, r7, #324
+ 152 00c6 9A60     		str	r2, [r3, #8]	@ float
+  33:valve.c       ****         
+  34:valve.c       ****         move_valve(0.25);
+ 153              		.loc 1 34 0
+ 154 00c8 4FF07A50 		mov	r0, #1048576000
+ 155 00cc FFF7FEFF 		bl	move_valve
+  35:valve.c       ****         positions[3] = read_Valve_pos();
+ 156              		.loc 1 35 0
+ 157 00d0 FFF7FEFF 		bl	read_Valve_pos
+ 158 00d4 0246     		mov	r2, r0
+ 159 00d6 07F5A273 		add	r3, r7, #324
+ 160 00da DA60     		str	r2, [r3, #12]	@ float
+  36:valve.c       ****         
+  37:valve.c       ****         move_valve(0.375);
+ 161              		.loc 1 37 0
+ 162 00dc 4FF07B50 		mov	r0, #1052770304
+ 163 00e0 FFF7FEFF 		bl	move_valve
+  38:valve.c       ****         positions[4] = read_Valve_pos();
+ 164              		.loc 1 38 0
+ 165 00e4 FFF7FEFF 		bl	read_Valve_pos
+ 166 00e8 0246     		mov	r2, r0
+ 167 00ea 07F5A273 		add	r3, r7, #324
+ 168 00ee 1A61     		str	r2, [r3, #16]	@ float
+  39:valve.c       **** 
+  40:valve.c       ****         move_valve(0.5);
+ 169              		.loc 1 40 0
+ 170 00f0 4FF07C50 		mov	r0, #1056964608
+ 171 00f4 FFF7FEFF 		bl	move_valve
+  41:valve.c       ****         positions[5] = read_Valve_pos();
+ 172              		.loc 1 41 0
+ 173 00f8 FFF7FEFF 		bl	read_Valve_pos
+ 174 00fc 0246     		mov	r2, r0
+ 175 00fe 07F5A273 		add	r3, r7, #324
+ 176 0102 5A61     		str	r2, [r3, #20]	@ float
+  42:valve.c       **** 
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 5
+
+
+  43:valve.c       ****         move_valve(0.675);
+ 177              		.loc 1 43 0
+ 178 0104 5848     		ldr	r0, .L4+4
+ 179 0106 FFF7FEFF 		bl	move_valve
+  44:valve.c       ****         positions[6] = read_Valve_pos();
+ 180              		.loc 1 44 0
+ 181 010a FFF7FEFF 		bl	read_Valve_pos
+ 182 010e 0246     		mov	r2, r0
+ 183 0110 07F5A273 		add	r3, r7, #324
+ 184 0114 9A61     		str	r2, [r3, #24]	@ float
+  45:valve.c       **** 
+  46:valve.c       ****         move_valve(0.75);
+ 185              		.loc 1 46 0
+ 186 0116 4FF07D50 		mov	r0, #1061158912
+ 187 011a FFF7FEFF 		bl	move_valve
+  47:valve.c       ****         positions[7] = read_Valve_pos();
+ 188              		.loc 1 47 0
+ 189 011e FFF7FEFF 		bl	read_Valve_pos
+ 190 0122 0246     		mov	r2, r0
+ 191 0124 07F5A273 		add	r3, r7, #324
+ 192 0128 DA61     		str	r2, [r3, #28]	@ float
+ 193              	.L2:
+  48:valve.c       ****     }
   49:valve.c       **** 
-  50:valve.c       ****             CyDelay(4000u);
-  51:valve.c       ****         }
-  52:valve.c       ****         else if(i%2){
-  53:valve.c       ****             //close valve on
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 5
-
-
-  54:valve.c       ****             Power_VDD2_Write(1u);
-  55:valve.c       **** 
-  56:valve.c       ****             CyDelay(4000u);
+  50:valve.c       ****     /*
+  51:valve.c       ****     // initial displacement
+  52:valve.c       ****     // open valve on
+  53:valve.c       ****     Power_VDD1_Write(1u);
+  54:valve.c       ****     CyDelay(8000u);
+  55:valve.c       ****     //open valve off
+  56:valve.c       ****     Power_VDD1_Write(0u);
   57:valve.c       **** 
-  58:valve.c       ****             //close valve off
-  59:valve.c       ****             Power_VDD2_Write(0u);
-  60:valve.c       **** 
-  61:valve.c       ****             CyDelay(4000u);
-  62:valve.c       ****         }
-  63:valve.c       ****         else {
-  64:valve.c       ****             test.status=0;
-  65:valve.c       ****             snprintf(test.reason,sizeof(test.reason),"failed in pivot");  
-  66:valve.c       ****             return test;
-  67:valve.c       ****         }
-  68:valve.c       ****         */
-  69:valve.c       ****         // for now just slowly open
-  70:valve.c       ****         // open valve on
-  71:valve.c       ****         Power_VDD1_Write(1u);
- 166              		.loc 1 71 0 discriminator 3
- 167 00ca 0120     		movs	r0, #1
- 168 00cc FFF7FEFF 		bl	Power_VDD1_Write
-  72:valve.c       **** 
-  73:valve.c       ****         CyDelay(4000u);
- 169              		.loc 1 73 0 discriminator 3
- 170 00d0 4FF47A60 		mov	r0, #4000
- 171 00d4 FFF7FEFF 		bl	CyDelay
-  74:valve.c       **** 
-  75:valve.c       ****         //open valve off
-  76:valve.c       ****         Power_VDD1_Write(0u);
- 172              		.loc 1 76 0 discriminator 3
- 173 00d8 0020     		movs	r0, #0
- 174 00da FFF7FEFF 		bl	Power_VDD1_Write
-  77:valve.c       **** 
-  78:valve.c       ****         CyDelay(4000u);
- 175              		.loc 1 78 0 discriminator 3
- 176 00de 4FF47A60 		mov	r0, #4000
- 177 00e2 FFF7FEFF 		bl	CyDelay
-  79:valve.c       ****         // read position and record this
-  80:valve.c       ****         positions[i] = read_Valve_pos();
- 178              		.loc 1 80 0 discriminator 3
- 179 00e6 FFF7FEFF 		bl	read_Valve_pos
- 180 00ea 0146     		mov	r1, r0
- 181 00ec 07F59673 		add	r3, r7, #300
- 182 00f0 D7F8D422 		ldr	r2, [r7, #724]
- 183 00f4 43F82210 		str	r1, [r3, r2, lsl #2]	@ float
-  81:valve.c       ****         voltages[i] = voltage_take_readings();
- 184              		.loc 1 81 0 discriminator 3
- 185 00f8 07F14C01 		add	r1, r7, #76
- 186 00fc D7F8D422 		ldr	r2, [r7, #724]
- 187 0100 1346     		mov	r3, r2
- 188 0102 DB00     		lsls	r3, r3, #3
- 189 0104 9B1A     		subs	r3, r3, r2
- 190 0106 9B00     		lsls	r3, r3, #2
- 191 0108 CC18     		adds	r4, r1, r3
- 192 010a 07F12003 		add	r3, r7, #32
- 193 010e 1846     		mov	r0, r3
- 194 0110 FFF7FEFF 		bl	voltage_take_readings
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 6
+  58:valve.c       ****     // these readings should repeat consistently somewhere in the middle range
+  59:valve.c       ****     
+  60:valve.c       ****     for (int i = 2; i < 8; i++){
+  61:valve.c       ****         
+  62:valve.c       ****         if ((i+1)%2){
+  63:valve.c       ****             // open valve on
+  64:valve.c       ****             Power_VDD1_Write(1u);
+  65:valve.c       **** 
+  66:valve.c       ****             CyDelay(4000u);
+  67:valve.c       ****      
+  68:valve.c       ****             //open valve off
+  69:valve.c       ****             Power_VDD1_Write(0u);
+  70:valve.c       **** 
+  71:valve.c       ****             CyDelay(4000u);
+  72:valve.c       ****         }
+  73:valve.c       ****         else if(i%2){
+  74:valve.c       ****             //close valve on
+  75:valve.c       ****             Power_VDD2_Write(1u);
+  76:valve.c       **** 
+  77:valve.c       ****             CyDelay(4000u);
+  78:valve.c       **** 
+  79:valve.c       ****             //close valve off
+  80:valve.c       ****             Power_VDD2_Write(0u);
+  81:valve.c       **** 
+  82:valve.c       ****             CyDelay(4000u);
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 6
 
 
- 195 0114 07F12003 		add	r3, r7, #32
- 196 0118 1D46     		mov	r5, r3
- 197 011a 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
- 198 011c 0FC4     		stmia	r4!, {r0, r1, r2, r3}
- 199 011e 95E80700 		ldmia	r5, {r0, r1, r2}
- 200 0122 84E80700 		stmia	r4, {r0, r1, r2}
-  39:valve.c       ****         /*
- 201              		.loc 1 39 0 discriminator 3
- 202 0126 D7F8D432 		ldr	r3, [r7, #724]
- 203 012a 0133     		adds	r3, r3, #1
- 204 012c C7F8D432 		str	r3, [r7, #724]
- 205              	.L2:
-  39:valve.c       ****         /*
- 206              		.loc 1 39 0 is_stmt 0 discriminator 1
- 207 0130 D7F8D432 		ldr	r3, [r7, #724]
- 208 0134 072B     		cmp	r3, #7
- 209 0136 C8DD     		ble	.L3
- 210              	.LBE2:
-  82:valve.c       ****         
-  83:valve.c       ****     }
-  84:valve.c       **** 
-  85:valve.c       ****     // if valve is not moving, return 0 and report an error (probably a blockage or insufficient vo
-  86:valve.c       **** 
-  87:valve.c       ****     // in test reason report the sequence of positions
-  88:valve.c       ****     // should look like 100% open - 0% open - X% - Y% - X% - Y% - X% - Y%
-  89:valve.c       ****     // this is what determines whether the test "passes"
-  90:valve.c       ****     // because not only is the valve opening and closing properly, we're also measuring it properly
-  91:valve.c       **** 
-  92:valve.c       ****     // if test passes, set status to 1
-  93:valve.c       ****     if (positions[0] < 0.1 && positions[1] > 0.90){
- 211              		.loc 1 93 0 is_stmt 1
- 212 0138 07F59673 		add	r3, r7, #300
- 213 013c 1B68     		ldr	r3, [r3]	@ float
- 214 013e 1846     		mov	r0, r3
- 215 0140 FFF7FEFF 		bl	__aeabi_f2d
- 216 0144 6EA3     		adr	r3, .L14
- 217 0146 D3E90023 		ldrd	r2, [r3]
- 218 014a FFF7FEFF 		bl	__aeabi_dcmplt
- 219 014e 0346     		mov	r3, r0
- 220 0150 002B     		cmp	r3, #0
- 221 0152 16D0     		beq	.L4
- 222              		.loc 1 93 0 is_stmt 0 discriminator 1
- 223 0154 07F59673 		add	r3, r7, #300
- 224 0158 5B68     		ldr	r3, [r3, #4]	@ float
- 225 015a 1846     		mov	r0, r3
- 226 015c FFF7FEFF 		bl	__aeabi_f2d
- 227 0160 69A3     		adr	r3, .L14+8
- 228 0162 D3E90023 		ldrd	r2, [r3]
- 229 0166 FFF7FEFF 		bl	__aeabi_dcmpgt
- 230 016a 0346     		mov	r3, r0
- 231 016c 002B     		cmp	r3, #0
- 232 016e 08D0     		beq	.L4
-  94:valve.c       ****         test.status = 1;
- 233              		.loc 1 94 0 is_stmt 1
- 234 0170 07F5A673 		add	r3, r7, #332
- 235 0174 0122     		movs	r2, #1
- 236 0176 83F88020 		strb	r2, [r3, #128]
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 7
+  83:valve.c       ****         }
+  84:valve.c       ****         else {
+  85:valve.c       ****             test.status=0;
+  86:valve.c       ****             snprintf(test.reason,sizeof(test.reason),"failed in pivot");  
+  87:valve.c       ****             return test;
+  88:valve.c       ****         }
+  89:valve.c       ****    
+  90:valve.c       ****         // read position and record this
+  91:valve.c       ****         positions[i] = read_Valve_pos();
+  92:valve.c       ****         voltages[i] = voltage_take_readings();
+  93:valve.c       ****         
+  94:valve.c       ****     }
+  95:valve.c       ****     */
+  96:valve.c       ****    
+  97:valve.c       ****     
+  98:valve.c       ****     // in test reason report the sequence of positions
+  99:valve.c       ****     snprintf(test.reason,sizeof(test.reason),"open_voltage:%f:::closed_voltage:%f:::pot_voltage:%f:
+ 100:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 194              		.loc 1 100 0
+ 195 012a 07F16403 		add	r3, r7, #100
+ 196 012e 1B69     		ldr	r3, [r3, #16]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 197              		.loc 1 99 0
+ 198 0130 1846     		mov	r0, r3
+ 199 0132 FFF7FEFF 		bl	__aeabi_f2d
+ 200 0136 C7E90C01 		strd	r0, [r7, #48]
+ 201              		.loc 1 100 0
+ 202 013a 07F16403 		add	r3, r7, #100
+ 203 013e DB6A     		ldr	r3, [r3, #44]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 204              		.loc 1 99 0
+ 205 0140 1846     		mov	r0, r3
+ 206 0142 FFF7FEFF 		bl	__aeabi_f2d
+ 207 0146 C7E90A01 		strd	r0, [r7, #40]
+ 208              		.loc 1 100 0
+ 209 014a 07F16403 		add	r3, r7, #100
+ 210 014e 5B69     		ldr	r3, [r3, #20]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 211              		.loc 1 99 0
+ 212 0150 1846     		mov	r0, r3
+ 213 0152 FFF7FEFF 		bl	__aeabi_f2d
+ 214 0156 C7E90801 		strd	r0, [r7, #32]
+ 101:valve.c       ****         positions[0],positions[1],positions[2],positions[3],
+ 215              		.loc 1 101 0
+ 216 015a 07F5A273 		add	r3, r7, #324
+ 217 015e 1B68     		ldr	r3, [r3]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 218              		.loc 1 99 0
+ 219 0160 1846     		mov	r0, r3
+ 220 0162 FFF7FEFF 		bl	__aeabi_f2d
+ 221 0166 C7E90601 		strd	r0, [r7, #24]
+ 222              		.loc 1 101 0
+ 223 016a 07F5A273 		add	r3, r7, #324
+ 224 016e 5B68     		ldr	r3, [r3, #4]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 225              		.loc 1 99 0
+ 226 0170 1846     		mov	r0, r3
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 7
 
 
- 237              	.LBB3:
-  95:valve.c       ****     }
-  96:valve.c       ****     else{
-  97:valve.c       ****         test.status=0;
-  98:valve.c       ****         snprintf(test.reason,sizeof(test.reason),"not fully closed or not fully opened");
-  99:valve.c       ****         return test;
- 100:valve.c       ****     }
- 101:valve.c       ****     for (int i = 0; i < 8; i++){
- 238              		.loc 1 101 0
- 239 017a 0023     		movs	r3, #0
- 240 017c C7F8D032 		str	r3, [r7, #720]
- 241 0180 42E0     		b	.L7
- 242              	.L4:
- 243              	.LBE3:
-  97:valve.c       ****         snprintf(test.reason,sizeof(test.reason),"not fully closed or not fully opened");
- 244              		.loc 1 97 0
- 245 0182 07F5A673 		add	r3, r7, #332
- 246 0186 0022     		movs	r2, #0
- 247 0188 83F88020 		strb	r2, [r3, #128]
-  98:valve.c       ****         return test;
- 248              		.loc 1 98 0
- 249 018c 07F5A673 		add	r3, r7, #332
- 250 0190 8133     		adds	r3, r3, #129
- 251 0192 604A     		ldr	r2, .L14+20
- 252 0194 1446     		mov	r4, r2
- 253 0196 9E46     		mov	lr, r3
- 254 0198 04F1200C 		add	ip, r4, #32
- 255              	.L8:
- 256 019c 7546     		mov	r5, lr
- 257 019e 2646     		mov	r6, r4
- 258 01a0 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
- 259 01a2 2860     		str	r0, [r5]	@ unaligned
- 260 01a4 6960     		str	r1, [r5, #4]	@ unaligned
- 261 01a6 AA60     		str	r2, [r5, #8]	@ unaligned
- 262 01a8 EB60     		str	r3, [r5, #12]	@ unaligned
- 263 01aa 1034     		adds	r4, r4, #16
- 264 01ac 0EF1100E 		add	lr, lr, #16
- 265 01b0 6445     		cmp	r4, ip
- 266 01b2 F3D1     		bne	.L8
- 267 01b4 7346     		mov	r3, lr
- 268 01b6 2246     		mov	r2, r4
- 269 01b8 1068     		ldr	r0, [r2]	@ unaligned
- 270 01ba 1860     		str	r0, [r3]	@ unaligned
- 271 01bc 1279     		ldrb	r2, [r2, #4]
- 272 01be 1A71     		strb	r2, [r3, #4]
-  99:valve.c       ****     }
- 273              		.loc 1 99 0
- 274 01c0 07F14403 		add	r3, r7, #68
- 275 01c4 1A68     		ldr	r2, [r3]
- 276 01c6 07F5A673 		add	r3, r7, #332
- 277 01ca 1046     		mov	r0, r2
- 278 01cc 1946     		mov	r1, r3
- 279 01ce 40F28113 		movw	r3, #385
- 280 01d2 1A46     		mov	r2, r3
- 281 01d4 FFF7FEFF 		bl	memcpy
- 282 01d8 87E0     		b	.L1
- 283              	.L10:
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 8
+ 227 0172 FFF7FEFF 		bl	__aeabi_f2d
+ 228 0176 C7E90401 		strd	r0, [r7, #16]
+ 229              		.loc 1 101 0
+ 230 017a 07F5A273 		add	r3, r7, #324
+ 231 017e 9B68     		ldr	r3, [r3, #8]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 232              		.loc 1 99 0
+ 233 0180 1846     		mov	r0, r3
+ 234 0182 FFF7FEFF 		bl	__aeabi_f2d
+ 235 0186 C7E90201 		strd	r0, [r7, #8]
+ 236              		.loc 1 101 0
+ 237 018a 07F5A273 		add	r3, r7, #324
+ 238 018e DB68     		ldr	r3, [r3, #12]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 239              		.loc 1 99 0
+ 240 0190 1846     		mov	r0, r3
+ 241 0192 FFF7FEFF 		bl	__aeabi_f2d
+ 242 0196 C7E90001 		strd	r0, [r7]
+ 102:valve.c       ****         positions[4],positions[5],positions[6],positions[7]
+ 243              		.loc 1 102 0
+ 244 019a 07F5A273 		add	r3, r7, #324
+ 245 019e 1B69     		ldr	r3, [r3, #16]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 246              		.loc 1 99 0
+ 247 01a0 1846     		mov	r0, r3
+ 248 01a2 FFF7FEFF 		bl	__aeabi_f2d
+ 249 01a6 8246     		mov	r10, r0
+ 250 01a8 8B46     		mov	fp, r1
+ 251              		.loc 1 102 0
+ 252 01aa 07F5A273 		add	r3, r7, #324
+ 253 01ae 5B69     		ldr	r3, [r3, #20]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 254              		.loc 1 99 0
+ 255 01b0 1846     		mov	r0, r3
+ 256 01b2 FFF7FEFF 		bl	__aeabi_f2d
+ 257 01b6 8046     		mov	r8, r0
+ 258 01b8 8946     		mov	r9, r1
+ 259              		.loc 1 102 0
+ 260 01ba 07F5A273 		add	r3, r7, #324
+ 261 01be 9B69     		ldr	r3, [r3, #24]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 262              		.loc 1 99 0
+ 263 01c0 1846     		mov	r0, r3
+ 264 01c2 FFF7FEFF 		bl	__aeabi_f2d
+ 265 01c6 0446     		mov	r4, r0
+ 266 01c8 0D46     		mov	r5, r1
+ 267              		.loc 1 102 0
+ 268 01ca 07F5A273 		add	r3, r7, #324
+ 269 01ce DB69     		ldr	r3, [r3, #28]	@ float
+  99:valve.c       ****         voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot
+ 270              		.loc 1 99 0
+ 271 01d0 1846     		mov	r0, r3
+ 272 01d2 FFF7FEFF 		bl	__aeabi_f2d
+ 273 01d6 0A46     		mov	r2, r1
+ 274 01d8 0146     		mov	r1, r0
+ 275 01da 07F5B273 		add	r3, r7, #356
+ 276 01de 8133     		adds	r3, r3, #129
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 8
 
 
- 284              	.LBB4:
- 102:valve.c       ****         positions[i] = positions[i]*100;
- 285              		.loc 1 102 0 discriminator 3
- 286 01da 07F59673 		add	r3, r7, #300
- 287 01de D7F8D022 		ldr	r2, [r7, #720]
- 288 01e2 53F82230 		ldr	r3, [r3, r2, lsl #2]	@ float
- 289 01e6 4C49     		ldr	r1, .L14+24
- 290 01e8 1846     		mov	r0, r3
- 291 01ea FFF7FEFF 		bl	__aeabi_fmul
- 292 01ee 0346     		mov	r3, r0
- 293 01f0 1946     		mov	r1, r3
- 294 01f2 07F59673 		add	r3, r7, #300
- 295 01f6 D7F8D022 		ldr	r2, [r7, #720]
- 296 01fa 43F82210 		str	r1, [r3, r2, lsl #2]	@ float
- 101:valve.c       ****         positions[i] = positions[i]*100;
- 297              		.loc 1 101 0 discriminator 3
- 298 01fe D7F8D032 		ldr	r3, [r7, #720]
- 299 0202 0133     		adds	r3, r3, #1
- 300 0204 C7F8D032 		str	r3, [r7, #720]
- 301              	.L7:
- 101:valve.c       ****         positions[i] = positions[i]*100;
- 302              		.loc 1 101 0 is_stmt 0 discriminator 1
- 303 0208 D7F8D032 		ldr	r3, [r7, #720]
- 304 020c 072B     		cmp	r3, #7
- 305 020e E4DD     		ble	.L10
- 306              	.LBE4:
- 103:valve.c       ****     }
- 104:valve.c       ****     // print the series of pivot positions
- 105:valve.c       ****     snprintf(test.reason,sizeof(test.reason),"voltages_blue_brown:%f:%f:%f:%f:%f:%f:%f:%f", 
- 106:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 307              		.loc 1 106 0 is_stmt 1
- 308 0210 07F14C03 		add	r3, r7, #76
- 309 0214 5B69     		ldr	r3, [r3, #20]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 310              		.loc 1 105 0
- 311 0216 1846     		mov	r0, r3
- 312 0218 FFF7FEFF 		bl	__aeabi_f2d
- 313 021c 8246     		mov	r10, r0
- 314 021e 8B46     		mov	fp, r1
- 315              		.loc 1 106 0
- 316 0220 07F14C03 		add	r3, r7, #76
- 317 0224 1B69     		ldr	r3, [r3, #16]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 318              		.loc 1 105 0
- 319 0226 1846     		mov	r0, r3
- 320 0228 FFF7FEFF 		bl	__aeabi_f2d
- 321 022c C7E90601 		strd	r0, [r7, #24]
- 107:valve.c       ****         voltages[1].voltage_valve_pos_blue, voltages[1].voltage_valve_pos_brown,
- 322              		.loc 1 107 0
- 323 0230 07F14C03 		add	r3, r7, #76
- 324 0234 1B6B     		ldr	r3, [r3, #48]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 325              		.loc 1 105 0
- 326 0236 1846     		mov	r0, r3
- 327 0238 FFF7FEFF 		bl	__aeabi_f2d
- 328 023c C7E90401 		strd	r0, [r7, #16]
- 329              		.loc 1 107 0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 9
+ 277 01e0 CDE91412 		strd	r1, [sp, #80]
+ 278 01e4 CDE91245 		strd	r4, [sp, #72]
+ 279 01e8 CDE91089 		strd	r8, [sp, #64]
+ 280 01ec CDE90EAB 		strd	r10, [sp, #56]
+ 281 01f0 D7E90012 		ldrd	r1, [r7]
+ 282 01f4 CDE90C12 		strd	r1, [sp, #48]
+ 283 01f8 D7E90212 		ldrd	r1, [r7, #8]
+ 284 01fc CDE90A12 		strd	r1, [sp, #40]
+ 285 0200 D7E90412 		ldrd	r1, [r7, #16]
+ 286 0204 CDE90812 		strd	r1, [sp, #32]
+ 287 0208 D7E90612 		ldrd	r1, [r7, #24]
+ 288 020c CDE90612 		strd	r1, [sp, #24]
+ 289 0210 D7E90812 		ldrd	r1, [r7, #32]
+ 290 0214 CDE90412 		strd	r1, [sp, #16]
+ 291 0218 D7E90A12 		ldrd	r1, [r7, #40]
+ 292 021c CDE90212 		strd	r1, [sp, #8]
+ 293 0220 D7E90C12 		ldrd	r1, [r7, #48]
+ 294 0224 CDE90012 		strd	r1, [sp]
+ 295 0228 104A     		ldr	r2, .L4+8
+ 296 022a 4FF48071 		mov	r1, #256
+ 297 022e 1846     		mov	r0, r3
+ 298 0230 FFF7FEFF 		bl	snprintf
+ 103:valve.c       ****     );
+ 104:valve.c       ****    
+ 105:valve.c       ****     // deactivate 12V battery
+ 106:valve.c       ****     Level_Sensor_Power_Write(OFF);
+ 299              		.loc 1 106 0
+ 300 0234 0020     		movs	r0, #0
+ 301 0236 FFF7FEFF 		bl	Level_Sensor_Power_Write
+ 107:valve.c       ****     
+ 108:valve.c       ****     return test;
+ 302              		.loc 1 108 0
+ 303 023a 07F15C03 		add	r3, r7, #92
+ 304 023e 1A68     		ldr	r2, [r3]
+ 305 0240 07F5B273 		add	r3, r7, #356
+ 306 0244 1046     		mov	r0, r2
+ 307 0246 1946     		mov	r1, r3
+ 308 0248 40F28113 		movw	r3, #385
+ 309 024c 1A46     		mov	r2, r3
+ 310 024e FFF7FEFF 		bl	memcpy
+ 109:valve.c       **** 
+ 110:valve.c       **** }
+ 311              		.loc 1 110 0
+ 312 0252 07F15C03 		add	r3, r7, #92
+ 313 0256 1868     		ldr	r0, [r3]
+ 314 0258 07F53A77 		add	r7, r7, #744
+ 315              		.cfi_def_cfa_offset 32
+ 316 025c BD46     		mov	sp, r7
+ 317              		.cfi_def_cfa_register 13
+ 318              		@ sp needed
+ 319 025e BDE8B08F 		pop	{r4, r5, r7, r8, r9, r10, fp, pc}
+ 320              	.L5:
+ 321 0262 00BF     		.align	2
+ 322              	.L4:
+ 323 0264 00000000 		.word	.LC0
+ 324 0268 CDCC2C3F 		.word	1059900621
+ 325 026c 0C000000 		.word	.LC1
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 9
 
 
- 330 0240 07F14C03 		add	r3, r7, #76
- 331 0244 DB6A     		ldr	r3, [r3, #44]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 332              		.loc 1 105 0
- 333 0246 1846     		mov	r0, r3
- 334 0248 FFF7FEFF 		bl	__aeabi_f2d
- 335 024c C7E90201 		strd	r0, [r7, #8]
- 108:valve.c       ****         voltages[2].voltage_valve_pos_blue, voltages[2].voltage_valve_pos_brown,
- 336              		.loc 1 108 0
- 337 0250 07F14C03 		add	r3, r7, #76
- 338 0254 DB6C     		ldr	r3, [r3, #76]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 339              		.loc 1 105 0
- 340 0256 1846     		mov	r0, r3
- 341 0258 FFF7FEFF 		bl	__aeabi_f2d
- 342 025c C7E90001 		strd	r0, [r7]
- 343              		.loc 1 108 0
- 344 0260 07F14C03 		add	r3, r7, #76
- 345 0264 9B6C     		ldr	r3, [r3, #72]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 346              		.loc 1 105 0
- 347 0266 1846     		mov	r0, r3
- 348 0268 FFF7FEFF 		bl	__aeabi_f2d
- 349 026c 8046     		mov	r8, r0
- 350 026e 8946     		mov	r9, r1
- 109:valve.c       ****         voltages[3].voltage_valve_pos_blue, voltages[3].voltage_valve_pos_brown
- 351              		.loc 1 109 0
- 352 0270 07F14C03 		add	r3, r7, #76
- 353 0274 9B6E     		ldr	r3, [r3, #104]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 354              		.loc 1 105 0
- 355 0276 1846     		mov	r0, r3
- 356 0278 FFF7FEFF 		bl	__aeabi_f2d
- 357 027c 0446     		mov	r4, r0
- 358 027e 0D46     		mov	r5, r1
- 359              		.loc 1 109 0
- 360 0280 07F14C03 		add	r3, r7, #76
- 361 0284 5B6E     		ldr	r3, [r3, #100]	@ float
- 105:valve.c       ****         voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
- 362              		.loc 1 105 0
- 363 0286 1846     		mov	r0, r3
- 364 0288 FFF7FEFF 		bl	__aeabi_f2d
- 365 028c 0A46     		mov	r2, r1
- 366 028e 0146     		mov	r1, r0
- 367 0290 07F5A673 		add	r3, r7, #332
- 368 0294 8133     		adds	r3, r3, #129
- 369 0296 CDE90E12 		strd	r1, [sp, #56]
- 370 029a CDE90C45 		strd	r4, [sp, #48]
- 371 029e CDE90A89 		strd	r8, [sp, #40]
- 372 02a2 D7E90012 		ldrd	r1, [r7]
- 373 02a6 CDE90812 		strd	r1, [sp, #32]
- 374 02aa D7E90212 		ldrd	r1, [r7, #8]
- 375 02ae CDE90612 		strd	r1, [sp, #24]
- 376 02b2 D7E90412 		ldrd	r1, [r7, #16]
- 377 02b6 CDE90412 		strd	r1, [sp, #16]
- 378 02ba D7E90612 		ldrd	r1, [r7, #24]
- 379 02be CDE90212 		strd	r1, [sp, #8]
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 10
+ 326              		.cfi_endproc
+ 327              	.LFE64:
+ 328              		.size	valve_test, .-valve_test
+ 329              		.global	__aeabi_fdiv
+ 330              		.global	__aeabi_ddiv
+ 331              		.global	__aeabi_d2f
+ 332              		.section	.text.read_Valve_pos,"ax",%progbits
+ 333              		.align	2
+ 334              		.global	read_Valve_pos
+ 335              		.thumb
+ 336              		.thumb_func
+ 337              		.type	read_Valve_pos, %function
+ 338              	read_Valve_pos:
+ 339              	.LFB65:
+ 111:valve.c       **** 
+ 112:valve.c       **** float32 read_Valve_pos(){
+ 340              		.loc 1 112 0
+ 341              		.cfi_startproc
+ 342              		@ args = 0, pretend = 0, frame = 32
+ 343              		@ frame_needed = 1, uses_anonymous_args = 0
+ 344 0000 90B5     		push	{r4, r7, lr}
+ 345              		.cfi_def_cfa_offset 12
+ 346              		.cfi_offset 4, -12
+ 347              		.cfi_offset 7, -8
+ 348              		.cfi_offset 14, -4
+ 349 0002 89B0     		sub	sp, sp, #36
+ 350              		.cfi_def_cfa_offset 48
+ 351 0004 00AF     		add	r7, sp, #0
+ 352              		.cfi_def_cfa_register 7
+ 113:valve.c       ****     // take analog voltage readings
+ 114:valve.c       ****     voltage_t readings = voltage_take_readings();
+ 353              		.loc 1 114 0
+ 354 0006 3B1D     		adds	r3, r7, #4
+ 355 0008 1846     		mov	r0, r3
+ 356 000a FFF7FEFF 		bl	voltage_take_readings
+ 115:valve.c       ****     return (readings.voltage_valve_pos/readings.voltage_valve_pot_power)/0.94; // divide because of
+ 357              		.loc 1 115 0
+ 358 000e 7B69     		ldr	r3, [r7, #20]	@ float
+ 359 0010 BA69     		ldr	r2, [r7, #24]	@ float
+ 360 0012 1146     		mov	r1, r2
+ 361 0014 1846     		mov	r0, r3
+ 362 0016 FFF7FEFF 		bl	__aeabi_fdiv
+ 363 001a 0346     		mov	r3, r0
+ 364 001c 1846     		mov	r0, r3
+ 365 001e FFF7FEFF 		bl	__aeabi_f2d
+ 366 0022 09A3     		adr	r3, .L8
+ 367 0024 D3E90023 		ldrd	r2, [r3]
+ 368 0028 FFF7FEFF 		bl	__aeabi_ddiv
+ 369 002c 0346     		mov	r3, r0
+ 370 002e 0C46     		mov	r4, r1
+ 371 0030 1846     		mov	r0, r3
+ 372 0032 2146     		mov	r1, r4
+ 373 0034 FFF7FEFF 		bl	__aeabi_d2f
+ 374 0038 0346     		mov	r3, r0
+ 116:valve.c       ****     
+ 117:valve.c       **** }
+ 375              		.loc 1 117 0
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 10
 
 
- 380 02c2 CDE900AB 		strd	r10, [sp]
- 381 02c6 154A     		ldr	r2, .L14+28
- 382 02c8 4FF48071 		mov	r1, #256
- 383 02cc 1846     		mov	r0, r3
- 384 02ce FFF7FEFF 		bl	snprintf
- 110:valve.c       ****     );
- 111:valve.c       ****    
- 112:valve.c       ****     return test;
- 385              		.loc 1 112 0
- 386 02d2 07F14403 		add	r3, r7, #68
- 387 02d6 1A68     		ldr	r2, [r3]
- 388 02d8 07F5A673 		add	r3, r7, #332
- 389 02dc 1046     		mov	r0, r2
- 390 02de 1946     		mov	r1, r3
- 391 02e0 40F28113 		movw	r3, #385
- 392 02e4 1A46     		mov	r2, r3
- 393 02e6 FFF7FEFF 		bl	memcpy
- 394              	.L1:
- 113:valve.c       ****     
- 114:valve.c       ****     // ratio of blue/brown is 0 when fully open and 1 when fully closed
- 115:valve.c       ****     
- 116:valve.c       **** }
- 395              		.loc 1 116 0
- 396 02ea 07F14403 		add	r3, r7, #68
- 397 02ee 1868     		ldr	r0, [r3]
- 398 02f0 07F53777 		add	r7, r7, #732
- 399              		.cfi_def_cfa_offset 36
- 400 02f4 BD46     		mov	sp, r7
- 401              		.cfi_def_cfa_register 13
- 402              		@ sp needed
- 403 02f6 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
- 404              	.L15:
- 405 02fa 00BFAFF3 		.align	3
- 405      0080
- 406              	.L14:
- 407 0300 9A999999 		.word	-1717986918
- 408 0304 9999B93F 		.word	1069128089
- 409 0308 CDCCCCCC 		.word	-858993459
- 410 030c CCCCEC3F 		.word	1072483532
- 411 0310 00000000 		.word	.LC0
- 412 0314 0C000000 		.word	.LC1
- 413 0318 0000C842 		.word	1120403456
- 414 031c 34000000 		.word	.LC2
- 415              		.cfi_endproc
- 416              	.LFE64:
- 417              		.size	valve_test, .-valve_test
- 418              		.global	__aeabi_fdiv
- 419              		.section	.text.read_Valve_pos,"ax",%progbits
- 420              		.align	2
- 421              		.global	read_Valve_pos
- 422              		.thumb
- 423              		.thumb_func
- 424              		.type	read_Valve_pos, %function
- 425              	read_Valve_pos:
- 426              	.LFB65:
- 117:valve.c       **** 
- 118:valve.c       **** float32 read_Valve_pos(){
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 11
-
-
- 427              		.loc 1 118 0
- 428              		.cfi_startproc
- 429              		@ args = 0, pretend = 0, frame = 56
- 430              		@ frame_needed = 1, uses_anonymous_args = 0
- 431 0000 90B5     		push	{r4, r7, lr}
- 432              		.cfi_def_cfa_offset 12
- 433              		.cfi_offset 4, -12
- 434              		.cfi_offset 7, -8
- 435              		.cfi_offset 14, -4
- 436 0002 8FB0     		sub	sp, sp, #60
- 437              		.cfi_def_cfa_offset 72
- 438 0004 00AF     		add	r7, sp, #0
- 439              		.cfi_def_cfa_register 7
- 119:valve.c       ****     
+ 376 003a 1846     		mov	r0, r3
+ 377 003c 2437     		adds	r7, r7, #36
+ 378              		.cfi_def_cfa_offset 12
+ 379 003e BD46     		mov	sp, r7
+ 380              		.cfi_def_cfa_register 13
+ 381              		@ sp needed
+ 382 0040 90BD     		pop	{r4, r7, pc}
+ 383              	.L9:
+ 384 0042 00BFAFF3 		.align	3
+ 384      0080
+ 385              	.L8:
+ 386 0048 14AE47E1 		.word	-515396076
+ 387 004c 7A14EE3F 		.word	1072567418
+ 388              		.cfi_endproc
+ 389              	.LFE65:
+ 390              		.size	read_Valve_pos, .-read_Valve_pos
+ 391              		.global	__aeabi_fsub
+ 392              		.global	__aeabi_dcmplt
+ 393              		.global	__aeabi_fcmpgt
+ 394              		.global	__aeabi_dcmpgt
+ 395              		.global	__aeabi_fcmplt
+ 396              		.section	.text.move_valve,"ax",%progbits
+ 397              		.align	2
+ 398              		.global	move_valve
+ 399              		.thumb
+ 400              		.thumb_func
+ 401              		.type	move_valve, %function
+ 402              	move_valve:
+ 403              	.LFB66:
+ 118:valve.c       **** 
+ 119:valve.c       **** uint8 move_valve(float32 position_desired){
+ 404              		.loc 1 119 0
+ 405              		.cfi_startproc
+ 406              		@ args = 0, pretend = 0, frame = 8
+ 407              		@ frame_needed = 1, uses_anonymous_args = 0
+ 408 0000 80B5     		push	{r7, lr}
+ 409              		.cfi_def_cfa_offset 8
+ 410              		.cfi_offset 7, -8
+ 411              		.cfi_offset 14, -4
+ 412 0002 82B0     		sub	sp, sp, #8
+ 413              		.cfi_def_cfa_offset 16
+ 414 0004 00AF     		add	r7, sp, #0
+ 415              		.cfi_def_cfa_register 7
+ 416 0006 7860     		str	r0, [r7, #4]	@ float
  120:valve.c       ****     
- 121:valve.c       ****     
- 122:valve.c       ****     return voltage_take_readings().voltage_valve_pos_blue/voltage_take_readings().voltage_valve_pos
- 440              		.loc 1 122 0
- 441 0006 3B46     		mov	r3, r7
- 442 0008 1846     		mov	r0, r3
- 443 000a FFF7FEFF 		bl	voltage_take_readings
- 444 000e 7C69     		ldr	r4, [r7, #20]	@ float
- 445 0010 07F11C03 		add	r3, r7, #28
- 446 0014 1846     		mov	r0, r3
- 447 0016 FFF7FEFF 		bl	voltage_take_readings
- 448 001a FB6A     		ldr	r3, [r7, #44]	@ float
- 449 001c 1946     		mov	r1, r3
- 450 001e 2046     		mov	r0, r4
- 451 0020 FFF7FEFF 		bl	__aeabi_fdiv
- 452 0024 0346     		mov	r3, r0
- 123:valve.c       **** }
- 453              		.loc 1 123 0
- 454 0026 1846     		mov	r0, r3
- 455 0028 3C37     		adds	r7, r7, #60
- 456              		.cfi_def_cfa_offset 12
- 457 002a BD46     		mov	sp, r7
- 458              		.cfi_def_cfa_register 13
- 459              		@ sp needed
- 460 002c 90BD     		pop	{r4, r7, pc}
- 461              		.cfi_endproc
- 462              	.LFE65:
- 463              		.size	read_Valve_pos, .-read_Valve_pos
- 464 002e 00BF     		.text
- 465              	.Letext0:
- 466              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 467              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 468              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 469              		.file 5 "testing.h"
- 470              		.file 6 "voltages.h"
- 471              		.file 7 "data.h"
- 472              		.file 8 "modem.h"
- 473              		.file 9 "notoriOS.h"
- 474              		.file 10 "Generated_Source\\PSoC5/core_cm3.h"
- 475              		.section	.debug_info,"",%progbits
- 476              	.Ldebug_info0:
- 477 0000 EE050000 		.4byte	0x5ee
- 478 0004 0400     		.2byte	0x4
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 12
+ 121:valve.c       ****     // activate 12V battery
+ 122:valve.c       ****     Power_VBAT2_Write(ON);
+ 417              		.loc 1 122 0
+ 418 0008 0120     		movs	r0, #1
+ 419 000a FFF7FEFF 		bl	Power_VBAT2_Write
+ 123:valve.c       ****     
+ 124:valve.c       ****     // this uses "go until you're there" rather than pulsing and checking
+ 125:valve.c       ****     // pulsing and checking could set up oscillations in the controller
+ 126:valve.c       ****     // pulsing and checking would only be necessary if measurement consumed a similar amount of tim
+ 127:valve.c       ****     
+ 128:valve.c       ****     // are we already there? (wihtin a tolerance)
+ 129:valve.c       ****     if ( fabs(read_Valve_pos() - position_desired) < 0.05){
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 11
 
 
- 479 0006 00000000 		.4byte	.Ldebug_abbrev0
- 480 000a 04       		.byte	0x4
- 481 000b 01       		.uleb128 0x1
- 482 000c 91000000 		.4byte	.LASF88
- 483 0010 0C       		.byte	0xc
- 484 0011 8B010000 		.4byte	.LASF89
- 485 0015 FC010000 		.4byte	.LASF90
- 486 0019 18000000 		.4byte	.Ldebug_ranges0+0x18
- 487 001d 00000000 		.4byte	0
- 488 0021 00000000 		.4byte	.Ldebug_line0
- 489 0025 02       		.uleb128 0x2
- 490 0026 01       		.byte	0x1
- 491 0027 06       		.byte	0x6
- 492 0028 CE020000 		.4byte	.LASF0
- 493 002c 02       		.uleb128 0x2
- 494 002d 01       		.byte	0x1
- 495 002e 08       		.byte	0x8
- 496 002f 7F020000 		.4byte	.LASF1
- 497 0033 02       		.uleb128 0x2
- 498 0034 02       		.byte	0x2
- 499 0035 05       		.byte	0x5
- 500 0036 69000000 		.4byte	.LASF2
- 501 003a 02       		.uleb128 0x2
- 502 003b 02       		.byte	0x2
- 503 003c 07       		.byte	0x7
- 504 003d 7E030000 		.4byte	.LASF3
- 505 0041 03       		.uleb128 0x3
- 506 0042 87040000 		.4byte	.LASF9
- 507 0046 02       		.byte	0x2
- 508 0047 3F       		.byte	0x3f
- 509 0048 4C000000 		.4byte	0x4c
- 510 004c 02       		.uleb128 0x2
- 511 004d 04       		.byte	0x4
- 512 004e 05       		.byte	0x5
- 513 004f D8010000 		.4byte	.LASF4
- 514 0053 02       		.uleb128 0x2
- 515 0054 04       		.byte	0x4
- 516 0055 07       		.byte	0x7
- 517 0056 34040000 		.4byte	.LASF5
- 518 005a 02       		.uleb128 0x2
- 519 005b 08       		.byte	0x8
- 520 005c 05       		.byte	0x5
- 521 005d B1010000 		.4byte	.LASF6
- 522 0061 02       		.uleb128 0x2
- 523 0062 08       		.byte	0x8
- 524 0063 07       		.byte	0x7
- 525 0064 E9020000 		.4byte	.LASF7
- 526 0068 04       		.uleb128 0x4
- 527 0069 04       		.byte	0x4
- 528 006a 05       		.byte	0x5
- 529 006b 696E7400 		.ascii	"int\000"
- 530 006f 02       		.uleb128 0x2
- 531 0070 04       		.byte	0x4
- 532 0071 07       		.byte	0x7
- 533 0072 10030000 		.4byte	.LASF8
- 534 0076 03       		.uleb128 0x3
- 535 0077 E5030000 		.4byte	.LASF10
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 13
+ 420              		.loc 1 129 0
+ 421 000e FFF7FEFF 		bl	read_Valve_pos
+ 422 0012 0346     		mov	r3, r0
+ 423 0014 7968     		ldr	r1, [r7, #4]	@ float
+ 424 0016 1846     		mov	r0, r3
+ 425 0018 FFF7FEFF 		bl	__aeabi_fsub
+ 426 001c 0346     		mov	r3, r0
+ 427 001e 23F00043 		bic	r3, r3, #-2147483648
+ 428 0022 1846     		mov	r0, r3
+ 429 0024 FFF7FEFF 		bl	__aeabi_f2d
+ 430 0028 4DA3     		adr	r3, .L31
+ 431 002a D3E90023 		ldrd	r2, [r3]
+ 432 002e FFF7FEFF 		bl	__aeabi_dcmplt
+ 433 0032 0346     		mov	r3, r0
+ 434 0034 002B     		cmp	r3, #0
+ 435 0036 01D0     		beq	.L29
+ 130:valve.c       ****         return 1;
+ 436              		.loc 1 130 0
+ 437 0038 0123     		movs	r3, #1
+ 438 003a 8BE0     		b	.L13
+ 439              	.L29:
+ 131:valve.c       ****     }
+ 132:valve.c       **** 
+ 133:valve.c       ****     // is the desired position more closed?
+ 134:valve.c       ****     if( read_Valve_pos() > position_desired){
+ 440              		.loc 1 134 0
+ 441 003c FFF7FEFF 		bl	read_Valve_pos
+ 442 0040 0346     		mov	r3, r0
+ 443 0042 7968     		ldr	r1, [r7, #4]	@ float
+ 444 0044 1846     		mov	r0, r3
+ 445 0046 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 446 004a 0346     		mov	r3, r0
+ 447 004c 002B     		cmp	r3, #0
+ 448 004e 39D0     		beq	.L30
+ 135:valve.c       ****         
+ 136:valve.c       ****         // turn the closing pin high
+ 137:valve.c       ****         Power_VDD2_Write(1u);
+ 449              		.loc 1 137 0
+ 450 0050 0120     		movs	r0, #1
+ 451 0052 FFF7FEFF 		bl	Power_VDD2_Write
+ 138:valve.c       **** 
+ 139:valve.c       ****         
+ 140:valve.c       ****         // while loop
+ 141:valve.c       ****         // continuously measure the position (measurement should be much faster than movement)
+ 142:valve.c       ****         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
+ 143:valve.c       ****         while(fabs(read_Valve_pos() - position_desired) > 0.03){
+ 452              		.loc 1 143 0
+ 453 0056 03E0     		b	.L16
+ 454              	.L17:
+ 144:valve.c       ****             CyDelay(1000u);
+ 455              		.loc 1 144 0
+ 456 0058 4FF47A70 		mov	r0, #1000
+ 457 005c FFF7FEFF 		bl	CyDelay
+ 458              	.L16:
+ 143:valve.c       ****             CyDelay(1000u);
+ 459              		.loc 1 143 0
+ 460 0060 FFF7FEFF 		bl	read_Valve_pos
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 12
 
 
- 536 007b 03       		.byte	0x3
- 537 007c 2C       		.byte	0x2c
- 538 007d 41000000 		.4byte	0x41
- 539 0081 05       		.uleb128 0x5
- 540 0082 70010000 		.4byte	.LASF11
- 541 0086 04       		.byte	0x4
- 542 0087 9201     		.2byte	0x192
- 543 0089 2C000000 		.4byte	0x2c
- 544 008d 05       		.uleb128 0x5
- 545 008e 22040000 		.4byte	.LASF12
- 546 0092 04       		.byte	0x4
- 547 0093 9301     		.2byte	0x193
- 548 0095 3A000000 		.4byte	0x3a
- 549 0099 05       		.uleb128 0x5
- 550 009a 7B010000 		.4byte	.LASF13
- 551 009e 04       		.byte	0x4
- 552 009f 9601     		.2byte	0x196
- 553 00a1 33000000 		.4byte	0x33
- 554 00a5 05       		.uleb128 0x5
- 555 00a6 46040000 		.4byte	.LASF14
- 556 00aa 04       		.byte	0x4
- 557 00ab 9701     		.2byte	0x197
- 558 00ad 4C000000 		.4byte	0x4c
- 559 00b1 05       		.uleb128 0x5
- 560 00b2 3C000000 		.4byte	.LASF15
- 561 00b6 04       		.byte	0x4
- 562 00b7 9801     		.2byte	0x198
- 563 00b9 BD000000 		.4byte	0xbd
- 564 00bd 02       		.uleb128 0x2
- 565 00be 04       		.byte	0x4
- 566 00bf 04       		.byte	0x4
- 567 00c0 93010000 		.4byte	.LASF16
- 568 00c4 02       		.uleb128 0x2
- 569 00c5 08       		.byte	0x8
- 570 00c6 04       		.byte	0x4
- 571 00c7 4C040000 		.4byte	.LASF17
- 572 00cb 02       		.uleb128 0x2
- 573 00cc 01       		.byte	0x1
- 574 00cd 08       		.byte	0x8
- 575 00ce CC010000 		.4byte	.LASF18
- 576 00d2 02       		.uleb128 0x2
- 577 00d3 08       		.byte	0x8
- 578 00d4 04       		.byte	0x4
- 579 00d5 5E020000 		.4byte	.LASF19
- 580 00d9 02       		.uleb128 0x2
- 581 00da 04       		.byte	0x4
- 582 00db 07       		.byte	0x7
- 583 00dc 80000000 		.4byte	.LASF20
- 584 00e0 06       		.uleb128 0x6
- 585 00e1 CB000000 		.4byte	0xcb
- 586 00e5 F0000000 		.4byte	0xf0
- 587 00e9 07       		.uleb128 0x7
- 588 00ea D9000000 		.4byte	0xd9
- 589 00ee 17       		.byte	0x17
- 590 00ef 00       		.byte	0
- 591 00f0 08       		.uleb128 0x8
- 592 00f1 8101     		.2byte	0x181
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 14
+ 461 0064 0346     		mov	r3, r0
+ 462 0066 7968     		ldr	r1, [r7, #4]	@ float
+ 463 0068 1846     		mov	r0, r3
+ 464 006a FFF7FEFF 		bl	__aeabi_fsub
+ 465 006e 0346     		mov	r3, r0
+ 466 0070 23F00043 		bic	r3, r3, #-2147483648
+ 467 0074 1846     		mov	r0, r3
+ 468 0076 FFF7FEFF 		bl	__aeabi_f2d
+ 469 007a 3BA3     		adr	r3, .L31+8
+ 470 007c D3E90023 		ldrd	r2, [r3]
+ 471 0080 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 472 0084 0346     		mov	r3, r0
+ 473 0086 002B     		cmp	r3, #0
+ 474 0088 E6D1     		bne	.L17
+ 145:valve.c       ****         }
+ 146:valve.c       ****         
+ 147:valve.c       ****         
+ 148:valve.c       ****         // turn the closing pin low
+ 149:valve.c       ****         Power_VDD2_Write(0u);
+ 475              		.loc 1 149 0
+ 476 008a 0020     		movs	r0, #0
+ 477 008c FFF7FEFF 		bl	Power_VDD2_Write
+ 150:valve.c       ****         
+ 151:valve.c       ****         
+ 152:valve.c       ****         // read valve position once more and confirm we're where we want to be
+ 153:valve.c       ****         // if not return 0
+ 154:valve.c       ****         if(fabs(read_Valve_pos() - position_desired) > 0.05){
+ 478              		.loc 1 154 0
+ 479 0090 FFF7FEFF 		bl	read_Valve_pos
+ 480 0094 0346     		mov	r3, r0
+ 481 0096 7968     		ldr	r1, [r7, #4]	@ float
+ 482 0098 1846     		mov	r0, r3
+ 483 009a FFF7FEFF 		bl	__aeabi_fsub
+ 484 009e 0346     		mov	r3, r0
+ 485 00a0 23F00043 		bic	r3, r3, #-2147483648
+ 486 00a4 1846     		mov	r0, r3
+ 487 00a6 FFF7FEFF 		bl	__aeabi_f2d
+ 488 00aa 2DA3     		adr	r3, .L31
+ 489 00ac D3E90023 		ldrd	r2, [r3]
+ 490 00b0 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 491 00b4 0346     		mov	r3, r0
+ 492 00b6 002B     		cmp	r3, #0
+ 493 00b8 48D0     		beq	.L18
+ 155:valve.c       ****             // deactivate 12V battery
+ 156:valve.c       ****             Power_VBAT2_Write(OFF);
+ 494              		.loc 1 156 0
+ 495 00ba 0020     		movs	r0, #0
+ 496 00bc FFF7FEFF 		bl	Power_VBAT2_Write
+ 157:valve.c       ****             return 0;
+ 497              		.loc 1 157 0
+ 498 00c0 0023     		movs	r3, #0
+ 499 00c2 47E0     		b	.L13
+ 500              	.L30:
+ 158:valve.c       ****         }
+ 159:valve.c       ****         
+ 160:valve.c       ****     }
+ 161:valve.c       ****     // or more open?
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 13
 
 
- 593 00f3 05       		.byte	0x5
- 594 00f4 0A       		.byte	0xa
- 595 00f5 1E010000 		.4byte	0x11e
- 596 00f9 09       		.uleb128 0x9
- 597 00fa C0040000 		.4byte	.LASF21
- 598 00fe 05       		.byte	0x5
- 599 00ff 0C       		.byte	0xc
- 600 0100 1E010000 		.4byte	0x11e
- 601 0104 00       		.byte	0
- 602 0105 09       		.uleb128 0x9
- 603 0106 A9030000 		.4byte	.LASF22
- 604 010a 05       		.byte	0x5
- 605 010b 0D       		.byte	0xd
- 606 010c 81000000 		.4byte	0x81
- 607 0110 80       		.byte	0x80
- 608 0111 09       		.uleb128 0x9
- 609 0112 D1010000 		.4byte	.LASF23
- 610 0116 05       		.byte	0x5
- 611 0117 0F       		.byte	0xf
- 612 0118 2E010000 		.4byte	0x12e
- 613 011c 81       		.byte	0x81
- 614 011d 00       		.byte	0
- 615 011e 06       		.uleb128 0x6
- 616 011f CB000000 		.4byte	0xcb
- 617 0123 2E010000 		.4byte	0x12e
- 618 0127 07       		.uleb128 0x7
- 619 0128 D9000000 		.4byte	0xd9
- 620 012c 7F       		.byte	0x7f
- 621 012d 00       		.byte	0
- 622 012e 06       		.uleb128 0x6
- 623 012f CB000000 		.4byte	0xcb
- 624 0133 3E010000 		.4byte	0x13e
- 625 0137 07       		.uleb128 0x7
- 626 0138 D9000000 		.4byte	0xd9
- 627 013c FF       		.byte	0xff
- 628 013d 00       		.byte	0
- 629 013e 03       		.uleb128 0x3
- 630 013f CF030000 		.4byte	.LASF24
- 631 0143 05       		.byte	0x5
- 632 0144 10       		.byte	0x10
- 633 0145 F0000000 		.4byte	0xf0
- 634 0149 0A       		.uleb128 0xa
- 635 014a 1C       		.byte	0x1c
- 636 014b 06       		.byte	0x6
- 637 014c 14       		.byte	0x14
- 638 014d A6010000 		.4byte	0x1a6
- 639 0151 09       		.uleb128 0x9
- 640 0152 4E010000 		.4byte	.LASF25
- 641 0156 06       		.byte	0x6
- 642 0157 15       		.byte	0x15
- 643 0158 BD000000 		.4byte	0xbd
- 644 015c 00       		.byte	0
- 645 015d 09       		.uleb128 0x9
- 646 015e 1F000000 		.4byte	.LASF26
- 647 0162 06       		.byte	0x6
- 648 0163 16       		.byte	0x16
- 649 0164 BD000000 		.4byte	0xbd
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 15
+ 162:valve.c       ****     else if(read_Valve_pos() < position_desired){
+ 501              		.loc 1 162 0
+ 502 00c4 FFF7FEFF 		bl	read_Valve_pos
+ 503 00c8 0346     		mov	r3, r0
+ 504 00ca 7968     		ldr	r1, [r7, #4]	@ float
+ 505 00cc 1846     		mov	r0, r3
+ 506 00ce FFF7FEFF 		bl	__aeabi_fcmplt
+ 507 00d2 0346     		mov	r3, r0
+ 508 00d4 002B     		cmp	r3, #0
+ 509 00d6 39D0     		beq	.L18
+ 163:valve.c       ****         
+ 164:valve.c       ****         // turn the opening pin high
+ 165:valve.c       ****         Power_VDD1_Write(1u);
+ 510              		.loc 1 165 0
+ 511 00d8 0120     		movs	r0, #1
+ 512 00da FFF7FEFF 		bl	Power_VDD1_Write
+ 166:valve.c       ****         
+ 167:valve.c       ****         // while loop
+ 168:valve.c       ****         // continuously measure the position (measurement should be much faster than movement)
+ 169:valve.c       ****         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
+ 170:valve.c       ****         while(fabs(read_Valve_pos() - position_desired) > 0.03){
+ 513              		.loc 1 170 0
+ 514 00de 03E0     		b	.L21
+ 515              	.L22:
+ 171:valve.c       ****             CyDelay(1000u);
+ 516              		.loc 1 171 0
+ 517 00e0 4FF47A70 		mov	r0, #1000
+ 518 00e4 FFF7FEFF 		bl	CyDelay
+ 519              	.L21:
+ 170:valve.c       ****             CyDelay(1000u);
+ 520              		.loc 1 170 0
+ 521 00e8 FFF7FEFF 		bl	read_Valve_pos
+ 522 00ec 0346     		mov	r3, r0
+ 523 00ee 7968     		ldr	r1, [r7, #4]	@ float
+ 524 00f0 1846     		mov	r0, r3
+ 525 00f2 FFF7FEFF 		bl	__aeabi_fsub
+ 526 00f6 0346     		mov	r3, r0
+ 527 00f8 23F00043 		bic	r3, r3, #-2147483648
+ 528 00fc 1846     		mov	r0, r3
+ 529 00fe FFF7FEFF 		bl	__aeabi_f2d
+ 530 0102 19A3     		adr	r3, .L31+8
+ 531 0104 D3E90023 		ldrd	r2, [r3]
+ 532 0108 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 533 010c 0346     		mov	r3, r0
+ 534 010e 002B     		cmp	r3, #0
+ 535 0110 E6D1     		bne	.L22
+ 172:valve.c       ****         }
+ 173:valve.c       ****         
+ 174:valve.c       ****         // turn the opening pin low
+ 175:valve.c       ****          Power_VDD1_Write(0u);
+ 536              		.loc 1 175 0
+ 537 0112 0020     		movs	r0, #0
+ 538 0114 FFF7FEFF 		bl	Power_VDD1_Write
+ 176:valve.c       ****         
+ 177:valve.c       ****         
+ 178:valve.c       ****         // read valve position once more and confirm we're where we want to be
+ 179:valve.c       ****         // if not return 0
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 14
 
 
- 650 0168 04       		.byte	0x4
- 651 0169 09       		.uleb128 0x9
- 652 016a F0040000 		.4byte	.LASF27
- 653 016e 06       		.byte	0x6
- 654 016f 17       		.byte	0x17
- 655 0170 BD000000 		.4byte	0xbd
- 656 0174 08       		.byte	0x8
- 657 0175 09       		.uleb128 0x9
- 658 0176 24010000 		.4byte	.LASF28
- 659 017a 06       		.byte	0x6
- 660 017b 18       		.byte	0x18
- 661 017c BD000000 		.4byte	0xbd
- 662 0180 0C       		.byte	0xc
- 663 0181 09       		.uleb128 0x9
- 664 0182 99010000 		.4byte	.LASF29
- 665 0186 06       		.byte	0x6
- 666 0187 19       		.byte	0x19
- 667 0188 BD000000 		.4byte	0xbd
- 668 018c 10       		.byte	0x10
- 669 018d 09       		.uleb128 0x9
- 670 018e A9040000 		.4byte	.LASF30
- 671 0192 06       		.byte	0x6
- 672 0193 1A       		.byte	0x1a
- 673 0194 BD000000 		.4byte	0xbd
- 674 0198 14       		.byte	0x14
- 675 0199 09       		.uleb128 0x9
- 676 019a 00000000 		.4byte	.LASF31
- 677 019e 06       		.byte	0x6
- 678 019f 1B       		.byte	0x1b
- 679 01a0 81000000 		.4byte	0x81
- 680 01a4 18       		.byte	0x18
- 681 01a5 00       		.byte	0
- 682 01a6 03       		.uleb128 0x3
- 683 01a7 DB030000 		.4byte	.LASF32
- 684 01ab 06       		.byte	0x6
- 685 01ac 1C       		.byte	0x1c
- 686 01ad 49010000 		.4byte	0x149
- 687 01b1 0A       		.uleb128 0xa
- 688 01b2 2C       		.byte	0x2c
- 689 01b3 07       		.byte	0x7
- 690 01b4 14       		.byte	0x14
- 691 01b5 DE010000 		.4byte	0x1de
- 692 01b9 0B       		.uleb128 0xb
- 693 01ba 6B657900 		.ascii	"key\000"
- 694 01be 07       		.byte	0x7
- 695 01bf 15       		.byte	0x15
- 696 01c0 DE010000 		.4byte	0x1de
- 697 01c4 00       		.byte	0
- 698 01c5 09       		.uleb128 0x9
- 699 01c6 48010000 		.4byte	.LASF33
- 700 01ca 07       		.byte	0x7
- 701 01cb 16       		.byte	0x16
- 702 01cc DE010000 		.4byte	0x1de
- 703 01d0 14       		.byte	0x14
- 704 01d1 09       		.uleb128 0x9
- 705 01d2 81010000 		.4byte	.LASF34
- 706 01d6 07       		.byte	0x7
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 16
+ 180:valve.c       ****         if(fabs(read_Valve_pos() - position_desired) > 0.05){
+ 539              		.loc 1 180 0
+ 540 0118 FFF7FEFF 		bl	read_Valve_pos
+ 541 011c 0346     		mov	r3, r0
+ 542 011e 7968     		ldr	r1, [r7, #4]	@ float
+ 543 0120 1846     		mov	r0, r3
+ 544 0122 FFF7FEFF 		bl	__aeabi_fsub
+ 545 0126 0346     		mov	r3, r0
+ 546 0128 23F00043 		bic	r3, r3, #-2147483648
+ 547 012c 1846     		mov	r0, r3
+ 548 012e FFF7FEFF 		bl	__aeabi_f2d
+ 549 0132 0BA3     		adr	r3, .L31
+ 550 0134 D3E90023 		ldrd	r2, [r3]
+ 551 0138 FFF7FEFF 		bl	__aeabi_dcmpgt
+ 552 013c 0346     		mov	r3, r0
+ 553 013e 002B     		cmp	r3, #0
+ 554 0140 04D0     		beq	.L18
+ 181:valve.c       ****             // deactivate 12V battery
+ 182:valve.c       ****             Power_VBAT2_Write(OFF);
+ 555              		.loc 1 182 0
+ 556 0142 0020     		movs	r0, #0
+ 557 0144 FFF7FEFF 		bl	Power_VBAT2_Write
+ 183:valve.c       ****             return 0;
+ 558              		.loc 1 183 0
+ 559 0148 0023     		movs	r3, #0
+ 560 014a 03E0     		b	.L13
+ 561              	.L18:
+ 184:valve.c       ****         }
+ 185:valve.c       ****         
+ 186:valve.c       ****         
+ 187:valve.c       ****     }
+ 188:valve.c       **** 
+ 189:valve.c       ****     
+ 190:valve.c       ****     // deactivate 12V battery
+ 191:valve.c       ****     Power_VBAT2_Write(OFF);
+ 562              		.loc 1 191 0
+ 563 014c 0020     		movs	r0, #0
+ 564 014e FFF7FEFF 		bl	Power_VBAT2_Write
+ 192:valve.c       ****     
+ 193:valve.c       **** 
+ 194:valve.c       ****     return 1; // everything worked fine
+ 565              		.loc 1 194 0
+ 566 0152 0123     		movs	r3, #1
+ 567              	.L13:
+ 195:valve.c       **** }
+ 568              		.loc 1 195 0
+ 569 0154 1846     		mov	r0, r3
+ 570 0156 0837     		adds	r7, r7, #8
+ 571              		.cfi_def_cfa_offset 8
+ 572 0158 BD46     		mov	sp, r7
+ 573              		.cfi_def_cfa_register 13
+ 574              		@ sp needed
+ 575 015a 80BD     		pop	{r7, pc}
+ 576              	.L32:
+ 577 015c AFF30080 		.align	3
+ 578              	.L31:
+ 579 0160 9A999999 		.word	-1717986918
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 15
 
 
- 707 01d7 17       		.byte	0x17
- 708 01d8 A5000000 		.4byte	0xa5
- 709 01dc 28       		.byte	0x28
- 710 01dd 00       		.byte	0
- 711 01de 06       		.uleb128 0x6
- 712 01df CB000000 		.4byte	0xcb
- 713 01e3 EE010000 		.4byte	0x1ee
- 714 01e7 07       		.uleb128 0x7
- 715 01e8 D9000000 		.4byte	0xd9
- 716 01ec 13       		.byte	0x13
- 717 01ed 00       		.byte	0
- 718 01ee 03       		.uleb128 0x3
- 719 01ef 1D030000 		.4byte	.LASF35
- 720 01f3 07       		.byte	0x7
- 721 01f4 19       		.byte	0x19
- 722 01f5 B1010000 		.4byte	0x1b1
- 723 01f9 0A       		.uleb128 0xa
- 724 01fa 3C       		.byte	0x3c
- 725 01fb 08       		.byte	0x8
- 726 01fc 37       		.byte	0x37
- 727 01fd 26020000 		.4byte	0x226
- 728 0201 09       		.uleb128 0x9
- 729 0202 18000000 		.4byte	.LASF36
- 730 0206 08       		.byte	0x8
- 731 0207 38       		.byte	0x38
- 732 0208 DE010000 		.4byte	0x1de
- 733 020c 00       		.byte	0
- 734 020d 09       		.uleb128 0x9
- 735 020e 06000000 		.4byte	.LASF37
- 736 0212 08       		.byte	0x8
- 737 0213 39       		.byte	0x39
- 738 0214 DE010000 		.4byte	0x1de
- 739 0218 14       		.byte	0x14
- 740 0219 09       		.uleb128 0x9
- 741 021a D6030000 		.4byte	.LASF38
- 742 021e 08       		.byte	0x8
- 743 021f 3A       		.byte	0x3a
- 744 0220 DE010000 		.4byte	0x1de
- 745 0224 28       		.byte	0x28
- 746 0225 00       		.byte	0
- 747 0226 03       		.uleb128 0x3
- 748 0227 6C040000 		.4byte	.LASF39
- 749 022b 08       		.byte	0x8
- 750 022c 3C       		.byte	0x3c
- 751 022d F9010000 		.4byte	0x1f9
- 752 0231 0A       		.uleb128 0xa
- 753 0232 20       		.byte	0x20
- 754 0233 08       		.byte	0x8
- 755 0234 3E       		.byte	0x3e
- 756 0235 9A020000 		.4byte	0x29a
- 757 0239 09       		.uleb128 0x9
- 758 023a 29030000 		.4byte	.LASF40
- 759 023e 08       		.byte	0x8
- 760 023f 3F       		.byte	0x3f
- 761 0240 68000000 		.4byte	0x68
- 762 0244 00       		.byte	0
- 763 0245 0B       		.uleb128 0xb
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 17
+ 580 0164 9999A93F 		.word	1068079513
+ 581 0168 B81E85EB 		.word	-343597384
+ 582 016c 51B89E3F 		.word	1067366481
+ 583              		.cfi_endproc
+ 584              	.LFE66:
+ 585              		.size	move_valve, .-move_valve
+ 586              		.text
+ 587              	.Letext0:
+ 588              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 589              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 590              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 591              		.file 5 "testing.h"
+ 592              		.file 6 "voltages.h"
+ 593              		.file 7 "data.h"
+ 594              		.file 8 "modem.h"
+ 595              		.file 9 "notoriOS.h"
+ 596              		.file 10 "Generated_Source\\PSoC5/core_cm3.h"
+ 597              		.section	.debug_info,"",%progbits
+ 598              	.Ldebug_info0:
+ 599 0000 FD050000 		.4byte	0x5fd
+ 600 0004 0400     		.2byte	0x4
+ 601 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 602 000a 04       		.byte	0x4
+ 603 000b 01       		.uleb128 0x1
+ 604 000c 91000000 		.4byte	.LASF91
+ 605 0010 0C       		.byte	0xc
+ 606 0011 9D010000 		.4byte	.LASF92
+ 607 0015 F6010000 		.4byte	.LASF93
+ 608 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 609 001d 00000000 		.4byte	0
+ 610 0021 00000000 		.4byte	.Ldebug_line0
+ 611 0025 02       		.uleb128 0x2
+ 612 0026 01       		.byte	0x1
+ 613 0027 06       		.byte	0x6
+ 614 0028 D9020000 		.4byte	.LASF0
+ 615 002c 02       		.uleb128 0x2
+ 616 002d 01       		.byte	0x1
+ 617 002e 08       		.byte	0x8
+ 618 002f 8A020000 		.4byte	.LASF1
+ 619 0033 02       		.uleb128 0x2
+ 620 0034 02       		.byte	0x2
+ 621 0035 05       		.byte	0x5
+ 622 0036 69000000 		.4byte	.LASF2
+ 623 003a 02       		.uleb128 0x2
+ 624 003b 02       		.byte	0x2
+ 625 003c 07       		.byte	0x7
+ 626 003d 89030000 		.4byte	.LASF3
+ 627 0041 03       		.uleb128 0x3
+ 628 0042 B0040000 		.4byte	.LASF9
+ 629 0046 02       		.byte	0x2
+ 630 0047 3F       		.byte	0x3f
+ 631 0048 4C000000 		.4byte	0x4c
+ 632 004c 02       		.uleb128 0x2
+ 633 004d 04       		.byte	0x4
+ 634 004e 05       		.byte	0x5
+ 635 004f D2010000 		.4byte	.LASF4
+ 636 0053 02       		.uleb128 0x2
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 16
 
 
- 764 0246 62657200 		.ascii	"ber\000"
- 765 024a 08       		.byte	0x8
- 766 024b 40       		.byte	0x40
- 767 024c 68000000 		.4byte	0x68
- 768 0250 04       		.byte	0x4
- 769 0251 09       		.uleb128 0x9
- 770 0252 76010000 		.4byte	.LASF41
- 771 0256 08       		.byte	0x8
- 772 0257 41       		.byte	0x41
- 773 0258 68000000 		.4byte	0x68
- 774 025c 08       		.byte	0x8
- 775 025d 09       		.uleb128 0x9
- 776 025e 43010000 		.4byte	.LASF42
- 777 0262 08       		.byte	0x8
- 778 0263 42       		.byte	0x42
- 779 0264 68000000 		.4byte	0x68
- 780 0268 0C       		.byte	0xc
- 781 0269 09       		.uleb128 0x9
- 782 026a 1D040000 		.4byte	.LASF43
- 783 026e 08       		.byte	0x8
- 784 026f 43       		.byte	0x43
- 785 0270 68000000 		.4byte	0x68
- 786 0274 10       		.byte	0x10
- 787 0275 09       		.uleb128 0x9
- 788 0276 8D020000 		.4byte	.LASF44
- 789 027a 08       		.byte	0x8
- 790 027b 44       		.byte	0x44
- 791 027c 68000000 		.4byte	0x68
- 792 0280 14       		.byte	0x14
- 793 0281 09       		.uleb128 0x9
- 794 0282 91030000 		.4byte	.LASF45
- 795 0286 08       		.byte	0x8
- 796 0287 45       		.byte	0x45
- 797 0288 68000000 		.4byte	0x68
- 798 028c 18       		.byte	0x18
- 799 028d 09       		.uleb128 0x9
- 800 028e BC030000 		.4byte	.LASF46
- 801 0292 08       		.byte	0x8
- 802 0293 46       		.byte	0x46
- 803 0294 68000000 		.4byte	0x68
- 804 0298 1C       		.byte	0x1c
- 805 0299 00       		.byte	0
- 806 029a 03       		.uleb128 0x3
- 807 029b ED030000 		.4byte	.LASF47
- 808 029f 08       		.byte	0x8
- 809 02a0 48       		.byte	0x48
- 810 02a1 31020000 		.4byte	0x231
- 811 02a5 0A       		.uleb128 0xa
- 812 02a6 05       		.byte	0x5
- 813 02a7 08       		.byte	0x8
- 814 02a8 54       		.byte	0x54
- 815 02a9 EA020000 		.4byte	0x2ea
- 816 02ad 09       		.uleb128 0x9
- 817 02ae E6040000 		.4byte	.LASF48
- 818 02b2 08       		.byte	0x8
- 819 02b3 56       		.byte	0x56
- 820 02b4 81000000 		.4byte	0x81
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 18
+ 637 0054 04       		.byte	0x4
+ 638 0055 07       		.byte	0x7
+ 639 0056 5D040000 		.4byte	.LASF5
+ 640 005a 02       		.uleb128 0x2
+ 641 005b 08       		.byte	0x8
+ 642 005c 05       		.byte	0x5
+ 643 005d AB010000 		.4byte	.LASF6
+ 644 0061 02       		.uleb128 0x2
+ 645 0062 08       		.byte	0x8
+ 646 0063 07       		.byte	0x7
+ 647 0064 F4020000 		.4byte	.LASF7
+ 648 0068 04       		.uleb128 0x4
+ 649 0069 04       		.byte	0x4
+ 650 006a 05       		.byte	0x5
+ 651 006b 696E7400 		.ascii	"int\000"
+ 652 006f 02       		.uleb128 0x2
+ 653 0070 04       		.byte	0x4
+ 654 0071 07       		.byte	0x7
+ 655 0072 1B030000 		.4byte	.LASF8
+ 656 0076 03       		.uleb128 0x3
+ 657 0077 F6030000 		.4byte	.LASF10
+ 658 007b 03       		.byte	0x3
+ 659 007c 2C       		.byte	0x2c
+ 660 007d 41000000 		.4byte	0x41
+ 661 0081 05       		.uleb128 0x5
+ 662 0082 70010000 		.4byte	.LASF11
+ 663 0086 04       		.byte	0x4
+ 664 0087 9201     		.2byte	0x192
+ 665 0089 2C000000 		.4byte	0x2c
+ 666 008d 05       		.uleb128 0x5
+ 667 008e 4B040000 		.4byte	.LASF12
+ 668 0092 04       		.byte	0x4
+ 669 0093 9301     		.2byte	0x193
+ 670 0095 3A000000 		.4byte	0x3a
+ 671 0099 05       		.uleb128 0x5
+ 672 009a 7B010000 		.4byte	.LASF13
+ 673 009e 04       		.byte	0x4
+ 674 009f 9601     		.2byte	0x196
+ 675 00a1 33000000 		.4byte	0x33
+ 676 00a5 05       		.uleb128 0x5
+ 677 00a6 6F040000 		.4byte	.LASF14
+ 678 00aa 04       		.byte	0x4
+ 679 00ab 9701     		.2byte	0x197
+ 680 00ad 4C000000 		.4byte	0x4c
+ 681 00b1 05       		.uleb128 0x5
+ 682 00b2 3C000000 		.4byte	.LASF15
+ 683 00b6 04       		.byte	0x4
+ 684 00b7 9801     		.2byte	0x198
+ 685 00b9 BD000000 		.4byte	0xbd
+ 686 00bd 02       		.uleb128 0x2
+ 687 00be 04       		.byte	0x4
+ 688 00bf 04       		.byte	0x4
+ 689 00c0 A5010000 		.4byte	.LASF16
+ 690 00c4 02       		.uleb128 0x2
+ 691 00c5 08       		.byte	0x8
+ 692 00c6 04       		.byte	0x4
+ 693 00c7 75040000 		.4byte	.LASF17
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 17
 
 
- 821 02b8 00       		.byte	0
- 822 02b9 09       		.uleb128 0x9
- 823 02ba 6A030000 		.4byte	.LASF49
- 824 02be 08       		.byte	0x8
- 825 02bf 58       		.byte	0x58
- 826 02c0 EA020000 		.4byte	0x2ea
- 827 02c4 01       		.byte	0x1
- 828 02c5 09       		.uleb128 0x9
- 829 02c6 47020000 		.4byte	.LASF50
- 830 02ca 08       		.byte	0x8
- 831 02cb 5A       		.byte	0x5a
- 832 02cc 81000000 		.4byte	0x81
- 833 02d0 02       		.byte	0x2
- 834 02d1 09       		.uleb128 0x9
- 835 02d2 2F030000 		.4byte	.LASF51
- 836 02d6 08       		.byte	0x8
- 837 02d7 5C       		.byte	0x5c
- 838 02d8 81000000 		.4byte	0x81
- 839 02dc 03       		.byte	0x3
- 840 02dd 09       		.uleb128 0x9
- 841 02de 60040000 		.4byte	.LASF52
- 842 02e2 08       		.byte	0x8
- 843 02e3 5F       		.byte	0x5f
- 844 02e4 81000000 		.4byte	0x81
- 845 02e8 04       		.byte	0x4
- 846 02e9 00       		.byte	0
- 847 02ea 02       		.uleb128 0x2
- 848 02eb 01       		.byte	0x1
- 849 02ec 02       		.byte	0x2
- 850 02ed FB030000 		.4byte	.LASF53
- 851 02f1 03       		.uleb128 0x3
- 852 02f2 53030000 		.4byte	.LASF54
- 853 02f6 08       		.byte	0x8
- 854 02f7 61       		.byte	0x61
- 855 02f8 A5020000 		.4byte	0x2a5
- 856 02fc 0A       		.uleb128 0xa
- 857 02fd 06       		.byte	0x6
- 858 02fe 09       		.byte	0x9
- 859 02ff 2E       		.byte	0x2e
- 860 0300 35030000 		.4byte	0x335
- 861 0304 09       		.uleb128 0x9
- 862 0305 5A000000 		.4byte	.LASF55
- 863 0309 09       		.byte	0x9
- 864 030a 30       		.byte	0x30
- 865 030b 8D000000 		.4byte	0x8d
- 866 030f 00       		.byte	0
- 867 0310 09       		.uleb128 0x9
- 868 0311 44000000 		.4byte	.LASF56
- 869 0315 09       		.byte	0x9
- 870 0316 31       		.byte	0x31
- 871 0317 99000000 		.4byte	0x99
- 872 031b 02       		.byte	0x2
- 873 031c 09       		.uleb128 0x9
- 874 031d 79040000 		.4byte	.LASF57
- 875 0321 09       		.byte	0x9
- 876 0322 32       		.byte	0x32
- 877 0323 81000000 		.4byte	0x81
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 19
+ 694 00cb 02       		.uleb128 0x2
+ 695 00cc 01       		.byte	0x1
+ 696 00cd 08       		.byte	0x8
+ 697 00ce C6010000 		.4byte	.LASF18
+ 698 00d2 02       		.uleb128 0x2
+ 699 00d3 08       		.byte	0x8
+ 700 00d4 04       		.byte	0x4
+ 701 00d5 69020000 		.4byte	.LASF19
+ 702 00d9 02       		.uleb128 0x2
+ 703 00da 04       		.byte	0x4
+ 704 00db 07       		.byte	0x7
+ 705 00dc 80000000 		.4byte	.LASF20
+ 706 00e0 06       		.uleb128 0x6
+ 707 00e1 CB000000 		.4byte	0xcb
+ 708 00e5 F0000000 		.4byte	0xf0
+ 709 00e9 07       		.uleb128 0x7
+ 710 00ea D9000000 		.4byte	0xd9
+ 711 00ee 17       		.byte	0x17
+ 712 00ef 00       		.byte	0
+ 713 00f0 08       		.uleb128 0x8
+ 714 00f1 8101     		.2byte	0x181
+ 715 00f3 05       		.byte	0x5
+ 716 00f4 0A       		.byte	0xa
+ 717 00f5 1E010000 		.4byte	0x11e
+ 718 00f9 09       		.uleb128 0x9
+ 719 00fa D7040000 		.4byte	.LASF21
+ 720 00fe 05       		.byte	0x5
+ 721 00ff 0C       		.byte	0xc
+ 722 0100 1E010000 		.4byte	0x11e
+ 723 0104 00       		.byte	0
+ 724 0105 09       		.uleb128 0x9
+ 725 0106 B4030000 		.4byte	.LASF22
+ 726 010a 05       		.byte	0x5
+ 727 010b 0D       		.byte	0xd
+ 728 010c 81000000 		.4byte	0x81
+ 729 0110 80       		.byte	0x80
+ 730 0111 09       		.uleb128 0x9
+ 731 0112 CB010000 		.4byte	.LASF23
+ 732 0116 05       		.byte	0x5
+ 733 0117 0F       		.byte	0xf
+ 734 0118 2E010000 		.4byte	0x12e
+ 735 011c 81       		.byte	0x81
+ 736 011d 00       		.byte	0
+ 737 011e 06       		.uleb128 0x6
+ 738 011f CB000000 		.4byte	0xcb
+ 739 0123 2E010000 		.4byte	0x12e
+ 740 0127 07       		.uleb128 0x7
+ 741 0128 D9000000 		.4byte	0xd9
+ 742 012c 7F       		.byte	0x7f
+ 743 012d 00       		.byte	0
+ 744 012e 06       		.uleb128 0x6
+ 745 012f CB000000 		.4byte	0xcb
+ 746 0133 3E010000 		.4byte	0x13e
+ 747 0137 07       		.uleb128 0x7
+ 748 0138 D9000000 		.4byte	0xd9
+ 749 013c FF       		.byte	0xff
+ 750 013d 00       		.byte	0
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 18
 
 
- 878 0327 04       		.byte	0x4
- 879 0328 09       		.uleb128 0x9
- 880 0329 91040000 		.4byte	.LASF58
- 881 032d 09       		.byte	0x9
- 882 032e 33       		.byte	0x33
- 883 032f 81000000 		.4byte	0x81
- 884 0333 05       		.byte	0x5
- 885 0334 00       		.byte	0
- 886 0335 03       		.uleb128 0x3
- 887 0336 41020000 		.4byte	.LASF59
- 888 033a 09       		.byte	0x9
- 889 033b 36       		.byte	0x36
- 890 033c 40030000 		.4byte	0x340
- 891 0340 0C       		.uleb128 0xc
- 892 0341 FC020000 		.4byte	0x2fc
- 893 0345 0A       		.uleb128 0xa
- 894 0346 1C       		.byte	0x1c
- 895 0347 09       		.byte	0x9
- 896 0348 39       		.byte	0x39
- 897 0349 66030000 		.4byte	0x366
- 898 034d 09       		.uleb128 0x9
- 899 034e F1010000 		.4byte	.LASF60
- 900 0352 09       		.byte	0x9
- 901 0353 3B       		.byte	0x3b
- 902 0354 66030000 		.4byte	0x366
- 903 0358 00       		.byte	0
- 904 0359 09       		.uleb128 0x9
- 905 035a 35010000 		.4byte	.LASF61
- 906 035e 09       		.byte	0x9
- 907 035f 3C       		.byte	0x3c
- 908 0360 E0000000 		.4byte	0xe0
- 909 0364 04       		.byte	0x4
- 910 0365 00       		.byte	0
- 911 0366 0D       		.uleb128 0xd
- 912 0367 04       		.byte	0x4
- 913 0368 26020000 		.4byte	0x226
- 914 036c 03       		.uleb128 0x3
- 915 036d 73030000 		.4byte	.LASF62
- 916 0371 09       		.byte	0x9
- 917 0372 3E       		.byte	0x3e
- 918 0373 45030000 		.4byte	0x345
- 919 0377 0A       		.uleb128 0xa
- 920 0378 68       		.byte	0x68
- 921 0379 09       		.byte	0x9
- 922 037a 44       		.byte	0x44
- 923 037b 98030000 		.4byte	0x398
- 924 037f 09       		.uleb128 0x9
- 925 0380 89000000 		.4byte	.LASF63
- 926 0384 09       		.byte	0x9
- 927 0385 49       		.byte	0x49
- 928 0386 98030000 		.4byte	0x398
- 929 038a 00       		.byte	0
- 930 038b 09       		.uleb128 0x9
- 931 038c D4040000 		.4byte	.LASF64
- 932 0390 09       		.byte	0x9
- 933 0391 4A       		.byte	0x4a
- 934 0392 68000000 		.4byte	0x68
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 20
+ 751 013e 03       		.uleb128 0x3
+ 752 013f DA030000 		.4byte	.LASF24
+ 753 0143 05       		.byte	0x5
+ 754 0144 10       		.byte	0x10
+ 755 0145 F0000000 		.4byte	0xf0
+ 756 0149 0A       		.uleb128 0xa
+ 757 014a 1C       		.byte	0x1c
+ 758 014b 06       		.byte	0x6
+ 759 014c 14       		.byte	0x14
+ 760 014d A6010000 		.4byte	0x1a6
+ 761 0151 09       		.uleb128 0x9
+ 762 0152 4E010000 		.4byte	.LASF25
+ 763 0156 06       		.byte	0x6
+ 764 0157 15       		.byte	0x15
+ 765 0158 BD000000 		.4byte	0xbd
+ 766 015c 00       		.byte	0
+ 767 015d 09       		.uleb128 0x9
+ 768 015e 1F000000 		.4byte	.LASF26
+ 769 0162 06       		.byte	0x6
+ 770 0163 16       		.byte	0x16
+ 771 0164 BD000000 		.4byte	0xbd
+ 772 0168 04       		.byte	0x4
+ 773 0169 09       		.uleb128 0x9
+ 774 016a 07050000 		.4byte	.LASF27
+ 775 016e 06       		.byte	0x6
+ 776 016f 17       		.byte	0x17
+ 777 0170 BD000000 		.4byte	0xbd
+ 778 0174 08       		.byte	0x8
+ 779 0175 09       		.uleb128 0x9
+ 780 0176 24010000 		.4byte	.LASF28
+ 781 017a 06       		.byte	0x6
+ 782 017b 18       		.byte	0x18
+ 783 017c BD000000 		.4byte	0xbd
+ 784 0180 0C       		.byte	0xc
+ 785 0181 09       		.uleb128 0x9
+ 786 0182 8B010000 		.4byte	.LASF29
+ 787 0186 06       		.byte	0x6
+ 788 0187 19       		.byte	0x19
+ 789 0188 BD000000 		.4byte	0xbd
+ 790 018c 10       		.byte	0x10
+ 791 018d 09       		.uleb128 0x9
+ 792 018e 0C040000 		.4byte	.LASF30
+ 793 0192 06       		.byte	0x6
+ 794 0193 1A       		.byte	0x1a
+ 795 0194 BD000000 		.4byte	0xbd
+ 796 0198 14       		.byte	0x14
+ 797 0199 09       		.uleb128 0x9
+ 798 019a 00000000 		.4byte	.LASF31
+ 799 019e 06       		.byte	0x6
+ 800 019f 1B       		.byte	0x1b
+ 801 01a0 81000000 		.4byte	0x81
+ 802 01a4 18       		.byte	0x18
+ 803 01a5 00       		.byte	0
+ 804 01a6 03       		.uleb128 0x3
+ 805 01a7 EC030000 		.4byte	.LASF32
+ 806 01ab 06       		.byte	0x6
+ 807 01ac 1C       		.byte	0x1c
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 19
 
 
- 935 0396 64       		.byte	0x64
- 936 0397 00       		.byte	0
- 937 0398 06       		.uleb128 0x6
- 938 0399 CB000000 		.4byte	0xcb
- 939 039d A8030000 		.4byte	0x3a8
- 940 03a1 07       		.uleb128 0x7
- 941 03a2 D9000000 		.4byte	0xd9
- 942 03a6 63       		.byte	0x63
- 943 03a7 00       		.byte	0
- 944 03a8 03       		.uleb128 0x3
- 945 03a9 2D000000 		.4byte	.LASF65
- 946 03ad 09       		.byte	0x9
- 947 03ae 50       		.byte	0x50
- 948 03af 77030000 		.4byte	0x377
- 949 03b3 0E       		.uleb128 0xe
- 950 03b4 36020000 		.4byte	.LASF91
- 951 03b8 01       		.byte	0x1
- 952 03b9 05       		.byte	0x5
- 953 03ba 3E010000 		.4byte	0x13e
- 954 03be 00000000 		.4byte	.LFB64
- 955 03c2 20030000 		.4byte	.LFE64-.LFB64
- 956 03c6 01       		.uleb128 0x1
- 957 03c7 9C       		.byte	0x9c
- 958 03c8 26040000 		.4byte	0x426
- 959 03cc 0F       		.uleb128 0xf
- 960 03cd 18040000 		.4byte	.LASF66
- 961 03d1 01       		.byte	0x1
- 962 03d2 08       		.byte	0x8
- 963 03d3 3E010000 		.4byte	0x13e
- 964 03d7 03       		.uleb128 0x3
- 965 03d8 91       		.byte	0x91
- 966 03d9 CC7C     		.sleb128 -436
- 967 03db 0F       		.uleb128 0xf
- 968 03dc CA040000 		.4byte	.LASF67
- 969 03e0 01       		.byte	0x1
- 970 03e1 0C       		.byte	0xc
- 971 03e2 26040000 		.4byte	0x426
- 972 03e6 03       		.uleb128 0x3
- 973 03e7 91       		.byte	0x91
- 974 03e8 AC7C     		.sleb128 -468
- 975 03ea 0F       		.uleb128 0xf
- 976 03eb 0F000000 		.4byte	.LASF68
- 977 03ef 01       		.byte	0x1
- 978 03f0 0E       		.byte	0xe
- 979 03f1 36040000 		.4byte	0x436
- 980 03f5 03       		.uleb128 0x3
- 981 03f6 91       		.byte	0x91
- 982 03f7 CC7A     		.sleb128 -692
- 983 03f9 10       		.uleb128 0x10
- 984 03fa C2000000 		.4byte	.LBB2
- 985 03fe 76000000 		.4byte	.LBE2-.LBB2
- 986 0402 13040000 		.4byte	0x413
- 987 0406 11       		.uleb128 0x11
- 988 0407 6900     		.ascii	"i\000"
- 989 0409 01       		.byte	0x1
- 990 040a 27       		.byte	0x27
- 991 040b 68000000 		.4byte	0x68
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 21
+ 808 01ad 49010000 		.4byte	0x149
+ 809 01b1 0A       		.uleb128 0xa
+ 810 01b2 2C       		.byte	0x2c
+ 811 01b3 07       		.byte	0x7
+ 812 01b4 14       		.byte	0x14
+ 813 01b5 DE010000 		.4byte	0x1de
+ 814 01b9 0B       		.uleb128 0xb
+ 815 01ba 6B657900 		.ascii	"key\000"
+ 816 01be 07       		.byte	0x7
+ 817 01bf 15       		.byte	0x15
+ 818 01c0 DE010000 		.4byte	0x1de
+ 819 01c4 00       		.byte	0
+ 820 01c5 09       		.uleb128 0x9
+ 821 01c6 48010000 		.4byte	.LASF33
+ 822 01ca 07       		.byte	0x7
+ 823 01cb 16       		.byte	0x16
+ 824 01cc DE010000 		.4byte	0x1de
+ 825 01d0 14       		.byte	0x14
+ 826 01d1 09       		.uleb128 0x9
+ 827 01d2 81010000 		.4byte	.LASF34
+ 828 01d6 07       		.byte	0x7
+ 829 01d7 17       		.byte	0x17
+ 830 01d8 A5000000 		.4byte	0xa5
+ 831 01dc 28       		.byte	0x28
+ 832 01dd 00       		.byte	0
+ 833 01de 06       		.uleb128 0x6
+ 834 01df CB000000 		.4byte	0xcb
+ 835 01e3 EE010000 		.4byte	0x1ee
+ 836 01e7 07       		.uleb128 0x7
+ 837 01e8 D9000000 		.4byte	0xd9
+ 838 01ec 13       		.byte	0x13
+ 839 01ed 00       		.byte	0
+ 840 01ee 03       		.uleb128 0x3
+ 841 01ef 28030000 		.4byte	.LASF35
+ 842 01f3 07       		.byte	0x7
+ 843 01f4 19       		.byte	0x19
+ 844 01f5 B1010000 		.4byte	0x1b1
+ 845 01f9 0A       		.uleb128 0xa
+ 846 01fa 3C       		.byte	0x3c
+ 847 01fb 08       		.byte	0x8
+ 848 01fc 37       		.byte	0x37
+ 849 01fd 26020000 		.4byte	0x226
+ 850 0201 09       		.uleb128 0x9
+ 851 0202 18000000 		.4byte	.LASF36
+ 852 0206 08       		.byte	0x8
+ 853 0207 38       		.byte	0x38
+ 854 0208 DE010000 		.4byte	0x1de
+ 855 020c 00       		.byte	0
+ 856 020d 09       		.uleb128 0x9
+ 857 020e 06000000 		.4byte	.LASF37
+ 858 0212 08       		.byte	0x8
+ 859 0213 39       		.byte	0x39
+ 860 0214 DE010000 		.4byte	0x1de
+ 861 0218 14       		.byte	0x14
+ 862 0219 09       		.uleb128 0x9
+ 863 021a D2040000 		.4byte	.LASF38
+ 864 021e 08       		.byte	0x8
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 20
 
 
- 992 040f 02       		.uleb128 0x2
- 993 0410 91       		.byte	0x91
- 994 0411 54       		.sleb128 -44
- 995 0412 00       		.byte	0
- 996 0413 12       		.uleb128 0x12
- 997 0414 00000000 		.4byte	.Ldebug_ranges0+0
- 998 0418 11       		.uleb128 0x11
- 999 0419 6900     		.ascii	"i\000"
- 1000 041b 01       		.byte	0x1
- 1001 041c 65       		.byte	0x65
- 1002 041d 68000000 		.4byte	0x68
- 1003 0421 02       		.uleb128 0x2
- 1004 0422 91       		.byte	0x91
- 1005 0423 50       		.sleb128 -48
- 1006 0424 00       		.byte	0
- 1007 0425 00       		.byte	0
- 1008 0426 06       		.uleb128 0x6
- 1009 0427 B1000000 		.4byte	0xb1
- 1010 042b 36040000 		.4byte	0x436
- 1011 042f 07       		.uleb128 0x7
- 1012 0430 D9000000 		.4byte	0xd9
- 1013 0434 07       		.byte	0x7
- 1014 0435 00       		.byte	0
- 1015 0436 06       		.uleb128 0x6
- 1016 0437 A6010000 		.4byte	0x1a6
- 1017 043b 46040000 		.4byte	0x446
- 1018 043f 07       		.uleb128 0x7
- 1019 0440 D9000000 		.4byte	0xd9
- 1020 0444 07       		.byte	0x7
- 1021 0445 00       		.byte	0
- 1022 0446 13       		.uleb128 0x13
- 1023 0447 DA020000 		.4byte	.LASF92
- 1024 044b 01       		.byte	0x1
- 1025 044c 76       		.byte	0x76
- 1026 044d B1000000 		.4byte	0xb1
- 1027 0451 00000000 		.4byte	.LFB65
- 1028 0455 2E000000 		.4byte	.LFE65-.LFB65
- 1029 0459 01       		.uleb128 0x1
- 1030 045a 9C       		.byte	0x9c
- 1031 045b 14       		.uleb128 0x14
- 1032 045c 53040000 		.4byte	.LASF69
- 1033 0460 0A       		.byte	0xa
- 1034 0461 1207     		.2byte	0x712
- 1035 0463 67040000 		.4byte	0x467
- 1036 0467 0C       		.uleb128 0xc
- 1037 0468 76000000 		.4byte	0x76
- 1038 046c 15       		.uleb128 0x15
- 1039 046d E1010000 		.4byte	.LASF70
- 1040 0471 07       		.byte	0x7
- 1041 0472 11       		.byte	0x11
- 1042 0473 EA020000 		.4byte	0x2ea
- 1043 0477 05       		.uleb128 0x5
- 1044 0478 03       		.byte	0x3
- 1045 0479 00000000 		.4byte	buffer_overflow
- 1046 047d 15       		.uleb128 0x15
- 1047 047e 5E010000 		.4byte	.LASF71
- 1048 0482 07       		.byte	0x7
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 22
+ 865 021f 3A       		.byte	0x3a
+ 866 0220 DE010000 		.4byte	0x1de
+ 867 0224 28       		.byte	0x28
+ 868 0225 00       		.byte	0
+ 869 0226 03       		.uleb128 0x3
+ 870 0227 95040000 		.4byte	.LASF39
+ 871 022b 08       		.byte	0x8
+ 872 022c 3C       		.byte	0x3c
+ 873 022d F9010000 		.4byte	0x1f9
+ 874 0231 0A       		.uleb128 0xa
+ 875 0232 20       		.byte	0x20
+ 876 0233 08       		.byte	0x8
+ 877 0234 3E       		.byte	0x3e
+ 878 0235 9A020000 		.4byte	0x29a
+ 879 0239 09       		.uleb128 0x9
+ 880 023a 34030000 		.4byte	.LASF40
+ 881 023e 08       		.byte	0x8
+ 882 023f 3F       		.byte	0x3f
+ 883 0240 68000000 		.4byte	0x68
+ 884 0244 00       		.byte	0
+ 885 0245 0B       		.uleb128 0xb
+ 886 0246 62657200 		.ascii	"ber\000"
+ 887 024a 08       		.byte	0x8
+ 888 024b 40       		.byte	0x40
+ 889 024c 68000000 		.4byte	0x68
+ 890 0250 04       		.byte	0x4
+ 891 0251 09       		.uleb128 0x9
+ 892 0252 76010000 		.4byte	.LASF41
+ 893 0256 08       		.byte	0x8
+ 894 0257 41       		.byte	0x41
+ 895 0258 68000000 		.4byte	0x68
+ 896 025c 08       		.byte	0x8
+ 897 025d 09       		.uleb128 0x9
+ 898 025e 43010000 		.4byte	.LASF42
+ 899 0262 08       		.byte	0x8
+ 900 0263 42       		.byte	0x42
+ 901 0264 68000000 		.4byte	0x68
+ 902 0268 0C       		.byte	0xc
+ 903 0269 09       		.uleb128 0x9
+ 904 026a 46040000 		.4byte	.LASF43
+ 905 026e 08       		.byte	0x8
+ 906 026f 43       		.byte	0x43
+ 907 0270 68000000 		.4byte	0x68
+ 908 0274 10       		.byte	0x10
+ 909 0275 09       		.uleb128 0x9
+ 910 0276 98020000 		.4byte	.LASF44
+ 911 027a 08       		.byte	0x8
+ 912 027b 44       		.byte	0x44
+ 913 027c 68000000 		.4byte	0x68
+ 914 0280 14       		.byte	0x14
+ 915 0281 09       		.uleb128 0x9
+ 916 0282 9C030000 		.4byte	.LASF45
+ 917 0286 08       		.byte	0x8
+ 918 0287 45       		.byte	0x45
+ 919 0288 68000000 		.4byte	0x68
+ 920 028c 18       		.byte	0x18
+ 921 028d 09       		.uleb128 0x9
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 21
 
 
- 1049 0483 22       		.byte	0x22
- 1050 0484 8D000000 		.4byte	0x8d
- 1051 0488 05       		.uleb128 0x5
- 1052 0489 03       		.byte	0x3
- 1053 048a 00000000 		.4byte	dataPointsInStack
- 1054 048e 15       		.uleb128 0x15
- 1055 048f A9020000 		.4byte	.LASF72
- 1056 0493 07       		.byte	0x7
- 1057 0494 23       		.byte	0x23
- 1058 0495 8D000000 		.4byte	0x8d
- 1059 0499 05       		.uleb128 0x5
- 1060 049a 03       		.byte	0x3
- 1061 049b 00000000 		.4byte	dataPointsInStackDesired
- 1062 049f 06       		.uleb128 0x6
- 1063 04a0 EE010000 		.4byte	0x1ee
- 1064 04a4 AF040000 		.4byte	0x4af
- 1065 04a8 07       		.uleb128 0x7
- 1066 04a9 D9000000 		.4byte	0xd9
- 1067 04ad 95       		.byte	0x95
- 1068 04ae 00       		.byte	0
- 1069 04af 15       		.uleb128 0x15
- 1070 04b0 1F010000 		.4byte	.LASF73
- 1071 04b4 07       		.byte	0x7
- 1072 04b5 24       		.byte	0x24
- 1073 04b6 9F040000 		.4byte	0x49f
- 1074 04ba 05       		.uleb128 0x5
- 1075 04bb 03       		.byte	0x3
- 1076 04bc 00000000 		.4byte	data
- 1077 04c0 15       		.uleb128 0x15
- 1078 04c1 C2020000 		.4byte	.LASF74
- 1079 04c5 08       		.byte	0x8
- 1080 04c6 21       		.byte	0x21
- 1081 04c7 81000000 		.4byte	0x81
- 1082 04cb 05       		.uleb128 0x5
- 1083 04cc 03       		.byte	0x3
- 1084 04cd 00000000 		.4byte	modem_state
- 1085 04d1 15       		.uleb128 0x15
- 1086 04d2 92020000 		.4byte	.LASF75
- 1087 04d6 08       		.byte	0x8
- 1088 04d7 64       		.byte	0x64
- 1089 04d8 A5000000 		.4byte	0xa5
- 1090 04dc 05       		.uleb128 0x5
- 1091 04dd 03       		.byte	0x3
- 1092 04de 00000000 		.4byte	modem_start_time_stamp
- 1093 04e2 15       		.uleb128 0x15
- 1094 04e3 F1010000 		.4byte	.LASF60
- 1095 04e7 08       		.byte	0x8
- 1096 04e8 65       		.byte	0x65
- 1097 04e9 26020000 		.4byte	0x226
- 1098 04ed 05       		.uleb128 0x5
- 1099 04ee 03       		.byte	0x3
- 1100 04ef 00000000 		.4byte	modem_info
- 1101 04f3 15       		.uleb128 0x15
- 1102 04f4 39030000 		.4byte	.LASF76
- 1103 04f8 08       		.byte	0x8
- 1104 04f9 66       		.byte	0x66
- 1105 04fa 9A020000 		.4byte	0x29a
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 23
+ 922 028e C7030000 		.4byte	.LASF46
+ 923 0292 08       		.byte	0x8
+ 924 0293 46       		.byte	0x46
+ 925 0294 68000000 		.4byte	0x68
+ 926 0298 1C       		.byte	0x1c
+ 927 0299 00       		.byte	0
+ 928 029a 03       		.uleb128 0x3
+ 929 029b FE030000 		.4byte	.LASF47
+ 930 029f 08       		.byte	0x8
+ 931 02a0 48       		.byte	0x48
+ 932 02a1 31020000 		.4byte	0x231
+ 933 02a5 0A       		.uleb128 0xa
+ 934 02a6 05       		.byte	0x5
+ 935 02a7 08       		.byte	0x8
+ 936 02a8 54       		.byte	0x54
+ 937 02a9 EA020000 		.4byte	0x2ea
+ 938 02ad 09       		.uleb128 0x9
+ 939 02ae FD040000 		.4byte	.LASF48
+ 940 02b2 08       		.byte	0x8
+ 941 02b3 56       		.byte	0x56
+ 942 02b4 81000000 		.4byte	0x81
+ 943 02b8 00       		.byte	0
+ 944 02b9 09       		.uleb128 0x9
+ 945 02ba 75030000 		.4byte	.LASF49
+ 946 02be 08       		.byte	0x8
+ 947 02bf 58       		.byte	0x58
+ 948 02c0 EA020000 		.4byte	0x2ea
+ 949 02c4 01       		.byte	0x1
+ 950 02c5 09       		.uleb128 0x9
+ 951 02c6 41020000 		.4byte	.LASF50
+ 952 02ca 08       		.byte	0x8
+ 953 02cb 5A       		.byte	0x5a
+ 954 02cc 81000000 		.4byte	0x81
+ 955 02d0 02       		.byte	0x2
+ 956 02d1 09       		.uleb128 0x9
+ 957 02d2 3A030000 		.4byte	.LASF51
+ 958 02d6 08       		.byte	0x8
+ 959 02d7 5C       		.byte	0x5c
+ 960 02d8 81000000 		.4byte	0x81
+ 961 02dc 03       		.byte	0x3
+ 962 02dd 09       		.uleb128 0x9
+ 963 02de 89040000 		.4byte	.LASF52
+ 964 02e2 08       		.byte	0x8
+ 965 02e3 5F       		.byte	0x5f
+ 966 02e4 81000000 		.4byte	0x81
+ 967 02e8 04       		.byte	0x4
+ 968 02e9 00       		.byte	0
+ 969 02ea 02       		.uleb128 0x2
+ 970 02eb 01       		.byte	0x1
+ 971 02ec 02       		.byte	0x2
+ 972 02ed 24040000 		.4byte	.LASF53
+ 973 02f1 03       		.uleb128 0x3
+ 974 02f2 5E030000 		.4byte	.LASF54
+ 975 02f6 08       		.byte	0x8
+ 976 02f7 61       		.byte	0x61
+ 977 02f8 A5020000 		.4byte	0x2a5
+ 978 02fc 0A       		.uleb128 0xa
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 22
 
 
- 1106 04fe 05       		.uleb128 0x5
- 1107 04ff 03       		.byte	0x3
- 1108 0500 00000000 		.4byte	modem_stats
- 1109 0504 15       		.uleb128 0x15
- 1110 0505 6A020000 		.4byte	.LASF77
- 1111 0509 08       		.byte	0x8
- 1112 050a 67       		.byte	0x67
- 1113 050b F1020000 		.4byte	0x2f1
- 1114 050f 05       		.uleb128 0x5
- 1115 0510 03       		.byte	0x3
- 1116 0511 00000000 		.4byte	updatable_parameters
- 1117 0515 06       		.uleb128 0x6
- 1118 0516 CB000000 		.4byte	0xcb
- 1119 051a 26050000 		.4byte	0x526
- 1120 051e 16       		.uleb128 0x16
- 1121 051f D9000000 		.4byte	0xd9
- 1122 0523 0F27     		.2byte	0x270f
- 1123 0525 00       		.byte	0
- 1124 0526 15       		.uleb128 0x15
- 1125 0527 73000000 		.4byte	.LASF78
- 1126 052b 09       		.byte	0x9
- 1127 052c 18       		.byte	0x18
- 1128 052d 15050000 		.4byte	0x515
- 1129 0531 05       		.uleb128 0x5
- 1130 0532 03       		.byte	0x3
- 1131 0533 00000000 		.4byte	http_request
- 1132 0537 15       		.uleb128 0x15
- 1133 0538 DC040000 		.4byte	.LASF79
- 1134 053c 09       		.byte	0x9
- 1135 053d 19       		.byte	0x19
- 1136 053e 15050000 		.4byte	0x515
- 1137 0542 05       		.uleb128 0x5
- 1138 0543 03       		.byte	0x3
- 1139 0544 00000000 		.4byte	http_body
- 1140 0548 06       		.uleb128 0x6
- 1141 0549 CB000000 		.4byte	0xcb
- 1142 054d 58050000 		.4byte	0x558
- 1143 0551 07       		.uleb128 0x7
- 1144 0552 D9000000 		.4byte	0xd9
- 1145 0556 C7       		.byte	0xc7
- 1146 0557 00       		.byte	0
- 1147 0558 15       		.uleb128 0x15
- 1148 0559 29040000 		.4byte	.LASF80
- 1149 055d 09       		.byte	0x9
- 1150 055e 1A       		.byte	0x1a
- 1151 055f 48050000 		.4byte	0x548
- 1152 0563 05       		.uleb128 0x5
- 1153 0564 03       		.byte	0x3
- 1154 0565 00000000 		.4byte	http_route
- 1155 0569 15       		.uleb128 0x15
- 1156 056a B0030000 		.4byte	.LASF81
- 1157 056e 09       		.byte	0x9
- 1158 056f 41       		.byte	0x41
- 1159 0570 6C030000 		.4byte	0x36c
- 1160 0574 05       		.uleb128 0x5
- 1161 0575 03       		.byte	0x3
- 1162 0576 00000000 		.4byte	system_info
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 24
+ 979 02fd 06       		.byte	0x6
+ 980 02fe 09       		.byte	0x9
+ 981 02ff 2E       		.byte	0x2e
+ 982 0300 35030000 		.4byte	0x335
+ 983 0304 09       		.uleb128 0x9
+ 984 0305 5A000000 		.4byte	.LASF55
+ 985 0309 09       		.byte	0x9
+ 986 030a 30       		.byte	0x30
+ 987 030b 8D000000 		.4byte	0x8d
+ 988 030f 00       		.byte	0
+ 989 0310 09       		.uleb128 0x9
+ 990 0311 44000000 		.4byte	.LASF56
+ 991 0315 09       		.byte	0x9
+ 992 0316 31       		.byte	0x31
+ 993 0317 99000000 		.4byte	0x99
+ 994 031b 02       		.byte	0x2
+ 995 031c 09       		.uleb128 0x9
+ 996 031d A2040000 		.4byte	.LASF57
+ 997 0321 09       		.byte	0x9
+ 998 0322 32       		.byte	0x32
+ 999 0323 81000000 		.4byte	0x81
+ 1000 0327 04       		.byte	0x4
+ 1001 0328 09       		.uleb128 0x9
+ 1002 0329 BA040000 		.4byte	.LASF58
+ 1003 032d 09       		.byte	0x9
+ 1004 032e 33       		.byte	0x33
+ 1005 032f 81000000 		.4byte	0x81
+ 1006 0333 05       		.byte	0x5
+ 1007 0334 00       		.byte	0
+ 1008 0335 03       		.uleb128 0x3
+ 1009 0336 3B020000 		.4byte	.LASF59
+ 1010 033a 09       		.byte	0x9
+ 1011 033b 36       		.byte	0x36
+ 1012 033c 40030000 		.4byte	0x340
+ 1013 0340 0C       		.uleb128 0xc
+ 1014 0341 FC020000 		.4byte	0x2fc
+ 1015 0345 0A       		.uleb128 0xa
+ 1016 0346 1C       		.byte	0x1c
+ 1017 0347 09       		.byte	0x9
+ 1018 0348 39       		.byte	0x39
+ 1019 0349 66030000 		.4byte	0x366
+ 1020 034d 09       		.uleb128 0x9
+ 1021 034e EB010000 		.4byte	.LASF60
+ 1022 0352 09       		.byte	0x9
+ 1023 0353 3B       		.byte	0x3b
+ 1024 0354 66030000 		.4byte	0x366
+ 1025 0358 00       		.byte	0
+ 1026 0359 09       		.uleb128 0x9
+ 1027 035a 35010000 		.4byte	.LASF61
+ 1028 035e 09       		.byte	0x9
+ 1029 035f 3C       		.byte	0x3c
+ 1030 0360 E0000000 		.4byte	0xe0
+ 1031 0364 04       		.byte	0x4
+ 1032 0365 00       		.byte	0
+ 1033 0366 0D       		.uleb128 0xd
+ 1034 0367 04       		.byte	0x4
+ 1035 0368 26020000 		.4byte	0x226
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 23
 
 
- 1163 057a 15       		.uleb128 0x15
- 1164 057b 00030000 		.4byte	.LASF82
- 1165 057f 09       		.byte	0x9
- 1166 0580 53       		.byte	0x53
- 1167 0581 A8030000 		.4byte	0x3a8
- 1168 0585 05       		.uleb128 0x5
- 1169 0586 03       		.byte	0x3
- 1170 0587 00000000 		.4byte	system_settings
- 1171 058b 15       		.uleb128 0x15
- 1172 058c BF010000 		.4byte	.LASF83
- 1173 0590 09       		.byte	0x9
- 1174 0591 6F       		.byte	0x6f
- 1175 0592 35030000 		.4byte	0x335
- 1176 0596 05       		.uleb128 0x5
- 1177 0597 03       		.byte	0x3
- 1178 0598 00000000 		.4byte	alarmMeasure
- 1179 059c 15       		.uleb128 0x15
- 1180 059d 45030000 		.4byte	.LASF84
- 1181 05a1 09       		.byte	0x9
- 1182 05a2 70       		.byte	0x70
- 1183 05a3 81000000 		.4byte	0x81
- 1184 05a7 05       		.uleb128 0x5
- 1185 05a8 03       		.byte	0x3
- 1186 05a9 00000000 		.4byte	timeToMeasure
- 1187 05ad 15       		.uleb128 0x15
- 1188 05ae 54020000 		.4byte	.LASF85
- 1189 05b2 09       		.byte	0x9
- 1190 05b3 71       		.byte	0x71
- 1191 05b4 35030000 		.4byte	0x335
- 1192 05b8 05       		.uleb128 0x5
- 1193 05b9 03       		.byte	0x3
- 1194 05ba 00000000 		.4byte	alarmSync
- 1195 05be 15       		.uleb128 0x15
- 1196 05bf 07050000 		.4byte	.LASF86
- 1197 05c3 09       		.byte	0x9
- 1198 05c4 72       		.byte	0x72
- 1199 05c5 81000000 		.4byte	0x81
- 1200 05c9 05       		.uleb128 0x5
- 1201 05ca 03       		.byte	0x3
- 1202 05cb 00000000 		.4byte	timeToSync
- 1203 05cf 15       		.uleb128 0x15
- 1204 05d0 01040000 		.4byte	.LASF87
- 1205 05d4 09       		.byte	0x9
- 1206 05d5 73       		.byte	0x73
- 1207 05d6 81000000 		.4byte	0x81
- 1208 05da 05       		.uleb128 0x5
- 1209 05db 03       		.byte	0x3
- 1210 05dc 00000000 		.4byte	timeToSycnRemoteParams
- 1211 05e0 17       		.uleb128 0x17
- 1212 05e1 68657900 		.ascii	"hey\000"
- 1213 05e5 09       		.byte	0x9
- 1214 05e6 74       		.byte	0x74
- 1215 05e7 81000000 		.4byte	0x81
- 1216 05eb 05       		.uleb128 0x5
- 1217 05ec 03       		.byte	0x3
- 1218 05ed 00000000 		.4byte	hey
- 1219 05f1 00       		.byte	0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 25
+ 1036 036c 03       		.uleb128 0x3
+ 1037 036d 7E030000 		.4byte	.LASF62
+ 1038 0371 09       		.byte	0x9
+ 1039 0372 3E       		.byte	0x3e
+ 1040 0373 45030000 		.4byte	0x345
+ 1041 0377 0A       		.uleb128 0xa
+ 1042 0378 68       		.byte	0x68
+ 1043 0379 09       		.byte	0x9
+ 1044 037a 44       		.byte	0x44
+ 1045 037b 98030000 		.4byte	0x398
+ 1046 037f 09       		.uleb128 0x9
+ 1047 0380 89000000 		.4byte	.LASF63
+ 1048 0384 09       		.byte	0x9
+ 1049 0385 49       		.byte	0x49
+ 1050 0386 98030000 		.4byte	0x398
+ 1051 038a 00       		.byte	0
+ 1052 038b 09       		.uleb128 0x9
+ 1053 038c EB040000 		.4byte	.LASF64
+ 1054 0390 09       		.byte	0x9
+ 1055 0391 4A       		.byte	0x4a
+ 1056 0392 68000000 		.4byte	0x68
+ 1057 0396 64       		.byte	0x64
+ 1058 0397 00       		.byte	0
+ 1059 0398 06       		.uleb128 0x6
+ 1060 0399 CB000000 		.4byte	0xcb
+ 1061 039d A8030000 		.4byte	0x3a8
+ 1062 03a1 07       		.uleb128 0x7
+ 1063 03a2 D9000000 		.4byte	0xd9
+ 1064 03a6 63       		.byte	0x63
+ 1065 03a7 00       		.byte	0
+ 1066 03a8 03       		.uleb128 0x3
+ 1067 03a9 2D000000 		.4byte	.LASF65
+ 1068 03ad 09       		.byte	0x9
+ 1069 03ae 50       		.byte	0x50
+ 1070 03af 77030000 		.4byte	0x377
+ 1071 03b3 0E       		.uleb128 0xe
+ 1072 03b4 30020000 		.4byte	.LASF69
+ 1073 03b8 01       		.byte	0x1
+ 1074 03b9 07       		.byte	0x7
+ 1075 03ba 3E010000 		.4byte	0x13e
+ 1076 03be 00000000 		.4byte	.LFB64
+ 1077 03c2 70020000 		.4byte	.LFE64-.LFB64
+ 1078 03c6 01       		.uleb128 0x1
+ 1079 03c7 9C       		.byte	0x9c
+ 1080 03c8 FA030000 		.4byte	0x3fa
+ 1081 03cc 0F       		.uleb128 0xf
+ 1082 03cd 41040000 		.4byte	.LASF66
+ 1083 03d1 01       		.byte	0x1
+ 1084 03d2 0C       		.byte	0xc
+ 1085 03d3 3E010000 		.4byte	0x13e
+ 1086 03d7 03       		.uleb128 0x3
+ 1087 03d8 91       		.byte	0x91
+ 1088 03d9 DC7C     		.sleb128 -420
+ 1089 03db 0F       		.uleb128 0xf
+ 1090 03dc E1040000 		.4byte	.LASF67
+ 1091 03e0 01       		.byte	0x1
+ 1092 03e1 10       		.byte	0x10
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 24
 
 
- 1220              		.section	.debug_abbrev,"",%progbits
- 1221              	.Ldebug_abbrev0:
- 1222 0000 01       		.uleb128 0x1
- 1223 0001 11       		.uleb128 0x11
- 1224 0002 01       		.byte	0x1
- 1225 0003 25       		.uleb128 0x25
- 1226 0004 0E       		.uleb128 0xe
- 1227 0005 13       		.uleb128 0x13
- 1228 0006 0B       		.uleb128 0xb
- 1229 0007 03       		.uleb128 0x3
- 1230 0008 0E       		.uleb128 0xe
- 1231 0009 1B       		.uleb128 0x1b
- 1232 000a 0E       		.uleb128 0xe
- 1233 000b 55       		.uleb128 0x55
- 1234 000c 17       		.uleb128 0x17
- 1235 000d 11       		.uleb128 0x11
- 1236 000e 01       		.uleb128 0x1
- 1237 000f 10       		.uleb128 0x10
- 1238 0010 17       		.uleb128 0x17
- 1239 0011 00       		.byte	0
- 1240 0012 00       		.byte	0
- 1241 0013 02       		.uleb128 0x2
- 1242 0014 24       		.uleb128 0x24
- 1243 0015 00       		.byte	0
- 1244 0016 0B       		.uleb128 0xb
- 1245 0017 0B       		.uleb128 0xb
- 1246 0018 3E       		.uleb128 0x3e
- 1247 0019 0B       		.uleb128 0xb
- 1248 001a 03       		.uleb128 0x3
- 1249 001b 0E       		.uleb128 0xe
- 1250 001c 00       		.byte	0
- 1251 001d 00       		.byte	0
- 1252 001e 03       		.uleb128 0x3
- 1253 001f 16       		.uleb128 0x16
- 1254 0020 00       		.byte	0
- 1255 0021 03       		.uleb128 0x3
- 1256 0022 0E       		.uleb128 0xe
- 1257 0023 3A       		.uleb128 0x3a
- 1258 0024 0B       		.uleb128 0xb
- 1259 0025 3B       		.uleb128 0x3b
- 1260 0026 0B       		.uleb128 0xb
- 1261 0027 49       		.uleb128 0x49
- 1262 0028 13       		.uleb128 0x13
- 1263 0029 00       		.byte	0
- 1264 002a 00       		.byte	0
- 1265 002b 04       		.uleb128 0x4
- 1266 002c 24       		.uleb128 0x24
- 1267 002d 00       		.byte	0
- 1268 002e 0B       		.uleb128 0xb
- 1269 002f 0B       		.uleb128 0xb
- 1270 0030 3E       		.uleb128 0x3e
- 1271 0031 0B       		.uleb128 0xb
- 1272 0032 03       		.uleb128 0x3
- 1273 0033 08       		.uleb128 0x8
- 1274 0034 00       		.byte	0
- 1275 0035 00       		.byte	0
- 1276 0036 05       		.uleb128 0x5
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 26
+ 1093 03e2 FA030000 		.4byte	0x3fa
+ 1094 03e6 03       		.uleb128 0x3
+ 1095 03e7 91       		.byte	0x91
+ 1096 03e8 BC7C     		.sleb128 -452
+ 1097 03ea 0F       		.uleb128 0xf
+ 1098 03eb 0F000000 		.4byte	.LASF68
+ 1099 03ef 01       		.byte	0x1
+ 1100 03f0 12       		.byte	0x12
+ 1101 03f1 0A040000 		.4byte	0x40a
+ 1102 03f5 03       		.uleb128 0x3
+ 1103 03f6 91       		.byte	0x91
+ 1104 03f7 DC7A     		.sleb128 -676
+ 1105 03f9 00       		.byte	0
+ 1106 03fa 06       		.uleb128 0x6
+ 1107 03fb B1000000 		.4byte	0xb1
+ 1108 03ff 0A040000 		.4byte	0x40a
+ 1109 0403 07       		.uleb128 0x7
+ 1110 0404 D9000000 		.4byte	0xd9
+ 1111 0408 07       		.byte	0x7
+ 1112 0409 00       		.byte	0
+ 1113 040a 06       		.uleb128 0x6
+ 1114 040b A6010000 		.4byte	0x1a6
+ 1115 040f 1A040000 		.4byte	0x41a
+ 1116 0413 07       		.uleb128 0x7
+ 1117 0414 D9000000 		.4byte	0xd9
+ 1118 0418 07       		.byte	0x7
+ 1119 0419 00       		.byte	0
+ 1120 041a 0E       		.uleb128 0xe
+ 1121 041b E5020000 		.4byte	.LASF70
+ 1122 041f 01       		.byte	0x1
+ 1123 0420 70       		.byte	0x70
+ 1124 0421 B1000000 		.4byte	0xb1
+ 1125 0425 00000000 		.4byte	.LFB65
+ 1126 0429 50000000 		.4byte	.LFE65-.LFB65
+ 1127 042d 01       		.uleb128 0x1
+ 1128 042e 9C       		.byte	0x9c
+ 1129 042f 42040000 		.4byte	0x442
+ 1130 0433 0F       		.uleb128 0xf
+ 1131 0434 29050000 		.4byte	.LASF71
+ 1132 0438 01       		.byte	0x1
+ 1133 0439 72       		.byte	0x72
+ 1134 043a A6010000 		.4byte	0x1a6
+ 1135 043e 02       		.uleb128 0x2
+ 1136 043f 91       		.byte	0x91
+ 1137 0440 54       		.sleb128 -44
+ 1138 0441 00       		.byte	0
+ 1139 0442 10       		.uleb128 0x10
+ 1140 0443 E1030000 		.4byte	.LASF94
+ 1141 0447 01       		.byte	0x1
+ 1142 0448 77       		.byte	0x77
+ 1143 0449 81000000 		.4byte	0x81
+ 1144 044d 00000000 		.4byte	.LFB66
+ 1145 0451 70010000 		.4byte	.LFE66-.LFB66
+ 1146 0455 01       		.uleb128 0x1
+ 1147 0456 9C       		.byte	0x9c
+ 1148 0457 6A040000 		.4byte	0x46a
+ 1149 045b 11       		.uleb128 0x11
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 25
 
 
- 1277 0037 16       		.uleb128 0x16
- 1278 0038 00       		.byte	0
- 1279 0039 03       		.uleb128 0x3
- 1280 003a 0E       		.uleb128 0xe
- 1281 003b 3A       		.uleb128 0x3a
- 1282 003c 0B       		.uleb128 0xb
- 1283 003d 3B       		.uleb128 0x3b
- 1284 003e 05       		.uleb128 0x5
- 1285 003f 49       		.uleb128 0x49
- 1286 0040 13       		.uleb128 0x13
- 1287 0041 00       		.byte	0
- 1288 0042 00       		.byte	0
- 1289 0043 06       		.uleb128 0x6
- 1290 0044 01       		.uleb128 0x1
- 1291 0045 01       		.byte	0x1
- 1292 0046 49       		.uleb128 0x49
- 1293 0047 13       		.uleb128 0x13
- 1294 0048 01       		.uleb128 0x1
- 1295 0049 13       		.uleb128 0x13
- 1296 004a 00       		.byte	0
- 1297 004b 00       		.byte	0
- 1298 004c 07       		.uleb128 0x7
- 1299 004d 21       		.uleb128 0x21
- 1300 004e 00       		.byte	0
- 1301 004f 49       		.uleb128 0x49
- 1302 0050 13       		.uleb128 0x13
- 1303 0051 2F       		.uleb128 0x2f
- 1304 0052 0B       		.uleb128 0xb
- 1305 0053 00       		.byte	0
- 1306 0054 00       		.byte	0
- 1307 0055 08       		.uleb128 0x8
- 1308 0056 13       		.uleb128 0x13
- 1309 0057 01       		.byte	0x1
- 1310 0058 0B       		.uleb128 0xb
- 1311 0059 05       		.uleb128 0x5
- 1312 005a 3A       		.uleb128 0x3a
- 1313 005b 0B       		.uleb128 0xb
- 1314 005c 3B       		.uleb128 0x3b
- 1315 005d 0B       		.uleb128 0xb
- 1316 005e 01       		.uleb128 0x1
- 1317 005f 13       		.uleb128 0x13
- 1318 0060 00       		.byte	0
- 1319 0061 00       		.byte	0
- 1320 0062 09       		.uleb128 0x9
- 1321 0063 0D       		.uleb128 0xd
- 1322 0064 00       		.byte	0
- 1323 0065 03       		.uleb128 0x3
- 1324 0066 0E       		.uleb128 0xe
- 1325 0067 3A       		.uleb128 0x3a
- 1326 0068 0B       		.uleb128 0xb
- 1327 0069 3B       		.uleb128 0x3b
- 1328 006a 0B       		.uleb128 0xb
- 1329 006b 49       		.uleb128 0x49
- 1330 006c 13       		.uleb128 0x13
- 1331 006d 38       		.uleb128 0x38
- 1332 006e 0B       		.uleb128 0xb
- 1333 006f 00       		.byte	0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 27
+ 1150 045c 4E020000 		.4byte	.LASF95
+ 1151 0460 01       		.byte	0x1
+ 1152 0461 77       		.byte	0x77
+ 1153 0462 B1000000 		.4byte	0xb1
+ 1154 0466 02       		.uleb128 0x2
+ 1155 0467 91       		.byte	0x91
+ 1156 0468 74       		.sleb128 -12
+ 1157 0469 00       		.byte	0
+ 1158 046a 12       		.uleb128 0x12
+ 1159 046b 7C040000 		.4byte	.LASF72
+ 1160 046f 0A       		.byte	0xa
+ 1161 0470 1207     		.2byte	0x712
+ 1162 0472 76040000 		.4byte	0x476
+ 1163 0476 0C       		.uleb128 0xc
+ 1164 0477 76000000 		.4byte	0x76
+ 1165 047b 13       		.uleb128 0x13
+ 1166 047c DB010000 		.4byte	.LASF73
+ 1167 0480 07       		.byte	0x7
+ 1168 0481 11       		.byte	0x11
+ 1169 0482 EA020000 		.4byte	0x2ea
+ 1170 0486 05       		.uleb128 0x5
+ 1171 0487 03       		.byte	0x3
+ 1172 0488 00000000 		.4byte	buffer_overflow
+ 1173 048c 13       		.uleb128 0x13
+ 1174 048d 5E010000 		.4byte	.LASF74
+ 1175 0491 07       		.byte	0x7
+ 1176 0492 22       		.byte	0x22
+ 1177 0493 8D000000 		.4byte	0x8d
+ 1178 0497 05       		.uleb128 0x5
+ 1179 0498 03       		.byte	0x3
+ 1180 0499 00000000 		.4byte	dataPointsInStack
+ 1181 049d 13       		.uleb128 0x13
+ 1182 049e B4020000 		.4byte	.LASF75
+ 1183 04a2 07       		.byte	0x7
+ 1184 04a3 23       		.byte	0x23
+ 1185 04a4 8D000000 		.4byte	0x8d
+ 1186 04a8 05       		.uleb128 0x5
+ 1187 04a9 03       		.byte	0x3
+ 1188 04aa 00000000 		.4byte	dataPointsInStackDesired
+ 1189 04ae 06       		.uleb128 0x6
+ 1190 04af EE010000 		.4byte	0x1ee
+ 1191 04b3 BE040000 		.4byte	0x4be
+ 1192 04b7 07       		.uleb128 0x7
+ 1193 04b8 D9000000 		.4byte	0xd9
+ 1194 04bc 95       		.byte	0x95
+ 1195 04bd 00       		.byte	0
+ 1196 04be 13       		.uleb128 0x13
+ 1197 04bf 1F010000 		.4byte	.LASF76
+ 1198 04c3 07       		.byte	0x7
+ 1199 04c4 24       		.byte	0x24
+ 1200 04c5 AE040000 		.4byte	0x4ae
+ 1201 04c9 05       		.uleb128 0x5
+ 1202 04ca 03       		.byte	0x3
+ 1203 04cb 00000000 		.4byte	data
+ 1204 04cf 13       		.uleb128 0x13
+ 1205 04d0 CD020000 		.4byte	.LASF77
+ 1206 04d4 08       		.byte	0x8
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 26
 
 
- 1334 0070 00       		.byte	0
- 1335 0071 0A       		.uleb128 0xa
- 1336 0072 13       		.uleb128 0x13
- 1337 0073 01       		.byte	0x1
- 1338 0074 0B       		.uleb128 0xb
- 1339 0075 0B       		.uleb128 0xb
- 1340 0076 3A       		.uleb128 0x3a
- 1341 0077 0B       		.uleb128 0xb
- 1342 0078 3B       		.uleb128 0x3b
- 1343 0079 0B       		.uleb128 0xb
- 1344 007a 01       		.uleb128 0x1
- 1345 007b 13       		.uleb128 0x13
- 1346 007c 00       		.byte	0
- 1347 007d 00       		.byte	0
- 1348 007e 0B       		.uleb128 0xb
- 1349 007f 0D       		.uleb128 0xd
- 1350 0080 00       		.byte	0
- 1351 0081 03       		.uleb128 0x3
- 1352 0082 08       		.uleb128 0x8
- 1353 0083 3A       		.uleb128 0x3a
- 1354 0084 0B       		.uleb128 0xb
- 1355 0085 3B       		.uleb128 0x3b
- 1356 0086 0B       		.uleb128 0xb
- 1357 0087 49       		.uleb128 0x49
- 1358 0088 13       		.uleb128 0x13
- 1359 0089 38       		.uleb128 0x38
- 1360 008a 0B       		.uleb128 0xb
- 1361 008b 00       		.byte	0
- 1362 008c 00       		.byte	0
- 1363 008d 0C       		.uleb128 0xc
- 1364 008e 35       		.uleb128 0x35
- 1365 008f 00       		.byte	0
- 1366 0090 49       		.uleb128 0x49
- 1367 0091 13       		.uleb128 0x13
- 1368 0092 00       		.byte	0
- 1369 0093 00       		.byte	0
- 1370 0094 0D       		.uleb128 0xd
- 1371 0095 0F       		.uleb128 0xf
- 1372 0096 00       		.byte	0
- 1373 0097 0B       		.uleb128 0xb
- 1374 0098 0B       		.uleb128 0xb
- 1375 0099 49       		.uleb128 0x49
- 1376 009a 13       		.uleb128 0x13
- 1377 009b 00       		.byte	0
- 1378 009c 00       		.byte	0
- 1379 009d 0E       		.uleb128 0xe
- 1380 009e 2E       		.uleb128 0x2e
- 1381 009f 01       		.byte	0x1
- 1382 00a0 3F       		.uleb128 0x3f
- 1383 00a1 19       		.uleb128 0x19
- 1384 00a2 03       		.uleb128 0x3
- 1385 00a3 0E       		.uleb128 0xe
- 1386 00a4 3A       		.uleb128 0x3a
- 1387 00a5 0B       		.uleb128 0xb
- 1388 00a6 3B       		.uleb128 0x3b
- 1389 00a7 0B       		.uleb128 0xb
- 1390 00a8 49       		.uleb128 0x49
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 28
+ 1207 04d5 21       		.byte	0x21
+ 1208 04d6 81000000 		.4byte	0x81
+ 1209 04da 05       		.uleb128 0x5
+ 1210 04db 03       		.byte	0x3
+ 1211 04dc 00000000 		.4byte	modem_state
+ 1212 04e0 13       		.uleb128 0x13
+ 1213 04e1 9D020000 		.4byte	.LASF78
+ 1214 04e5 08       		.byte	0x8
+ 1215 04e6 64       		.byte	0x64
+ 1216 04e7 A5000000 		.4byte	0xa5
+ 1217 04eb 05       		.uleb128 0x5
+ 1218 04ec 03       		.byte	0x3
+ 1219 04ed 00000000 		.4byte	modem_start_time_stamp
+ 1220 04f1 13       		.uleb128 0x13
+ 1221 04f2 EB010000 		.4byte	.LASF60
+ 1222 04f6 08       		.byte	0x8
+ 1223 04f7 65       		.byte	0x65
+ 1224 04f8 26020000 		.4byte	0x226
+ 1225 04fc 05       		.uleb128 0x5
+ 1226 04fd 03       		.byte	0x3
+ 1227 04fe 00000000 		.4byte	modem_info
+ 1228 0502 13       		.uleb128 0x13
+ 1229 0503 44030000 		.4byte	.LASF79
+ 1230 0507 08       		.byte	0x8
+ 1231 0508 66       		.byte	0x66
+ 1232 0509 9A020000 		.4byte	0x29a
+ 1233 050d 05       		.uleb128 0x5
+ 1234 050e 03       		.byte	0x3
+ 1235 050f 00000000 		.4byte	modem_stats
+ 1236 0513 13       		.uleb128 0x13
+ 1237 0514 75020000 		.4byte	.LASF80
+ 1238 0518 08       		.byte	0x8
+ 1239 0519 67       		.byte	0x67
+ 1240 051a F1020000 		.4byte	0x2f1
+ 1241 051e 05       		.uleb128 0x5
+ 1242 051f 03       		.byte	0x3
+ 1243 0520 00000000 		.4byte	updatable_parameters
+ 1244 0524 06       		.uleb128 0x6
+ 1245 0525 CB000000 		.4byte	0xcb
+ 1246 0529 35050000 		.4byte	0x535
+ 1247 052d 14       		.uleb128 0x14
+ 1248 052e D9000000 		.4byte	0xd9
+ 1249 0532 0F27     		.2byte	0x270f
+ 1250 0534 00       		.byte	0
+ 1251 0535 13       		.uleb128 0x13
+ 1252 0536 73000000 		.4byte	.LASF81
+ 1253 053a 09       		.byte	0x9
+ 1254 053b 18       		.byte	0x18
+ 1255 053c 24050000 		.4byte	0x524
+ 1256 0540 05       		.uleb128 0x5
+ 1257 0541 03       		.byte	0x3
+ 1258 0542 00000000 		.4byte	http_request
+ 1259 0546 13       		.uleb128 0x13
+ 1260 0547 F3040000 		.4byte	.LASF82
+ 1261 054b 09       		.byte	0x9
+ 1262 054c 19       		.byte	0x19
+ 1263 054d 24050000 		.4byte	0x524
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 27
 
 
- 1391 00a9 13       		.uleb128 0x13
- 1392 00aa 11       		.uleb128 0x11
- 1393 00ab 01       		.uleb128 0x1
- 1394 00ac 12       		.uleb128 0x12
- 1395 00ad 06       		.uleb128 0x6
- 1396 00ae 40       		.uleb128 0x40
- 1397 00af 18       		.uleb128 0x18
- 1398 00b0 9642     		.uleb128 0x2116
- 1399 00b2 19       		.uleb128 0x19
- 1400 00b3 01       		.uleb128 0x1
- 1401 00b4 13       		.uleb128 0x13
- 1402 00b5 00       		.byte	0
- 1403 00b6 00       		.byte	0
- 1404 00b7 0F       		.uleb128 0xf
- 1405 00b8 34       		.uleb128 0x34
- 1406 00b9 00       		.byte	0
- 1407 00ba 03       		.uleb128 0x3
- 1408 00bb 0E       		.uleb128 0xe
- 1409 00bc 3A       		.uleb128 0x3a
- 1410 00bd 0B       		.uleb128 0xb
- 1411 00be 3B       		.uleb128 0x3b
- 1412 00bf 0B       		.uleb128 0xb
- 1413 00c0 49       		.uleb128 0x49
- 1414 00c1 13       		.uleb128 0x13
- 1415 00c2 02       		.uleb128 0x2
- 1416 00c3 18       		.uleb128 0x18
- 1417 00c4 00       		.byte	0
- 1418 00c5 00       		.byte	0
- 1419 00c6 10       		.uleb128 0x10
- 1420 00c7 0B       		.uleb128 0xb
- 1421 00c8 01       		.byte	0x1
- 1422 00c9 11       		.uleb128 0x11
- 1423 00ca 01       		.uleb128 0x1
- 1424 00cb 12       		.uleb128 0x12
- 1425 00cc 06       		.uleb128 0x6
- 1426 00cd 01       		.uleb128 0x1
- 1427 00ce 13       		.uleb128 0x13
- 1428 00cf 00       		.byte	0
- 1429 00d0 00       		.byte	0
- 1430 00d1 11       		.uleb128 0x11
- 1431 00d2 34       		.uleb128 0x34
- 1432 00d3 00       		.byte	0
- 1433 00d4 03       		.uleb128 0x3
- 1434 00d5 08       		.uleb128 0x8
- 1435 00d6 3A       		.uleb128 0x3a
- 1436 00d7 0B       		.uleb128 0xb
- 1437 00d8 3B       		.uleb128 0x3b
- 1438 00d9 0B       		.uleb128 0xb
- 1439 00da 49       		.uleb128 0x49
- 1440 00db 13       		.uleb128 0x13
- 1441 00dc 02       		.uleb128 0x2
- 1442 00dd 18       		.uleb128 0x18
- 1443 00de 00       		.byte	0
- 1444 00df 00       		.byte	0
- 1445 00e0 12       		.uleb128 0x12
- 1446 00e1 0B       		.uleb128 0xb
- 1447 00e2 01       		.byte	0x1
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 29
+ 1264 0551 05       		.uleb128 0x5
+ 1265 0552 03       		.byte	0x3
+ 1266 0553 00000000 		.4byte	http_body
+ 1267 0557 06       		.uleb128 0x6
+ 1268 0558 CB000000 		.4byte	0xcb
+ 1269 055c 67050000 		.4byte	0x567
+ 1270 0560 07       		.uleb128 0x7
+ 1271 0561 D9000000 		.4byte	0xd9
+ 1272 0565 C7       		.byte	0xc7
+ 1273 0566 00       		.byte	0
+ 1274 0567 13       		.uleb128 0x13
+ 1275 0568 52040000 		.4byte	.LASF83
+ 1276 056c 09       		.byte	0x9
+ 1277 056d 1A       		.byte	0x1a
+ 1278 056e 57050000 		.4byte	0x557
+ 1279 0572 05       		.uleb128 0x5
+ 1280 0573 03       		.byte	0x3
+ 1281 0574 00000000 		.4byte	http_route
+ 1282 0578 13       		.uleb128 0x13
+ 1283 0579 BB030000 		.4byte	.LASF84
+ 1284 057d 09       		.byte	0x9
+ 1285 057e 41       		.byte	0x41
+ 1286 057f 6C030000 		.4byte	0x36c
+ 1287 0583 05       		.uleb128 0x5
+ 1288 0584 03       		.byte	0x3
+ 1289 0585 00000000 		.4byte	system_info
+ 1290 0589 13       		.uleb128 0x13
+ 1291 058a 0B030000 		.4byte	.LASF85
+ 1292 058e 09       		.byte	0x9
+ 1293 058f 53       		.byte	0x53
+ 1294 0590 A8030000 		.4byte	0x3a8
+ 1295 0594 05       		.uleb128 0x5
+ 1296 0595 03       		.byte	0x3
+ 1297 0596 00000000 		.4byte	system_settings
+ 1298 059a 13       		.uleb128 0x13
+ 1299 059b B9010000 		.4byte	.LASF86
+ 1300 059f 09       		.byte	0x9
+ 1301 05a0 6F       		.byte	0x6f
+ 1302 05a1 35030000 		.4byte	0x335
+ 1303 05a5 05       		.uleb128 0x5
+ 1304 05a6 03       		.byte	0x3
+ 1305 05a7 00000000 		.4byte	alarmMeasure
+ 1306 05ab 13       		.uleb128 0x13
+ 1307 05ac 50030000 		.4byte	.LASF87
+ 1308 05b0 09       		.byte	0x9
+ 1309 05b1 70       		.byte	0x70
+ 1310 05b2 81000000 		.4byte	0x81
+ 1311 05b6 05       		.uleb128 0x5
+ 1312 05b7 03       		.byte	0x3
+ 1313 05b8 00000000 		.4byte	timeToMeasure
+ 1314 05bc 13       		.uleb128 0x13
+ 1315 05bd 5F020000 		.4byte	.LASF88
+ 1316 05c1 09       		.byte	0x9
+ 1317 05c2 71       		.byte	0x71
+ 1318 05c3 35030000 		.4byte	0x335
+ 1319 05c7 05       		.uleb128 0x5
+ 1320 05c8 03       		.byte	0x3
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 28
 
 
- 1448 00e3 55       		.uleb128 0x55
- 1449 00e4 17       		.uleb128 0x17
- 1450 00e5 00       		.byte	0
- 1451 00e6 00       		.byte	0
- 1452 00e7 13       		.uleb128 0x13
- 1453 00e8 2E       		.uleb128 0x2e
- 1454 00e9 00       		.byte	0
- 1455 00ea 3F       		.uleb128 0x3f
- 1456 00eb 19       		.uleb128 0x19
- 1457 00ec 03       		.uleb128 0x3
- 1458 00ed 0E       		.uleb128 0xe
- 1459 00ee 3A       		.uleb128 0x3a
- 1460 00ef 0B       		.uleb128 0xb
- 1461 00f0 3B       		.uleb128 0x3b
- 1462 00f1 0B       		.uleb128 0xb
- 1463 00f2 49       		.uleb128 0x49
- 1464 00f3 13       		.uleb128 0x13
- 1465 00f4 11       		.uleb128 0x11
- 1466 00f5 01       		.uleb128 0x1
- 1467 00f6 12       		.uleb128 0x12
- 1468 00f7 06       		.uleb128 0x6
- 1469 00f8 40       		.uleb128 0x40
- 1470 00f9 18       		.uleb128 0x18
- 1471 00fa 9642     		.uleb128 0x2116
- 1472 00fc 19       		.uleb128 0x19
- 1473 00fd 00       		.byte	0
- 1474 00fe 00       		.byte	0
- 1475 00ff 14       		.uleb128 0x14
- 1476 0100 34       		.uleb128 0x34
- 1477 0101 00       		.byte	0
- 1478 0102 03       		.uleb128 0x3
- 1479 0103 0E       		.uleb128 0xe
- 1480 0104 3A       		.uleb128 0x3a
- 1481 0105 0B       		.uleb128 0xb
- 1482 0106 3B       		.uleb128 0x3b
- 1483 0107 05       		.uleb128 0x5
- 1484 0108 49       		.uleb128 0x49
- 1485 0109 13       		.uleb128 0x13
- 1486 010a 3F       		.uleb128 0x3f
- 1487 010b 19       		.uleb128 0x19
- 1488 010c 3C       		.uleb128 0x3c
- 1489 010d 19       		.uleb128 0x19
- 1490 010e 00       		.byte	0
- 1491 010f 00       		.byte	0
- 1492 0110 15       		.uleb128 0x15
- 1493 0111 34       		.uleb128 0x34
- 1494 0112 00       		.byte	0
- 1495 0113 03       		.uleb128 0x3
- 1496 0114 0E       		.uleb128 0xe
- 1497 0115 3A       		.uleb128 0x3a
- 1498 0116 0B       		.uleb128 0xb
- 1499 0117 3B       		.uleb128 0x3b
- 1500 0118 0B       		.uleb128 0xb
- 1501 0119 49       		.uleb128 0x49
- 1502 011a 13       		.uleb128 0x13
- 1503 011b 3F       		.uleb128 0x3f
- 1504 011c 19       		.uleb128 0x19
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 30
+ 1321 05c9 00000000 		.4byte	alarmSync
+ 1322 05cd 13       		.uleb128 0x13
+ 1323 05ce 1E050000 		.4byte	.LASF89
+ 1324 05d2 09       		.byte	0x9
+ 1325 05d3 72       		.byte	0x72
+ 1326 05d4 81000000 		.4byte	0x81
+ 1327 05d8 05       		.uleb128 0x5
+ 1328 05d9 03       		.byte	0x3
+ 1329 05da 00000000 		.4byte	timeToSync
+ 1330 05de 13       		.uleb128 0x13
+ 1331 05df 2A040000 		.4byte	.LASF90
+ 1332 05e3 09       		.byte	0x9
+ 1333 05e4 73       		.byte	0x73
+ 1334 05e5 81000000 		.4byte	0x81
+ 1335 05e9 05       		.uleb128 0x5
+ 1336 05ea 03       		.byte	0x3
+ 1337 05eb 00000000 		.4byte	timeToSycnRemoteParams
+ 1338 05ef 15       		.uleb128 0x15
+ 1339 05f0 68657900 		.ascii	"hey\000"
+ 1340 05f4 09       		.byte	0x9
+ 1341 05f5 74       		.byte	0x74
+ 1342 05f6 81000000 		.4byte	0x81
+ 1343 05fa 05       		.uleb128 0x5
+ 1344 05fb 03       		.byte	0x3
+ 1345 05fc 00000000 		.4byte	hey
+ 1346 0600 00       		.byte	0
+ 1347              		.section	.debug_abbrev,"",%progbits
+ 1348              	.Ldebug_abbrev0:
+ 1349 0000 01       		.uleb128 0x1
+ 1350 0001 11       		.uleb128 0x11
+ 1351 0002 01       		.byte	0x1
+ 1352 0003 25       		.uleb128 0x25
+ 1353 0004 0E       		.uleb128 0xe
+ 1354 0005 13       		.uleb128 0x13
+ 1355 0006 0B       		.uleb128 0xb
+ 1356 0007 03       		.uleb128 0x3
+ 1357 0008 0E       		.uleb128 0xe
+ 1358 0009 1B       		.uleb128 0x1b
+ 1359 000a 0E       		.uleb128 0xe
+ 1360 000b 55       		.uleb128 0x55
+ 1361 000c 17       		.uleb128 0x17
+ 1362 000d 11       		.uleb128 0x11
+ 1363 000e 01       		.uleb128 0x1
+ 1364 000f 10       		.uleb128 0x10
+ 1365 0010 17       		.uleb128 0x17
+ 1366 0011 00       		.byte	0
+ 1367 0012 00       		.byte	0
+ 1368 0013 02       		.uleb128 0x2
+ 1369 0014 24       		.uleb128 0x24
+ 1370 0015 00       		.byte	0
+ 1371 0016 0B       		.uleb128 0xb
+ 1372 0017 0B       		.uleb128 0xb
+ 1373 0018 3E       		.uleb128 0x3e
+ 1374 0019 0B       		.uleb128 0xb
+ 1375 001a 03       		.uleb128 0x3
+ 1376 001b 0E       		.uleb128 0xe
+ 1377 001c 00       		.byte	0
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 29
 
 
- 1505 011d 02       		.uleb128 0x2
- 1506 011e 18       		.uleb128 0x18
- 1507 011f 00       		.byte	0
- 1508 0120 00       		.byte	0
- 1509 0121 16       		.uleb128 0x16
- 1510 0122 21       		.uleb128 0x21
- 1511 0123 00       		.byte	0
- 1512 0124 49       		.uleb128 0x49
- 1513 0125 13       		.uleb128 0x13
- 1514 0126 2F       		.uleb128 0x2f
- 1515 0127 05       		.uleb128 0x5
- 1516 0128 00       		.byte	0
- 1517 0129 00       		.byte	0
- 1518 012a 17       		.uleb128 0x17
- 1519 012b 34       		.uleb128 0x34
- 1520 012c 00       		.byte	0
- 1521 012d 03       		.uleb128 0x3
- 1522 012e 08       		.uleb128 0x8
- 1523 012f 3A       		.uleb128 0x3a
- 1524 0130 0B       		.uleb128 0xb
- 1525 0131 3B       		.uleb128 0x3b
- 1526 0132 0B       		.uleb128 0xb
- 1527 0133 49       		.uleb128 0x49
- 1528 0134 13       		.uleb128 0x13
- 1529 0135 3F       		.uleb128 0x3f
- 1530 0136 19       		.uleb128 0x19
- 1531 0137 02       		.uleb128 0x2
- 1532 0138 18       		.uleb128 0x18
- 1533 0139 00       		.byte	0
- 1534 013a 00       		.byte	0
- 1535 013b 00       		.byte	0
- 1536              		.section	.debug_aranges,"",%progbits
- 1537 0000 24000000 		.4byte	0x24
- 1538 0004 0200     		.2byte	0x2
- 1539 0006 00000000 		.4byte	.Ldebug_info0
- 1540 000a 04       		.byte	0x4
- 1541 000b 00       		.byte	0
- 1542 000c 0000     		.2byte	0
- 1543 000e 0000     		.2byte	0
- 1544 0010 00000000 		.4byte	.LFB64
- 1545 0014 20030000 		.4byte	.LFE64-.LFB64
- 1546 0018 00000000 		.4byte	.LFB65
- 1547 001c 2E000000 		.4byte	.LFE65-.LFB65
- 1548 0020 00000000 		.4byte	0
- 1549 0024 00000000 		.4byte	0
- 1550              		.section	.debug_ranges,"",%progbits
- 1551              	.Ldebug_ranges0:
- 1552 0000 7A010000 		.4byte	.LBB3
- 1553 0004 82010000 		.4byte	.LBE3
- 1554 0008 DA010000 		.4byte	.LBB4
- 1555 000c 10020000 		.4byte	.LBE4
- 1556 0010 00000000 		.4byte	0
- 1557 0014 00000000 		.4byte	0
- 1558 0018 00000000 		.4byte	.LFB64
- 1559 001c 20030000 		.4byte	.LFE64
- 1560 0020 00000000 		.4byte	.LFB65
- 1561 0024 2E000000 		.4byte	.LFE65
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 31
+ 1378 001d 00       		.byte	0
+ 1379 001e 03       		.uleb128 0x3
+ 1380 001f 16       		.uleb128 0x16
+ 1381 0020 00       		.byte	0
+ 1382 0021 03       		.uleb128 0x3
+ 1383 0022 0E       		.uleb128 0xe
+ 1384 0023 3A       		.uleb128 0x3a
+ 1385 0024 0B       		.uleb128 0xb
+ 1386 0025 3B       		.uleb128 0x3b
+ 1387 0026 0B       		.uleb128 0xb
+ 1388 0027 49       		.uleb128 0x49
+ 1389 0028 13       		.uleb128 0x13
+ 1390 0029 00       		.byte	0
+ 1391 002a 00       		.byte	0
+ 1392 002b 04       		.uleb128 0x4
+ 1393 002c 24       		.uleb128 0x24
+ 1394 002d 00       		.byte	0
+ 1395 002e 0B       		.uleb128 0xb
+ 1396 002f 0B       		.uleb128 0xb
+ 1397 0030 3E       		.uleb128 0x3e
+ 1398 0031 0B       		.uleb128 0xb
+ 1399 0032 03       		.uleb128 0x3
+ 1400 0033 08       		.uleb128 0x8
+ 1401 0034 00       		.byte	0
+ 1402 0035 00       		.byte	0
+ 1403 0036 05       		.uleb128 0x5
+ 1404 0037 16       		.uleb128 0x16
+ 1405 0038 00       		.byte	0
+ 1406 0039 03       		.uleb128 0x3
+ 1407 003a 0E       		.uleb128 0xe
+ 1408 003b 3A       		.uleb128 0x3a
+ 1409 003c 0B       		.uleb128 0xb
+ 1410 003d 3B       		.uleb128 0x3b
+ 1411 003e 05       		.uleb128 0x5
+ 1412 003f 49       		.uleb128 0x49
+ 1413 0040 13       		.uleb128 0x13
+ 1414 0041 00       		.byte	0
+ 1415 0042 00       		.byte	0
+ 1416 0043 06       		.uleb128 0x6
+ 1417 0044 01       		.uleb128 0x1
+ 1418 0045 01       		.byte	0x1
+ 1419 0046 49       		.uleb128 0x49
+ 1420 0047 13       		.uleb128 0x13
+ 1421 0048 01       		.uleb128 0x1
+ 1422 0049 13       		.uleb128 0x13
+ 1423 004a 00       		.byte	0
+ 1424 004b 00       		.byte	0
+ 1425 004c 07       		.uleb128 0x7
+ 1426 004d 21       		.uleb128 0x21
+ 1427 004e 00       		.byte	0
+ 1428 004f 49       		.uleb128 0x49
+ 1429 0050 13       		.uleb128 0x13
+ 1430 0051 2F       		.uleb128 0x2f
+ 1431 0052 0B       		.uleb128 0xb
+ 1432 0053 00       		.byte	0
+ 1433 0054 00       		.byte	0
+ 1434 0055 08       		.uleb128 0x8
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 30
 
 
- 1562 0028 00000000 		.4byte	0
- 1563 002c 00000000 		.4byte	0
- 1564              		.section	.debug_line,"",%progbits
- 1565              	.Ldebug_line0:
- 1566 0000 26020000 		.section	.debug_str,"MS",%progbits,1
- 1566      02008B01 
- 1566      00000201 
- 1566      FB0E0D00 
- 1566      01010101 
- 1567              	.LASF31:
- 1568 0000 76616C69 		.ascii	"valid\000"
- 1568      6400
- 1569              	.LASF37:
- 1570 0006 6D6F6465 		.ascii	"model_id\000"
- 1570      6C5F6964 
- 1570      00
- 1571              	.LASF68:
- 1572 000f 766F6C74 		.ascii	"voltages\000"
- 1572      61676573 
- 1572      00
- 1573              	.LASF36:
- 1574 0018 73696D5F 		.ascii	"sim_id\000"
- 1574      696400
- 1575              	.LASF26:
- 1576 001f 766F6C74 		.ascii	"voltage_solar\000"
- 1576      6167655F 
- 1576      736F6C61 
- 1576      7200
- 1577              	.LASF65:
- 1578 002d 7379735F 		.ascii	"sys_settings_t\000"
- 1578      73657474 
- 1578      696E6773 
- 1578      5F7400
- 1579              	.LASF15:
- 1580 003c 666C6F61 		.ascii	"float32\000"
- 1580      74333200 
- 1581              	.LASF56:
- 1582 0044 63757272 		.ascii	"currentCountDownValue\000"
- 1582      656E7443 
- 1582      6F756E74 
- 1582      446F776E 
- 1582      56616C75 
- 1583              	.LASF55:
- 1584 005a 636F756E 		.ascii	"countDownValue\000"
- 1584      74446F77 
- 1584      6E56616C 
- 1584      756500
- 1585              	.LASF2:
- 1586 0069 73686F72 		.ascii	"short int\000"
- 1586      7420696E 
- 1586      7400
- 1587              	.LASF78:
- 1588 0073 68747470 		.ascii	"http_request\000"
- 1588      5F726571 
- 1588      75657374 
- 1588      00
- 1589              	.LASF20:
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 32
+ 1435 0056 13       		.uleb128 0x13
+ 1436 0057 01       		.byte	0x1
+ 1437 0058 0B       		.uleb128 0xb
+ 1438 0059 05       		.uleb128 0x5
+ 1439 005a 3A       		.uleb128 0x3a
+ 1440 005b 0B       		.uleb128 0xb
+ 1441 005c 3B       		.uleb128 0x3b
+ 1442 005d 0B       		.uleb128 0xb
+ 1443 005e 01       		.uleb128 0x1
+ 1444 005f 13       		.uleb128 0x13
+ 1445 0060 00       		.byte	0
+ 1446 0061 00       		.byte	0
+ 1447 0062 09       		.uleb128 0x9
+ 1448 0063 0D       		.uleb128 0xd
+ 1449 0064 00       		.byte	0
+ 1450 0065 03       		.uleb128 0x3
+ 1451 0066 0E       		.uleb128 0xe
+ 1452 0067 3A       		.uleb128 0x3a
+ 1453 0068 0B       		.uleb128 0xb
+ 1454 0069 3B       		.uleb128 0x3b
+ 1455 006a 0B       		.uleb128 0xb
+ 1456 006b 49       		.uleb128 0x49
+ 1457 006c 13       		.uleb128 0x13
+ 1458 006d 38       		.uleb128 0x38
+ 1459 006e 0B       		.uleb128 0xb
+ 1460 006f 00       		.byte	0
+ 1461 0070 00       		.byte	0
+ 1462 0071 0A       		.uleb128 0xa
+ 1463 0072 13       		.uleb128 0x13
+ 1464 0073 01       		.byte	0x1
+ 1465 0074 0B       		.uleb128 0xb
+ 1466 0075 0B       		.uleb128 0xb
+ 1467 0076 3A       		.uleb128 0x3a
+ 1468 0077 0B       		.uleb128 0xb
+ 1469 0078 3B       		.uleb128 0x3b
+ 1470 0079 0B       		.uleb128 0xb
+ 1471 007a 01       		.uleb128 0x1
+ 1472 007b 13       		.uleb128 0x13
+ 1473 007c 00       		.byte	0
+ 1474 007d 00       		.byte	0
+ 1475 007e 0B       		.uleb128 0xb
+ 1476 007f 0D       		.uleb128 0xd
+ 1477 0080 00       		.byte	0
+ 1478 0081 03       		.uleb128 0x3
+ 1479 0082 08       		.uleb128 0x8
+ 1480 0083 3A       		.uleb128 0x3a
+ 1481 0084 0B       		.uleb128 0xb
+ 1482 0085 3B       		.uleb128 0x3b
+ 1483 0086 0B       		.uleb128 0xb
+ 1484 0087 49       		.uleb128 0x49
+ 1485 0088 13       		.uleb128 0x13
+ 1486 0089 38       		.uleb128 0x38
+ 1487 008a 0B       		.uleb128 0xb
+ 1488 008b 00       		.byte	0
+ 1489 008c 00       		.byte	0
+ 1490 008d 0C       		.uleb128 0xc
+ 1491 008e 35       		.uleb128 0x35
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 31
 
 
- 1590 0080 73697A65 		.ascii	"sizetype\000"
- 1590      74797065 
- 1590      00
- 1591              	.LASF63:
- 1592 0089 65705F68 		.ascii	"ep_host\000"
- 1592      6F737400 
- 1593              	.LASF88:
- 1594 0091 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1594      43313120 
- 1594      352E342E 
- 1594      31203230 
- 1594      31363036 
- 1595 00c4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1595      20726576 
- 1595      6973696F 
- 1595      6E203233 
- 1595      37373135 
- 1596 00f7 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1596      66756E63 
- 1596      74696F6E 
- 1596      2D736563 
- 1596      74696F6E 
- 1597              	.LASF73:
- 1598 011f 64617461 		.ascii	"data\000"
- 1598      00
- 1599              	.LASF28:
- 1600 0124 766F6C74 		.ascii	"voltage_pressure\000"
- 1600      6167655F 
- 1600      70726573 
- 1600      73757265 
- 1600      00
- 1601              	.LASF61:
- 1602 0135 63686970 		.ascii	"chip_uniqueId\000"
- 1602      5F756E69 
- 1602      71756549 
- 1602      6400
- 1603              	.LASF42:
- 1604 0143 65636E6F 		.ascii	"ecno\000"
- 1604      00
- 1605              	.LASF33:
- 1606 0148 76616C75 		.ascii	"value\000"
- 1606      6500
- 1607              	.LASF25:
- 1608 014e 766F6C74 		.ascii	"voltage_battery\000"
- 1608      6167655F 
- 1608      62617474 
- 1608      65727900 
- 1609              	.LASF71:
- 1610 015e 64617461 		.ascii	"dataPointsInStack\000"
- 1610      506F696E 
- 1610      7473496E 
- 1610      53746163 
- 1610      6B00
- 1611              	.LASF11:
- 1612 0170 75696E74 		.ascii	"uint8\000"
- 1612      3800
- 1613              	.LASF41:
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 33
+ 1492 008f 00       		.byte	0
+ 1493 0090 49       		.uleb128 0x49
+ 1494 0091 13       		.uleb128 0x13
+ 1495 0092 00       		.byte	0
+ 1496 0093 00       		.byte	0
+ 1497 0094 0D       		.uleb128 0xd
+ 1498 0095 0F       		.uleb128 0xf
+ 1499 0096 00       		.byte	0
+ 1500 0097 0B       		.uleb128 0xb
+ 1501 0098 0B       		.uleb128 0xb
+ 1502 0099 49       		.uleb128 0x49
+ 1503 009a 13       		.uleb128 0x13
+ 1504 009b 00       		.byte	0
+ 1505 009c 00       		.byte	0
+ 1506 009d 0E       		.uleb128 0xe
+ 1507 009e 2E       		.uleb128 0x2e
+ 1508 009f 01       		.byte	0x1
+ 1509 00a0 3F       		.uleb128 0x3f
+ 1510 00a1 19       		.uleb128 0x19
+ 1511 00a2 03       		.uleb128 0x3
+ 1512 00a3 0E       		.uleb128 0xe
+ 1513 00a4 3A       		.uleb128 0x3a
+ 1514 00a5 0B       		.uleb128 0xb
+ 1515 00a6 3B       		.uleb128 0x3b
+ 1516 00a7 0B       		.uleb128 0xb
+ 1517 00a8 49       		.uleb128 0x49
+ 1518 00a9 13       		.uleb128 0x13
+ 1519 00aa 11       		.uleb128 0x11
+ 1520 00ab 01       		.uleb128 0x1
+ 1521 00ac 12       		.uleb128 0x12
+ 1522 00ad 06       		.uleb128 0x6
+ 1523 00ae 40       		.uleb128 0x40
+ 1524 00af 18       		.uleb128 0x18
+ 1525 00b0 9642     		.uleb128 0x2116
+ 1526 00b2 19       		.uleb128 0x19
+ 1527 00b3 01       		.uleb128 0x1
+ 1528 00b4 13       		.uleb128 0x13
+ 1529 00b5 00       		.byte	0
+ 1530 00b6 00       		.byte	0
+ 1531 00b7 0F       		.uleb128 0xf
+ 1532 00b8 34       		.uleb128 0x34
+ 1533 00b9 00       		.byte	0
+ 1534 00ba 03       		.uleb128 0x3
+ 1535 00bb 0E       		.uleb128 0xe
+ 1536 00bc 3A       		.uleb128 0x3a
+ 1537 00bd 0B       		.uleb128 0xb
+ 1538 00be 3B       		.uleb128 0x3b
+ 1539 00bf 0B       		.uleb128 0xb
+ 1540 00c0 49       		.uleb128 0x49
+ 1541 00c1 13       		.uleb128 0x13
+ 1542 00c2 02       		.uleb128 0x2
+ 1543 00c3 18       		.uleb128 0x18
+ 1544 00c4 00       		.byte	0
+ 1545 00c5 00       		.byte	0
+ 1546 00c6 10       		.uleb128 0x10
+ 1547 00c7 2E       		.uleb128 0x2e
+ 1548 00c8 01       		.byte	0x1
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 32
 
 
- 1614 0176 72736370 		.ascii	"rscp\000"
- 1614      00
- 1615              	.LASF13:
- 1616 017b 696E7431 		.ascii	"int16\000"
- 1616      3600
- 1617              	.LASF34:
- 1618 0181 74696D65 		.ascii	"timeStamp\000"
- 1618      5374616D 
- 1618      7000
- 1619              	.LASF89:
- 1620 018b 76616C76 		.ascii	"valve.c\000"
- 1620      652E6300 
- 1621              	.LASF16:
- 1622 0193 666C6F61 		.ascii	"float\000"
- 1622      7400
- 1623              	.LASF29:
- 1624 0199 766F6C74 		.ascii	"voltage_valve_pos_brown\000"
- 1624      6167655F 
- 1624      76616C76 
- 1624      655F706F 
- 1624      735F6272 
- 1625              	.LASF6:
- 1626 01b1 6C6F6E67 		.ascii	"long long int\000"
- 1626      206C6F6E 
- 1626      6720696E 
- 1626      7400
- 1627              	.LASF83:
- 1628 01bf 616C6172 		.ascii	"alarmMeasure\000"
- 1628      6D4D6561 
- 1628      73757265 
- 1628      00
- 1629              	.LASF18:
- 1630 01cc 63686172 		.ascii	"char\000"
- 1630      00
- 1631              	.LASF23:
- 1632 01d1 72656173 		.ascii	"reason\000"
- 1632      6F6E00
- 1633              	.LASF4:
- 1634 01d8 6C6F6E67 		.ascii	"long int\000"
- 1634      20696E74 
- 1634      00
- 1635              	.LASF70:
- 1636 01e1 62756666 		.ascii	"buffer_overflow\000"
- 1636      65725F6F 
- 1636      76657266 
- 1636      6C6F7700 
- 1637              	.LASF60:
- 1638 01f1 6D6F6465 		.ascii	"modem_info\000"
- 1638      6D5F696E 
- 1638      666F00
- 1639              	.LASF90:
- 1640 01fc 433A5C55 		.ascii	"C:\\Users\\dantz\\Documents\\notoriOS\\notoriOS\\no"
- 1640      73657273 
- 1640      5C64616E 
- 1640      747A5C44 
- 1640      6F63756D 
- 1641 0229 746F7269 		.ascii	"toriOS.cydsn\000"
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 34
+ 1549 00c9 3F       		.uleb128 0x3f
+ 1550 00ca 19       		.uleb128 0x19
+ 1551 00cb 03       		.uleb128 0x3
+ 1552 00cc 0E       		.uleb128 0xe
+ 1553 00cd 3A       		.uleb128 0x3a
+ 1554 00ce 0B       		.uleb128 0xb
+ 1555 00cf 3B       		.uleb128 0x3b
+ 1556 00d0 0B       		.uleb128 0xb
+ 1557 00d1 27       		.uleb128 0x27
+ 1558 00d2 19       		.uleb128 0x19
+ 1559 00d3 49       		.uleb128 0x49
+ 1560 00d4 13       		.uleb128 0x13
+ 1561 00d5 11       		.uleb128 0x11
+ 1562 00d6 01       		.uleb128 0x1
+ 1563 00d7 12       		.uleb128 0x12
+ 1564 00d8 06       		.uleb128 0x6
+ 1565 00d9 40       		.uleb128 0x40
+ 1566 00da 18       		.uleb128 0x18
+ 1567 00db 9642     		.uleb128 0x2116
+ 1568 00dd 19       		.uleb128 0x19
+ 1569 00de 01       		.uleb128 0x1
+ 1570 00df 13       		.uleb128 0x13
+ 1571 00e0 00       		.byte	0
+ 1572 00e1 00       		.byte	0
+ 1573 00e2 11       		.uleb128 0x11
+ 1574 00e3 05       		.uleb128 0x5
+ 1575 00e4 00       		.byte	0
+ 1576 00e5 03       		.uleb128 0x3
+ 1577 00e6 0E       		.uleb128 0xe
+ 1578 00e7 3A       		.uleb128 0x3a
+ 1579 00e8 0B       		.uleb128 0xb
+ 1580 00e9 3B       		.uleb128 0x3b
+ 1581 00ea 0B       		.uleb128 0xb
+ 1582 00eb 49       		.uleb128 0x49
+ 1583 00ec 13       		.uleb128 0x13
+ 1584 00ed 02       		.uleb128 0x2
+ 1585 00ee 18       		.uleb128 0x18
+ 1586 00ef 00       		.byte	0
+ 1587 00f0 00       		.byte	0
+ 1588 00f1 12       		.uleb128 0x12
+ 1589 00f2 34       		.uleb128 0x34
+ 1590 00f3 00       		.byte	0
+ 1591 00f4 03       		.uleb128 0x3
+ 1592 00f5 0E       		.uleb128 0xe
+ 1593 00f6 3A       		.uleb128 0x3a
+ 1594 00f7 0B       		.uleb128 0xb
+ 1595 00f8 3B       		.uleb128 0x3b
+ 1596 00f9 05       		.uleb128 0x5
+ 1597 00fa 49       		.uleb128 0x49
+ 1598 00fb 13       		.uleb128 0x13
+ 1599 00fc 3F       		.uleb128 0x3f
+ 1600 00fd 19       		.uleb128 0x19
+ 1601 00fe 3C       		.uleb128 0x3c
+ 1602 00ff 19       		.uleb128 0x19
+ 1603 0100 00       		.byte	0
+ 1604 0101 00       		.byte	0
+ 1605 0102 13       		.uleb128 0x13
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 33
 
 
- 1641      4F532E63 
- 1641      7964736E 
- 1641      00
- 1642              	.LASF91:
- 1643 0236 76616C76 		.ascii	"valve_test\000"
- 1643      655F7465 
- 1643      737400
- 1644              	.LASF59:
- 1645 0241 616C6172 		.ascii	"alarm\000"
- 1645      6D00
- 1646              	.LASF50:
- 1647 0247 6D656173 		.ascii	"measure_time\000"
- 1647      7572655F 
- 1647      74696D65 
- 1647      00
- 1648              	.LASF85:
- 1649 0254 616C6172 		.ascii	"alarmSync\000"
- 1649      6D53796E 
- 1649      6300
- 1650              	.LASF19:
- 1651 025e 6C6F6E67 		.ascii	"long double\000"
- 1651      20646F75 
- 1651      626C6500 
- 1652              	.LASF77:
- 1653 026a 75706461 		.ascii	"updatable_parameters\000"
- 1653      7461626C 
- 1653      655F7061 
- 1653      72616D65 
- 1653      74657273 
- 1654              	.LASF1:
- 1655 027f 756E7369 		.ascii	"unsigned char\000"
- 1655      676E6564 
- 1655      20636861 
- 1655      7200
- 1656              	.LASF44:
- 1657 028d 72737270 		.ascii	"rsrp\000"
- 1657      00
- 1658              	.LASF75:
- 1659 0292 6D6F6465 		.ascii	"modem_start_time_stamp\000"
- 1659      6D5F7374 
- 1659      6172745F 
- 1659      74696D65 
- 1659      5F737461 
- 1660              	.LASF72:
- 1661 02a9 64617461 		.ascii	"dataPointsInStackDesired\000"
- 1661      506F696E 
- 1661      7473496E 
- 1661      53746163 
- 1661      6B446573 
- 1662              	.LASF74:
- 1663 02c2 6D6F6465 		.ascii	"modem_state\000"
- 1663      6D5F7374 
- 1663      61746500 
- 1664              	.LASF0:
- 1665 02ce 7369676E 		.ascii	"signed char\000"
- 1665      65642063 
- 1665      68617200 
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 35
+ 1606 0103 34       		.uleb128 0x34
+ 1607 0104 00       		.byte	0
+ 1608 0105 03       		.uleb128 0x3
+ 1609 0106 0E       		.uleb128 0xe
+ 1610 0107 3A       		.uleb128 0x3a
+ 1611 0108 0B       		.uleb128 0xb
+ 1612 0109 3B       		.uleb128 0x3b
+ 1613 010a 0B       		.uleb128 0xb
+ 1614 010b 49       		.uleb128 0x49
+ 1615 010c 13       		.uleb128 0x13
+ 1616 010d 3F       		.uleb128 0x3f
+ 1617 010e 19       		.uleb128 0x19
+ 1618 010f 02       		.uleb128 0x2
+ 1619 0110 18       		.uleb128 0x18
+ 1620 0111 00       		.byte	0
+ 1621 0112 00       		.byte	0
+ 1622 0113 14       		.uleb128 0x14
+ 1623 0114 21       		.uleb128 0x21
+ 1624 0115 00       		.byte	0
+ 1625 0116 49       		.uleb128 0x49
+ 1626 0117 13       		.uleb128 0x13
+ 1627 0118 2F       		.uleb128 0x2f
+ 1628 0119 05       		.uleb128 0x5
+ 1629 011a 00       		.byte	0
+ 1630 011b 00       		.byte	0
+ 1631 011c 15       		.uleb128 0x15
+ 1632 011d 34       		.uleb128 0x34
+ 1633 011e 00       		.byte	0
+ 1634 011f 03       		.uleb128 0x3
+ 1635 0120 08       		.uleb128 0x8
+ 1636 0121 3A       		.uleb128 0x3a
+ 1637 0122 0B       		.uleb128 0xb
+ 1638 0123 3B       		.uleb128 0x3b
+ 1639 0124 0B       		.uleb128 0xb
+ 1640 0125 49       		.uleb128 0x49
+ 1641 0126 13       		.uleb128 0x13
+ 1642 0127 3F       		.uleb128 0x3f
+ 1643 0128 19       		.uleb128 0x19
+ 1644 0129 02       		.uleb128 0x2
+ 1645 012a 18       		.uleb128 0x18
+ 1646 012b 00       		.byte	0
+ 1647 012c 00       		.byte	0
+ 1648 012d 00       		.byte	0
+ 1649              		.section	.debug_aranges,"",%progbits
+ 1650 0000 2C000000 		.4byte	0x2c
+ 1651 0004 0200     		.2byte	0x2
+ 1652 0006 00000000 		.4byte	.Ldebug_info0
+ 1653 000a 04       		.byte	0x4
+ 1654 000b 00       		.byte	0
+ 1655 000c 0000     		.2byte	0
+ 1656 000e 0000     		.2byte	0
+ 1657 0010 00000000 		.4byte	.LFB64
+ 1658 0014 70020000 		.4byte	.LFE64-.LFB64
+ 1659 0018 00000000 		.4byte	.LFB65
+ 1660 001c 50000000 		.4byte	.LFE65-.LFB65
+ 1661 0020 00000000 		.4byte	.LFB66
+ 1662 0024 70010000 		.4byte	.LFE66-.LFB66
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 34
 
 
- 1666              	.LASF92:
- 1667 02da 72656164 		.ascii	"read_Valve_pos\000"
- 1667      5F56616C 
- 1667      76655F70 
- 1667      6F7300
- 1668              	.LASF7:
- 1669 02e9 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1669      206C6F6E 
- 1669      6720756E 
- 1669      7369676E 
- 1669      65642069 
- 1670              	.LASF82:
- 1671 0300 73797374 		.ascii	"system_settings\000"
- 1671      656D5F73 
- 1671      65747469 
- 1671      6E677300 
- 1672              	.LASF8:
- 1673 0310 756E7369 		.ascii	"unsigned int\000"
- 1673      676E6564 
- 1673      20696E74 
- 1673      00
- 1674              	.LASF35:
- 1675 031d 6B65795F 		.ascii	"key_value_t\000"
- 1675      76616C75 
- 1675      655F7400 
- 1676              	.LASF40:
- 1677 0329 72786C65 		.ascii	"rxlev\000"
- 1677      7600
- 1678              	.LASF51:
- 1679 032f 73796E63 		.ascii	"sync_time\000"
- 1679      5F74696D 
- 1679      6500
- 1680              	.LASF76:
- 1681 0339 6D6F6465 		.ascii	"modem_stats\000"
- 1681      6D5F7374 
- 1681      61747300 
- 1682              	.LASF84:
- 1683 0345 74696D65 		.ascii	"timeToMeasure\000"
- 1683      546F4D65 
- 1683      61737572 
- 1683      6500
- 1684              	.LASF54:
- 1685 0353 75706461 		.ascii	"updatable_parameters_t\000"
- 1685      7461626C 
- 1685      655F7061 
- 1685      72616D65 
- 1685      74657273 
- 1686              	.LASF49:
- 1687 036a 73696D5F 		.ascii	"sim_type\000"
- 1687      74797065 
- 1687      00
- 1688              	.LASF62:
- 1689 0373 7379735F 		.ascii	"sys_info_t\000"
- 1689      696E666F 
+ 1663 0028 00000000 		.4byte	0
+ 1664 002c 00000000 		.4byte	0
+ 1665              		.section	.debug_ranges,"",%progbits
+ 1666              	.Ldebug_ranges0:
+ 1667 0000 00000000 		.4byte	.LFB64
+ 1668 0004 70020000 		.4byte	.LFE64
+ 1669 0008 00000000 		.4byte	.LFB65
+ 1670 000c 50000000 		.4byte	.LFE65
+ 1671 0010 00000000 		.4byte	.LFB66
+ 1672 0014 70010000 		.4byte	.LFE66
+ 1673 0018 00000000 		.4byte	0
+ 1674 001c 00000000 		.4byte	0
+ 1675              		.section	.debug_line,"",%progbits
+ 1676              	.Ldebug_line0:
+ 1677 0000 13020000 		.section	.debug_str,"MS",%progbits,1
+ 1677      02008B01 
+ 1677      00000201 
+ 1677      FB0E0D00 
+ 1677      01010101 
+ 1678              	.LASF31:
+ 1679 0000 76616C69 		.ascii	"valid\000"
+ 1679      6400
+ 1680              	.LASF37:
+ 1681 0006 6D6F6465 		.ascii	"model_id\000"
+ 1681      6C5F6964 
+ 1681      00
+ 1682              	.LASF68:
+ 1683 000f 766F6C74 		.ascii	"voltages\000"
+ 1683      61676573 
+ 1683      00
+ 1684              	.LASF36:
+ 1685 0018 73696D5F 		.ascii	"sim_id\000"
+ 1685      696400
+ 1686              	.LASF26:
+ 1687 001f 766F6C74 		.ascii	"voltage_solar\000"
+ 1687      6167655F 
+ 1687      736F6C61 
+ 1687      7200
+ 1688              	.LASF65:
+ 1689 002d 7379735F 		.ascii	"sys_settings_t\000"
+ 1689      73657474 
+ 1689      696E6773 
  1689      5F7400
- 1690              	.LASF3:
- 1691 037e 73686F72 		.ascii	"short unsigned int\000"
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 36
+ 1690              	.LASF15:
+ 1691 003c 666C6F61 		.ascii	"float32\000"
+ 1691      74333200 
+ 1692              	.LASF56:
+ 1693 0044 63757272 		.ascii	"currentCountDownValue\000"
+ 1693      656E7443 
+ 1693      6F756E74 
+ 1693      446F776E 
+ 1693      56616C75 
+ 1694              	.LASF55:
+ 1695 005a 636F756E 		.ascii	"countDownValue\000"
+ 1695      74446F77 
+ 1695      6E56616C 
+ 1695      756500
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 35
 
 
- 1691      7420756E 
- 1691      7369676E 
- 1691      65642069 
- 1691      6E7400
- 1692              	.LASF45:
- 1693 0391 74696D65 		.ascii	"time_to_network_connect\000"
- 1693      5F746F5F 
- 1693      6E657477 
- 1693      6F726B5F 
- 1693      636F6E6E 
- 1694              	.LASF22:
- 1695 03a9 73746174 		.ascii	"status\000"
- 1695      757300
- 1696              	.LASF81:
- 1697 03b0 73797374 		.ascii	"system_info\000"
- 1697      656D5F69 
- 1697      6E666F00 
- 1698              	.LASF46:
- 1699 03bc 74696D65 		.ascii	"time_to_acquire_ip\000"
- 1699      5F746F5F 
- 1699      61637175 
- 1699      6972655F 
- 1699      697000
- 1700              	.LASF24:
- 1701 03cf 74657374 		.ascii	"test_t\000"
- 1701      5F7400
- 1702              	.LASF38:
- 1703 03d6 696D6569 		.ascii	"imei\000"
- 1703      00
- 1704              	.LASF32:
- 1705 03db 766F6C74 		.ascii	"voltage_t\000"
- 1705      6167655F 
- 1705      7400
- 1706              	.LASF10:
- 1707 03e5 696E7433 		.ascii	"int32_t\000"
- 1707      325F7400 
- 1708              	.LASF47:
- 1709 03ed 6D6F6465 		.ascii	"modem_stats_t\000"
- 1709      6D5F7374 
- 1709      6174735F 
- 1709      7400
- 1710              	.LASF53:
- 1711 03fb 5F426F6F 		.ascii	"_Bool\000"
- 1711      6C00
- 1712              	.LASF87:
- 1713 0401 74696D65 		.ascii	"timeToSycnRemoteParams\000"
- 1713      546F5379 
- 1713      636E5265 
- 1713      6D6F7465 
- 1713      50617261 
- 1714              	.LASF66:
- 1715 0418 74657374 		.ascii	"test\000"
+ 1696              	.LASF2:
+ 1697 0069 73686F72 		.ascii	"short int\000"
+ 1697      7420696E 
+ 1697      7400
+ 1698              	.LASF81:
+ 1699 0073 68747470 		.ascii	"http_request\000"
+ 1699      5F726571 
+ 1699      75657374 
+ 1699      00
+ 1700              	.LASF20:
+ 1701 0080 73697A65 		.ascii	"sizetype\000"
+ 1701      74797065 
+ 1701      00
+ 1702              	.LASF63:
+ 1703 0089 65705F68 		.ascii	"ep_host\000"
+ 1703      6F737400 
+ 1704              	.LASF91:
+ 1705 0091 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1705      43313120 
+ 1705      352E342E 
+ 1705      31203230 
+ 1705      31363036 
+ 1706 00c4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1706      20726576 
+ 1706      6973696F 
+ 1706      6E203233 
+ 1706      37373135 
+ 1707 00f7 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1707      66756E63 
+ 1707      74696F6E 
+ 1707      2D736563 
+ 1707      74696F6E 
+ 1708              	.LASF76:
+ 1709 011f 64617461 		.ascii	"data\000"
+ 1709      00
+ 1710              	.LASF28:
+ 1711 0124 766F6C74 		.ascii	"voltage_pressure\000"
+ 1711      6167655F 
+ 1711      70726573 
+ 1711      73757265 
+ 1711      00
+ 1712              	.LASF61:
+ 1713 0135 63686970 		.ascii	"chip_uniqueId\000"
+ 1713      5F756E69 
+ 1713      71756549 
+ 1713      6400
+ 1714              	.LASF42:
+ 1715 0143 65636E6F 		.ascii	"ecno\000"
  1715      00
- 1716              	.LASF43:
- 1717 041d 72737271 		.ascii	"rsrq\000"
- 1717      00
- 1718              	.LASF12:
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 37
+ 1716              	.LASF33:
+ 1717 0148 76616C75 		.ascii	"value\000"
+ 1717      6500
+ 1718              	.LASF25:
+ 1719 014e 766F6C74 		.ascii	"voltage_battery\000"
+ 1719      6167655F 
+ 1719      62617474 
+ 1719      65727900 
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 36
 
 
- 1719 0422 75696E74 		.ascii	"uint16\000"
- 1719      313600
- 1720              	.LASF80:
- 1721 0429 68747470 		.ascii	"http_route\000"
- 1721      5F726F75 
- 1721      746500
- 1722              	.LASF5:
- 1723 0434 6C6F6E67 		.ascii	"long unsigned int\000"
- 1723      20756E73 
- 1723      69676E65 
- 1723      6420696E 
- 1723      7400
- 1724              	.LASF14:
- 1725 0446 696E7433 		.ascii	"int32\000"
- 1725      3200
- 1726              	.LASF17:
- 1727 044c 646F7562 		.ascii	"double\000"
- 1727      6C6500
- 1728              	.LASF69:
- 1729 0453 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1729      52784275 
- 1729      66666572 
- 1729      00
- 1730              	.LASF52:
- 1731 0460 64656275 		.ascii	"debug_level\000"
- 1731      675F6C65 
- 1731      76656C00 
- 1732              	.LASF39:
- 1733 046c 6D6F6465 		.ascii	"modem_info_t\000"
- 1733      6D5F696E 
- 1733      666F5F74 
- 1733      00
- 1734              	.LASF57:
- 1735 0479 636F756E 		.ascii	"countDownType\000"
- 1735      74446F77 
- 1735      6E547970 
- 1735      6500
- 1736              	.LASF9:
- 1737 0487 5F5F696E 		.ascii	"__int32_t\000"
- 1737      7433325F 
+ 1720              	.LASF74:
+ 1721 015e 64617461 		.ascii	"dataPointsInStack\000"
+ 1721      506F696E 
+ 1721      7473496E 
+ 1721      53746163 
+ 1721      6B00
+ 1722              	.LASF11:
+ 1723 0170 75696E74 		.ascii	"uint8\000"
+ 1723      3800
+ 1724              	.LASF41:
+ 1725 0176 72736370 		.ascii	"rscp\000"
+ 1725      00
+ 1726              	.LASF13:
+ 1727 017b 696E7431 		.ascii	"int16\000"
+ 1727      3600
+ 1728              	.LASF34:
+ 1729 0181 74696D65 		.ascii	"timeStamp\000"
+ 1729      5374616D 
+ 1729      7000
+ 1730              	.LASF29:
+ 1731 018b 766F6C74 		.ascii	"voltage_valve_pos\000"
+ 1731      6167655F 
+ 1731      76616C76 
+ 1731      655F706F 
+ 1731      7300
+ 1732              	.LASF92:
+ 1733 019d 76616C76 		.ascii	"valve.c\000"
+ 1733      652E6300 
+ 1734              	.LASF16:
+ 1735 01a5 666C6F61 		.ascii	"float\000"
+ 1735      7400
+ 1736              	.LASF6:
+ 1737 01ab 6C6F6E67 		.ascii	"long long int\000"
+ 1737      206C6F6E 
+ 1737      6720696E 
  1737      7400
- 1738              	.LASF58:
- 1739 0491 636F756E 		.ascii	"countDownResetCondition\000"
- 1739      74446F77 
- 1739      6E526573 
- 1739      6574436F 
- 1739      6E646974 
- 1740              	.LASF30:
- 1741 04a9 766F6C74 		.ascii	"voltage_valve_pos_blue\000"
- 1741      6167655F 
- 1741      76616C76 
- 1741      655F706F 
- 1741      735F626C 
- 1742              	.LASF21:
- 1743 04c0 74657374 		.ascii	"test_name\000"
- 1743      5F6E616D 
- 1743      6500
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2WQxPL.s 			page 38
+ 1738              	.LASF86:
+ 1739 01b9 616C6172 		.ascii	"alarmMeasure\000"
+ 1739      6D4D6561 
+ 1739      73757265 
+ 1739      00
+ 1740              	.LASF18:
+ 1741 01c6 63686172 		.ascii	"char\000"
+ 1741      00
+ 1742              	.LASF23:
+ 1743 01cb 72656173 		.ascii	"reason\000"
+ 1743      6F6E00
+ 1744              	.LASF4:
+ 1745 01d2 6C6F6E67 		.ascii	"long int\000"
+ 1745      20696E74 
+ 1745      00
+ 1746              	.LASF73:
+ 1747 01db 62756666 		.ascii	"buffer_overflow\000"
+ 1747      65725F6F 
+ 1747      76657266 
+ 1747      6C6F7700 
+ 1748              	.LASF60:
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 37
 
 
- 1744              	.LASF67:
- 1745 04ca 706F7369 		.ascii	"positions\000"
- 1745      74696F6E 
- 1745      7300
- 1746              	.LASF64:
- 1747 04d4 65705F70 		.ascii	"ep_port\000"
- 1747      6F727400 
- 1748              	.LASF79:
- 1749 04dc 68747470 		.ascii	"http_body\000"
- 1749      5F626F64 
- 1749      7900
- 1750              	.LASF48:
- 1751 04e6 6E6F6465 		.ascii	"node_type\000"
- 1751      5F747970 
- 1751      6500
- 1752              	.LASF27:
- 1753 04f0 766F6C74 		.ascii	"voltage_charge_current\000"
- 1753      6167655F 
- 1753      63686172 
- 1753      67655F63 
- 1753      75727265 
- 1754              	.LASF86:
- 1755 0507 74696D65 		.ascii	"timeToSync\000"
- 1755      546F5379 
- 1755      6E6300
- 1756              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 1749 01eb 6D6F6465 		.ascii	"modem_info\000"
+ 1749      6D5F696E 
+ 1749      666F00
+ 1750              	.LASF93:
+ 1751 01f6 433A5C55 		.ascii	"C:\\Users\\dantz\\Documents\\notoriOS\\notoriOS\\no"
+ 1751      73657273 
+ 1751      5C64616E 
+ 1751      747A5C44 
+ 1751      6F63756D 
+ 1752 0223 746F7269 		.ascii	"toriOS.cydsn\000"
+ 1752      4F532E63 
+ 1752      7964736E 
+ 1752      00
+ 1753              	.LASF69:
+ 1754 0230 76616C76 		.ascii	"valve_test\000"
+ 1754      655F7465 
+ 1754      737400
+ 1755              	.LASF59:
+ 1756 023b 616C6172 		.ascii	"alarm\000"
+ 1756      6D00
+ 1757              	.LASF50:
+ 1758 0241 6D656173 		.ascii	"measure_time\000"
+ 1758      7572655F 
+ 1758      74696D65 
+ 1758      00
+ 1759              	.LASF95:
+ 1760 024e 706F7369 		.ascii	"position_desired\000"
+ 1760      74696F6E 
+ 1760      5F646573 
+ 1760      69726564 
+ 1760      00
+ 1761              	.LASF88:
+ 1762 025f 616C6172 		.ascii	"alarmSync\000"
+ 1762      6D53796E 
+ 1762      6300
+ 1763              	.LASF19:
+ 1764 0269 6C6F6E67 		.ascii	"long double\000"
+ 1764      20646F75 
+ 1764      626C6500 
+ 1765              	.LASF80:
+ 1766 0275 75706461 		.ascii	"updatable_parameters\000"
+ 1766      7461626C 
+ 1766      655F7061 
+ 1766      72616D65 
+ 1766      74657273 
+ 1767              	.LASF1:
+ 1768 028a 756E7369 		.ascii	"unsigned char\000"
+ 1768      676E6564 
+ 1768      20636861 
+ 1768      7200
+ 1769              	.LASF44:
+ 1770 0298 72737270 		.ascii	"rsrp\000"
+ 1770      00
+ 1771              	.LASF78:
+ 1772 029d 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 1772      6D5F7374 
+ 1772      6172745F 
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 38
+
+
+ 1772      74696D65 
+ 1772      5F737461 
+ 1773              	.LASF75:
+ 1774 02b4 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 1774      506F696E 
+ 1774      7473496E 
+ 1774      53746163 
+ 1774      6B446573 
+ 1775              	.LASF77:
+ 1776 02cd 6D6F6465 		.ascii	"modem_state\000"
+ 1776      6D5F7374 
+ 1776      61746500 
+ 1777              	.LASF0:
+ 1778 02d9 7369676E 		.ascii	"signed char\000"
+ 1778      65642063 
+ 1778      68617200 
+ 1779              	.LASF70:
+ 1780 02e5 72656164 		.ascii	"read_Valve_pos\000"
+ 1780      5F56616C 
+ 1780      76655F70 
+ 1780      6F7300
+ 1781              	.LASF7:
+ 1782 02f4 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1782      206C6F6E 
+ 1782      6720756E 
+ 1782      7369676E 
+ 1782      65642069 
+ 1783              	.LASF85:
+ 1784 030b 73797374 		.ascii	"system_settings\000"
+ 1784      656D5F73 
+ 1784      65747469 
+ 1784      6E677300 
+ 1785              	.LASF8:
+ 1786 031b 756E7369 		.ascii	"unsigned int\000"
+ 1786      676E6564 
+ 1786      20696E74 
+ 1786      00
+ 1787              	.LASF35:
+ 1788 0328 6B65795F 		.ascii	"key_value_t\000"
+ 1788      76616C75 
+ 1788      655F7400 
+ 1789              	.LASF40:
+ 1790 0334 72786C65 		.ascii	"rxlev\000"
+ 1790      7600
+ 1791              	.LASF51:
+ 1792 033a 73796E63 		.ascii	"sync_time\000"
+ 1792      5F74696D 
+ 1792      6500
+ 1793              	.LASF79:
+ 1794 0344 6D6F6465 		.ascii	"modem_stats\000"
+ 1794      6D5F7374 
+ 1794      61747300 
+ 1795              	.LASF87:
+ 1796 0350 74696D65 		.ascii	"timeToMeasure\000"
+ 1796      546F4D65 
+ 1796      61737572 
+ 1796      6500
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 39
+
+
+ 1797              	.LASF54:
+ 1798 035e 75706461 		.ascii	"updatable_parameters_t\000"
+ 1798      7461626C 
+ 1798      655F7061 
+ 1798      72616D65 
+ 1798      74657273 
+ 1799              	.LASF49:
+ 1800 0375 73696D5F 		.ascii	"sim_type\000"
+ 1800      74797065 
+ 1800      00
+ 1801              	.LASF62:
+ 1802 037e 7379735F 		.ascii	"sys_info_t\000"
+ 1802      696E666F 
+ 1802      5F7400
+ 1803              	.LASF3:
+ 1804 0389 73686F72 		.ascii	"short unsigned int\000"
+ 1804      7420756E 
+ 1804      7369676E 
+ 1804      65642069 
+ 1804      6E7400
+ 1805              	.LASF45:
+ 1806 039c 74696D65 		.ascii	"time_to_network_connect\000"
+ 1806      5F746F5F 
+ 1806      6E657477 
+ 1806      6F726B5F 
+ 1806      636F6E6E 
+ 1807              	.LASF22:
+ 1808 03b4 73746174 		.ascii	"status\000"
+ 1808      757300
+ 1809              	.LASF84:
+ 1810 03bb 73797374 		.ascii	"system_info\000"
+ 1810      656D5F69 
+ 1810      6E666F00 
+ 1811              	.LASF46:
+ 1812 03c7 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1812      5F746F5F 
+ 1812      61637175 
+ 1812      6972655F 
+ 1812      697000
+ 1813              	.LASF24:
+ 1814 03da 74657374 		.ascii	"test_t\000"
+ 1814      5F7400
+ 1815              	.LASF94:
+ 1816 03e1 6D6F7665 		.ascii	"move_valve\000"
+ 1816      5F76616C 
+ 1816      766500
+ 1817              	.LASF32:
+ 1818 03ec 766F6C74 		.ascii	"voltage_t\000"
+ 1818      6167655F 
+ 1818      7400
+ 1819              	.LASF10:
+ 1820 03f6 696E7433 		.ascii	"int32_t\000"
+ 1820      325F7400 
+ 1821              	.LASF47:
+ 1822 03fe 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1822      6D5F7374 
+ 1822      6174735F 
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 40
+
+
+ 1822      7400
+ 1823              	.LASF30:
+ 1824 040c 766F6C74 		.ascii	"voltage_valve_pot_power\000"
+ 1824      6167655F 
+ 1824      76616C76 
+ 1824      655F706F 
+ 1824      745F706F 
+ 1825              	.LASF53:
+ 1826 0424 5F426F6F 		.ascii	"_Bool\000"
+ 1826      6C00
+ 1827              	.LASF90:
+ 1828 042a 74696D65 		.ascii	"timeToSycnRemoteParams\000"
+ 1828      546F5379 
+ 1828      636E5265 
+ 1828      6D6F7465 
+ 1828      50617261 
+ 1829              	.LASF66:
+ 1830 0441 74657374 		.ascii	"test\000"
+ 1830      00
+ 1831              	.LASF43:
+ 1832 0446 72737271 		.ascii	"rsrq\000"
+ 1832      00
+ 1833              	.LASF12:
+ 1834 044b 75696E74 		.ascii	"uint16\000"
+ 1834      313600
+ 1835              	.LASF83:
+ 1836 0452 68747470 		.ascii	"http_route\000"
+ 1836      5F726F75 
+ 1836      746500
+ 1837              	.LASF5:
+ 1838 045d 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1838      20756E73 
+ 1838      69676E65 
+ 1838      6420696E 
+ 1838      7400
+ 1839              	.LASF14:
+ 1840 046f 696E7433 		.ascii	"int32\000"
+ 1840      3200
+ 1841              	.LASF17:
+ 1842 0475 646F7562 		.ascii	"double\000"
+ 1842      6C6500
+ 1843              	.LASF72:
+ 1844 047c 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1844      52784275 
+ 1844      66666572 
+ 1844      00
+ 1845              	.LASF52:
+ 1846 0489 64656275 		.ascii	"debug_level\000"
+ 1846      675F6C65 
+ 1846      76656C00 
+ 1847              	.LASF39:
+ 1848 0495 6D6F6465 		.ascii	"modem_info_t\000"
+ 1848      6D5F696E 
+ 1848      666F5F74 
+ 1848      00
+ 1849              	.LASF57:
+ 1850 04a2 636F756E 		.ascii	"countDownType\000"
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cce7uCPs.s 			page 41
+
+
+ 1850      74446F77 
+ 1850      6E547970 
+ 1850      6500
+ 1851              	.LASF9:
+ 1852 04b0 5F5F696E 		.ascii	"__int32_t\000"
+ 1852      7433325F 
+ 1852      7400
+ 1853              	.LASF58:
+ 1854 04ba 636F756E 		.ascii	"countDownResetCondition\000"
+ 1854      74446F77 
+ 1854      6E526573 
+ 1854      6574436F 
+ 1854      6E646974 
+ 1855              	.LASF38:
+ 1856 04d2 696D6569 		.ascii	"imei\000"
+ 1856      00
+ 1857              	.LASF21:
+ 1858 04d7 74657374 		.ascii	"test_name\000"
+ 1858      5F6E616D 
+ 1858      6500
+ 1859              	.LASF67:
+ 1860 04e1 706F7369 		.ascii	"positions\000"
+ 1860      74696F6E 
+ 1860      7300
+ 1861              	.LASF64:
+ 1862 04eb 65705F70 		.ascii	"ep_port\000"
+ 1862      6F727400 
+ 1863              	.LASF82:
+ 1864 04f3 68747470 		.ascii	"http_body\000"
+ 1864      5F626F64 
+ 1864      7900
+ 1865              	.LASF48:
+ 1866 04fd 6E6F6465 		.ascii	"node_type\000"
+ 1866      5F747970 
+ 1866      6500
+ 1867              	.LASF27:
+ 1868 0507 766F6C74 		.ascii	"voltage_charge_current\000"
+ 1868      6167655F 
+ 1868      63686172 
+ 1868      67655F63 
+ 1868      75727265 
+ 1869              	.LASF89:
+ 1870 051e 74696D65 		.ascii	"timeToSync\000"
+ 1870      546F5379 
+ 1870      6E6300
+ 1871              	.LASF71:
+ 1872 0529 72656164 		.ascii	"readings\000"
+ 1872      696E6773 
+ 1872      00
+ 1873              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

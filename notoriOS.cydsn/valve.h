@@ -14,9 +14,12 @@ void Power_VDD1_Write(uint8);
 //close
 void Power_VDD2_Write(uint8);
 
+// for closing the 12V circuit and powering the valve
+// using the level sensor power pin for now
+
 // tests actuation and position reading
 test_t valve_test();
 
 float32 read_Valve_pos();
 
-float32 read_vbat();
+uint8 move_valve(float32 position_desired);

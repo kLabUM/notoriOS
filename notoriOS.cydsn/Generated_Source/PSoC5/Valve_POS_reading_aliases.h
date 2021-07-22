@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Valve_POS_brown.h  
+* File Name: Valve_POS_reading.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Valve_POS_brown_ALIASES_H) /* Pins Valve_POS_brown_ALIASES_H */
-#define CY_PINS_Valve_POS_brown_ALIASES_H
+#if !defined(CY_PINS_Valve_POS_reading_ALIASES_H) /* Pins Valve_POS_reading_ALIASES_H */
+#define CY_PINS_Valve_POS_reading_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Valve_POS_brown_0			(Valve_POS_brown__0__PC)
-#define Valve_POS_brown_0_INTR	((uint16)((uint16)0x0001u << Valve_POS_brown__0__SHIFT))
+#define Valve_POS_reading_0			(Valve_POS_reading__0__PC)
+#define Valve_POS_reading_0_INTR	((uint16)((uint16)0x0001u << Valve_POS_reading__0__SHIFT))
 
-#define Valve_POS_brown_INTR_ALL	 ((uint16)(Valve_POS_brown_0_INTR))
+#define Valve_POS_reading_INTR_ALL	 ((uint16)(Valve_POS_reading_0_INTR))
 
-#endif /* End Pins Valve_POS_brown_ALIASES_H */
+#endif /* End Pins Valve_POS_reading_ALIASES_H */
 
 
 /* [] END OF FILE */

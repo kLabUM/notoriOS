@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Valve_POS_brown.c  
+* File Name: Valve_POS_reading.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Valve_POS_brown.h"
+#include "Valve_POS_reading.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Valve_POS_brown__PORT == 15 && ((Valve_POS_brown__MASK & 0xC0) != 0))
+	 Valve_POS_reading__PORT == 15 && ((Valve_POS_reading__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Valve_POS_brown_Write
+* Function Name: Valve_POS_reading_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Valve_POS_brown_SUT.c usage_Valve_POS_brown_Write
+*  \snippet Valve_POS_reading_SUT.c usage_Valve_POS_reading_Write
 *******************************************************************************/
-void Valve_POS_brown_Write(uint8 value)
+void Valve_POS_reading_Write(uint8 value)
 {
-    uint8 staticBits = (Valve_POS_brown_DR & (uint8)(~Valve_POS_brown_MASK));
-    Valve_POS_brown_DR = staticBits | ((uint8)(value << Valve_POS_brown_SHIFT) & Valve_POS_brown_MASK);
+    uint8 staticBits = (Valve_POS_reading_DR & (uint8)(~Valve_POS_reading_MASK));
+    Valve_POS_reading_DR = staticBits | ((uint8)(value << Valve_POS_reading_SHIFT) & Valve_POS_reading_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Valve_POS_brown_SetDriveMode
+* Function Name: Valve_POS_reading_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Valve_POS_brown_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Valve_POS_brown_SUT.c usage_Valve_POS_brown_SetDriveMode
+*  \snippet Valve_POS_reading_SUT.c usage_Valve_POS_reading_SetDriveMode
 *******************************************************************************/
-void Valve_POS_brown_SetDriveMode(uint8 mode)
+void Valve_POS_reading_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Valve_POS_brown_0, mode);
+	CyPins_SetPinDriveMode(Valve_POS_reading_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Valve_POS_brown_Read
+* Function Name: Valve_POS_reading_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Valve_POS_brown_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Valve_POS_brown_SUT.c usage_Valve_POS_brown_Read  
+*  \snippet Valve_POS_reading_SUT.c usage_Valve_POS_reading_Read  
 *******************************************************************************/
-uint8 Valve_POS_brown_Read(void)
+uint8 Valve_POS_reading_Read(void)
 {
-    return (Valve_POS_brown_PS & Valve_POS_brown_MASK) >> Valve_POS_brown_SHIFT;
+    return (Valve_POS_reading_PS & Valve_POS_reading_MASK) >> Valve_POS_reading_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Valve_POS_brown_ReadDataReg
+* Function Name: Valve_POS_reading_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Valve_POS_brown_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Valve_POS_brown_Read() API because the 
-* Valve_POS_brown_ReadDataReg() reads the data register instead of the status 
+* preferred Valve_POS_reading_Read() API because the 
+* Valve_POS_reading_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Valve_POS_brown_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Valve_POS_brown_SUT.c usage_Valve_POS_brown_ReadDataReg 
+*  \snippet Valve_POS_reading_SUT.c usage_Valve_POS_reading_ReadDataReg 
 *******************************************************************************/
-uint8 Valve_POS_brown_ReadDataReg(void)
+uint8 Valve_POS_reading_ReadDataReg(void)
 {
-    return (Valve_POS_brown_DR & Valve_POS_brown_MASK) >> Valve_POS_brown_SHIFT;
+    return (Valve_POS_reading_DR & Valve_POS_reading_MASK) >> Valve_POS_reading_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Valve_POS_brown_INTSTAT) 
+#if defined(Valve_POS_reading_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Valve_POS_brown_SetInterruptMode
+    * Function Name: Valve_POS_reading_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Valve_POS_brown_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Valve_POS_brown_INTR_ALL to configure the
+    *  component. Or you may use Valve_POS_reading_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Valve_POS_brown_0_INTR       (First pin in the list)
-    *  - Valve_POS_brown_1_INTR       (Second pin in the list)
+    *  - Valve_POS_reading_0_INTR       (First pin in the list)
+    *  - Valve_POS_reading_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Valve_POS_brown_INTR_ALL     (All pins in Pins component)
+    *  - Valve_POS_reading_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Valve_POS_brown_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Valve_POS_brown_SUT.c usage_Valve_POS_brown_SetInterruptMode
+    *  \snippet Valve_POS_reading_SUT.c usage_Valve_POS_reading_SetInterruptMode
     *******************************************************************************/
-    void Valve_POS_brown_SetInterruptMode(uint16 position, uint16 mode)
+    void Valve_POS_reading_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Valve_POS_brown_0_INTR) != 0u) 
+		if((position & Valve_POS_reading_0_INTR) != 0u) 
 		{ 
-			 Valve_POS_brown_0_INTTYPE_REG = (uint8)mode; 
+			 Valve_POS_reading_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Valve_POS_brown_ClearInterrupt
+    * Function Name: Valve_POS_reading_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Valve_POS_brown_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Valve_POS_brown_SUT.c usage_Valve_POS_brown_ClearInterrupt
+    *  \snippet Valve_POS_reading_SUT.c usage_Valve_POS_reading_ClearInterrupt
     *******************************************************************************/
-    uint8 Valve_POS_brown_ClearInterrupt(void)
+    uint8 Valve_POS_reading_ClearInterrupt(void)
     {
-        return (Valve_POS_brown_INTSTAT & Valve_POS_brown_MASK) >> Valve_POS_brown_SHIFT;
+        return (Valve_POS_reading_INTSTAT & Valve_POS_reading_MASK) >> Valve_POS_reading_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

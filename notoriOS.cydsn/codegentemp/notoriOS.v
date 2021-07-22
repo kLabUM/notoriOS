@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 07/15/2021 at 12:48
+// 07/22/2021 at 12:19
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1277,11 +1277,10 @@ module top ;
           wire  Net_100;
           wire  Net_101;
     electrical  Net_97;
-    electrical  Net_352;
-    electrical  Net_361;
-    electrical  Net_356;
-    electrical  Net_354;
-    electrical  Net_353;
+    electrical  Net_376;
+    electrical  Net_375;
+    electrical  Net_373;
+    electrical  Net_372;
           wire  Net_28;
           wire  Net_24;
           wire  Net_30;
@@ -1294,8 +1293,9 @@ module top ;
           wire  Net_23;
           wire  Net_26;
           wire  Net_21;
-    electrical  Net_355;
+    electrical  Net_374;
           wire  Net_38;
+    electrical  Net_352;
           wire  Net_225;
           wire  Net_223;
           wire  Net_180;
@@ -1841,7 +1841,7 @@ module top ;
 		 (.oe(tmpOE__AN_VSOL_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_VSOL_net[0:0]}),
-		  .analog({Net_355}),
+		  .analog({Net_374}),
 		  .io({tmpIO_0__AN_VSOL_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_VSOL_net),
 		  .interrupt({tmpINTERRUPT_0__AN_VSOL_net[0:0]}),
@@ -2197,11 +2197,11 @@ module top ;
     cy_psoc3_amux_v1_0 AMux(
         .muxin({
             Net_352,
-            Net_361,
-            Net_356,
-            Net_355,
-            Net_354,
-            Net_353
+            Net_376,
+            Net_375,
+            Net_374,
+            Net_373,
+            Net_372
             }),
         .vout(Net_97)
         );
@@ -2360,7 +2360,7 @@ module top ;
 		 (.oe(tmpOE__AN_VBAT_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_VBAT_net[0:0]}),
-		  .analog({Net_354}),
+		  .analog({Net_373}),
 		  .io({tmpIO_0__AN_VBAT_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_VBAT_net),
 		  .interrupt({tmpINTERRUPT_0__AN_VBAT_net[0:0]}),
@@ -2933,7 +2933,7 @@ module top ;
 		  .name("1.024V"),
 		  .autoenable(1))
 		vRef_1
-		 (.vout(Net_353));
+		 (.vout(Net_372));
 
 
 	wire [0:0] tmpOE__AN_PRTRANS_net;
@@ -2999,7 +2999,7 @@ module top ;
 		 (.oe(tmpOE__AN_PRTRANS_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_PRTRANS_net[0:0]}),
-		  .analog({Net_356}),
+		  .analog({Net_375}),
 		  .io({tmpIO_0__AN_PRTRANS_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_PRTRANS_net),
 		  .interrupt({tmpINTERRUPT_0__AN_PRTRANS_net[0:0]}),
@@ -3012,16 +3012,16 @@ module top ;
 
 	assign tmpOE__AN_PRTRANS_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
-	wire [0:0] tmpOE__Valve_POS_brown_net;
-	wire [0:0] tmpFB_0__Valve_POS_brown_net;
-	wire [0:0] tmpIO_0__Valve_POS_brown_net;
-	wire [0:0] tmpINTERRUPT_0__Valve_POS_brown_net;
-	electrical [0:0] tmpSIOVREF__Valve_POS_brown_net;
+	wire [0:0] tmpOE__Valve_POS_Power_net;
+	wire [0:0] tmpFB_0__Valve_POS_Power_net;
+	wire [0:0] tmpIO_0__Valve_POS_Power_net;
+	wire [0:0] tmpINTERRUPT_0__Valve_POS_Power_net;
+	electrical [0:0] tmpSIOVREF__Valve_POS_Power_net;
 
 	cy_psoc3_pins_v1_10
-		#(.id("77715107-f8d5-47e5-a629-0fb83101ac6b"),
-		  .drive_mode(3'b000),
-		  .ibuf_enabled(1'b0),
+		#(.id("e851a3b9-efb8-48be-bbb8-b303b216c393"),
+		  .drive_mode(3'b110),
+		  .ibuf_enabled(1'b1),
 		  .init_dr_st(1'b0),
 		  .input_clk_en(0),
 		  .input_sync(1'b1),
@@ -3051,7 +3051,7 @@ module top ;
 		  .pa_out_clock_en(-1),
 		  .pa_out_reset(-1),
 		  .pin_aliases(""),
-		  .pin_mode("A"),
+		  .pin_mode("O"),
 		  .por_state(4),
 		  .sio_group_cnt(0),
 		  .sio_hyst(1'b1),
@@ -3071,14 +3071,14 @@ module top ;
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		Valve_POS_brown
-		 (.oe(tmpOE__Valve_POS_brown_net),
+		Valve_POS_Power
+		 (.oe(tmpOE__Valve_POS_Power_net),
 		  .y({1'b0}),
-		  .fb({tmpFB_0__Valve_POS_brown_net[0:0]}),
+		  .fb({tmpFB_0__Valve_POS_Power_net[0:0]}),
 		  .analog({Net_352}),
-		  .io({tmpIO_0__Valve_POS_brown_net[0:0]}),
-		  .siovref(tmpSIOVREF__Valve_POS_brown_net),
-		  .interrupt({tmpINTERRUPT_0__Valve_POS_brown_net[0:0]}),
+		  .io({tmpIO_0__Valve_POS_Power_net[0:0]}),
+		  .siovref(tmpSIOVREF__Valve_POS_Power_net),
+		  .interrupt({tmpINTERRUPT_0__Valve_POS_Power_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -3086,13 +3086,13 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__Valve_POS_brown_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__Valve_POS_Power_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
-	wire [0:0] tmpOE__Valve_POS_blue_net;
-	wire [0:0] tmpFB_0__Valve_POS_blue_net;
-	wire [0:0] tmpIO_0__Valve_POS_blue_net;
-	wire [0:0] tmpINTERRUPT_0__Valve_POS_blue_net;
-	electrical [0:0] tmpSIOVREF__Valve_POS_blue_net;
+	wire [0:0] tmpOE__Valve_POS_reading_net;
+	wire [0:0] tmpFB_0__Valve_POS_reading_net;
+	wire [0:0] tmpIO_0__Valve_POS_reading_net;
+	wire [0:0] tmpINTERRUPT_0__Valve_POS_reading_net;
+	electrical [0:0] tmpSIOVREF__Valve_POS_reading_net;
 
 	cy_psoc3_pins_v1_10
 		#(.id("a094d04d-340e-47a3-a832-129b898e7474"),
@@ -3147,14 +3147,14 @@ module top ;
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		Valve_POS_blue
-		 (.oe(tmpOE__Valve_POS_blue_net),
+		Valve_POS_reading
+		 (.oe(tmpOE__Valve_POS_reading_net),
 		  .y({1'b0}),
-		  .fb({tmpFB_0__Valve_POS_blue_net[0:0]}),
-		  .analog({Net_361}),
-		  .io({tmpIO_0__Valve_POS_blue_net[0:0]}),
-		  .siovref(tmpSIOVREF__Valve_POS_blue_net),
-		  .interrupt({tmpINTERRUPT_0__Valve_POS_blue_net[0:0]}),
+		  .fb({tmpFB_0__Valve_POS_reading_net[0:0]}),
+		  .analog({Net_376}),
+		  .io({tmpIO_0__Valve_POS_reading_net[0:0]}),
+		  .siovref(tmpSIOVREF__Valve_POS_reading_net),
+		  .interrupt({tmpINTERRUPT_0__Valve_POS_reading_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -3162,7 +3162,7 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__Valve_POS_blue_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__Valve_POS_reading_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 
 

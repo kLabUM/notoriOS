@@ -5,6 +5,9 @@
 // Function to take voltage readings and save them in the voltage_t datatype
 voltage_t voltage_take_readings(){
     
+    // if valve type put voltage across valve potentiometer
+    Valve_POS_Power_Write(1);
+    
     voltage_t voltage;  // Create variable voltage of data structure voltage_t.
      
 	Battery_Voltage_Enable_Write(ON);   // Flip on the Battery Voltage ADC pin high (turns it on).
@@ -55,12 +58,16 @@ voltage_t voltage_take_readings(){
     voltage.voltage_pressure = channels[ADC_MUX_PRTRANS]; // Pressure transducer reading
 
     // VALVE
-    voltage.voltage_valve_pos_blue = channels[ADC_MUX_Valve_POS_blue]; // blue wire reading (closed percentage)
-    voltage.voltage_valve_pos_brown = channels[ADC_MUX_Valve_POS_brown]; // brown wire reading (reference voltage)
+    voltage.voltage_valve_pos = channels[ADC_MUX_Valve_POS_reading]; // blue wire reading (opened percentage)
+    voltage.voltage_valve_pot_power = channels[ADC_MUX_Valve_POS_Power]; // brown wire power supply to potentiometer
+    // same pin as Valve_POS_Power
     
     voltage.valid = 1;
     
 
+    // if valve type put voltage across valve potentiometer
+    Valve_POS_Power_Write(0);
+    
     return voltage;
 }
 

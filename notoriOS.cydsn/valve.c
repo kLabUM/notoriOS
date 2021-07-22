@@ -1,9 +1,13 @@
 #include "valve.h"
 #include "notoriOS.h"
 
+// throughout, the percentages recorded in reference to the valve position ought to be
+// percent open-ness, not percent closed
 
 test_t valve_test(){
- 
+
+    // activate 12V battery
+    Level_Sensor_Power_Write(ON);
      
     test_t test; // test_t is a new data type we defined in test.h. We then use that data type to define a structure variable test
     test.status = 0; // set test status to zero
@@ -14,19 +18,36 @@ test_t valve_test(){
     voltage_t voltages[8];
     
     // all the way open
-    Power_VDD1_Write(1u);
-    CyDelay(20000u); // check to confirm this is long enough
-    Power_VDD1_Write(0u);
-    // take a position reading and verify that it's all the way open
+    move_valve(1);
+    // take a position reading to verify that it's all the way open (later)
     positions[0] = read_Valve_pos();
     voltages[0] = voltage_take_readings();
     // do the same for closed
-    Power_VDD2_Write(1u);
-    CyDelay(20000u);
-    Power_VDD2_Write(0u);
-    // take a position reading and verify that it's all the way closed
+    test.status = move_valve(0);
+    // take a position reading to verify that it's all the way closed (later)
     positions[1] = read_Valve_pos();
     voltages[1] = voltage_take_readings();
+    if (test.status){ // don't do this if it's jammed (didn't close successfully)
+        move_valve(0.125);
+        positions[2] = read_Valve_pos();
+        
+        move_valve(0.25);
+        positions[3] = read_Valve_pos();
+        
+        move_valve(0.375);
+        positions[4] = read_Valve_pos();
+
+        move_valve(0.5);
+        positions[5] = read_Valve_pos();
+
+        move_valve(0.675);
+        positions[6] = read_Valve_pos();
+
+        move_valve(0.75);
+        positions[7] = read_Valve_pos();
+    }
+
+    /*
     // initial displacement
     // open valve on
     Power_VDD1_Write(1u);
@@ -37,7 +58,7 @@ test_t valve_test(){
     // these readings should repeat consistently somewhere in the middle range
     
     for (int i = 2; i < 8; i++){
-        /*
+        
         if ((i+1)%2){
             // open valve on
             Power_VDD1_Write(1u);
@@ -65,60 +86,110 @@ test_t valve_test(){
             snprintf(test.reason,sizeof(test.reason),"failed in pivot");  
             return test;
         }
-        */
-        // for now just slowly open
-        // open valve on
-        Power_VDD1_Write(1u);
-
-        CyDelay(4000u);
-
-        //open valve off
-        Power_VDD1_Write(0u);
-
-        CyDelay(4000u);
+   
         // read position and record this
         positions[i] = read_Valve_pos();
         voltages[i] = voltage_take_readings();
         
     }
-
-    // if valve is not moving, return 0 and report an error (probably a blockage or insufficient voltage)
-
+    */
+   
+    
     // in test reason report the sequence of positions
-    // should look like 100% open - 0% open - X% - Y% - X% - Y% - X% - Y%
-    // this is what determines whether the test "passes"
-    // because not only is the valve opening and closing properly, we're also measuring it properly
-
-    // if test passes, set status to 1
-    if (positions[0] < 0.1 && positions[1] > 0.90){
-        test.status = 1;
-    }
-    else{
-        test.status=0;
-        snprintf(test.reason,sizeof(test.reason),"not fully closed or not fully opened");
-        return test;
-    }
-    for (int i = 0; i < 8; i++){
-        positions[i] = positions[i]*100;
-    }
-    // print the series of pivot positions
-    snprintf(test.reason,sizeof(test.reason),"voltages_blue_brown:%f:%f:%f:%f:%f:%f:%f:%f", 
-        voltages[0].voltage_valve_pos_blue, voltages[0].voltage_valve_pos_brown, 
-        voltages[1].voltage_valve_pos_blue, voltages[1].voltage_valve_pos_brown,
-        voltages[2].voltage_valve_pos_blue, voltages[2].voltage_valve_pos_brown,
-        voltages[3].voltage_valve_pos_blue, voltages[3].voltage_valve_pos_brown
+    snprintf(test.reason,sizeof(test.reason),"open_voltage:%f:::closed_voltage:%f:::pot_voltage:%f::::positions:%f:%f:%f:%f:%f:%f:%f:%f", 
+        voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot_power,
+        positions[0],positions[1],positions[2],positions[3],
+        positions[4],positions[5],positions[6],positions[7]
     );
    
+    // deactivate 12V battery
+    Level_Sensor_Power_Write(OFF);
+    
     return test;
-    
-    // ratio of blue/brown is 0 when fully open and 1 when fully closed
-    
+
 }
 
 float32 read_Valve_pos(){
+    // take analog voltage readings
+    voltage_t readings = voltage_take_readings();
+    return (readings.voltage_valve_pos/readings.voltage_valve_pot_power)/0.94; // divide because of the non-pot resistance   
     
-    
-    
-    return voltage_take_readings().voltage_valve_pos_blue/voltage_take_readings().voltage_valve_pos_brown;
 }
 
+uint8 move_valve(float32 position_desired){
+    
+    // activate 12V battery
+    Power_VBAT2_Write(ON);
+    
+    // this uses "go until you're there" rather than pulsing and checking
+    // pulsing and checking could set up oscillations in the controller
+    // pulsing and checking would only be necessary if measurement consumed a similar amount of time to moving
+    
+    // are we already there? (wihtin a tolerance)
+    if ( fabs(read_Valve_pos() - position_desired) < 0.05){
+        return 1;
+    }
+
+    // is the desired position more closed?
+    if( read_Valve_pos() > position_desired){
+        
+        // turn the closing pin high
+        Power_VDD2_Write(1u);
+
+        
+        // while loop
+        // continuously measure the position (measurement should be much faster than movement)
+        // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
+        while(fabs(read_Valve_pos() - position_desired) > 0.03){
+            CyDelay(1000u);
+        }
+        
+        
+        // turn the closing pin low
+        Power_VDD2_Write(0u);
+        
+        
+        // read valve position once more and confirm we're where we want to be
+        // if not return 0
+        if(fabs(read_Valve_pos() - position_desired) > 0.05){
+            // deactivate 12V battery
+            Power_VBAT2_Write(OFF);
+            return 0;
+        }
+        
+    }
+    // or more open?
+    else if(read_Valve_pos() < position_desired){
+        
+        // turn the opening pin high
+        Power_VDD1_Write(1u);
+        
+        // while loop
+        // continuously measure the position (measurement should be much faster than movement)
+        // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
+        while(fabs(read_Valve_pos() - position_desired) > 0.03){
+            CyDelay(1000u);
+        }
+        
+        // turn the opening pin low
+         Power_VDD1_Write(0u);
+        
+        
+        // read valve position once more and confirm we're where we want to be
+        // if not return 0
+        if(fabs(read_Valve_pos() - position_desired) > 0.05){
+            // deactivate 12V battery
+            Power_VBAT2_Write(OFF);
+            return 0;
+        }
+        
+        
+    }
+
+    
+    // deactivate 12V battery
+    Power_VBAT2_Write(OFF);
+    
+
+    return 1; // everything worked fine
+}
