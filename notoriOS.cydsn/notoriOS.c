@@ -265,6 +265,10 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
+    // Test DO sensor
+    test_t t_DO_sensor = DO_sensor_test();
+    printTestStatus(t_DO_sensor);
+    
     // Test level sensor
     test_t t_level_sensor = level_sensor_test();  
     printTestStatus(t_level_sensor);
@@ -272,7 +276,7 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     // Test voltages
     test_t t_voltages = voltages_test();
     printTestStatus(t_voltages);
- 
+    
     // Test voltages
     test_t t_pressure = pressure_sensor_test();
     printTestStatus(t_pressure);
