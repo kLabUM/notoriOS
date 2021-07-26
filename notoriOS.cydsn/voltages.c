@@ -11,7 +11,11 @@ voltage_t voltage_take_readings(){
     voltage_t voltage;  // Create variable voltage of data structure voltage_t.
      
 	Battery_Voltage_Enable_Write(ON);   // Flip on the Battery Voltage ADC pin high (turns it on).
-    Pressure_Voltage_Enable_Write(ON);  // Flip on the Pressure Transducer Voltage ADC pin high (turns it on).
+    
+    //for valve type, using pressure_voltage power pin so ignore these if the pin is already high
+    if (!(updatable_parameters.node_type == NODE_TYPE_VALVE)){
+        Pressure_Voltage_Enable_Write(ON);  // Flip on the Pressure Transducer Voltage ADC pin high (turns it on).
+    }
     
 	CyDelay(10u);	    // 10 seconds delay to give time to flip on ADC pin.
     
@@ -48,7 +52,12 @@ voltage_t voltage_take_readings(){
     ADC_Stop();         // Stops and powers down the ADC component and the internal clock if the external clock is not selected.
     
     Battery_Voltage_Enable_Write(OFF);  // Pulls Battery ADC pin low (turns it off).
-    Pressure_Voltage_Enable_Write(OFF);  // Pulls Pressure Transducer ADC pin low (turns it off).
+    
+    //for valve type, using pressure_voltage power pin so ignore these if the pin is already high
+    if (!(updatable_parameters.node_type ==NODE_TYPE_VALVE)){
+        Pressure_Voltage_Enable_Write(OFF);  // Pulls Pressure Transducer ADC pin low (turns it off).
+    }
+    
     
     float offset = channels[0] - 1.024; // Should be 1.024 exactly. BK saw an offset when measuring voltages, did this as a hack to fix the issue for now.
     voltage.voltage_battery = (channels[ADC_MUX_VBAT] * 11) - offset; // Voltage divider is (1/10) ratio, so multiply by 11

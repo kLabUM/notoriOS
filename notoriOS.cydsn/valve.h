@@ -15,7 +15,7 @@ void Power_VDD1_Write(uint8);
 void Power_VDD2_Write(uint8);
 
 // for closing the 12V circuit and powering the valve
-// using the level sensor power pin for now
+// using the pressure sensor power pin
 
 // tests actuation and position reading
 test_t valve_test();
@@ -23,3 +23,6 @@ test_t valve_test();
 float32 read_Valve_pos();
 
 uint8 move_valve(float32 position_desired);
+
+// fallback control strategy for when cell modem goes dark
+void valve_level_controller(int16 level_reading);

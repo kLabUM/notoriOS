@@ -355,6 +355,11 @@ uint8 syncData(){
             modem_power_up();
         }else{
             try_counter = 0;
+            // call default valve controller when not connected to server
+            if (updatable_parameters.node_type ==NODE_TYPE_VALVE){
+                printNotif(NOTIF_TYPE_EVENT, "Implementing fallback controller strategy");
+                valve_level_controller(level_sensor_take_reading().level_reading); // want to take current maxbotix depth as an input
+            }
             return 0u;
             }
             

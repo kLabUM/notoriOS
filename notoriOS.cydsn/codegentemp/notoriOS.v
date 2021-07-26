@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 07/22/2021 at 12:19
+// 07/26/2021 at 13:46
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1724,7 +1724,7 @@ module top ;
 		  .invert_out_clock(0),
 		  .invert_out_clock_en(0),
 		  .invert_out_reset(0),
-		  .io_voltage(""),
+		  .io_voltage("3.3"),
 		  .layout_mode("CONTIGUOUS"),
 		  .oe_conn(1'b0),
 		  .oe_reset(0),
