@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 1
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 1
 
 
    1              		.syntax unified
@@ -51,1868 +51,2748 @@ ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 1
   48              		.size	do_string_index, 2
   49              	do_string_index:
   50 0000 0000     		.space	2
-  51              		.section	.rodata
+  51              		.section	.text.DO_ISR,"ax",%progbits
   52              		.align	2
-  53              	.LC0:
-  54 0000 656E7465 		.ascii	"entered isr\000"
-  54      72656420 
-  54      69737200 
-  55              		.section	.text.DO_ISR,"ax",%progbits
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 2
+  53              		.global	DO_ISR
+  54              		.thumb
+  55              		.thumb_func
+  56              		.type	DO_ISR, %function
+  57              	DO_ISR:
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 2
 
 
-  56              		.align	2
-  57              		.global	DO_ISR
-  58              		.thumb
-  59              		.thumb_func
-  60              		.type	DO_ISR, %function
-  61              	DO_ISR:
-  62              	.LFB64:
-  63              		.file 1 "diss_oxy.c"
+  58              	.LFB64:
+  59              		.file 1 "diss_oxy.c"
    1:diss_oxy.c    **** #include "notoriOS.h"
-   2:diss_oxy.c    **** #include "diss_oxy.h"
-   3:diss_oxy.c    **** #include "level_sensor.h"
-   4:diss_oxy.c    **** 
-   5:diss_oxy.c    **** char do_received_string[1024];
-   6:diss_oxy.c    **** int16 do_string_index=0;
+   2:diss_oxy.c    **** // #include diss_oxy.h  - this was causing a multiple definition error
+   3:diss_oxy.c    **** char do_received_string[1024];
+   4:diss_oxy.c    **** int16 do_string_index=0;
+   5:diss_oxy.c    **** 
+   6:diss_oxy.c    **** // mostly copied from modem.c
    7:diss_oxy.c    **** 
-   8:diss_oxy.c    **** 
-   9:diss_oxy.c    **** CY_ISR_PROTO(DO_ISR); // Declares a custom ISR function "isr_telit_rx" using the CY_ISR_PROTO macro
-  10:diss_oxy.c    **** 
-  11:diss_oxy.c    **** // Define the custom ISR function "isr_telit_rx" using the CY_ISR macro
-  12:diss_oxy.c    **** // Get each character from Telit and saves it to uart_received_string
-  13:diss_oxy.c    **** CY_ISR(DO_ISR){ 
-  64              		.loc 1 13 0
-  65              		.cfi_startproc
-  66              		@ args = 0, pretend = 0, frame = 0
-  67              		@ frame_needed = 1, uses_anonymous_args = 0
-  68 0000 98B5     		push	{r3, r4, r7, lr}
-  69              		.cfi_def_cfa_offset 16
-  70              		.cfi_offset 3, -16
-  71              		.cfi_offset 4, -12
-  72              		.cfi_offset 7, -8
-  73              		.cfi_offset 14, -4
-  74 0002 00AF     		add	r7, sp, #0
-  75              		.cfi_def_cfa_register 7
-  14:diss_oxy.c    ****     printNotif(NOTIF_TYPE_EVENT, "entered isr");
-  76              		.loc 1 14 0
-  77 0004 0F49     		ldr	r1, .L4
-  78 0006 0020     		movs	r0, #0
-  79 0008 FFF7FEFF 		bl	printNotif
-  15:diss_oxy.c    ****     // UART_Telit_GetRxBufferSize() returns the number of received bytes available in the RX buffer
-  16:diss_oxy.c    ****     while(Diss_Oxygen_UART_GetRxBufferSize() ==1){
-  80              		.loc 1 16 0
-  81 000c 12E0     		b	.L2
-  82              	.L3:
-  17:diss_oxy.c    ****         do_received_string[do_string_index]=UART_Telit_GetChar();
-  83              		.loc 1 17 0
-  84 000e 0E4B     		ldr	r3, .L4+4
-  85 0010 B3F90030 		ldrsh	r3, [r3]
-  86 0014 1C46     		mov	r4, r3
-  87 0016 FFF7FEFF 		bl	UART_Telit_GetChar
-  88 001a 0346     		mov	r3, r0
-  89 001c 1A46     		mov	r2, r3
-  90 001e 0B4B     		ldr	r3, .L4+8
-  91 0020 1A55     		strb	r2, [r3, r4]
-  18:diss_oxy.c    ****         do_string_index++;
-  92              		.loc 1 18 0
-  93 0022 094B     		ldr	r3, .L4+4
-  94 0024 B3F90030 		ldrsh	r3, [r3]
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 3
+   8:diss_oxy.c    **** CY_ISR_PROTO(DO_ISR); // Declares a custom ISR function "isr_telit_rx" using the CY_ISR_PROTO macro
+   9:diss_oxy.c    **** 
+  10:diss_oxy.c    **** // Define the custom ISR function "isr_telit_rx" using the CY_ISR macro
+  11:diss_oxy.c    **** // Get each character from Telit and saves it to uart_received_string
+  12:diss_oxy.c    **** CY_ISR(DO_ISR){      
+  60              		.loc 1 12 0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 1, uses_anonymous_args = 0
+  64 0000 98B5     		push	{r3, r4, r7, lr}
+  65              		.cfi_def_cfa_offset 16
+  66              		.cfi_offset 3, -16
+  67              		.cfi_offset 4, -12
+  68              		.cfi_offset 7, -8
+  69              		.cfi_offset 14, -4
+  70 0002 00AF     		add	r7, sp, #0
+  71              		.cfi_def_cfa_register 7
+  13:diss_oxy.c    ****     // UART_Telit_GetRxBufferSize() returns the number of received bytes available in the RX buffer
+  14:diss_oxy.c    **** 
+  15:diss_oxy.c    ****     while(DO_UART_GetRxBufferSize()==1){
+  72              		.loc 1 15 0
+  73 0004 12E0     		b	.L2
+  74              	.L3:
+  16:diss_oxy.c    ****         //char rx = DO_UART_GetChar();
+  17:diss_oxy.c    ****         do_received_string[do_string_index]=DO_UART_GetChar();
+  75              		.loc 1 17 0
+  76 0006 0D4B     		ldr	r3, .L4
+  77 0008 B3F90030 		ldrsh	r3, [r3]
+  78 000c 1C46     		mov	r4, r3
+  79 000e FFF7FEFF 		bl	DO_UART_GetChar
+  80 0012 0346     		mov	r3, r0
+  81 0014 1A46     		mov	r2, r3
+  82 0016 0A4B     		ldr	r3, .L4+4
+  83 0018 1A55     		strb	r2, [r3, r4]
+  18:diss_oxy.c    ****         //printNotif(NOTIF_TYPE_EVENT, "received char: %c", rx);
+  19:diss_oxy.c    ****         do_string_index++;
+  84              		.loc 1 19 0
+  85 001a 084B     		ldr	r3, .L4
+  86 001c B3F90030 		ldrsh	r3, [r3]
+  87 0020 9BB2     		uxth	r3, r3
+  88 0022 0133     		adds	r3, r3, #1
+  89 0024 9BB2     		uxth	r3, r3
+  90 0026 1AB2     		sxth	r2, r3
+  91 0028 044B     		ldr	r3, .L4
+  92 002a 1A80     		strh	r2, [r3]	@ movhi
+  93              	.L2:
+  15:diss_oxy.c    ****         //char rx = DO_UART_GetChar();
+  94              		.loc 1 15 0
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 3
 
 
-  95 0028 9BB2     		uxth	r3, r3
-  96 002a 0133     		adds	r3, r3, #1
-  97 002c 9BB2     		uxth	r3, r3
-  98 002e 1AB2     		sxth	r2, r3
-  99 0030 054B     		ldr	r3, .L4+4
- 100 0032 1A80     		strh	r2, [r3]	@ movhi
- 101              	.L2:
-  16:diss_oxy.c    ****         do_received_string[do_string_index]=UART_Telit_GetChar();
- 102              		.loc 1 16 0
- 103 0034 FFF7FEFF 		bl	Diss_Oxygen_UART_GetRxBufferSize
- 104 0038 0346     		mov	r3, r0
- 105 003a 012B     		cmp	r3, #1
- 106 003c E7D0     		beq	.L3
-  19:diss_oxy.c    ****         //printNotif(NOTIF_TYPE_EVENT, "appended char");
-  20:diss_oxy.c    ****     }
-  21:diss_oxy.c    ****    
+  95 002c FFF7FEFF 		bl	DO_UART_GetRxBufferSize
+  96 0030 0346     		mov	r3, r0
+  97 0032 012B     		cmp	r3, #1
+  98 0034 E7D0     		beq	.L3
+  20:diss_oxy.c    **** 
+  21:diss_oxy.c    ****     }
   22:diss_oxy.c    **** 
   23:diss_oxy.c    **** }
- 107              		.loc 1 23 0
- 108 003e 00BF     		nop
- 109 0040 98BD     		pop	{r3, r4, r7, pc}
- 110              	.L5:
- 111 0042 00BF     		.align	2
- 112              	.L4:
- 113 0044 00000000 		.word	.LC0
- 114 0048 00000000 		.word	do_string_index
- 115 004c 00000000 		.word	do_received_string
- 116              		.cfi_endproc
- 117              	.LFE64:
- 118              		.size	DO_ISR, .-DO_ISR
- 119              		.section	.rodata
- 120              		.align	2
- 121              	.LC1:
- 122 000c 54455354 		.ascii	"TEST_DO_SENSOR\000"
- 122      5F444F5F 
- 122      53454E53 
- 122      4F5200
- 123 001b 00       		.align	2
- 124              	.LC2:
- 125 001c 432C310D 		.ascii	"C,1\015\012\000"
- 125      0A00
- 126 0022 0000     		.align	2
- 127              	.LC3:
- 128 0024 696E743A 		.ascii	"int: %i\000"
- 128      20256900 
- 129              		.align	2
- 130              	.LC4:
- 131 002c 63686172 		.ascii	"char: %c\000"
- 131      3A202563 
- 131      00
- 132 0035 000000   		.align	2
- 133              	.LC5:
- 134 0038 696E743A 		.ascii	"int: %li\000"
- 134      20256C69 
- 134      00
- 135 0041 000000   		.align	2
- 136              	.LC6:
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 4
-
-
- 137 0044 257300   		.ascii	"%s\000"
- 138 0047 00       		.align	2
- 139              	.LC7:
- 140 0048 256300   		.ascii	"%c\000"
- 141 004b 00       		.align	2
- 142              	.LC8:
- 143 004c 2A2A2A2A 		.ascii	"*****************\000"
- 143      2A2A2A2A 
- 143      2A2A2A2A 
- 143      2A2A2A2A 
- 143      2A00
- 144              		.section	.text.DO_sensor_test,"ax",%progbits
- 145              		.align	2
- 146              		.global	DO_sensor_test
- 147              		.thumb
- 148              		.thumb_func
- 149              		.type	DO_sensor_test, %function
- 150              	DO_sensor_test:
- 151              	.LFB65:
+  99              		.loc 1 23 0
+ 100 0036 00BF     		nop
+ 101 0038 98BD     		pop	{r3, r4, r7, pc}
+ 102              	.L5:
+ 103 003a 00BF     		.align	2
+ 104              	.L4:
+ 105 003c 00000000 		.word	do_string_index
+ 106 0040 00000000 		.word	do_received_string
+ 107              		.cfi_endproc
+ 108              	.LFE64:
+ 109              		.size	DO_ISR, .-DO_ISR
+ 110              		.section	.rodata
+ 111              		.align	2
+ 112              	.LC0:
+ 113 0000 432C3000 		.ascii	"C,0\000"
+ 114              		.align	2
+ 115              	.LC1:
+ 116 0004 5200     		.ascii	"R\000"
+ 117 0006 0000     		.align	2
+ 118              	.LC2:
+ 119 0008 0D00     		.ascii	"\015\000"
+ 120              		.global	__aeabi_d2f
+ 121              		.section	.text.DO_read,"ax",%progbits
+ 122              		.align	2
+ 123              		.global	DO_read
+ 124              		.thumb
+ 125              		.thumb_func
+ 126              		.type	DO_read, %function
+ 127              	DO_read:
+ 128              	.LFB65:
   24:diss_oxy.c    **** 
-  25:diss_oxy.c    **** test_t DO_sensor_test(){
- 152              		.loc 1 25 0
- 153              		.cfi_startproc
- 154              		@ args = 0, pretend = 0, frame = 400
- 155              		@ frame_needed = 1, uses_anonymous_args = 0
- 156 0000 90B5     		push	{r4, r7, lr}
- 157              		.cfi_def_cfa_offset 12
- 158              		.cfi_offset 4, -12
- 159              		.cfi_offset 7, -8
- 160              		.cfi_offset 14, -4
- 161 0002 E5B0     		sub	sp, sp, #404
- 162              		.cfi_def_cfa_offset 416
- 163 0004 00AF     		add	r7, sp, #0
- 164              		.cfi_def_cfa_register 7
- 165 0006 3B1D     		adds	r3, r7, #4
- 166 0008 1860     		str	r0, [r3]
-  26:diss_oxy.c    **** 
-  27:diss_oxy.c    ****     test_t test;
+  25:diss_oxy.c    **** DO_sensor_t DO_read(){
+ 129              		.loc 1 25 0
+ 130              		.cfi_startproc
+ 131              		@ args = 0, pretend = 0, frame = 72
+ 132              		@ frame_needed = 1, uses_anonymous_args = 0
+ 133 0000 B0B5     		push	{r4, r5, r7, lr}
+ 134              		.cfi_def_cfa_offset 16
+ 135              		.cfi_offset 4, -16
+ 136              		.cfi_offset 5, -12
+ 137              		.cfi_offset 7, -8
+ 138              		.cfi_offset 14, -4
+ 139 0002 92B0     		sub	sp, sp, #72
+ 140              		.cfi_def_cfa_offset 88
+ 141 0004 00AF     		add	r7, sp, #0
+ 142              		.cfi_def_cfa_register 7
+ 143 0006 7860     		str	r0, [r7, #4]
+  26:diss_oxy.c    ****     
+  27:diss_oxy.c    ****     DO_sensor_t output;
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 4
+
+
   28:diss_oxy.c    ****     
-  29:diss_oxy.c    ****     uart_clear();
- 167              		.loc 1 29 0
- 168 000a FFF7FEFF 		bl	uart_clear
-  30:diss_oxy.c    ****     // forked and edited from level_sensor.c
-  31:diss_oxy.c    ****     test.status = 0; // set test status to zero
- 169              		.loc 1 31 0
- 170 000e 07F10803 		add	r3, r7, #8
- 171 0012 0022     		movs	r2, #0
- 172 0014 83F88020 		strb	r2, [r3, #128]
-  32:diss_oxy.c    ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_DO_SENSOR");
- 173              		.loc 1 32 0
- 174 0018 07F10803 		add	r3, r7, #8
- 175 001c 4E4A     		ldr	r2, .L10
- 176 001e 1C46     		mov	r4, r3
- 177 0020 1346     		mov	r3, r2
- 178 0022 0FCB     		ldmia	r3, {r0, r1, r2, r3}
- 179 0024 07C4     		stmia	r4!, {r0, r1, r2}
- 180 0026 2380     		strh	r3, [r4]	@ movhi
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 5
-
-
- 181 0028 0234     		adds	r4, r4, #2
- 182 002a 1B0C     		lsrs	r3, r3, #16
- 183 002c 2370     		strb	r3, [r4]
-  33:diss_oxy.c    ****    
-  34:diss_oxy.c    ****     
-  35:diss_oxy.c    ****     // Start sensor power, uart, and isr
-  36:diss_oxy.c    ****     Level_Sensor_Power_Write(ON);   // Pulls Level Sensor power pin high (turns it on).
- 184              		.loc 1 36 0
- 185 002e 0120     		movs	r0, #1
- 186 0030 FFF7FEFF 		bl	Level_Sensor_Power_Write
-  37:diss_oxy.c    ****     CyDelay(200u); // Sensor bootup sequence ~200ms -- senosor will spit out ID info, but we don't 
- 187              		.loc 1 37 0
- 188 0034 C820     		movs	r0, #200
- 189 0036 FFF7FEFF 		bl	CyDelay
-  38:diss_oxy.c    ****     DO_RX_SetDriveMode(PIN_DM_DIG_HIZ); // RX_SetDriveMode(): Sets the drive mode for each of the P
- 190              		.loc 1 38 0
- 191 003a 0220     		movs	r0, #2
- 192 003c FFF7FEFF 		bl	DO_RX_SetDriveMode
-  39:diss_oxy.c    ****     Diss_Oxygen_UART_Start(); // Level_Sensor_UART_Start() sets the initVar variable, calls the Lev
- 193              		.loc 1 39 0
- 194 0040 FFF7FEFF 		bl	Diss_Oxygen_UART_Start
-  40:diss_oxy.c    ****     DO_ISR_StartEx(DO_ISR); // Sets up the interrupt and enables it.
- 195              		.loc 1 40 0
- 196 0044 4548     		ldr	r0, .L10+4
- 197 0046 FFF7FEFF 		bl	DO_ISR_StartEx
-  41:diss_oxy.c    ****     Diss_Oxygen_UART_PutString("C,1\r\n");
- 198              		.loc 1 41 0
- 199 004a 4548     		ldr	r0, .L10+8
- 200 004c FFF7FEFF 		bl	Diss_Oxygen_UART_PutString
- 201              	.LBB2:
-  42:diss_oxy.c    ****     
+  29:diss_oxy.c    ****     DO_UART_Start();
+ 144              		.loc 1 29 0
+ 145 0008 FFF7FEFF 		bl	DO_UART_Start
+  30:diss_oxy.c    ****     DO_UART_ClearRxBuffer();
+ 146              		.loc 1 30 0
+ 147 000c FFF7FEFF 		bl	DO_UART_ClearRxBuffer
+  31:diss_oxy.c    ****     DO_ISR_StartEx(DO_ISR);
+ 148              		.loc 1 31 0
+ 149 0010 3448     		ldr	r0, .L12
+ 150 0012 FFF7FEFF 		bl	DO_ISR_StartEx
+  32:diss_oxy.c    ****     Level_Sensor_Power_Write(ON); // Pulls pwr pin high (turns it on).
+ 151              		.loc 1 32 0
+ 152 0016 0120     		movs	r0, #1
+ 153 0018 FFF7FEFF 		bl	Level_Sensor_Power_Write
+  33:diss_oxy.c    ****     DO_UART_PutString("C,0"); // turn off automated sampling
+ 154              		.loc 1 33 0
+ 155 001c 3248     		ldr	r0, .L12+4
+ 156 001e FFF7FEFF 		bl	DO_UART_PutString
+  34:diss_oxy.c    ****     CyDelay(2000u);
+ 157              		.loc 1 34 0
+ 158 0022 4FF4FA60 		mov	r0, #2000
+ 159 0026 FFF7FEFF 		bl	CyDelay
+ 160              	.LBB2:
+  35:diss_oxy.c    ****     
+  36:diss_oxy.c    ****     
+  37:diss_oxy.c    ****     // get the tokens we actually want which are readings
+  38:diss_oxy.c    **** 
+  39:diss_oxy.c    ****     for (int i = 0; i < 11; i++){
+ 161              		.loc 1 39 0
+ 162 002a 0023     		movs	r3, #0
+ 163 002c 7B64     		str	r3, [r7, #68]
+ 164 002e 09E0     		b	.L7
+ 165              	.L8:
+  40:diss_oxy.c    ****         DO_UART_PutString("R"); // take one reading
+ 166              		.loc 1 40 0 discriminator 3
+ 167 0030 2E48     		ldr	r0, .L12+8
+ 168 0032 FFF7FEFF 		bl	DO_UART_PutString
+  41:diss_oxy.c    ****         CyDelay(1000u);
+ 169              		.loc 1 41 0 discriminator 3
+ 170 0036 4FF47A70 		mov	r0, #1000
+ 171 003a FFF7FEFF 		bl	CyDelay
+  39:diss_oxy.c    ****         DO_UART_PutString("R"); // take one reading
+ 172              		.loc 1 39 0 discriminator 3
+ 173 003e 7B6C     		ldr	r3, [r7, #68]
+ 174 0040 0133     		adds	r3, r3, #1
+ 175 0042 7B64     		str	r3, [r7, #68]
+ 176              	.L7:
+  39:diss_oxy.c    ****         DO_UART_PutString("R"); // take one reading
+ 177              		.loc 1 39 0 is_stmt 0 discriminator 1
+ 178 0044 7B6C     		ldr	r3, [r7, #68]
+ 179 0046 0A2B     		cmp	r3, #10
+ 180 0048 F2DD     		ble	.L8
+ 181              	.LBE2:
+  42:diss_oxy.c    ****     }
   43:diss_oxy.c    **** 
-  44:diss_oxy.c    ****     for (int i = 0;i < 2;i++){
- 202              		.loc 1 44 0
- 203 0050 0023     		movs	r3, #0
- 204 0052 C7F88C31 		str	r3, [r7, #396]
- 205 0056 4FE0     		b	.L7
- 206              	.L8:
-  45:diss_oxy.c    ****         //Diss_Oxygen_UART_PutString("R\r\n");
-  46:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "int: %i",Diss_Oxygen_UART_GetChar());
- 207              		.loc 1 46 0 discriminator 3
- 208 0058 FFF7FEFF 		bl	Diss_Oxygen_UART_GetChar
- 209 005c 0346     		mov	r3, r0
- 210 005e 1A46     		mov	r2, r3
- 211 0060 4049     		ldr	r1, .L10+12
- 212 0062 0020     		movs	r0, #0
- 213 0064 FFF7FEFF 		bl	printNotif
-  47:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "char: %c",Diss_Oxygen_UART_GetChar());
- 214              		.loc 1 47 0 discriminator 3
- 215 0068 FFF7FEFF 		bl	Diss_Oxygen_UART_GetChar
- 216 006c 0346     		mov	r3, r0
- 217 006e 1A46     		mov	r2, r3
- 218 0070 3D49     		ldr	r1, .L10+16
- 219 0072 0020     		movs	r0, #0
- 220 0074 FFF7FEFF 		bl	printNotif
-  48:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "int: %li",Diss_Oxygen_UART_GetByte());
- 221              		.loc 1 48 0 discriminator 3
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 6
+  44:diss_oxy.c    ****     // eat the first two tokens because they're not measurements
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 5
 
 
- 222 0078 FFF7FEFF 		bl	Diss_Oxygen_UART_GetByte
- 223 007c 0346     		mov	r3, r0
- 224 007e 1A46     		mov	r2, r3
- 225 0080 3A49     		ldr	r1, .L10+20
- 226 0082 0020     		movs	r0, #0
- 227 0084 FFF7FEFF 		bl	printNotif
-  49:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "char: %c",Diss_Oxygen_UART_GetByte());
- 228              		.loc 1 49 0 discriminator 3
- 229 0088 FFF7FEFF 		bl	Diss_Oxygen_UART_GetByte
- 230 008c 0346     		mov	r3, r0
- 231 008e 1A46     		mov	r2, r3
- 232 0090 3549     		ldr	r1, .L10+16
- 233 0092 0020     		movs	r0, #0
- 234 0094 FFF7FEFF 		bl	printNotif
-  50:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "int: %i",Diss_Oxygen_UART_ReadRxData());
- 235              		.loc 1 50 0 discriminator 3
- 236 0098 FFF7FEFF 		bl	Diss_Oxygen_UART_ReadRxData
- 237 009c 0346     		mov	r3, r0
- 238 009e 1A46     		mov	r2, r3
- 239 00a0 3049     		ldr	r1, .L10+12
- 240 00a2 0020     		movs	r0, #0
- 241 00a4 FFF7FEFF 		bl	printNotif
-  51:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "char: %c",Diss_Oxygen_UART_ReadRxData());
- 242              		.loc 1 51 0 discriminator 3
- 243 00a8 FFF7FEFF 		bl	Diss_Oxygen_UART_ReadRxData
- 244 00ac 0346     		mov	r3, r0
- 245 00ae 1A46     		mov	r2, r3
- 246 00b0 2D49     		ldr	r1, .L10+16
- 247 00b2 0020     		movs	r0, #0
- 248 00b4 FFF7FEFF 		bl	printNotif
-  52:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "%s", do_received_string);
- 249              		.loc 1 52 0 discriminator 3
- 250 00b8 2D4A     		ldr	r2, .L10+24
- 251 00ba 2E49     		ldr	r1, .L10+28
- 252 00bc 0020     		movs	r0, #0
- 253 00be FFF7FEFF 		bl	printNotif
-  53:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "%c", do_received_string);
- 254              		.loc 1 53 0 discriminator 3
- 255 00c2 2B4A     		ldr	r2, .L10+24
- 256 00c4 2C49     		ldr	r1, .L10+32
- 257 00c6 0020     		movs	r0, #0
- 258 00c8 FFF7FEFF 		bl	printNotif
-  54:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "%c", do_received_string[0]);
- 259              		.loc 1 54 0 discriminator 3
- 260 00cc 284B     		ldr	r3, .L10+24
- 261 00ce 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 262 00d0 1A46     		mov	r2, r3
- 263 00d2 2949     		ldr	r1, .L10+32
- 264 00d4 0020     		movs	r0, #0
- 265 00d6 FFF7FEFF 		bl	printNotif
-  55:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT, "*****************");
- 266              		.loc 1 55 0 discriminator 3
- 267 00da 2849     		ldr	r1, .L10+36
- 268 00dc 0020     		movs	r0, #0
- 269 00de FFF7FEFF 		bl	printNotif
-  56:diss_oxy.c    ****         Diss_Oxygen_UART_ClearRxBuffer(); // clear the buffer
- 270              		.loc 1 56 0 discriminator 3
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 7
+  45:diss_oxy.c    ****     char *token;
+  46:diss_oxy.c    ****     
+  47:diss_oxy.c    ****     token = strtok(do_received_string, "\r");
+ 182              		.loc 1 47 0 is_stmt 1
+ 183 004a 2949     		ldr	r1, .L12+12
+ 184 004c 2948     		ldr	r0, .L12+16
+ 185 004e FFF7FEFF 		bl	strtok
+ 186 0052 3864     		str	r0, [r7, #64]
+  48:diss_oxy.c    ****     token = strtok(NULL, "\r"); // eat *RS/r
+ 187              		.loc 1 48 0
+ 188 0054 2649     		ldr	r1, .L12+12
+ 189 0056 0020     		movs	r0, #0
+ 190 0058 FFF7FEFF 		bl	strtok
+ 191 005c 3864     		str	r0, [r7, #64]
+  49:diss_oxy.c    ****     token = strtok(NULL, "\r"); // eat RE/r
+ 192              		.loc 1 49 0
+ 193 005e 2449     		ldr	r1, .L12+12
+ 194 0060 0020     		movs	r0, #0
+ 195 0062 FFF7FEFF 		bl	strtok
+ 196 0066 3864     		str	r0, [r7, #64]
+  50:diss_oxy.c    ****     uint8 i = 0;
+ 197              		.loc 1 50 0
+ 198 0068 0023     		movs	r3, #0
+ 199 006a 87F83F30 		strb	r3, [r7, #63]
+  51:diss_oxy.c    ****     float32 reading;
+  52:diss_oxy.c    ****     while( token != NULL ) {
+ 200              		.loc 1 52 0
+ 201 006e 1DE0     		b	.L9
+ 202              	.L10:
+  53:diss_oxy.c    ****         reading = atof(token);
+ 203              		.loc 1 53 0
+ 204 0070 386C     		ldr	r0, [r7, #64]
+ 205 0072 FFF7FEFF 		bl	atof
+ 206 0076 0346     		mov	r3, r0
+ 207 0078 0C46     		mov	r4, r1
+ 208 007a 1846     		mov	r0, r3
+ 209 007c 2146     		mov	r1, r4
+ 210 007e FFF7FEFF 		bl	__aeabi_d2f
+ 211 0082 0346     		mov	r3, r0
+ 212 0084 BB63     		str	r3, [r7, #56]	@ float
+  54:diss_oxy.c    ****         output.all_do_readings[i] = reading;
+ 213              		.loc 1 54 0
+ 214 0086 97F83F30 		ldrb	r3, [r7, #63]	@ zero_extendqisi2
+ 215 008a 9B00     		lsls	r3, r3, #2
+ 216 008c 07F14802 		add	r2, r7, #72
+ 217 0090 1344     		add	r3, r3, r2
+ 218 0092 BA6B     		ldr	r2, [r7, #56]	@ float
+ 219 0094 43F8402C 		str	r2, [r3, #-64]	@ float
+  55:diss_oxy.c    ****         token = strtok(NULL, "\r"); // This "NULL" says to continue where you left off last time.  
+ 220              		.loc 1 55 0
+ 221 0098 1549     		ldr	r1, .L12+12
+ 222 009a 0020     		movs	r0, #0
+ 223 009c FFF7FEFF 		bl	strtok
+ 224 00a0 3864     		str	r0, [r7, #64]
+  56:diss_oxy.c    ****         i++;
+ 225              		.loc 1 56 0
+ 226 00a2 97F83F30 		ldrb	r3, [r7, #63]	@ zero_extendqisi2
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 6
 
 
- 271 00e2 FFF7FEFF 		bl	Diss_Oxygen_UART_ClearRxBuffer
-  57:diss_oxy.c    ****         CyDelay(2000u);
- 272              		.loc 1 57 0 discriminator 3
- 273 00e6 4FF4FA60 		mov	r0, #2000
- 274 00ea FFF7FEFF 		bl	CyDelay
-  44:diss_oxy.c    ****         //Diss_Oxygen_UART_PutString("R\r\n");
- 275              		.loc 1 44 0 discriminator 3
- 276 00ee D7F88C31 		ldr	r3, [r7, #396]
- 277 00f2 0133     		adds	r3, r3, #1
- 278 00f4 C7F88C31 		str	r3, [r7, #396]
- 279              	.L7:
-  44:diss_oxy.c    ****         //Diss_Oxygen_UART_PutString("R\r\n");
- 280              		.loc 1 44 0 is_stmt 0 discriminator 1
- 281 00f8 D7F88C31 		ldr	r3, [r7, #396]
- 282 00fc 012B     		cmp	r3, #1
- 283 00fe ABDD     		ble	.L8
- 284              	.LBE2:
-  58:diss_oxy.c    ****     }
-  59:diss_oxy.c    ****     
-  60:diss_oxy.c    ****     //stop all sensor processes
-  61:diss_oxy.c    ****     Diss_Oxygen_UART_Stop(); // Disables the UART operation.
- 285              		.loc 1 61 0 is_stmt 1
- 286 0100 FFF7FEFF 		bl	Diss_Oxygen_UART_Stop
-  62:diss_oxy.c    ****     DO_ISR_Stop(); // Disables and removes the interrupt.
- 287              		.loc 1 62 0
- 288 0104 FFF7FEFF 		bl	DO_ISR_Stop
-  63:diss_oxy.c    ****     Level_Sensor_Power_Write(OFF); // Pulls Level Sensor Power pin low (turns it off).
- 289              		.loc 1 63 0
- 290 0108 0020     		movs	r0, #0
- 291 010a FFF7FEFF 		bl	Level_Sensor_Power_Write
-  64:diss_oxy.c    ****     // RX_SetDriveMode(): Sets the drive mode for each of the Pins component's pins.
-  65:diss_oxy.c    ****     // String Drive Mode means it will only be outputting a voltage (don't send any data) when pull
-  66:diss_oxy.c    ****     // UART in PSOC starts high. Then pulls low to get data. When turn sensor off, still using powe
-  67:diss_oxy.c    ****     // So turning it to Strong Drive has it stay low.
-  68:diss_oxy.c    ****     DO_RX_SetDriveMode(PIN_DM_STRONG);
- 292              		.loc 1 68 0
- 293 010e 0C20     		movs	r0, #12
- 294 0110 FFF7FEFF 		bl	DO_RX_SetDriveMode
-  69:diss_oxy.c    ****     // Stops writing the value to the physical port.
-  70:diss_oxy.c    ****     // Just because turn power of sensor off, pin could still be high and getting power. This ensur
-  71:diss_oxy.c    ****     DO_RX_Write(OFF);
- 295              		.loc 1 71 0
- 296 0114 0020     		movs	r0, #0
- 297 0116 FFF7FEFF 		bl	DO_RX_Write
-  72:diss_oxy.c    ****     snprintf(test.reason,sizeof(test.reason), "%c",Diss_Oxygen_UART_ReadRxStatus());
- 298              		.loc 1 72 0
- 299 011a FFF7FEFF 		bl	Diss_Oxygen_UART_ReadRxStatus
- 300 011e 0346     		mov	r3, r0
- 301 0120 1A46     		mov	r2, r3
- 302 0122 07F10803 		add	r3, r7, #8
- 303 0126 03F18100 		add	r0, r3, #129
- 304 012a 1346     		mov	r3, r2
- 305 012c 124A     		ldr	r2, .L10+32
- 306 012e 4FF48071 		mov	r1, #256
- 307 0132 FFF7FEFF 		bl	snprintf
-  73:diss_oxy.c    **** 
-  74:diss_oxy.c    ****     return test;
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 8
+ 227 00a6 0133     		adds	r3, r3, #1
+ 228 00a8 87F83F30 		strb	r3, [r7, #63]
+ 229              	.L9:
+  52:diss_oxy.c    ****         reading = atof(token);
+ 230              		.loc 1 52 0
+ 231 00ac 3B6C     		ldr	r3, [r7, #64]
+ 232 00ae 002B     		cmp	r3, #0
+ 233 00b0 DED1     		bne	.L10
+  57:diss_oxy.c    ****     }
+  58:diss_oxy.c    **** 
+  59:diss_oxy.c    ****     // readings array should have eleven nice floats now
+  60:diss_oxy.c    ****    
+  61:diss_oxy.c    ****     output.do_reading = float_find_median(output.all_do_readings, 11);
+ 234              		.loc 1 61 0
+ 235 00b2 07F10803 		add	r3, r7, #8
+ 236 00b6 0B21     		movs	r1, #11
+ 237 00b8 1846     		mov	r0, r3
+ 238 00ba FFF7FEFF 		bl	float_find_median
+ 239 00be 0346     		mov	r3, r0
+ 240 00c0 7B63     		str	r3, [r7, #52]	@ float
+  62:diss_oxy.c    **** 
+  63:diss_oxy.c    ****     return output;
+ 241              		.loc 1 63 0
+ 242 00c2 7B68     		ldr	r3, [r7, #4]
+ 243 00c4 1D46     		mov	r5, r3
+ 244 00c6 07F10804 		add	r4, r7, #8
+ 245 00ca 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 246 00cc 0FC5     		stmia	r5!, {r0, r1, r2, r3}
+ 247 00ce 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 248 00d0 0FC5     		stmia	r5!, {r0, r1, r2, r3}
+ 249 00d2 94E80F00 		ldmia	r4, {r0, r1, r2, r3}
+ 250 00d6 85E80F00 		stmia	r5, {r0, r1, r2, r3}
+  64:diss_oxy.c    **** }
+ 251              		.loc 1 64 0
+ 252 00da 7868     		ldr	r0, [r7, #4]
+ 253 00dc 4837     		adds	r7, r7, #72
+ 254              		.cfi_def_cfa_offset 16
+ 255 00de BD46     		mov	sp, r7
+ 256              		.cfi_def_cfa_register 13
+ 257              		@ sp needed
+ 258 00e0 B0BD     		pop	{r4, r5, r7, pc}
+ 259              	.L13:
+ 260 00e2 00BF     		.align	2
+ 261              	.L12:
+ 262 00e4 00000000 		.word	DO_ISR
+ 263 00e8 00000000 		.word	.LC0
+ 264 00ec 04000000 		.word	.LC1
+ 265 00f0 08000000 		.word	.LC2
+ 266 00f4 00000000 		.word	do_received_string
+ 267              		.cfi_endproc
+ 268              	.LFE65:
+ 269              		.size	DO_read, .-DO_read
+ 270              		.section	.rodata
+ 271 000a 0000     		.align	2
+ 272              	.LC3:
+ 273 000c 54455354 		.ascii	"TEST_DO_SENSOR\000"
+ 273      5F444F5F 
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 7
 
 
- 308              		.loc 1 74 0
- 309 0136 3B1D     		adds	r3, r7, #4
- 310 0138 1A68     		ldr	r2, [r3]
- 311 013a 07F10803 		add	r3, r7, #8
- 312 013e 1046     		mov	r0, r2
- 313 0140 1946     		mov	r1, r3
- 314 0142 40F28113 		movw	r3, #385
- 315 0146 1A46     		mov	r2, r3
- 316 0148 FFF7FEFF 		bl	memcpy
-  75:diss_oxy.c    **** }...
- 317              		.loc 1 75 0
- 318 014c 3B1D     		adds	r3, r7, #4
- 319 014e 1868     		ldr	r0, [r3]
- 320 0150 07F5CA77 		add	r7, r7, #404
- 321              		.cfi_def_cfa_offset 12
- 322 0154 BD46     		mov	sp, r7
- 323              		.cfi_def_cfa_register 13
- 324              		@ sp needed
- 325 0156 90BD     		pop	{r4, r7, pc}
- 326              	.L11:
- 327              		.align	2
- 328              	.L10:
- 329 0158 0C000000 		.word	.LC1
- 330 015c 00000000 		.word	DO_ISR
- 331 0160 1C000000 		.word	.LC2
- 332 0164 24000000 		.word	.LC3
- 333 0168 2C000000 		.word	.LC4
- 334 016c 38000000 		.word	.LC5
- 335 0170 00000000 		.word	do_received_string
- 336 0174 44000000 		.word	.LC6
- 337 0178 48000000 		.word	.LC7
- 338 017c 4C000000 		.word	.LC8
- 339              		.cfi_endproc
- 340              	.LFE65:
- 341              		.size	DO_sensor_test, .-DO_sensor_test
- 342              		.text
- 343              	.Letext0:
- 344              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 345              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 346              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 347              		.file 5 "testing.h"
- 348              		.file 6 "data.h"
- 349              		.file 7 "modem.h"
- 350              		.file 8 "notoriOS.h"
- 351              		.file 9 "Generated_Source\\PSoC5/core_cm3.h"
- 352              		.section	.debug_info,"",%progbits
- 353              	.Ldebug_info0:
- 354 0000 55050000 		.4byte	0x555
- 355 0004 0400     		.2byte	0x4
- 356 0006 00000000 		.4byte	.Ldebug_abbrev0
- 357 000a 04       		.byte	0x4
- 358 000b 01       		.uleb128 0x1
- 359 000c 71000000 		.4byte	.LASF79
- 360 0010 0C       		.byte	0xc
- 361 0011 66000000 		.4byte	.LASF80
- 362 0015 BB010000 		.4byte	.LASF81
- 363 0019 00000000 		.4byte	.Ldebug_ranges0+0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 9
+ 273      53454E53 
+ 273      4F5200
+ 274              		.global	__aeabi_f2d
+ 275 001b 00       		.align	2
+ 276              	.LC4:
+ 277 001c 6D656469 		.ascii	"median reading:%f \015\012all readings: %f\015\012%"
+ 277      616E2072 
+ 277      65616469 
+ 277      6E673A25 
+ 277      66200D0A 
+ 278 0043 660D0A25 		.ascii	"f\015\012%f\015\012%f\015\012%f\015\012%f\015\012%f"
+ 278      660D0A25 
+ 278      660D0A25 
+ 278      660D0A25 
+ 278      660D0A25 
+ 279 0058 0D0A2566 		.ascii	"\015\012%f\015\012%f\015\012%f\015\012%f\015\012\000"
+ 279      0D0A2566 
+ 279      0D0A2566 
+ 279      0D0A2566 
+ 279      0D0A00
+ 280              		.section	.text.DO_sensor_test,"ax",%progbits
+ 281              		.align	2
+ 282              		.global	DO_sensor_test
+ 283              		.thumb
+ 284              		.thumb_func
+ 285              		.type	DO_sensor_test, %function
+ 286              	DO_sensor_test:
+ 287              	.LFB66:
+  65:diss_oxy.c    **** 
+  66:diss_oxy.c    **** test_t DO_sensor_test(){
+ 288              		.loc 1 66 0
+ 289              		.cfi_startproc
+ 290              		@ args = 0, pretend = 0, frame = 512
+ 291              		@ frame_needed = 1, uses_anonymous_args = 0
+ 292 0000 2DE9B04F 		push	{r4, r5, r7, r8, r9, r10, fp, lr}
+ 293              		.cfi_def_cfa_offset 32
+ 294              		.cfi_offset 4, -32
+ 295              		.cfi_offset 5, -28
+ 296              		.cfi_offset 7, -24
+ 297              		.cfi_offset 8, -20
+ 298              		.cfi_offset 9, -16
+ 299              		.cfi_offset 10, -12
+ 300              		.cfi_offset 11, -8
+ 301              		.cfi_offset 14, -4
+ 302 0004 ADF5187D 		sub	sp, sp, #608
+ 303              		.cfi_def_cfa_offset 640
+ 304 0008 18AF     		add	r7, sp, #96
+ 305              		.cfi_def_cfa 7, 544
+ 306 000a 07F14403 		add	r3, r7, #68
+ 307 000e 1860     		str	r0, [r3]
+  67:diss_oxy.c    **** 
+  68:diss_oxy.c    ****     
+  69:diss_oxy.c    ****     DO_sensor_t results = DO_read();
+ 308              		.loc 1 69 0
+ 309 0010 07F5E873 		add	r3, r7, #464
+ 310 0014 1846     		mov	r0, r3
+ 311 0016 FFF7FEFF 		bl	DO_read
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 8
 
 
- 364 001d 00000000 		.4byte	0
- 365 0021 00000000 		.4byte	.Ldebug_line0
- 366 0025 02       		.uleb128 0x2
- 367 0026 01       		.byte	0x1
- 368 0027 06       		.byte	0x6
- 369 0028 64020000 		.4byte	.LASF0
- 370 002c 02       		.uleb128 0x2
- 371 002d 01       		.byte	0x1
- 372 002e 08       		.byte	0x8
- 373 002f 2E020000 		.4byte	.LASF1
- 374 0033 02       		.uleb128 0x2
- 375 0034 02       		.byte	0x2
- 376 0035 05       		.byte	0x5
- 377 0036 4B000000 		.4byte	.LASF2
- 378 003a 02       		.uleb128 0x2
- 379 003b 02       		.byte	0x2
- 380 003c 07       		.byte	0x7
- 381 003d 14030000 		.4byte	.LASF3
- 382 0041 03       		.uleb128 0x3
- 383 0042 1F040000 		.4byte	.LASF9
- 384 0046 02       		.byte	0x2
- 385 0047 3F       		.byte	0x3f
- 386 0048 4C000000 		.4byte	0x4c
- 387 004c 02       		.uleb128 0x2
- 388 004d 04       		.byte	0x4
- 389 004e 05       		.byte	0x5
- 390 004f 97010000 		.4byte	.LASF4
- 391 0053 02       		.uleb128 0x2
- 392 0054 04       		.byte	0x4
- 393 0055 07       		.byte	0x7
- 394 0056 B9030000 		.4byte	.LASF5
- 395 005a 02       		.uleb128 0x2
- 396 005b 08       		.byte	0x8
- 397 005c 05       		.byte	0x5
- 398 005d 70010000 		.4byte	.LASF6
- 399 0061 02       		.uleb128 0x2
- 400 0062 08       		.byte	0x8
- 401 0063 07       		.byte	0x7
- 402 0064 70020000 		.4byte	.LASF7
- 403 0068 04       		.uleb128 0x4
- 404 0069 04       		.byte	0x4
- 405 006a 05       		.byte	0x5
- 406 006b 696E7400 		.ascii	"int\000"
- 407 006f 02       		.uleb128 0x2
- 408 0070 04       		.byte	0x4
- 409 0071 07       		.byte	0x7
- 410 0072 A6020000 		.4byte	.LASF8
- 411 0076 03       		.uleb128 0x3
- 412 0077 71030000 		.4byte	.LASF10
- 413 007b 03       		.byte	0x3
- 414 007c 2C       		.byte	0x2c
- 415 007d 41000000 		.4byte	0x41
- 416 0081 05       		.uleb128 0x5
- 417 0082 36010000 		.4byte	.LASF11
- 418 0086 04       		.byte	0x4
- 419 0087 9201     		.2byte	0x192
- 420 0089 2C000000 		.4byte	0x2c
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 10
+  70:diss_oxy.c    **** 
+  71:diss_oxy.c    ****     test_t test;
+  72:diss_oxy.c    **** 
+  73:diss_oxy.c    ****     test.status = 0; // set test status to zero
+ 312              		.loc 1 73 0
+ 313 001a 07F14C03 		add	r3, r7, #76
+ 314 001e 0022     		movs	r2, #0
+ 315 0020 83F88020 		strb	r2, [r3, #128]
+  74:diss_oxy.c    ****     snprintf(test.test_name,sizeof(test.test_name),"TEST_DO_SENSOR");
+ 316              		.loc 1 74 0
+ 317 0024 07F14C03 		add	r3, r7, #76
+ 318 0028 504A     		ldr	r2, .L16
+ 319 002a 1C46     		mov	r4, r3
+ 320 002c 1346     		mov	r3, r2
+ 321 002e 0FCB     		ldmia	r3, {r0, r1, r2, r3}
+ 322 0030 07C4     		stmia	r4!, {r0, r1, r2}
+ 323 0032 2380     		strh	r3, [r4]	@ movhi
+ 324 0034 0234     		adds	r4, r4, #2
+ 325 0036 1B0C     		lsrs	r3, r3, #16
+ 326 0038 2370     		strb	r3, [r4]
+  75:diss_oxy.c    **** 
+  76:diss_oxy.c    ****     
+  77:diss_oxy.c    ****     /*
+  78:diss_oxy.c    ****     DO_UART_Start();
+  79:diss_oxy.c    ****     DO_ISR_StartEx(DO_ISR);
+  80:diss_oxy.c    ****     Level_Sensor_Power_Write(ON); // Pulls pwr pin high (turns it on).
+  81:diss_oxy.c    ****     CyDelay(6000u);
+  82:diss_oxy.c    ****     DO_UART_PutString("i\r");
+  83:diss_oxy.c    ****     
+  84:diss_oxy.c    ****     CyDelay(6000u);
+  85:diss_oxy.c    ****     DO_UART_PutString("Find\r");
+  86:diss_oxy.c    ****     CyDelay(6000u);
+  87:diss_oxy.c    ****     Level_Sensor_Power_Write(OFF);
+  88:diss_oxy.c    ****     
+  89:diss_oxy.c    ****     // as in level_sensor.c
+  90:diss_oxy.c    ****     
+  91:diss_oxy.c    ****     char *token;
+  92:diss_oxy.c    ****     
+  93:diss_oxy.c    ****     token = strtok(do_received_string, "\r");
+  94:diss_oxy.c    ****         // walk through other tokens /
+  95:diss_oxy.c    ****     while( token != NULL ) {
+  96:diss_oxy.c    ****         float32 reading = atof(token);
+  97:diss_oxy.c    ****         token = strtok(NULL, "\r"); // This "NULL" says to continue where you left off last time.
+  98:diss_oxy.c    ****         printNotif(NOTIF_TYPE_EVENT,"%s",token);     
+  99:diss_oxy.c    ****    }
+ 100:diss_oxy.c    ****     
+ 101:diss_oxy.c    ****     char excerpt[800];
+ 102:diss_oxy.c    ****     for (int i = 0; i < 800; i++){
+ 103:diss_oxy.c    ****         excerpt[i] = do_received_string[i];  
+ 104:diss_oxy.c    ****         if (i>797){
+ 105:diss_oxy.c    ****             printNotif(NOTIF_TYPE_EVENT,"asdf");
+ 106:diss_oxy.c    ****         }
+ 107:diss_oxy.c    ****     }
+ 108:diss_oxy.c    **** 
+ 109:diss_oxy.c    ****     Level_Sensor_Power_Write(OFF);
+ 110:diss_oxy.c    ****     */
+ 111:diss_oxy.c    ****     
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 9
 
 
- 421 008d 05       		.uleb128 0x5
- 422 008e 1D010000 		.4byte	.LASF12
- 423 0092 04       		.byte	0x4
- 424 0093 9301     		.2byte	0x193
- 425 0095 3A000000 		.4byte	0x3a
- 426 0099 05       		.uleb128 0x5
- 427 009a 41010000 		.4byte	.LASF13
- 428 009e 04       		.byte	0x4
- 429 009f 9601     		.2byte	0x196
- 430 00a1 33000000 		.4byte	0x33
- 431 00a5 05       		.uleb128 0x5
- 432 00a6 CB030000 		.4byte	.LASF14
- 433 00aa 04       		.byte	0x4
- 434 00ab 9701     		.2byte	0x197
- 435 00ad 4C000000 		.4byte	0x4c
- 436 00b1 02       		.uleb128 0x2
- 437 00b2 04       		.byte	0x4
- 438 00b3 04       		.byte	0x4
- 439 00b4 6A010000 		.4byte	.LASF15
- 440 00b8 02       		.uleb128 0x2
- 441 00b9 08       		.byte	0x8
- 442 00ba 04       		.byte	0x4
- 443 00bb D1030000 		.4byte	.LASF16
- 444 00bf 02       		.uleb128 0x2
- 445 00c0 01       		.byte	0x1
- 446 00c1 08       		.byte	0x8
- 447 00c2 8B010000 		.4byte	.LASF17
- 448 00c6 02       		.uleb128 0x2
- 449 00c7 08       		.byte	0x8
- 450 00c8 04       		.byte	0x4
- 451 00c9 12020000 		.4byte	.LASF18
- 452 00cd 02       		.uleb128 0x2
- 453 00ce 04       		.byte	0x4
- 454 00cf 07       		.byte	0x7
- 455 00d0 55000000 		.4byte	.LASF19
- 456 00d4 06       		.uleb128 0x6
- 457 00d5 BF000000 		.4byte	0xbf
- 458 00d9 E4000000 		.4byte	0xe4
- 459 00dd 07       		.uleb128 0x7
- 460 00de CD000000 		.4byte	0xcd
- 461 00e2 17       		.byte	0x17
- 462 00e3 00       		.byte	0
- 463 00e4 08       		.uleb128 0x8
- 464 00e5 8101     		.2byte	0x181
- 465 00e7 05       		.byte	0x5
- 466 00e8 0A       		.byte	0xa
- 467 00e9 12010000 		.4byte	0x112
- 468 00ed 09       		.uleb128 0x9
- 469 00ee 41040000 		.4byte	.LASF20
- 470 00f2 05       		.byte	0x5
- 471 00f3 0C       		.byte	0xc
- 472 00f4 12010000 		.4byte	0x112
- 473 00f8 00       		.byte	0
- 474 00f9 09       		.uleb128 0x9
- 475 00fa 3F030000 		.4byte	.LASF21
- 476 00fe 05       		.byte	0x5
- 477 00ff 0D       		.byte	0xd
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 11
+ 112:diss_oxy.c    **** 
+ 113:diss_oxy.c    ****     // test print
+ 114:diss_oxy.c    ****     
+ 115:diss_oxy.c    ****     snprintf(test.reason,sizeof(test.reason), 
+ 116:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 117:diss_oxy.c    ****     results.do_reading,
+ 327              		.loc 1 117 0
+ 328 003a D7F8FC31 		ldr	r3, [r7, #508]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 329              		.loc 1 115 0
+ 330 003e 1846     		mov	r0, r3
+ 331 0040 FFF7FEFF 		bl	__aeabi_f2d
+ 332 0044 C7E90E01 		strd	r0, [r7, #56]
+ 118:diss_oxy.c    ****     results.all_do_readings[0], results.all_do_readings[1], results.all_do_readings[2], 
+ 333              		.loc 1 118 0
+ 334 0048 D7F8D031 		ldr	r3, [r7, #464]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 335              		.loc 1 115 0
+ 336 004c 1846     		mov	r0, r3
+ 337 004e FFF7FEFF 		bl	__aeabi_f2d
+ 338 0052 C7E90C01 		strd	r0, [r7, #48]
+ 339              		.loc 1 118 0
+ 340 0056 D7F8D431 		ldr	r3, [r7, #468]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 341              		.loc 1 115 0
+ 342 005a 1846     		mov	r0, r3
+ 343 005c FFF7FEFF 		bl	__aeabi_f2d
+ 344 0060 C7E90A01 		strd	r0, [r7, #40]
+ 345              		.loc 1 118 0
+ 346 0064 D7F8D831 		ldr	r3, [r7, #472]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 347              		.loc 1 115 0
+ 348 0068 1846     		mov	r0, r3
+ 349 006a FFF7FEFF 		bl	__aeabi_f2d
+ 350 006e C7E90801 		strd	r0, [r7, #32]
+ 119:diss_oxy.c    ****     results.all_do_readings[3], results.all_do_readings[4], results.all_do_readings[5], 
+ 351              		.loc 1 119 0
+ 352 0072 D7F8DC31 		ldr	r3, [r7, #476]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 353              		.loc 1 115 0
+ 354 0076 1846     		mov	r0, r3
+ 355 0078 FFF7FEFF 		bl	__aeabi_f2d
+ 356 007c C7E90601 		strd	r0, [r7, #24]
+ 357              		.loc 1 119 0
+ 358 0080 D7F8E031 		ldr	r3, [r7, #480]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 359              		.loc 1 115 0
+ 360 0084 1846     		mov	r0, r3
+ 361 0086 FFF7FEFF 		bl	__aeabi_f2d
+ 362 008a C7E90401 		strd	r0, [r7, #16]
+ 363              		.loc 1 119 0
+ 364 008e D7F8E431 		ldr	r3, [r7, #484]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 365              		.loc 1 115 0
+ 366 0092 1846     		mov	r0, r3
+ 367 0094 FFF7FEFF 		bl	__aeabi_f2d
+ 368 0098 C7E90201 		strd	r0, [r7, #8]
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 10
 
 
- 478 0100 81000000 		.4byte	0x81
- 479 0104 80       		.byte	0x80
- 480 0105 09       		.uleb128 0x9
- 481 0106 90010000 		.4byte	.LASF22
- 482 010a 05       		.byte	0x5
- 483 010b 0F       		.byte	0xf
- 484 010c 22010000 		.4byte	0x122
- 485 0110 81       		.byte	0x81
- 486 0111 00       		.byte	0
- 487 0112 06       		.uleb128 0x6
- 488 0113 BF000000 		.4byte	0xbf
- 489 0117 22010000 		.4byte	0x122
- 490 011b 07       		.uleb128 0x7
- 491 011c CD000000 		.4byte	0xcd
- 492 0120 7F       		.byte	0x7f
- 493 0121 00       		.byte	0
- 494 0122 06       		.uleb128 0x6
- 495 0123 BF000000 		.4byte	0xbf
- 496 0127 32010000 		.4byte	0x132
- 497 012b 07       		.uleb128 0x7
- 498 012c CD000000 		.4byte	0xcd
- 499 0130 FF       		.byte	0xff
- 500 0131 00       		.byte	0
- 501 0132 03       		.uleb128 0x3
- 502 0133 65030000 		.4byte	.LASF23
- 503 0137 05       		.byte	0x5
- 504 0138 10       		.byte	0x10
- 505 0139 E4000000 		.4byte	0xe4
- 506 013d 0A       		.uleb128 0xa
- 507 013e 2C       		.byte	0x2c
- 508 013f 06       		.byte	0x6
- 509 0140 14       		.byte	0x14
- 510 0141 6A010000 		.4byte	0x16a
- 511 0145 0B       		.uleb128 0xb
- 512 0146 6B657900 		.ascii	"key\000"
- 513 014a 06       		.byte	0x6
- 514 014b 15       		.byte	0x15
- 515 014c 6A010000 		.4byte	0x16a
- 516 0150 00       		.byte	0
- 517 0151 09       		.uleb128 0x9
- 518 0152 17010000 		.4byte	.LASF24
- 519 0156 06       		.byte	0x6
- 520 0157 16       		.byte	0x16
- 521 0158 6A010000 		.4byte	0x16a
- 522 015c 14       		.byte	0x14
- 523 015d 09       		.uleb128 0x9
- 524 015e 47010000 		.4byte	.LASF25
- 525 0162 06       		.byte	0x6
- 526 0163 17       		.byte	0x17
- 527 0164 A5000000 		.4byte	0xa5
- 528 0168 28       		.byte	0x28
- 529 0169 00       		.byte	0
- 530 016a 06       		.uleb128 0x6
- 531 016b BF000000 		.4byte	0xbf
- 532 016f 7A010000 		.4byte	0x17a
- 533 0173 07       		.uleb128 0x7
- 534 0174 CD000000 		.4byte	0xcd
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 12
+ 120:diss_oxy.c    ****     results.all_do_readings[6], results.all_do_readings[7], results.all_do_readings[8], 
+ 369              		.loc 1 120 0
+ 370 009c D7F8E831 		ldr	r3, [r7, #488]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 371              		.loc 1 115 0
+ 372 00a0 1846     		mov	r0, r3
+ 373 00a2 FFF7FEFF 		bl	__aeabi_f2d
+ 374 00a6 C7E90001 		strd	r0, [r7]
+ 375              		.loc 1 120 0
+ 376 00aa D7F8EC31 		ldr	r3, [r7, #492]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 377              		.loc 1 115 0
+ 378 00ae 1846     		mov	r0, r3
+ 379 00b0 FFF7FEFF 		bl	__aeabi_f2d
+ 380 00b4 8246     		mov	r10, r0
+ 381 00b6 8B46     		mov	fp, r1
+ 382              		.loc 1 120 0
+ 383 00b8 D7F8F031 		ldr	r3, [r7, #496]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 384              		.loc 1 115 0
+ 385 00bc 1846     		mov	r0, r3
+ 386 00be FFF7FEFF 		bl	__aeabi_f2d
+ 387 00c2 8046     		mov	r8, r0
+ 388 00c4 8946     		mov	r9, r1
+ 121:diss_oxy.c    ****     results.all_do_readings[9], results.all_do_readings[10]
+ 389              		.loc 1 121 0
+ 390 00c6 D7F8F431 		ldr	r3, [r7, #500]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 391              		.loc 1 115 0
+ 392 00ca 1846     		mov	r0, r3
+ 393 00cc FFF7FEFF 		bl	__aeabi_f2d
+ 394 00d0 0446     		mov	r4, r0
+ 395 00d2 0D46     		mov	r5, r1
+ 396              		.loc 1 121 0
+ 397 00d4 D7F8F831 		ldr	r3, [r7, #504]	@ float
+ 115:diss_oxy.c    ****     "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r
+ 398              		.loc 1 115 0
+ 399 00d8 1846     		mov	r0, r3
+ 400 00da FFF7FEFF 		bl	__aeabi_f2d
+ 401 00de 0A46     		mov	r2, r1
+ 402 00e0 0146     		mov	r1, r0
+ 403 00e2 07F14C03 		add	r3, r7, #76
+ 404 00e6 8133     		adds	r3, r3, #129
+ 405 00e8 CDE91612 		strd	r1, [sp, #88]
+ 406 00ec CDE91445 		strd	r4, [sp, #80]
+ 407 00f0 CDE91289 		strd	r8, [sp, #72]
+ 408 00f4 CDE910AB 		strd	r10, [sp, #64]
+ 409 00f8 D7E90012 		ldrd	r1, [r7]
+ 410 00fc CDE90E12 		strd	r1, [sp, #56]
+ 411 0100 D7E90212 		ldrd	r1, [r7, #8]
+ 412 0104 CDE90C12 		strd	r1, [sp, #48]
+ 413 0108 D7E90412 		ldrd	r1, [r7, #16]
+ 414 010c CDE90A12 		strd	r1, [sp, #40]
+ 415 0110 D7E90612 		ldrd	r1, [r7, #24]
+ 416 0114 CDE90812 		strd	r1, [sp, #32]
+ 417 0118 D7E90812 		ldrd	r1, [r7, #32]
+ 418 011c CDE90612 		strd	r1, [sp, #24]
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 11
 
 
- 535 0178 13       		.byte	0x13
- 536 0179 00       		.byte	0
- 537 017a 03       		.uleb128 0x3
- 538 017b B3020000 		.4byte	.LASF26
- 539 017f 06       		.byte	0x6
- 540 0180 19       		.byte	0x19
- 541 0181 3D010000 		.4byte	0x13d
- 542 0185 0A       		.uleb128 0xa
- 543 0186 3C       		.byte	0x3c
- 544 0187 07       		.byte	0x7
- 545 0188 35       		.byte	0x35
- 546 0189 B2010000 		.4byte	0x1b2
- 547 018d 09       		.uleb128 0x9
- 548 018e 10000000 		.4byte	.LASF27
- 549 0192 07       		.byte	0x7
- 550 0193 36       		.byte	0x36
- 551 0194 6A010000 		.4byte	0x16a
- 552 0198 00       		.byte	0
- 553 0199 09       		.uleb128 0x9
- 554 019a 00000000 		.4byte	.LASF28
- 555 019e 07       		.byte	0x7
- 556 019f 37       		.byte	0x37
- 557 01a0 6A010000 		.4byte	0x16a
- 558 01a4 14       		.byte	0x14
- 559 01a5 09       		.uleb128 0x9
- 560 01a6 6C030000 		.4byte	.LASF29
- 561 01aa 07       		.byte	0x7
- 562 01ab 38       		.byte	0x38
- 563 01ac 6A010000 		.4byte	0x16a
- 564 01b0 28       		.byte	0x28
- 565 01b1 00       		.byte	0
- 566 01b2 03       		.uleb128 0x3
- 567 01b3 04040000 		.4byte	.LASF30
- 568 01b7 07       		.byte	0x7
- 569 01b8 3A       		.byte	0x3a
- 570 01b9 85010000 		.4byte	0x185
- 571 01bd 0A       		.uleb128 0xa
- 572 01be 20       		.byte	0x20
- 573 01bf 07       		.byte	0x7
- 574 01c0 3C       		.byte	0x3c
- 575 01c1 26020000 		.4byte	0x226
- 576 01c5 09       		.uleb128 0x9
- 577 01c6 BF020000 		.4byte	.LASF31
- 578 01ca 07       		.byte	0x7
- 579 01cb 3D       		.byte	0x3d
- 580 01cc 68000000 		.4byte	0x68
- 581 01d0 00       		.byte	0
- 582 01d1 0B       		.uleb128 0xb
- 583 01d2 62657200 		.ascii	"ber\000"
- 584 01d6 07       		.byte	0x7
- 585 01d7 3E       		.byte	0x3e
- 586 01d8 68000000 		.4byte	0x68
- 587 01dc 04       		.byte	0x4
- 588 01dd 09       		.uleb128 0x9
- 589 01de 3C010000 		.4byte	.LASF32
- 590 01e2 07       		.byte	0x7
- 591 01e3 3F       		.byte	0x3f
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 13
+ 419 0120 D7E90A12 		ldrd	r1, [r7, #40]
+ 420 0124 CDE90412 		strd	r1, [sp, #16]
+ 421 0128 D7E90C12 		ldrd	r1, [r7, #48]
+ 422 012c CDE90212 		strd	r1, [sp, #8]
+ 423 0130 D7E90E12 		ldrd	r1, [r7, #56]
+ 424 0134 CDE90012 		strd	r1, [sp]
+ 425 0138 0D4A     		ldr	r2, .L16+4
+ 426 013a 4FF48071 		mov	r1, #256
+ 427 013e 1846     		mov	r0, r3
+ 428 0140 FFF7FEFF 		bl	snprintf
+ 122:diss_oxy.c    ****     );
+ 123:diss_oxy.c    ****     
+ 124:diss_oxy.c    ****     return test;
+ 429              		.loc 1 124 0
+ 430 0144 07F14403 		add	r3, r7, #68
+ 431 0148 1A68     		ldr	r2, [r3]
+ 432 014a 07F14C03 		add	r3, r7, #76
+ 433 014e 1046     		mov	r0, r2
+ 434 0150 1946     		mov	r1, r3
+ 435 0152 40F28113 		movw	r3, #385
+ 436 0156 1A46     		mov	r2, r3
+ 437 0158 FFF7FEFF 		bl	memcpy
+ 125:diss_oxy.c    ****     
+ 126:diss_oxy.c    **** }
+ 438              		.loc 1 126 0
+ 439 015c 07F14403 		add	r3, r7, #68
+ 440 0160 1868     		ldr	r0, [r3]
+ 441 0162 07F50077 		add	r7, r7, #512
+ 442              		.cfi_def_cfa_offset 32
+ 443 0166 BD46     		mov	sp, r7
+ 444              		.cfi_def_cfa_register 13
+ 445              		@ sp needed
+ 446 0168 BDE8B08F 		pop	{r4, r5, r7, r8, r9, r10, fp, pc}
+ 447              	.L17:
+ 448              		.align	2
+ 449              	.L16:
+ 450 016c 0C000000 		.word	.LC3
+ 451 0170 1C000000 		.word	.LC4
+ 452              		.cfi_endproc
+ 453              	.LFE66:
+ 454              		.size	DO_sensor_test, .-DO_sensor_test
+ 455              		.global	__aeabi_fadd
+ 456              		.global	__aeabi_fdiv
+ 457              		.section	.text.float_find_median,"ax",%progbits
+ 458              		.align	2
+ 459              		.global	float_find_median
+ 460              		.thumb
+ 461              		.thumb_func
+ 462              		.type	float_find_median, %function
+ 463              	float_find_median:
+ 464              	.LFB67:
+ 127:diss_oxy.c    **** 
+ 128:diss_oxy.c    **** // code for finding medians duplicated from level_sensor because we need floats not longs
+ 129:diss_oxy.c    **** 
+ 130:diss_oxy.c    **** // function to calculate the median of the array, after array is sorted
+ 131:diss_oxy.c    **** float32 float_find_median(float32 array[] , uint8 n)
+ 132:diss_oxy.c    **** {
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 12
 
 
- 592 01e4 68000000 		.4byte	0x68
- 593 01e8 08       		.byte	0x8
- 594 01e9 09       		.uleb128 0x9
- 595 01ea 12010000 		.4byte	.LASF33
- 596 01ee 07       		.byte	0x7
- 597 01ef 40       		.byte	0x40
- 598 01f0 68000000 		.4byte	0x68
- 599 01f4 0C       		.byte	0xc
- 600 01f5 09       		.uleb128 0x9
- 601 01f6 A9030000 		.4byte	.LASF34
- 602 01fa 07       		.byte	0x7
- 603 01fb 41       		.byte	0x41
- 604 01fc 68000000 		.4byte	0x68
- 605 0200 10       		.byte	0x10
- 606 0201 09       		.uleb128 0x9
- 607 0202 3C020000 		.4byte	.LASF35
- 608 0206 07       		.byte	0x7
- 609 0207 42       		.byte	0x42
- 610 0208 68000000 		.4byte	0x68
- 611 020c 14       		.byte	0x14
- 612 020d 09       		.uleb128 0x9
- 613 020e 27030000 		.4byte	.LASF36
- 614 0212 07       		.byte	0x7
- 615 0213 43       		.byte	0x43
- 616 0214 68000000 		.4byte	0x68
- 617 0218 18       		.byte	0x18
- 618 0219 09       		.uleb128 0x9
- 619 021a 52030000 		.4byte	.LASF37
- 620 021e 07       		.byte	0x7
- 621 021f 44       		.byte	0x44
- 622 0220 68000000 		.4byte	0x68
- 623 0224 1C       		.byte	0x1c
- 624 0225 00       		.byte	0
- 625 0226 03       		.uleb128 0x3
- 626 0227 79030000 		.4byte	.LASF38
- 627 022b 07       		.byte	0x7
- 628 022c 46       		.byte	0x46
- 629 022d BD010000 		.4byte	0x1bd
- 630 0231 0A       		.uleb128 0xa
- 631 0232 05       		.byte	0x5
- 632 0233 07       		.byte	0x7
- 633 0234 52       		.byte	0x52
- 634 0235 76020000 		.4byte	0x276
- 635 0239 09       		.uleb128 0x9
- 636 023a 72040000 		.4byte	.LASF39
- 637 023e 07       		.byte	0x7
- 638 023f 54       		.byte	0x54
- 639 0240 81000000 		.4byte	0x81
- 640 0244 00       		.byte	0
- 641 0245 09       		.uleb128 0x9
- 642 0246 00030000 		.4byte	.LASF40
- 643 024a 07       		.byte	0x7
- 644 024b 56       		.byte	0x56
- 645 024c 76020000 		.4byte	0x276
- 646 0250 01       		.byte	0x1
- 647 0251 09       		.uleb128 0x9
- 648 0252 FB010000 		.4byte	.LASF41
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 14
+ 465              		.loc 1 132 0
+ 466              		.cfi_startproc
+ 467              		@ args = 0, pretend = 0, frame = 16
+ 468              		@ frame_needed = 1, uses_anonymous_args = 0
+ 469 0000 80B5     		push	{r7, lr}
+ 470              		.cfi_def_cfa_offset 8
+ 471              		.cfi_offset 7, -8
+ 472              		.cfi_offset 14, -4
+ 473 0002 84B0     		sub	sp, sp, #16
+ 474              		.cfi_def_cfa_offset 24
+ 475 0004 00AF     		add	r7, sp, #0
+ 476              		.cfi_def_cfa_register 7
+ 477 0006 7860     		str	r0, [r7, #4]
+ 478 0008 0B46     		mov	r3, r1
+ 479 000a FB70     		strb	r3, [r7, #3]
+ 133:diss_oxy.c    ****     float32 median=0;
+ 480              		.loc 1 133 0
+ 481 000c 4FF00003 		mov	r3, #0
+ 482 0010 FB60     		str	r3, [r7, #12]	@ float
+ 134:diss_oxy.c    ****     fsort(array,n);
+ 483              		.loc 1 134 0
+ 484 0012 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 485 0014 1946     		mov	r1, r3
+ 486 0016 7868     		ldr	r0, [r7, #4]
+ 487 0018 FFF7FEFF 		bl	fsort
+ 135:diss_oxy.c    ****     
+ 136:diss_oxy.c    ****     // if number of elements are even
+ 137:diss_oxy.c    ****     if(n%2 == 0)
+ 488              		.loc 1 137 0
+ 489 001c FB78     		ldrb	r3, [r7, #3]
+ 490 001e 03F00103 		and	r3, r3, #1
+ 491 0022 DBB2     		uxtb	r3, r3
+ 492 0024 002B     		cmp	r3, #0
+ 493 0026 1BD1     		bne	.L19
+ 138:diss_oxy.c    ****         // median is the average of the  two middle sorted numbers
+ 139:diss_oxy.c    ****         median = (array[(n-1)/2] + array[n/2])/2.0;
+ 494              		.loc 1 139 0
+ 495 0028 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 496 002a 013B     		subs	r3, r3, #1
+ 497 002c DA0F     		lsrs	r2, r3, #31
+ 498 002e 1344     		add	r3, r3, r2
+ 499 0030 5B10     		asrs	r3, r3, #1
+ 500 0032 9B00     		lsls	r3, r3, #2
+ 501 0034 7A68     		ldr	r2, [r7, #4]
+ 502 0036 1344     		add	r3, r3, r2
+ 503 0038 1868     		ldr	r0, [r3]	@ float
+ 504 003a FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 505 003c 5B08     		lsrs	r3, r3, #1
+ 506 003e DBB2     		uxtb	r3, r3
+ 507 0040 9B00     		lsls	r3, r3, #2
+ 508 0042 7A68     		ldr	r2, [r7, #4]
+ 509 0044 1344     		add	r3, r3, r2
+ 510 0046 1B68     		ldr	r3, [r3]	@ float
+ 511 0048 1946     		mov	r1, r3
+ 512 004a FFF7FEFF 		bl	__aeabi_fadd
+ 513 004e 0346     		mov	r3, r0
+ 514 0050 4FF08041 		mov	r1, #1073741824
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 13
 
 
- 649 0256 07       		.byte	0x7
- 650 0257 58       		.byte	0x58
- 651 0258 81000000 		.4byte	0x81
- 652 025c 02       		.byte	0x2
- 653 025d 09       		.uleb128 0x9
- 654 025e C5020000 		.4byte	.LASF42
- 655 0262 07       		.byte	0x7
- 656 0263 5A       		.byte	0x5a
- 657 0264 81000000 		.4byte	0x81
- 658 0268 03       		.byte	0x3
- 659 0269 09       		.uleb128 0x9
- 660 026a F8030000 		.4byte	.LASF43
- 661 026e 07       		.byte	0x7
- 662 026f 5D       		.byte	0x5d
- 663 0270 81000000 		.4byte	0x81
- 664 0274 04       		.byte	0x4
- 665 0275 00       		.byte	0
- 666 0276 02       		.uleb128 0x2
- 667 0277 01       		.byte	0x1
- 668 0278 02       		.byte	0x2
- 669 0279 87030000 		.4byte	.LASF44
- 670 027d 03       		.uleb128 0x3
- 671 027e E9020000 		.4byte	.LASF45
- 672 0282 07       		.byte	0x7
- 673 0283 5F       		.byte	0x5f
- 674 0284 31020000 		.4byte	0x231
- 675 0288 0A       		.uleb128 0xa
- 676 0289 06       		.byte	0x6
- 677 028a 08       		.byte	0x8
- 678 028b 2E       		.byte	0x2e
- 679 028c C1020000 		.4byte	0x2c1
- 680 0290 09       		.uleb128 0x9
- 681 0291 3C000000 		.4byte	.LASF46
- 682 0295 08       		.byte	0x8
- 683 0296 30       		.byte	0x30
- 684 0297 8D000000 		.4byte	0x8d
- 685 029b 00       		.byte	0
- 686 029c 09       		.uleb128 0x9
- 687 029d 26000000 		.4byte	.LASF47
- 688 02a1 08       		.byte	0x8
- 689 02a2 31       		.byte	0x31
- 690 02a3 99000000 		.4byte	0x99
- 691 02a7 02       		.byte	0x2
- 692 02a8 09       		.uleb128 0x9
- 693 02a9 11040000 		.4byte	.LASF48
- 694 02ad 08       		.byte	0x8
- 695 02ae 32       		.byte	0x32
- 696 02af 81000000 		.4byte	0x81
- 697 02b3 04       		.byte	0x4
- 698 02b4 09       		.uleb128 0x9
- 699 02b5 29040000 		.4byte	.LASF49
- 700 02b9 08       		.byte	0x8
- 701 02ba 33       		.byte	0x33
- 702 02bb 81000000 		.4byte	0x81
- 703 02bf 05       		.byte	0x5
- 704 02c0 00       		.byte	0
- 705 02c1 03       		.uleb128 0x3
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 15
+ 515 0054 1846     		mov	r0, r3
+ 516 0056 FFF7FEFF 		bl	__aeabi_fdiv
+ 517 005a 0346     		mov	r3, r0
+ 518 005c FB60     		str	r3, [r7, #12]	@ float
+ 519 005e 07E0     		b	.L20
+ 520              	.L19:
+ 140:diss_oxy.c    ****     // if number of elements are odd
+ 141:diss_oxy.c    ****     else
+ 142:diss_oxy.c    ****         // median is the the middle sorted number 
+ 143:diss_oxy.c    ****         median = array[n/2];
+ 521              		.loc 1 143 0
+ 522 0060 FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 523 0062 5B08     		lsrs	r3, r3, #1
+ 524 0064 DBB2     		uxtb	r3, r3
+ 525 0066 9B00     		lsls	r3, r3, #2
+ 526 0068 7A68     		ldr	r2, [r7, #4]
+ 527 006a 1344     		add	r3, r3, r2
+ 528 006c 1B68     		ldr	r3, [r3]	@ float
+ 529 006e FB60     		str	r3, [r7, #12]	@ float
+ 530              	.L20:
+ 144:diss_oxy.c    ****     
+ 145:diss_oxy.c    ****     return median;
+ 531              		.loc 1 145 0
+ 532 0070 FB68     		ldr	r3, [r7, #12]	@ float
+ 146:diss_oxy.c    **** }
+ 533              		.loc 1 146 0
+ 534 0072 1846     		mov	r0, r3
+ 535 0074 1037     		adds	r7, r7, #16
+ 536              		.cfi_def_cfa_offset 8
+ 537 0076 BD46     		mov	sp, r7
+ 538              		.cfi_def_cfa_register 13
+ 539              		@ sp needed
+ 540 0078 80BD     		pop	{r7, pc}
+ 541              		.cfi_endproc
+ 542              	.LFE67:
+ 543              		.size	float_find_median, .-float_find_median
+ 544              		.global	__aeabi_fcmpgt
+ 545 007a 00BF     		.section	.text.fsort,"ax",%progbits
+ 546              		.align	2
+ 547              		.global	fsort
+ 548              		.thumb
+ 549              		.thumb_func
+ 550              		.type	fsort, %function
+ 551              	fsort:
+ 552              	.LFB68:
+ 147:diss_oxy.c    **** 
+ 148:diss_oxy.c    **** // function to sort the elements in the level readings array
+ 149:diss_oxy.c    **** void fsort(float32 a[],uint8 n) { 
+ 553              		.loc 1 149 0
+ 554              		.cfi_startproc
+ 555              		@ args = 0, pretend = 0, frame = 16
+ 556              		@ frame_needed = 1, uses_anonymous_args = 0
+ 557 0000 80B5     		push	{r7, lr}
+ 558              		.cfi_def_cfa_offset 8
+ 559              		.cfi_offset 7, -8
+ 560              		.cfi_offset 14, -4
+ 561 0002 84B0     		sub	sp, sp, #16
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 14
 
 
- 706 02c2 F5010000 		.4byte	.LASF50
- 707 02c6 08       		.byte	0x8
- 708 02c7 36       		.byte	0x36
- 709 02c8 CC020000 		.4byte	0x2cc
- 710 02cc 0C       		.uleb128 0xc
- 711 02cd 88020000 		.4byte	0x288
- 712 02d1 0A       		.uleb128 0xa
- 713 02d2 1C       		.byte	0x1c
- 714 02d3 08       		.byte	0x8
- 715 02d4 39       		.byte	0x39
- 716 02d5 F2020000 		.4byte	0x2f2
- 717 02d9 09       		.uleb128 0x9
- 718 02da B0010000 		.4byte	.LASF51
- 719 02de 08       		.byte	0x8
- 720 02df 3B       		.byte	0x3b
- 721 02e0 F2020000 		.4byte	0x2f2
- 722 02e4 00       		.byte	0
- 723 02e5 09       		.uleb128 0x9
- 724 02e6 04010000 		.4byte	.LASF52
- 725 02ea 08       		.byte	0x8
- 726 02eb 3C       		.byte	0x3c
- 727 02ec D4000000 		.4byte	0xd4
- 728 02f0 04       		.byte	0x4
- 729 02f1 00       		.byte	0
- 730 02f2 0D       		.uleb128 0xd
- 731 02f3 04       		.byte	0x4
- 732 02f4 B2010000 		.4byte	0x1b2
- 733 02f8 03       		.uleb128 0x3
- 734 02f9 09030000 		.4byte	.LASF53
- 735 02fd 08       		.byte	0x8
- 736 02fe 3E       		.byte	0x3e
- 737 02ff D1020000 		.4byte	0x2d1
- 738 0303 0A       		.uleb128 0xa
- 739 0304 68       		.byte	0x68
- 740 0305 08       		.byte	0x8
- 741 0306 44       		.byte	0x44
- 742 0307 24030000 		.4byte	0x324
- 743 030b 09       		.uleb128 0x9
- 744 030c 5E000000 		.4byte	.LASF54
- 745 0310 08       		.byte	0x8
- 746 0311 49       		.byte	0x49
- 747 0312 24030000 		.4byte	0x324
- 748 0316 00       		.byte	0
- 749 0317 09       		.uleb128 0x9
- 750 0318 60040000 		.4byte	.LASF55
- 751 031c 08       		.byte	0x8
- 752 031d 4A       		.byte	0x4a
- 753 031e 68000000 		.4byte	0x68
- 754 0322 64       		.byte	0x64
- 755 0323 00       		.byte	0
- 756 0324 06       		.uleb128 0x6
- 757 0325 BF000000 		.4byte	0xbf
- 758 0329 34030000 		.4byte	0x334
- 759 032d 07       		.uleb128 0x7
- 760 032e CD000000 		.4byte	0xcd
- 761 0332 63       		.byte	0x63
- 762 0333 00       		.byte	0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 16
+ 562              		.cfi_def_cfa_offset 24
+ 563 0004 00AF     		add	r7, sp, #0
+ 564              		.cfi_def_cfa_register 7
+ 565 0006 7860     		str	r0, [r7, #4]
+ 566 0008 0B46     		mov	r3, r1
+ 567 000a FB70     		strb	r3, [r7, #3]
+ 150:diss_oxy.c    ****    uint8 i,j;
+ 151:diss_oxy.c    **** 
+ 152:diss_oxy.c    ****    for(i = 0;i < n-1;i++) {
+ 568              		.loc 1 152 0
+ 569 000c 0023     		movs	r3, #0
+ 570 000e FB73     		strb	r3, [r7, #15]
+ 571 0010 2CE0     		b	.L23
+ 572              	.L28:
+ 153:diss_oxy.c    ****       for(j = 0;j < n-i-1;j++) {
+ 573              		.loc 1 153 0
+ 574 0012 0023     		movs	r3, #0
+ 575 0014 BB73     		strb	r3, [r7, #14]
+ 576 0016 1FE0     		b	.L24
+ 577              	.L27:
+ 154:diss_oxy.c    ****          if(a[j] > a[j+1])
+ 578              		.loc 1 154 0
+ 579 0018 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 580 001a 9B00     		lsls	r3, r3, #2
+ 581 001c 7A68     		ldr	r2, [r7, #4]
+ 582 001e 1344     		add	r3, r3, r2
+ 583 0020 1868     		ldr	r0, [r3]	@ float
+ 584 0022 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 585 0024 0133     		adds	r3, r3, #1
+ 586 0026 9B00     		lsls	r3, r3, #2
+ 587 0028 7A68     		ldr	r2, [r7, #4]
+ 588 002a 1344     		add	r3, r3, r2
+ 589 002c 1B68     		ldr	r3, [r3]	@ float
+ 590 002e 1946     		mov	r1, r3
+ 591 0030 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 592 0034 0346     		mov	r3, r0
+ 593 0036 002B     		cmp	r3, #0
+ 594 0038 0BD0     		beq	.L25
+ 155:diss_oxy.c    ****             fswap(&a[j],&a[j+1]); // swap the address of a[j] and a[j+1]
+ 595              		.loc 1 155 0
+ 596 003a BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 597 003c 9B00     		lsls	r3, r3, #2
+ 598 003e 7A68     		ldr	r2, [r7, #4]
+ 599 0040 D018     		adds	r0, r2, r3
+ 600 0042 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 601 0044 0133     		adds	r3, r3, #1
+ 602 0046 9B00     		lsls	r3, r3, #2
+ 603 0048 7A68     		ldr	r2, [r7, #4]
+ 604 004a 1344     		add	r3, r3, r2
+ 605 004c 1946     		mov	r1, r3
+ 606 004e FFF7FEFF 		bl	fswap
+ 607              	.L25:
+ 153:diss_oxy.c    ****       for(j = 0;j < n-i-1;j++) {
+ 608              		.loc 1 153 0 discriminator 2
+ 609 0052 BB7B     		ldrb	r3, [r7, #14]	@ zero_extendqisi2
+ 610 0054 0133     		adds	r3, r3, #1
+ 611 0056 BB73     		strb	r3, [r7, #14]
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 15
 
 
- 763 0334 03       		.uleb128 0x3
- 764 0335 17000000 		.4byte	.LASF56
- 765 0339 08       		.byte	0x8
- 766 033a 50       		.byte	0x50
- 767 033b 03030000 		.4byte	0x303
- 768 033f 0E       		.uleb128 0xe
- 769 0340 09000000 		.4byte	.LASF82
- 770 0344 01       		.byte	0x1
- 771 0345 0D       		.byte	0xd
- 772 0346 00000000 		.4byte	.LFB64
- 773 034a 50000000 		.4byte	.LFE64-.LFB64
- 774 034e 01       		.uleb128 0x1
- 775 034f 9C       		.byte	0x9c
- 776 0350 0F       		.uleb128 0xf
- 777 0351 97020000 		.4byte	.LASF83
- 778 0355 01       		.byte	0x1
- 779 0356 19       		.byte	0x19
- 780 0357 32010000 		.4byte	0x132
- 781 035b 00000000 		.4byte	.LFB65
- 782 035f 80010000 		.4byte	.LFE65-.LFB65
- 783 0363 01       		.uleb128 0x1
- 784 0364 9C       		.byte	0x9c
- 785 0365 8F030000 		.4byte	0x38f
- 786 0369 10       		.uleb128 0x10
- 787 036a A4030000 		.4byte	.LASF57
- 788 036e 01       		.byte	0x1
- 789 036f 1B       		.byte	0x1b
- 790 0370 32010000 		.4byte	0x132
- 791 0374 03       		.uleb128 0x3
- 792 0375 91       		.byte	0x91
- 793 0376 E87C     		.sleb128 -408
- 794 0378 11       		.uleb128 0x11
- 795 0379 50000000 		.4byte	.LBB2
- 796 037d B0000000 		.4byte	.LBE2-.LBB2
- 797 0381 12       		.uleb128 0x12
- 798 0382 6900     		.ascii	"i\000"
- 799 0384 01       		.byte	0x1
- 800 0385 2C       		.byte	0x2c
- 801 0386 68000000 		.4byte	0x68
- 802 038a 02       		.uleb128 0x2
- 803 038b 91       		.byte	0x91
- 804 038c 6C       		.sleb128 -20
- 805 038d 00       		.byte	0
- 806 038e 00       		.byte	0
- 807 038f 13       		.uleb128 0x13
- 808 0390 D8030000 		.4byte	.LASF58
- 809 0394 09       		.byte	0x9
- 810 0395 1207     		.2byte	0x712
- 811 0397 9B030000 		.4byte	0x39b
- 812 039b 0C       		.uleb128 0xc
- 813 039c 76000000 		.4byte	0x76
- 814 03a0 14       		.uleb128 0x14
- 815 03a1 A0010000 		.4byte	.LASF59
- 816 03a5 06       		.byte	0x6
- 817 03a6 11       		.byte	0x11
- 818 03a7 76020000 		.4byte	0x276
- 819 03ab 05       		.uleb128 0x5
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 17
+ 612              	.L24:
+ 153:diss_oxy.c    ****       for(j = 0;j < n-i-1;j++) {
+ 613              		.loc 1 153 0 is_stmt 0 discriminator 1
+ 614 0058 BA7B     		ldrb	r2, [r7, #14]	@ zero_extendqisi2
+ 615 005a F978     		ldrb	r1, [r7, #3]	@ zero_extendqisi2
+ 616 005c FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 617 005e CB1A     		subs	r3, r1, r3
+ 618 0060 013B     		subs	r3, r3, #1
+ 619 0062 9A42     		cmp	r2, r3
+ 620 0064 D8DB     		blt	.L27
+ 152:diss_oxy.c    ****       for(j = 0;j < n-i-1;j++) {
+ 621              		.loc 1 152 0 is_stmt 1 discriminator 2
+ 622 0066 FB7B     		ldrb	r3, [r7, #15]	@ zero_extendqisi2
+ 623 0068 0133     		adds	r3, r3, #1
+ 624 006a FB73     		strb	r3, [r7, #15]
+ 625              	.L23:
+ 152:diss_oxy.c    ****       for(j = 0;j < n-i-1;j++) {
+ 626              		.loc 1 152 0 is_stmt 0 discriminator 1
+ 627 006c FA7B     		ldrb	r2, [r7, #15]	@ zero_extendqisi2
+ 628 006e FB78     		ldrb	r3, [r7, #3]	@ zero_extendqisi2
+ 629 0070 013B     		subs	r3, r3, #1
+ 630 0072 9A42     		cmp	r2, r3
+ 631 0074 CDDB     		blt	.L28
+ 156:diss_oxy.c    ****       }
+ 157:diss_oxy.c    ****    }
+ 158:diss_oxy.c    **** }
+ 632              		.loc 1 158 0 is_stmt 1
+ 633 0076 00BF     		nop
+ 634 0078 1037     		adds	r7, r7, #16
+ 635              		.cfi_def_cfa_offset 8
+ 636 007a BD46     		mov	sp, r7
+ 637              		.cfi_def_cfa_register 13
+ 638              		@ sp needed
+ 639 007c 80BD     		pop	{r7, pc}
+ 640              		.cfi_endproc
+ 641              	.LFE68:
+ 642              		.size	fsort, .-fsort
+ 643 007e 00BF     		.section	.text.fswap,"ax",%progbits
+ 644              		.align	2
+ 645              		.global	fswap
+ 646              		.thumb
+ 647              		.thumb_func
+ 648              		.type	fswap, %function
+ 649              	fswap:
+ 650              	.LFB69:
+ 159:diss_oxy.c    **** 
+ 160:diss_oxy.c    **** // function to swap elements in the level readings array in order to sort them
+ 161:diss_oxy.c    **** void fswap(float32 *p,float32 *q) {
+ 651              		.loc 1 161 0
+ 652              		.cfi_startproc
+ 653              		@ args = 0, pretend = 0, frame = 16
+ 654              		@ frame_needed = 1, uses_anonymous_args = 0
+ 655              		@ link register save eliminated.
+ 656 0000 80B4     		push	{r7}
+ 657              		.cfi_def_cfa_offset 4
+ 658              		.cfi_offset 7, -4
+ 659 0002 85B0     		sub	sp, sp, #20
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 16
 
 
- 820 03ac 03       		.byte	0x3
- 821 03ad 00000000 		.4byte	buffer_overflow
- 822 03b1 14       		.uleb128 0x14
- 823 03b2 24010000 		.4byte	.LASF60
- 824 03b6 06       		.byte	0x6
- 825 03b7 22       		.byte	0x22
- 826 03b8 8D000000 		.4byte	0x8d
- 827 03bc 05       		.uleb128 0x5
- 828 03bd 03       		.byte	0x3
- 829 03be 00000000 		.4byte	dataPointsInStack
- 830 03c2 14       		.uleb128 0x14
- 831 03c3 51010000 		.4byte	.LASF61
- 832 03c7 06       		.byte	0x6
- 833 03c8 23       		.byte	0x23
- 834 03c9 8D000000 		.4byte	0x8d
- 835 03cd 05       		.uleb128 0x5
- 836 03ce 03       		.byte	0x3
- 837 03cf 00000000 		.4byte	dataPointsInStackDesired
- 838 03d3 06       		.uleb128 0x6
- 839 03d4 7A010000 		.4byte	0x17a
- 840 03d8 E3030000 		.4byte	0x3e3
- 841 03dc 07       		.uleb128 0x7
- 842 03dd CD000000 		.4byte	0xcd
- 843 03e1 95       		.byte	0x95
- 844 03e2 00       		.byte	0
- 845 03e3 14       		.uleb128 0x14
- 846 03e4 FF000000 		.4byte	.LASF62
- 847 03e8 06       		.byte	0x6
- 848 03e9 24       		.byte	0x24
- 849 03ea D3030000 		.4byte	0x3d3
- 850 03ee 05       		.uleb128 0x5
- 851 03ef 03       		.byte	0x3
- 852 03f0 00000000 		.4byte	data
- 853 03f4 14       		.uleb128 0x14
- 854 03f5 58020000 		.4byte	.LASF63
- 855 03f9 07       		.byte	0x7
- 856 03fa 1F       		.byte	0x1f
- 857 03fb 81000000 		.4byte	0x81
- 858 03ff 05       		.uleb128 0x5
- 859 0400 03       		.byte	0x3
- 860 0401 00000000 		.4byte	modem_state
- 861 0405 14       		.uleb128 0x14
- 862 0406 41020000 		.4byte	.LASF64
- 863 040a 07       		.byte	0x7
- 864 040b 62       		.byte	0x62
- 865 040c A5000000 		.4byte	0xa5
- 866 0410 05       		.uleb128 0x5
- 867 0411 03       		.byte	0x3
- 868 0412 00000000 		.4byte	modem_start_time_stamp
- 869 0416 14       		.uleb128 0x14
- 870 0417 B0010000 		.4byte	.LASF51
- 871 041b 07       		.byte	0x7
- 872 041c 63       		.byte	0x63
- 873 041d B2010000 		.4byte	0x1b2
- 874 0421 05       		.uleb128 0x5
- 875 0422 03       		.byte	0x3
- 876 0423 00000000 		.4byte	modem_info
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 18
+ 660              		.cfi_def_cfa_offset 24
+ 661 0004 00AF     		add	r7, sp, #0
+ 662              		.cfi_def_cfa_register 7
+ 663 0006 7860     		str	r0, [r7, #4]
+ 664 0008 3960     		str	r1, [r7]
+ 162:diss_oxy.c    ****    float32 t;
+ 163:diss_oxy.c    ****    
+ 164:diss_oxy.c    ****    t=*p; 
+ 665              		.loc 1 164 0
+ 666 000a 7B68     		ldr	r3, [r7, #4]
+ 667 000c 1B68     		ldr	r3, [r3]	@ float
+ 668 000e FB60     		str	r3, [r7, #12]	@ float
+ 165:diss_oxy.c    ****    *p=*q; 
+ 669              		.loc 1 165 0
+ 670 0010 3B68     		ldr	r3, [r7]
+ 671 0012 1A68     		ldr	r2, [r3]	@ float
+ 672 0014 7B68     		ldr	r3, [r7, #4]
+ 673 0016 1A60     		str	r2, [r3]	@ float
+ 166:diss_oxy.c    ****    *q=t;
+ 674              		.loc 1 166 0
+ 675 0018 3B68     		ldr	r3, [r7]
+ 676 001a FA68     		ldr	r2, [r7, #12]	@ float
+ 677 001c 1A60     		str	r2, [r3]	@ float
+ 167:diss_oxy.c    **** }...
+ 678              		.loc 1 167 0
+ 679 001e 00BF     		nop
+ 680 0020 1437     		adds	r7, r7, #20
+ 681              		.cfi_def_cfa_offset 4
+ 682 0022 BD46     		mov	sp, r7
+ 683              		.cfi_def_cfa_register 13
+ 684              		@ sp needed
+ 685 0024 80BC     		pop	{r7}
+ 686              		.cfi_restore 7
+ 687              		.cfi_def_cfa_offset 0
+ 688 0026 7047     		bx	lr
+ 689              		.cfi_endproc
+ 690              	.LFE69:
+ 691              		.size	fswap, .-fswap
+ 692              		.text
+ 693              	.Letext0:
+ 694              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 695              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 696              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 697              		.file 5 "testing.h"
+ 698              		.file 6 "data.h"
+ 699              		.file 7 "modem.h"
+ 700              		.file 8 "diss_oxy.h"
+ 701              		.file 9 "notoriOS.h"
+ 702              		.file 10 "Generated_Source\\PSoC5/core_cm3.h"
+ 703              		.section	.debug_info,"",%progbits
+ 704              	.Ldebug_info0:
+ 705 0000 CB060000 		.4byte	0x6cb
+ 706 0004 0400     		.2byte	0x4
+ 707 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 708 000a 04       		.byte	0x4
+ 709 000b 01       		.uleb128 0x1
+ 710 000c 80000000 		.4byte	.LASF93
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 17
 
 
- 877 0427 14       		.uleb128 0x14
- 878 0428 CF020000 		.4byte	.LASF65
- 879 042c 07       		.byte	0x7
- 880 042d 64       		.byte	0x64
- 881 042e 26020000 		.4byte	0x226
- 882 0432 05       		.uleb128 0x5
- 883 0433 03       		.byte	0x3
- 884 0434 00000000 		.4byte	modem_stats
- 885 0438 14       		.uleb128 0x14
- 886 0439 4B040000 		.4byte	.LASF66
- 887 043d 07       		.byte	0x7
- 888 043e 65       		.byte	0x65
- 889 043f 7D020000 		.4byte	0x27d
- 890 0443 05       		.uleb128 0x5
- 891 0444 03       		.byte	0x3
- 892 0445 00000000 		.4byte	updatable_parameters
- 893 0449 06       		.uleb128 0x6
- 894 044a BF000000 		.4byte	0xbf
- 895 044e 5A040000 		.4byte	0x45a
- 896 0452 15       		.uleb128 0x15
- 897 0453 CD000000 		.4byte	0xcd
- 898 0457 0F27     		.2byte	0x270f
- 899 0459 00       		.byte	0
- 900 045a 14       		.uleb128 0x14
- 901 045b 7C040000 		.4byte	.LASF67
- 902 045f 08       		.byte	0x8
- 903 0460 18       		.byte	0x18
- 904 0461 49040000 		.4byte	0x449
- 905 0465 05       		.uleb128 0x5
- 906 0466 03       		.byte	0x3
- 907 0467 00000000 		.4byte	http_request
- 908 046b 14       		.uleb128 0x14
- 909 046c 68040000 		.4byte	.LASF68
- 910 0470 08       		.byte	0x8
- 911 0471 19       		.byte	0x19
- 912 0472 49040000 		.4byte	0x449
- 913 0476 05       		.uleb128 0x5
- 914 0477 03       		.byte	0x3
- 915 0478 00000000 		.4byte	http_body
- 916 047c 06       		.uleb128 0x6
- 917 047d BF000000 		.4byte	0xbf
- 918 0481 8C040000 		.4byte	0x48c
- 919 0485 07       		.uleb128 0x7
- 920 0486 CD000000 		.4byte	0xcd
- 921 048a C7       		.byte	0xc7
- 922 048b 00       		.byte	0
- 923 048c 14       		.uleb128 0x14
- 924 048d AE030000 		.4byte	.LASF69
- 925 0491 08       		.byte	0x8
- 926 0492 1A       		.byte	0x1a
- 927 0493 7C040000 		.4byte	0x47c
- 928 0497 05       		.uleb128 0x5
- 929 0498 03       		.byte	0x3
- 930 0499 00000000 		.4byte	http_route
- 931 049d 14       		.uleb128 0x14
- 932 049e 46030000 		.4byte	.LASF70
- 933 04a2 08       		.byte	0x8
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 19
+ 711 0010 0C       		.byte	0xc
+ 712 0011 75000000 		.4byte	.LASF94
+ 713 0015 DA010000 		.4byte	.LASF95
+ 714 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 715 001d 00000000 		.4byte	0
+ 716 0021 00000000 		.4byte	.Ldebug_line0
+ 717 0025 02       		.uleb128 0x2
+ 718 0026 01       		.byte	0x1
+ 719 0027 06       		.byte	0x6
+ 720 0028 8F020000 		.4byte	.LASF0
+ 721 002c 02       		.uleb128 0x2
+ 722 002d 01       		.byte	0x1
+ 723 002e 08       		.byte	0x8
+ 724 002f 3D020000 		.4byte	.LASF1
+ 725 0033 02       		.uleb128 0x2
+ 726 0034 02       		.byte	0x2
+ 727 0035 05       		.byte	0x5
+ 728 0036 5A000000 		.4byte	.LASF2
+ 729 003a 02       		.uleb128 0x2
+ 730 003b 02       		.byte	0x2
+ 731 003c 07       		.byte	0x7
+ 732 003d 4D030000 		.4byte	.LASF3
+ 733 0041 03       		.uleb128 0x3
+ 734 0042 72040000 		.4byte	.LASF9
+ 735 0046 02       		.byte	0x2
+ 736 0047 3F       		.byte	0x3f
+ 737 0048 4C000000 		.4byte	0x4c
+ 738 004c 02       		.uleb128 0x2
+ 739 004d 04       		.byte	0x4
+ 740 004e 05       		.byte	0x5
+ 741 004f B6010000 		.4byte	.LASF4
+ 742 0053 02       		.uleb128 0x2
+ 743 0054 04       		.byte	0x4
+ 744 0055 07       		.byte	0x7
+ 745 0056 19040000 		.4byte	.LASF5
+ 746 005a 02       		.uleb128 0x2
+ 747 005b 08       		.byte	0x8
+ 748 005c 05       		.byte	0x5
+ 749 005d 89010000 		.4byte	.LASF6
+ 750 0061 02       		.uleb128 0x2
+ 751 0062 08       		.byte	0x8
+ 752 0063 07       		.byte	0x7
+ 753 0064 9B020000 		.4byte	.LASF7
+ 754 0068 04       		.uleb128 0x4
+ 755 0069 04       		.byte	0x4
+ 756 006a 05       		.byte	0x5
+ 757 006b 696E7400 		.ascii	"int\000"
+ 758 006f 02       		.uleb128 0x2
+ 759 0070 04       		.byte	0x4
+ 760 0071 07       		.byte	0x7
+ 761 0072 DF020000 		.4byte	.LASF8
+ 762 0076 03       		.uleb128 0x3
+ 763 0077 B0030000 		.4byte	.LASF10
+ 764 007b 03       		.byte	0x3
+ 765 007c 2C       		.byte	0x2c
+ 766 007d 41000000 		.4byte	0x41
+ 767 0081 05       		.uleb128 0x5
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 18
 
 
- 934 04a3 41       		.byte	0x41
- 935 04a4 F8020000 		.4byte	0x2f8
- 936 04a8 05       		.uleb128 0x5
- 937 04a9 03       		.byte	0x3
- 938 04aa 00000000 		.4byte	system_info
- 939 04ae 14       		.uleb128 0x14
- 940 04af 87020000 		.4byte	.LASF71
- 941 04b3 08       		.byte	0x8
- 942 04b4 53       		.byte	0x53
- 943 04b5 34030000 		.4byte	0x334
- 944 04b9 05       		.uleb128 0x5
- 945 04ba 03       		.byte	0x3
- 946 04bb 00000000 		.4byte	system_settings
- 947 04bf 14       		.uleb128 0x14
- 948 04c0 7E010000 		.4byte	.LASF72
- 949 04c4 08       		.byte	0x8
- 950 04c5 6F       		.byte	0x6f
- 951 04c6 C1020000 		.4byte	0x2c1
- 952 04ca 05       		.uleb128 0x5
- 953 04cb 03       		.byte	0x3
- 954 04cc 00000000 		.4byte	alarmMeasure
- 955 04d0 14       		.uleb128 0x14
- 956 04d1 DB020000 		.4byte	.LASF73
- 957 04d5 08       		.byte	0x8
- 958 04d6 70       		.byte	0x70
- 959 04d7 81000000 		.4byte	0x81
- 960 04db 05       		.uleb128 0x5
- 961 04dc 03       		.byte	0x3
- 962 04dd 00000000 		.4byte	timeToMeasure
- 963 04e1 14       		.uleb128 0x14
- 964 04e2 08020000 		.4byte	.LASF74
- 965 04e6 08       		.byte	0x8
- 966 04e7 71       		.byte	0x71
- 967 04e8 C1020000 		.4byte	0x2c1
- 968 04ec 05       		.uleb128 0x5
- 969 04ed 03       		.byte	0x3
- 970 04ee 00000000 		.4byte	alarmSync
- 971 04f2 14       		.uleb128 0x14
- 972 04f3 89040000 		.4byte	.LASF75
- 973 04f7 08       		.byte	0x8
- 974 04f8 72       		.byte	0x72
- 975 04f9 81000000 		.4byte	0x81
- 976 04fd 05       		.uleb128 0x5
- 977 04fe 03       		.byte	0x3
- 978 04ff 00000000 		.4byte	timeToSync
- 979 0503 14       		.uleb128 0x14
- 980 0504 8D030000 		.4byte	.LASF76
- 981 0508 08       		.byte	0x8
- 982 0509 73       		.byte	0x73
- 983 050a 81000000 		.4byte	0x81
- 984 050e 05       		.uleb128 0x5
- 985 050f 03       		.byte	0x3
- 986 0510 00000000 		.4byte	timeToSycnRemoteParams
- 987 0514 16       		.uleb128 0x16
- 988 0515 68657900 		.ascii	"hey\000"
- 989 0519 08       		.byte	0x8
- 990 051a 74       		.byte	0x74
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 20
+ 768 0082 4F010000 		.4byte	.LASF11
+ 769 0086 04       		.byte	0x4
+ 770 0087 9201     		.2byte	0x192
+ 771 0089 2C000000 		.4byte	0x2c
+ 772 008d 05       		.uleb128 0x5
+ 773 008e 36010000 		.4byte	.LASF12
+ 774 0092 04       		.byte	0x4
+ 775 0093 9301     		.2byte	0x193
+ 776 0095 3A000000 		.4byte	0x3a
+ 777 0099 05       		.uleb128 0x5
+ 778 009a 97010000 		.4byte	.LASF13
+ 779 009e 04       		.byte	0x4
+ 780 009f 9601     		.2byte	0x196
+ 781 00a1 33000000 		.4byte	0x33
+ 782 00a5 05       		.uleb128 0x5
+ 783 00a6 83010000 		.4byte	.LASF14
+ 784 00aa 04       		.byte	0x4
+ 785 00ab 9701     		.2byte	0x197
+ 786 00ad 4C000000 		.4byte	0x4c
+ 787 00b1 05       		.uleb128 0x5
+ 788 00b2 26000000 		.4byte	.LASF15
+ 789 00b6 04       		.byte	0x4
+ 790 00b7 9801     		.2byte	0x198
+ 791 00b9 BD000000 		.4byte	0xbd
+ 792 00bd 02       		.uleb128 0x2
+ 793 00be 04       		.byte	0x4
+ 794 00bf 04       		.byte	0x4
+ 795 00c0 7D010000 		.4byte	.LASF16
+ 796 00c4 02       		.uleb128 0x2
+ 797 00c5 08       		.byte	0x8
+ 798 00c6 04       		.byte	0x4
+ 799 00c7 2B040000 		.4byte	.LASF17
+ 800 00cb 02       		.uleb128 0x2
+ 801 00cc 01       		.byte	0x1
+ 802 00cd 08       		.byte	0x8
+ 803 00ce AA010000 		.4byte	.LASF18
+ 804 00d2 02       		.uleb128 0x2
+ 805 00d3 08       		.byte	0x8
+ 806 00d4 04       		.byte	0x4
+ 807 00d5 31020000 		.4byte	.LASF19
+ 808 00d9 02       		.uleb128 0x2
+ 809 00da 04       		.byte	0x4
+ 810 00db 07       		.byte	0x7
+ 811 00dc 64000000 		.4byte	.LASF20
+ 812 00e0 06       		.uleb128 0x6
+ 813 00e1 04       		.byte	0x4
+ 814 00e2 CB000000 		.4byte	0xcb
+ 815 00e6 07       		.uleb128 0x7
+ 816 00e7 CB000000 		.4byte	0xcb
+ 817 00eb F6000000 		.4byte	0xf6
+ 818 00ef 08       		.uleb128 0x8
+ 819 00f0 D9000000 		.4byte	0xd9
+ 820 00f4 17       		.byte	0x17
+ 821 00f5 00       		.byte	0
+ 822 00f6 09       		.uleb128 0x9
+ 823 00f7 8101     		.2byte	0x181
+ 824 00f9 05       		.byte	0x5
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 19
 
 
- 991 051b 81000000 		.4byte	0x81
- 992 051f 05       		.uleb128 0x5
- 993 0520 03       		.byte	0x3
- 994 0521 00000000 		.4byte	hey
- 995 0525 06       		.uleb128 0x6
- 996 0526 BF000000 		.4byte	0xbf
- 997 052a 36050000 		.4byte	0x536
- 998 052e 15       		.uleb128 0x15
- 999 052f CD000000 		.4byte	0xcd
- 1000 0533 FF03     		.2byte	0x3ff
- 1001 0535 00       		.byte	0
- 1002 0536 14       		.uleb128 0x14
- 1003 0537 E5030000 		.4byte	.LASF77
- 1004 053b 01       		.byte	0x1
- 1005 053c 05       		.byte	0x5
- 1006 053d 25050000 		.4byte	0x525
- 1007 0541 05       		.uleb128 0x5
- 1008 0542 03       		.byte	0x3
- 1009 0543 00000000 		.4byte	do_received_string
- 1010 0547 14       		.uleb128 0x14
- 1011 0548 1E020000 		.4byte	.LASF78
- 1012 054c 01       		.byte	0x1
- 1013 054d 06       		.byte	0x6
- 1014 054e 99000000 		.4byte	0x99
- 1015 0552 05       		.uleb128 0x5
- 1016 0553 03       		.byte	0x3
- 1017 0554 00000000 		.4byte	do_string_index
- 1018 0558 00       		.byte	0
- 1019              		.section	.debug_abbrev,"",%progbits
- 1020              	.Ldebug_abbrev0:
- 1021 0000 01       		.uleb128 0x1
- 1022 0001 11       		.uleb128 0x11
- 1023 0002 01       		.byte	0x1
- 1024 0003 25       		.uleb128 0x25
- 1025 0004 0E       		.uleb128 0xe
- 1026 0005 13       		.uleb128 0x13
- 1027 0006 0B       		.uleb128 0xb
- 1028 0007 03       		.uleb128 0x3
- 1029 0008 0E       		.uleb128 0xe
- 1030 0009 1B       		.uleb128 0x1b
- 1031 000a 0E       		.uleb128 0xe
- 1032 000b 55       		.uleb128 0x55
- 1033 000c 17       		.uleb128 0x17
- 1034 000d 11       		.uleb128 0x11
- 1035 000e 01       		.uleb128 0x1
- 1036 000f 10       		.uleb128 0x10
- 1037 0010 17       		.uleb128 0x17
- 1038 0011 00       		.byte	0
- 1039 0012 00       		.byte	0
- 1040 0013 02       		.uleb128 0x2
- 1041 0014 24       		.uleb128 0x24
- 1042 0015 00       		.byte	0
- 1043 0016 0B       		.uleb128 0xb
- 1044 0017 0B       		.uleb128 0xb
- 1045 0018 3E       		.uleb128 0x3e
- 1046 0019 0B       		.uleb128 0xb
- 1047 001a 03       		.uleb128 0x3
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 21
+ 825 00fa 0A       		.byte	0xa
+ 826 00fb 24010000 		.4byte	0x124
+ 827 00ff 0A       		.uleb128 0xa
+ 828 0100 A9040000 		.4byte	.LASF21
+ 829 0104 05       		.byte	0x5
+ 830 0105 0C       		.byte	0xc
+ 831 0106 24010000 		.4byte	0x124
+ 832 010a 00       		.byte	0
+ 833 010b 0A       		.uleb128 0xa
+ 834 010c 78030000 		.4byte	.LASF22
+ 835 0110 05       		.byte	0x5
+ 836 0111 0D       		.byte	0xd
+ 837 0112 81000000 		.4byte	0x81
+ 838 0116 80       		.byte	0x80
+ 839 0117 0A       		.uleb128 0xa
+ 840 0118 AF010000 		.4byte	.LASF23
+ 841 011c 05       		.byte	0x5
+ 842 011d 0F       		.byte	0xf
+ 843 011e 34010000 		.4byte	0x134
+ 844 0122 81       		.byte	0x81
+ 845 0123 00       		.byte	0
+ 846 0124 07       		.uleb128 0x7
+ 847 0125 CB000000 		.4byte	0xcb
+ 848 0129 34010000 		.4byte	0x134
+ 849 012d 08       		.uleb128 0x8
+ 850 012e D9000000 		.4byte	0xd9
+ 851 0132 7F       		.byte	0x7f
+ 852 0133 00       		.byte	0
+ 853 0134 07       		.uleb128 0x7
+ 854 0135 CB000000 		.4byte	0xcb
+ 855 0139 44010000 		.4byte	0x144
+ 856 013d 08       		.uleb128 0x8
+ 857 013e D9000000 		.4byte	0xd9
+ 858 0142 FF       		.byte	0xff
+ 859 0143 00       		.byte	0
+ 860 0144 03       		.uleb128 0x3
+ 861 0145 A2040000 		.4byte	.LASF24
+ 862 0149 05       		.byte	0x5
+ 863 014a 10       		.byte	0x10
+ 864 014b F6000000 		.4byte	0xf6
+ 865 014f 0B       		.uleb128 0xb
+ 866 0150 2C       		.byte	0x2c
+ 867 0151 06       		.byte	0x6
+ 868 0152 14       		.byte	0x14
+ 869 0153 7C010000 		.4byte	0x17c
+ 870 0157 0C       		.uleb128 0xc
+ 871 0158 6B657900 		.ascii	"key\000"
+ 872 015c 06       		.byte	0x6
+ 873 015d 15       		.byte	0x15
+ 874 015e 7C010000 		.4byte	0x17c
+ 875 0162 00       		.byte	0
+ 876 0163 0A       		.uleb128 0xa
+ 877 0164 30010000 		.4byte	.LASF25
+ 878 0168 06       		.byte	0x6
+ 879 0169 16       		.byte	0x16
+ 880 016a 7C010000 		.4byte	0x17c
+ 881 016e 14       		.byte	0x14
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 20
 
 
- 1048 001b 0E       		.uleb128 0xe
- 1049 001c 00       		.byte	0
- 1050 001d 00       		.byte	0
- 1051 001e 03       		.uleb128 0x3
- 1052 001f 16       		.uleb128 0x16
- 1053 0020 00       		.byte	0
- 1054 0021 03       		.uleb128 0x3
- 1055 0022 0E       		.uleb128 0xe
- 1056 0023 3A       		.uleb128 0x3a
- 1057 0024 0B       		.uleb128 0xb
- 1058 0025 3B       		.uleb128 0x3b
- 1059 0026 0B       		.uleb128 0xb
- 1060 0027 49       		.uleb128 0x49
- 1061 0028 13       		.uleb128 0x13
- 1062 0029 00       		.byte	0
- 1063 002a 00       		.byte	0
- 1064 002b 04       		.uleb128 0x4
- 1065 002c 24       		.uleb128 0x24
- 1066 002d 00       		.byte	0
- 1067 002e 0B       		.uleb128 0xb
- 1068 002f 0B       		.uleb128 0xb
- 1069 0030 3E       		.uleb128 0x3e
- 1070 0031 0B       		.uleb128 0xb
- 1071 0032 03       		.uleb128 0x3
- 1072 0033 08       		.uleb128 0x8
- 1073 0034 00       		.byte	0
- 1074 0035 00       		.byte	0
- 1075 0036 05       		.uleb128 0x5
- 1076 0037 16       		.uleb128 0x16
- 1077 0038 00       		.byte	0
- 1078 0039 03       		.uleb128 0x3
- 1079 003a 0E       		.uleb128 0xe
- 1080 003b 3A       		.uleb128 0x3a
- 1081 003c 0B       		.uleb128 0xb
- 1082 003d 3B       		.uleb128 0x3b
- 1083 003e 05       		.uleb128 0x5
- 1084 003f 49       		.uleb128 0x49
- 1085 0040 13       		.uleb128 0x13
- 1086 0041 00       		.byte	0
- 1087 0042 00       		.byte	0
- 1088 0043 06       		.uleb128 0x6
- 1089 0044 01       		.uleb128 0x1
- 1090 0045 01       		.byte	0x1
- 1091 0046 49       		.uleb128 0x49
- 1092 0047 13       		.uleb128 0x13
- 1093 0048 01       		.uleb128 0x1
- 1094 0049 13       		.uleb128 0x13
- 1095 004a 00       		.byte	0
- 1096 004b 00       		.byte	0
- 1097 004c 07       		.uleb128 0x7
- 1098 004d 21       		.uleb128 0x21
- 1099 004e 00       		.byte	0
- 1100 004f 49       		.uleb128 0x49
- 1101 0050 13       		.uleb128 0x13
- 1102 0051 2F       		.uleb128 0x2f
- 1103 0052 0B       		.uleb128 0xb
- 1104 0053 00       		.byte	0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 22
+ 882 016f 0A       		.uleb128 0xa
+ 883 0170 5A010000 		.4byte	.LASF26
+ 884 0174 06       		.byte	0x6
+ 885 0175 17       		.byte	0x17
+ 886 0176 A5000000 		.4byte	0xa5
+ 887 017a 28       		.byte	0x28
+ 888 017b 00       		.byte	0
+ 889 017c 07       		.uleb128 0x7
+ 890 017d CB000000 		.4byte	0xcb
+ 891 0181 8C010000 		.4byte	0x18c
+ 892 0185 08       		.uleb128 0x8
+ 893 0186 D9000000 		.4byte	0xd9
+ 894 018a 13       		.byte	0x13
+ 895 018b 00       		.byte	0
+ 896 018c 03       		.uleb128 0x3
+ 897 018d EC020000 		.4byte	.LASF27
+ 898 0191 06       		.byte	0x6
+ 899 0192 19       		.byte	0x19
+ 900 0193 4F010000 		.4byte	0x14f
+ 901 0197 0B       		.uleb128 0xb
+ 902 0198 3C       		.byte	0x3c
+ 903 0199 07       		.byte	0x7
+ 904 019a 35       		.byte	0x35
+ 905 019b C4010000 		.4byte	0x1c4
+ 906 019f 0A       		.uleb128 0xa
+ 907 01a0 10000000 		.4byte	.LASF28
+ 908 01a4 07       		.byte	0x7
+ 909 01a5 36       		.byte	0x36
+ 910 01a6 7C010000 		.4byte	0x17c
+ 911 01aa 00       		.byte	0
+ 912 01ab 0A       		.uleb128 0xa
+ 913 01ac 00000000 		.4byte	.LASF29
+ 914 01b0 07       		.byte	0x7
+ 915 01b1 37       		.byte	0x37
+ 916 01b2 7C010000 		.4byte	0x17c
+ 917 01b6 14       		.byte	0x14
+ 918 01b7 0A       		.uleb128 0xa
+ 919 01b8 AB030000 		.4byte	.LASF30
+ 920 01bc 07       		.byte	0x7
+ 921 01bd 38       		.byte	0x38
+ 922 01be 7C010000 		.4byte	0x17c
+ 923 01c2 28       		.byte	0x28
+ 924 01c3 00       		.byte	0
+ 925 01c4 03       		.uleb128 0x3
+ 926 01c5 57040000 		.4byte	.LASF31
+ 927 01c9 07       		.byte	0x7
+ 928 01ca 3A       		.byte	0x3a
+ 929 01cb 97010000 		.4byte	0x197
+ 930 01cf 0B       		.uleb128 0xb
+ 931 01d0 20       		.byte	0x20
+ 932 01d1 07       		.byte	0x7
+ 933 01d2 3C       		.byte	0x3c
+ 934 01d3 38020000 		.4byte	0x238
+ 935 01d7 0A       		.uleb128 0xa
+ 936 01d8 F8020000 		.4byte	.LASF32
+ 937 01dc 07       		.byte	0x7
+ 938 01dd 3D       		.byte	0x3d
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 21
 
 
- 1105 0054 00       		.byte	0
- 1106 0055 08       		.uleb128 0x8
- 1107 0056 13       		.uleb128 0x13
- 1108 0057 01       		.byte	0x1
- 1109 0058 0B       		.uleb128 0xb
- 1110 0059 05       		.uleb128 0x5
- 1111 005a 3A       		.uleb128 0x3a
- 1112 005b 0B       		.uleb128 0xb
- 1113 005c 3B       		.uleb128 0x3b
- 1114 005d 0B       		.uleb128 0xb
- 1115 005e 01       		.uleb128 0x1
- 1116 005f 13       		.uleb128 0x13
- 1117 0060 00       		.byte	0
- 1118 0061 00       		.byte	0
- 1119 0062 09       		.uleb128 0x9
- 1120 0063 0D       		.uleb128 0xd
- 1121 0064 00       		.byte	0
- 1122 0065 03       		.uleb128 0x3
- 1123 0066 0E       		.uleb128 0xe
- 1124 0067 3A       		.uleb128 0x3a
- 1125 0068 0B       		.uleb128 0xb
- 1126 0069 3B       		.uleb128 0x3b
- 1127 006a 0B       		.uleb128 0xb
- 1128 006b 49       		.uleb128 0x49
- 1129 006c 13       		.uleb128 0x13
- 1130 006d 38       		.uleb128 0x38
- 1131 006e 0B       		.uleb128 0xb
- 1132 006f 00       		.byte	0
- 1133 0070 00       		.byte	0
- 1134 0071 0A       		.uleb128 0xa
- 1135 0072 13       		.uleb128 0x13
- 1136 0073 01       		.byte	0x1
- 1137 0074 0B       		.uleb128 0xb
- 1138 0075 0B       		.uleb128 0xb
- 1139 0076 3A       		.uleb128 0x3a
- 1140 0077 0B       		.uleb128 0xb
- 1141 0078 3B       		.uleb128 0x3b
- 1142 0079 0B       		.uleb128 0xb
- 1143 007a 01       		.uleb128 0x1
- 1144 007b 13       		.uleb128 0x13
- 1145 007c 00       		.byte	0
- 1146 007d 00       		.byte	0
- 1147 007e 0B       		.uleb128 0xb
- 1148 007f 0D       		.uleb128 0xd
- 1149 0080 00       		.byte	0
- 1150 0081 03       		.uleb128 0x3
- 1151 0082 08       		.uleb128 0x8
- 1152 0083 3A       		.uleb128 0x3a
- 1153 0084 0B       		.uleb128 0xb
- 1154 0085 3B       		.uleb128 0x3b
- 1155 0086 0B       		.uleb128 0xb
- 1156 0087 49       		.uleb128 0x49
- 1157 0088 13       		.uleb128 0x13
- 1158 0089 38       		.uleb128 0x38
- 1159 008a 0B       		.uleb128 0xb
- 1160 008b 00       		.byte	0
- 1161 008c 00       		.byte	0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 23
+ 939 01de 68000000 		.4byte	0x68
+ 940 01e2 00       		.byte	0
+ 941 01e3 0C       		.uleb128 0xc
+ 942 01e4 62657200 		.ascii	"ber\000"
+ 943 01e8 07       		.byte	0x7
+ 944 01e9 3E       		.byte	0x3e
+ 945 01ea 68000000 		.4byte	0x68
+ 946 01ee 04       		.byte	0x4
+ 947 01ef 0A       		.uleb128 0xa
+ 948 01f0 55010000 		.4byte	.LASF33
+ 949 01f4 07       		.byte	0x7
+ 950 01f5 3F       		.byte	0x3f
+ 951 01f6 68000000 		.4byte	0x68
+ 952 01fa 08       		.byte	0x8
+ 953 01fb 0A       		.uleb128 0xa
+ 954 01fc 2B010000 		.4byte	.LASF34
+ 955 0200 07       		.byte	0x7
+ 956 0201 40       		.byte	0x40
+ 957 0202 68000000 		.4byte	0x68
+ 958 0206 0C       		.byte	0xc
+ 959 0207 0A       		.uleb128 0xa
+ 960 0208 EE030000 		.4byte	.LASF35
+ 961 020c 07       		.byte	0x7
+ 962 020d 41       		.byte	0x41
+ 963 020e 68000000 		.4byte	0x68
+ 964 0212 10       		.byte	0x10
+ 965 0213 0A       		.uleb128 0xa
+ 966 0214 4B020000 		.4byte	.LASF36
+ 967 0218 07       		.byte	0x7
+ 968 0219 42       		.byte	0x42
+ 969 021a 68000000 		.4byte	0x68
+ 970 021e 14       		.byte	0x14
+ 971 021f 0A       		.uleb128 0xa
+ 972 0220 60030000 		.4byte	.LASF37
+ 973 0224 07       		.byte	0x7
+ 974 0225 43       		.byte	0x43
+ 975 0226 68000000 		.4byte	0x68
+ 976 022a 18       		.byte	0x18
+ 977 022b 0A       		.uleb128 0xa
+ 978 022c 8B030000 		.4byte	.LASF38
+ 979 0230 07       		.byte	0x7
+ 980 0231 44       		.byte	0x44
+ 981 0232 68000000 		.4byte	0x68
+ 982 0236 1C       		.byte	0x1c
+ 983 0237 00       		.byte	0
+ 984 0238 03       		.uleb128 0x3
+ 985 0239 BE030000 		.4byte	.LASF39
+ 986 023d 07       		.byte	0x7
+ 987 023e 46       		.byte	0x46
+ 988 023f CF010000 		.4byte	0x1cf
+ 989 0243 0B       		.uleb128 0xb
+ 990 0244 05       		.byte	0x5
+ 991 0245 07       		.byte	0x7
+ 992 0246 52       		.byte	0x52
+ 993 0247 88020000 		.4byte	0x288
+ 994 024b 0A       		.uleb128 0xa
+ 995 024c F1040000 		.4byte	.LASF40
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 22
 
 
- 1162 008d 0C       		.uleb128 0xc
- 1163 008e 35       		.uleb128 0x35
- 1164 008f 00       		.byte	0
- 1165 0090 49       		.uleb128 0x49
- 1166 0091 13       		.uleb128 0x13
- 1167 0092 00       		.byte	0
- 1168 0093 00       		.byte	0
- 1169 0094 0D       		.uleb128 0xd
- 1170 0095 0F       		.uleb128 0xf
- 1171 0096 00       		.byte	0
- 1172 0097 0B       		.uleb128 0xb
- 1173 0098 0B       		.uleb128 0xb
- 1174 0099 49       		.uleb128 0x49
- 1175 009a 13       		.uleb128 0x13
- 1176 009b 00       		.byte	0
- 1177 009c 00       		.byte	0
- 1178 009d 0E       		.uleb128 0xe
- 1179 009e 2E       		.uleb128 0x2e
- 1180 009f 00       		.byte	0
- 1181 00a0 3F       		.uleb128 0x3f
- 1182 00a1 19       		.uleb128 0x19
- 1183 00a2 03       		.uleb128 0x3
- 1184 00a3 0E       		.uleb128 0xe
- 1185 00a4 3A       		.uleb128 0x3a
- 1186 00a5 0B       		.uleb128 0xb
- 1187 00a6 3B       		.uleb128 0x3b
- 1188 00a7 0B       		.uleb128 0xb
- 1189 00a8 27       		.uleb128 0x27
- 1190 00a9 19       		.uleb128 0x19
- 1191 00aa 11       		.uleb128 0x11
- 1192 00ab 01       		.uleb128 0x1
- 1193 00ac 12       		.uleb128 0x12
- 1194 00ad 06       		.uleb128 0x6
- 1195 00ae 40       		.uleb128 0x40
- 1196 00af 18       		.uleb128 0x18
- 1197 00b0 9642     		.uleb128 0x2116
- 1198 00b2 19       		.uleb128 0x19
- 1199 00b3 00       		.byte	0
- 1200 00b4 00       		.byte	0
- 1201 00b5 0F       		.uleb128 0xf
- 1202 00b6 2E       		.uleb128 0x2e
- 1203 00b7 01       		.byte	0x1
- 1204 00b8 3F       		.uleb128 0x3f
- 1205 00b9 19       		.uleb128 0x19
- 1206 00ba 03       		.uleb128 0x3
- 1207 00bb 0E       		.uleb128 0xe
- 1208 00bc 3A       		.uleb128 0x3a
- 1209 00bd 0B       		.uleb128 0xb
- 1210 00be 3B       		.uleb128 0x3b
- 1211 00bf 0B       		.uleb128 0xb
- 1212 00c0 49       		.uleb128 0x49
- 1213 00c1 13       		.uleb128 0x13
- 1214 00c2 11       		.uleb128 0x11
- 1215 00c3 01       		.uleb128 0x1
- 1216 00c4 12       		.uleb128 0x12
- 1217 00c5 06       		.uleb128 0x6
- 1218 00c6 40       		.uleb128 0x40
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 24
+ 996 0250 07       		.byte	0x7
+ 997 0251 54       		.byte	0x54
+ 998 0252 81000000 		.4byte	0x81
+ 999 0256 00       		.byte	0
+ 1000 0257 0A       		.uleb128 0xa
+ 1001 0258 39030000 		.4byte	.LASF41
+ 1002 025c 07       		.byte	0x7
+ 1003 025d 56       		.byte	0x56
+ 1004 025e 88020000 		.4byte	0x288
+ 1005 0262 01       		.byte	0x1
+ 1006 0263 0A       		.uleb128 0xa
+ 1007 0264 1A020000 		.4byte	.LASF42
+ 1008 0268 07       		.byte	0x7
+ 1009 0269 58       		.byte	0x58
+ 1010 026a 81000000 		.4byte	0x81
+ 1011 026e 02       		.byte	0x2
+ 1012 026f 0A       		.uleb128 0xa
+ 1013 0270 FE020000 		.4byte	.LASF43
+ 1014 0274 07       		.byte	0x7
+ 1015 0275 5A       		.byte	0x5a
+ 1016 0276 81000000 		.4byte	0x81
+ 1017 027a 03       		.byte	0x3
+ 1018 027b 0A       		.uleb128 0xa
+ 1019 027c 4B040000 		.4byte	.LASF44
+ 1020 0280 07       		.byte	0x7
+ 1021 0281 5D       		.byte	0x5d
+ 1022 0282 81000000 		.4byte	0x81
+ 1023 0286 04       		.byte	0x4
+ 1024 0287 00       		.byte	0
+ 1025 0288 02       		.uleb128 0x2
+ 1026 0289 01       		.byte	0x1
+ 1027 028a 02       		.byte	0x2
+ 1028 028b CC030000 		.4byte	.LASF45
+ 1029 028f 03       		.uleb128 0x3
+ 1030 0290 22030000 		.4byte	.LASF46
+ 1031 0294 07       		.byte	0x7
+ 1032 0295 5F       		.byte	0x5f
+ 1033 0296 43020000 		.4byte	0x243
+ 1034 029a 0B       		.uleb128 0xb
+ 1035 029b 30       		.byte	0x30
+ 1036 029c 08       		.byte	0x8
+ 1037 029d 07       		.byte	0x7
+ 1038 029e BB020000 		.4byte	0x2bb
+ 1039 02a2 0A       		.uleb128 0xa
+ 1040 02a3 50020000 		.4byte	.LASF47
+ 1041 02a7 08       		.byte	0x8
+ 1042 02a8 08       		.byte	0x8
+ 1043 02a9 BB020000 		.4byte	0x2bb
+ 1044 02ad 00       		.byte	0
+ 1045 02ae 0A       		.uleb128 0xa
+ 1046 02af 0E040000 		.4byte	.LASF48
+ 1047 02b3 08       		.byte	0x8
+ 1048 02b4 09       		.byte	0x9
+ 1049 02b5 B1000000 		.4byte	0xb1
+ 1050 02b9 2C       		.byte	0x2c
+ 1051 02ba 00       		.byte	0
+ 1052 02bb 07       		.uleb128 0x7
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 23
 
 
- 1219 00c7 18       		.uleb128 0x18
- 1220 00c8 9642     		.uleb128 0x2116
- 1221 00ca 19       		.uleb128 0x19
- 1222 00cb 01       		.uleb128 0x1
- 1223 00cc 13       		.uleb128 0x13
- 1224 00cd 00       		.byte	0
- 1225 00ce 00       		.byte	0
- 1226 00cf 10       		.uleb128 0x10
- 1227 00d0 34       		.uleb128 0x34
- 1228 00d1 00       		.byte	0
- 1229 00d2 03       		.uleb128 0x3
- 1230 00d3 0E       		.uleb128 0xe
- 1231 00d4 3A       		.uleb128 0x3a
- 1232 00d5 0B       		.uleb128 0xb
- 1233 00d6 3B       		.uleb128 0x3b
- 1234 00d7 0B       		.uleb128 0xb
- 1235 00d8 49       		.uleb128 0x49
- 1236 00d9 13       		.uleb128 0x13
- 1237 00da 02       		.uleb128 0x2
- 1238 00db 18       		.uleb128 0x18
- 1239 00dc 00       		.byte	0
- 1240 00dd 00       		.byte	0
- 1241 00de 11       		.uleb128 0x11
- 1242 00df 0B       		.uleb128 0xb
- 1243 00e0 01       		.byte	0x1
- 1244 00e1 11       		.uleb128 0x11
- 1245 00e2 01       		.uleb128 0x1
- 1246 00e3 12       		.uleb128 0x12
- 1247 00e4 06       		.uleb128 0x6
- 1248 00e5 00       		.byte	0
- 1249 00e6 00       		.byte	0
- 1250 00e7 12       		.uleb128 0x12
- 1251 00e8 34       		.uleb128 0x34
- 1252 00e9 00       		.byte	0
- 1253 00ea 03       		.uleb128 0x3
- 1254 00eb 08       		.uleb128 0x8
- 1255 00ec 3A       		.uleb128 0x3a
- 1256 00ed 0B       		.uleb128 0xb
- 1257 00ee 3B       		.uleb128 0x3b
- 1258 00ef 0B       		.uleb128 0xb
- 1259 00f0 49       		.uleb128 0x49
- 1260 00f1 13       		.uleb128 0x13
- 1261 00f2 02       		.uleb128 0x2
- 1262 00f3 18       		.uleb128 0x18
- 1263 00f4 00       		.byte	0
- 1264 00f5 00       		.byte	0
- 1265 00f6 13       		.uleb128 0x13
- 1266 00f7 34       		.uleb128 0x34
- 1267 00f8 00       		.byte	0
- 1268 00f9 03       		.uleb128 0x3
- 1269 00fa 0E       		.uleb128 0xe
- 1270 00fb 3A       		.uleb128 0x3a
- 1271 00fc 0B       		.uleb128 0xb
- 1272 00fd 3B       		.uleb128 0x3b
- 1273 00fe 05       		.uleb128 0x5
- 1274 00ff 49       		.uleb128 0x49
- 1275 0100 13       		.uleb128 0x13
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 25
+ 1053 02bc B1000000 		.4byte	0xb1
+ 1054 02c0 CB020000 		.4byte	0x2cb
+ 1055 02c4 08       		.uleb128 0x8
+ 1056 02c5 D9000000 		.4byte	0xd9
+ 1057 02c9 0A       		.byte	0xa
+ 1058 02ca 00       		.byte	0
+ 1059 02cb 03       		.uleb128 0x3
+ 1060 02cc 77020000 		.4byte	.LASF49
+ 1061 02d0 08       		.byte	0x8
+ 1062 02d1 0A       		.byte	0xa
+ 1063 02d2 9A020000 		.4byte	0x29a
+ 1064 02d6 0B       		.uleb128 0xb
+ 1065 02d7 06       		.byte	0x6
+ 1066 02d8 09       		.byte	0x9
+ 1067 02d9 2E       		.byte	0x2e
+ 1068 02da 0F030000 		.4byte	0x30f
+ 1069 02de 0A       		.uleb128 0xa
+ 1070 02df 4B000000 		.4byte	.LASF50
+ 1071 02e3 09       		.byte	0x9
+ 1072 02e4 30       		.byte	0x30
+ 1073 02e5 8D000000 		.4byte	0x8d
+ 1074 02e9 00       		.byte	0
+ 1075 02ea 0A       		.uleb128 0xa
+ 1076 02eb 2E000000 		.4byte	.LASF51
+ 1077 02ef 09       		.byte	0x9
+ 1078 02f0 31       		.byte	0x31
+ 1079 02f1 99000000 		.4byte	0x99
+ 1080 02f5 02       		.byte	0x2
+ 1081 02f6 0A       		.uleb128 0xa
+ 1082 02f7 64040000 		.4byte	.LASF52
+ 1083 02fb 09       		.byte	0x9
+ 1084 02fc 32       		.byte	0x32
+ 1085 02fd 81000000 		.4byte	0x81
+ 1086 0301 04       		.byte	0x4
+ 1087 0302 0A       		.uleb128 0xa
+ 1088 0303 8A040000 		.4byte	.LASF53
+ 1089 0307 09       		.byte	0x9
+ 1090 0308 33       		.byte	0x33
+ 1091 0309 81000000 		.4byte	0x81
+ 1092 030d 05       		.byte	0x5
+ 1093 030e 00       		.byte	0
+ 1094 030f 03       		.uleb128 0x3
+ 1095 0310 14020000 		.4byte	.LASF54
+ 1096 0314 09       		.byte	0x9
+ 1097 0315 36       		.byte	0x36
+ 1098 0316 1A030000 		.4byte	0x31a
+ 1099 031a 0D       		.uleb128 0xd
+ 1100 031b D6020000 		.4byte	0x2d6
+ 1101 031f 0B       		.uleb128 0xb
+ 1102 0320 1C       		.byte	0x1c
+ 1103 0321 09       		.byte	0x9
+ 1104 0322 39       		.byte	0x39
+ 1105 0323 40030000 		.4byte	0x340
+ 1106 0327 0A       		.uleb128 0xa
+ 1107 0328 CF010000 		.4byte	.LASF55
+ 1108 032c 09       		.byte	0x9
+ 1109 032d 3B       		.byte	0x3b
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 24
 
 
- 1276 0101 3F       		.uleb128 0x3f
- 1277 0102 19       		.uleb128 0x19
- 1278 0103 3C       		.uleb128 0x3c
- 1279 0104 19       		.uleb128 0x19
- 1280 0105 00       		.byte	0
- 1281 0106 00       		.byte	0
- 1282 0107 14       		.uleb128 0x14
- 1283 0108 34       		.uleb128 0x34
- 1284 0109 00       		.byte	0
- 1285 010a 03       		.uleb128 0x3
- 1286 010b 0E       		.uleb128 0xe
- 1287 010c 3A       		.uleb128 0x3a
- 1288 010d 0B       		.uleb128 0xb
- 1289 010e 3B       		.uleb128 0x3b
- 1290 010f 0B       		.uleb128 0xb
- 1291 0110 49       		.uleb128 0x49
- 1292 0111 13       		.uleb128 0x13
- 1293 0112 3F       		.uleb128 0x3f
- 1294 0113 19       		.uleb128 0x19
- 1295 0114 02       		.uleb128 0x2
- 1296 0115 18       		.uleb128 0x18
- 1297 0116 00       		.byte	0
- 1298 0117 00       		.byte	0
- 1299 0118 15       		.uleb128 0x15
- 1300 0119 21       		.uleb128 0x21
- 1301 011a 00       		.byte	0
- 1302 011b 49       		.uleb128 0x49
- 1303 011c 13       		.uleb128 0x13
- 1304 011d 2F       		.uleb128 0x2f
- 1305 011e 05       		.uleb128 0x5
- 1306 011f 00       		.byte	0
- 1307 0120 00       		.byte	0
- 1308 0121 16       		.uleb128 0x16
- 1309 0122 34       		.uleb128 0x34
- 1310 0123 00       		.byte	0
- 1311 0124 03       		.uleb128 0x3
- 1312 0125 08       		.uleb128 0x8
- 1313 0126 3A       		.uleb128 0x3a
- 1314 0127 0B       		.uleb128 0xb
- 1315 0128 3B       		.uleb128 0x3b
- 1316 0129 0B       		.uleb128 0xb
- 1317 012a 49       		.uleb128 0x49
- 1318 012b 13       		.uleb128 0x13
- 1319 012c 3F       		.uleb128 0x3f
- 1320 012d 19       		.uleb128 0x19
- 1321 012e 02       		.uleb128 0x2
- 1322 012f 18       		.uleb128 0x18
- 1323 0130 00       		.byte	0
- 1324 0131 00       		.byte	0
- 1325 0132 00       		.byte	0
- 1326              		.section	.debug_aranges,"",%progbits
- 1327 0000 24000000 		.4byte	0x24
- 1328 0004 0200     		.2byte	0x2
- 1329 0006 00000000 		.4byte	.Ldebug_info0
- 1330 000a 04       		.byte	0x4
- 1331 000b 00       		.byte	0
- 1332 000c 0000     		.2byte	0
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 26
+ 1110 032e 40030000 		.4byte	0x340
+ 1111 0332 00       		.byte	0
+ 1112 0333 0A       		.uleb128 0xa
+ 1113 0334 D1020000 		.4byte	.LASF56
+ 1114 0338 09       		.byte	0x9
+ 1115 0339 3C       		.byte	0x3c
+ 1116 033a E6000000 		.4byte	0xe6
+ 1117 033e 04       		.byte	0x4
+ 1118 033f 00       		.byte	0
+ 1119 0340 06       		.uleb128 0x6
+ 1120 0341 04       		.byte	0x4
+ 1121 0342 C4010000 		.4byte	0x1c4
+ 1122 0346 03       		.uleb128 0x3
+ 1123 0347 42030000 		.4byte	.LASF57
+ 1124 034b 09       		.byte	0x9
+ 1125 034c 3E       		.byte	0x3e
+ 1126 034d 1F030000 		.4byte	0x31f
+ 1127 0351 0B       		.uleb128 0xb
+ 1128 0352 68       		.byte	0x68
+ 1129 0353 09       		.byte	0x9
+ 1130 0354 44       		.byte	0x44
+ 1131 0355 72030000 		.4byte	0x372
+ 1132 0359 0A       		.uleb128 0xa
+ 1133 035a 6D000000 		.4byte	.LASF58
+ 1134 035e 09       		.byte	0x9
+ 1135 035f 49       		.byte	0x49
+ 1136 0360 72030000 		.4byte	0x372
+ 1137 0364 00       		.byte	0
+ 1138 0365 0A       		.uleb128 0xa
+ 1139 0366 DF040000 		.4byte	.LASF59
+ 1140 036a 09       		.byte	0x9
+ 1141 036b 4A       		.byte	0x4a
+ 1142 036c 68000000 		.4byte	0x68
+ 1143 0370 64       		.byte	0x64
+ 1144 0371 00       		.byte	0
+ 1145 0372 07       		.uleb128 0x7
+ 1146 0373 CB000000 		.4byte	0xcb
+ 1147 0377 82030000 		.4byte	0x382
+ 1148 037b 08       		.uleb128 0x8
+ 1149 037c D9000000 		.4byte	0xd9
+ 1150 0380 63       		.byte	0x63
+ 1151 0381 00       		.byte	0
+ 1152 0382 03       		.uleb128 0x3
+ 1153 0383 17000000 		.4byte	.LASF60
+ 1154 0387 09       		.byte	0x9
+ 1155 0388 50       		.byte	0x50
+ 1156 0389 51030000 		.4byte	0x351
+ 1157 038d 0E       		.uleb128 0xe
+ 1158 038e 09000000 		.4byte	.LASF96
+ 1159 0392 01       		.byte	0x1
+ 1160 0393 0C       		.byte	0xc
+ 1161 0394 00000000 		.4byte	.LFB64
+ 1162 0398 44000000 		.4byte	.LFE64-.LFB64
+ 1163 039c 01       		.uleb128 0x1
+ 1164 039d 9C       		.byte	0x9c
+ 1165 039e 0F       		.uleb128 0xf
+ 1166 039f 7C040000 		.4byte	.LASF64
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 25
 
 
- 1333 000e 0000     		.2byte	0
- 1334 0010 00000000 		.4byte	.LFB64
- 1335 0014 50000000 		.4byte	.LFE64-.LFB64
- 1336 0018 00000000 		.4byte	.LFB65
- 1337 001c 80010000 		.4byte	.LFE65-.LFB65
- 1338 0020 00000000 		.4byte	0
- 1339 0024 00000000 		.4byte	0
- 1340              		.section	.debug_ranges,"",%progbits
- 1341              	.Ldebug_ranges0:
- 1342 0000 00000000 		.4byte	.LFB64
- 1343 0004 50000000 		.4byte	.LFE64
- 1344 0008 00000000 		.4byte	.LFB65
- 1345 000c 80010000 		.4byte	.LFE65
- 1346 0010 00000000 		.4byte	0
- 1347 0014 00000000 		.4byte	0
- 1348              		.section	.debug_line,"",%progbits
- 1349              	.Ldebug_line0:
- 1350 0000 08020000 		.section	.debug_str,"MS",%progbits,1
- 1350      02008001 
- 1350      00000201 
- 1350      FB0E0D00 
- 1350      01010101 
- 1351              	.LASF28:
- 1352 0000 6D6F6465 		.ascii	"model_id\000"
- 1352      6C5F6964 
- 1352      00
- 1353              	.LASF82:
- 1354 0009 444F5F49 		.ascii	"DO_ISR\000"
- 1354      535200
- 1355              	.LASF27:
- 1356 0010 73696D5F 		.ascii	"sim_id\000"
- 1356      696400
- 1357              	.LASF56:
- 1358 0017 7379735F 		.ascii	"sys_settings_t\000"
- 1358      73657474 
- 1358      696E6773 
- 1358      5F7400
- 1359              	.LASF47:
- 1360 0026 63757272 		.ascii	"currentCountDownValue\000"
- 1360      656E7443 
- 1360      6F756E74 
- 1360      446F776E 
- 1360      56616C75 
- 1361              	.LASF46:
- 1362 003c 636F756E 		.ascii	"countDownValue\000"
- 1362      74446F77 
- 1362      6E56616C 
- 1362      756500
- 1363              	.LASF2:
- 1364 004b 73686F72 		.ascii	"short int\000"
- 1364      7420696E 
- 1364      7400
- 1365              	.LASF19:
- 1366 0055 73697A65 		.ascii	"sizetype\000"
- 1366      74797065 
- 1366      00
- 1367              	.LASF54:
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 27
+ 1167 03a3 01       		.byte	0x1
+ 1168 03a4 19       		.byte	0x19
+ 1169 03a5 CB020000 		.4byte	0x2cb
+ 1170 03a9 00000000 		.4byte	.LFB65
+ 1171 03ad F8000000 		.4byte	.LFE65-.LFB65
+ 1172 03b1 01       		.uleb128 0x1
+ 1173 03b2 9C       		.byte	0x9c
+ 1174 03b3 05040000 		.4byte	0x405
+ 1175 03b7 10       		.uleb128 0x10
+ 1176 03b8 B3040000 		.4byte	.LASF61
+ 1177 03bc 01       		.byte	0x1
+ 1178 03bd 1B       		.byte	0x1b
+ 1179 03be CB020000 		.4byte	0x2cb
+ 1180 03c2 03       		.uleb128 0x3
+ 1181 03c3 91       		.byte	0x91
+ 1182 03c4 B07F     		.sleb128 -80
+ 1183 03c6 10       		.uleb128 0x10
+ 1184 03c7 84040000 		.4byte	.LASF62
+ 1185 03cb 01       		.byte	0x1
+ 1186 03cc 2D       		.byte	0x2d
+ 1187 03cd E0000000 		.4byte	0xe0
+ 1188 03d1 02       		.uleb128 0x2
+ 1189 03d2 91       		.byte	0x91
+ 1190 03d3 68       		.sleb128 -24
+ 1191 03d4 11       		.uleb128 0x11
+ 1192 03d5 6900     		.ascii	"i\000"
+ 1193 03d7 01       		.byte	0x1
+ 1194 03d8 32       		.byte	0x32
+ 1195 03d9 81000000 		.4byte	0x81
+ 1196 03dd 02       		.uleb128 0x2
+ 1197 03de 91       		.byte	0x91
+ 1198 03df 67       		.sleb128 -25
+ 1199 03e0 10       		.uleb128 0x10
+ 1200 03e1 FE030000 		.4byte	.LASF63
+ 1201 03e5 01       		.byte	0x1
+ 1202 03e6 33       		.byte	0x33
+ 1203 03e7 B1000000 		.4byte	0xb1
+ 1204 03eb 02       		.uleb128 0x2
+ 1205 03ec 91       		.byte	0x91
+ 1206 03ed 60       		.sleb128 -32
+ 1207 03ee 12       		.uleb128 0x12
+ 1208 03ef 2A000000 		.4byte	.LBB2
+ 1209 03f3 20000000 		.4byte	.LBE2-.LBB2
+ 1210 03f7 11       		.uleb128 0x11
+ 1211 03f8 6900     		.ascii	"i\000"
+ 1212 03fa 01       		.byte	0x1
+ 1213 03fb 27       		.byte	0x27
+ 1214 03fc 68000000 		.4byte	0x68
+ 1215 0400 02       		.uleb128 0x2
+ 1216 0401 91       		.byte	0x91
+ 1217 0402 6C       		.sleb128 -20
+ 1218 0403 00       		.byte	0
+ 1219 0404 00       		.byte	0
+ 1220 0405 0F       		.uleb128 0xf
+ 1221 0406 C2020000 		.4byte	.LASF65
+ 1222 040a 01       		.byte	0x1
+ 1223 040b 42       		.byte	0x42
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 26
 
 
- 1368 005e 65705F68 		.ascii	"ep_host\000"
- 1368      6F737400 
- 1369              	.LASF80:
- 1370 0066 64697373 		.ascii	"diss_oxy.c\000"
- 1370      5F6F7879 
- 1370      2E6300
- 1371              	.LASF79:
- 1372 0071 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1372      43313120 
- 1372      352E342E 
- 1372      31203230 
- 1372      31363036 
- 1373 00a4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1373      20726576 
- 1373      6973696F 
- 1373      6E203233 
- 1373      37373135 
- 1374 00d7 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1374      66756E63 
- 1374      74696F6E 
- 1374      2D736563 
- 1374      74696F6E 
- 1375              	.LASF62:
- 1376 00ff 64617461 		.ascii	"data\000"
- 1376      00
- 1377              	.LASF52:
- 1378 0104 63686970 		.ascii	"chip_uniqueId\000"
- 1378      5F756E69 
- 1378      71756549 
- 1378      6400
- 1379              	.LASF33:
- 1380 0112 65636E6F 		.ascii	"ecno\000"
- 1380      00
- 1381              	.LASF24:
- 1382 0117 76616C75 		.ascii	"value\000"
- 1382      6500
- 1383              	.LASF12:
- 1384 011d 75696E74 		.ascii	"uint16\000"
- 1384      313600
- 1385              	.LASF60:
- 1386 0124 64617461 		.ascii	"dataPointsInStack\000"
- 1386      506F696E 
- 1386      7473496E 
- 1386      53746163 
- 1386      6B00
- 1387              	.LASF11:
- 1388 0136 75696E74 		.ascii	"uint8\000"
- 1388      3800
- 1389              	.LASF32:
- 1390 013c 72736370 		.ascii	"rscp\000"
- 1390      00
- 1391              	.LASF13:
- 1392 0141 696E7431 		.ascii	"int16\000"
- 1392      3600
- 1393              	.LASF25:
- 1394 0147 74696D65 		.ascii	"timeStamp\000"
- 1394      5374616D 
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 28
+ 1224 040c 44010000 		.4byte	0x144
+ 1225 0410 00000000 		.4byte	.LFB66
+ 1226 0414 74010000 		.4byte	.LFE66-.LFB66
+ 1227 0418 01       		.uleb128 0x1
+ 1228 0419 9C       		.byte	0x9c
+ 1229 041a 3D040000 		.4byte	0x43d
+ 1230 041e 10       		.uleb128 0x10
+ 1231 041f 06040000 		.4byte	.LASF66
+ 1232 0423 01       		.byte	0x1
+ 1233 0424 45       		.byte	0x45
+ 1234 0425 CB020000 		.4byte	0x2cb
+ 1235 0429 03       		.uleb128 0x3
+ 1236 042a 91       		.byte	0x91
+ 1237 042b B07F     		.sleb128 -80
+ 1238 042d 10       		.uleb128 0x10
+ 1239 042e E9030000 		.4byte	.LASF67
+ 1240 0432 01       		.byte	0x1
+ 1241 0433 47       		.byte	0x47
+ 1242 0434 44010000 		.4byte	0x144
+ 1243 0438 03       		.uleb128 0x3
+ 1244 0439 91       		.byte	0x91
+ 1245 043a AC7C     		.sleb128 -468
+ 1246 043c 00       		.byte	0
+ 1247 043d 13       		.uleb128 0x13
+ 1248 043e 13010000 		.4byte	.LASF97
+ 1249 0442 01       		.byte	0x1
+ 1250 0443 83       		.byte	0x83
+ 1251 0444 B1000000 		.4byte	0xb1
+ 1252 0448 00000000 		.4byte	.LFB67
+ 1253 044c 7A000000 		.4byte	.LFE67-.LFB67
+ 1254 0450 01       		.uleb128 0x1
+ 1255 0451 9C       		.byte	0x9c
+ 1256 0452 7F040000 		.4byte	0x47f
+ 1257 0456 14       		.uleb128 0x14
+ 1258 0457 32040000 		.4byte	.LASF68
+ 1259 045b 01       		.byte	0x1
+ 1260 045c 83       		.byte	0x83
+ 1261 045d 7F040000 		.4byte	0x47f
+ 1262 0461 02       		.uleb128 0x2
+ 1263 0462 91       		.byte	0x91
+ 1264 0463 6C       		.sleb128 -20
+ 1265 0464 15       		.uleb128 0x15
+ 1266 0465 6E00     		.ascii	"n\000"
+ 1267 0467 01       		.byte	0x1
+ 1268 0468 83       		.byte	0x83
+ 1269 0469 81000000 		.4byte	0x81
+ 1270 046d 02       		.uleb128 0x2
+ 1271 046e 91       		.byte	0x91
+ 1272 046f 6B       		.sleb128 -21
+ 1273 0470 10       		.uleb128 0x10
+ 1274 0471 44000000 		.4byte	.LASF69
+ 1275 0475 01       		.byte	0x1
+ 1276 0476 85       		.byte	0x85
+ 1277 0477 B1000000 		.4byte	0xb1
+ 1278 047b 02       		.uleb128 0x2
+ 1279 047c 91       		.byte	0x91
+ 1280 047d 74       		.sleb128 -12
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 27
 
 
- 1394      7000
- 1395              	.LASF61:
- 1396 0151 64617461 		.ascii	"dataPointsInStackDesired\000"
- 1396      506F696E 
- 1396      7473496E 
- 1396      53746163 
- 1396      6B446573 
- 1397              	.LASF15:
- 1398 016a 666C6F61 		.ascii	"float\000"
- 1398      7400
- 1399              	.LASF6:
- 1400 0170 6C6F6E67 		.ascii	"long long int\000"
- 1400      206C6F6E 
- 1400      6720696E 
- 1400      7400
- 1401              	.LASF72:
- 1402 017e 616C6172 		.ascii	"alarmMeasure\000"
- 1402      6D4D6561 
- 1402      73757265 
- 1402      00
- 1403              	.LASF17:
- 1404 018b 63686172 		.ascii	"char\000"
- 1404      00
- 1405              	.LASF22:
- 1406 0190 72656173 		.ascii	"reason\000"
- 1406      6F6E00
- 1407              	.LASF4:
- 1408 0197 6C6F6E67 		.ascii	"long int\000"
- 1408      20696E74 
- 1408      00
- 1409              	.LASF59:
- 1410 01a0 62756666 		.ascii	"buffer_overflow\000"
- 1410      65725F6F 
- 1410      76657266 
- 1410      6C6F7700 
- 1411              	.LASF51:
- 1412 01b0 6D6F6465 		.ascii	"modem_info\000"
- 1412      6D5F696E 
- 1412      666F00
- 1413              	.LASF81:
- 1414 01bb 433A5C55 		.ascii	"C:\\Users\\dantz\\Documents\\notoriOS\\notoriOS\\no"
- 1414      73657273 
- 1414      5C64616E 
- 1414      747A5C44 
- 1414      6F63756D 
- 1415 01e8 746F7269 		.ascii	"toriOS.cydsn\000"
- 1415      4F532E63 
- 1415      7964736E 
- 1415      00
- 1416              	.LASF50:
- 1417 01f5 616C6172 		.ascii	"alarm\000"
- 1417      6D00
- 1418              	.LASF41:
- 1419 01fb 6D656173 		.ascii	"measure_time\000"
- 1419      7572655F 
- 1419      74696D65 
- 1419      00
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 29
+ 1281 047e 00       		.byte	0
+ 1282 047f 06       		.uleb128 0x6
+ 1283 0480 04       		.byte	0x4
+ 1284 0481 B1000000 		.4byte	0xb1
+ 1285 0485 16       		.uleb128 0x16
+ 1286 0486 B8030000 		.4byte	.LASF70
+ 1287 048a 01       		.byte	0x1
+ 1288 048b 95       		.byte	0x95
+ 1289 048c 00000000 		.4byte	.LFB68
+ 1290 0490 7E000000 		.4byte	.LFE68-.LFB68
+ 1291 0494 01       		.uleb128 0x1
+ 1292 0495 9C       		.byte	0x9c
+ 1293 0496 CB040000 		.4byte	0x4cb
+ 1294 049a 15       		.uleb128 0x15
+ 1295 049b 6100     		.ascii	"a\000"
+ 1296 049d 01       		.byte	0x1
+ 1297 049e 95       		.byte	0x95
+ 1298 049f 7F040000 		.4byte	0x47f
+ 1299 04a3 02       		.uleb128 0x2
+ 1300 04a4 91       		.byte	0x91
+ 1301 04a5 6C       		.sleb128 -20
+ 1302 04a6 15       		.uleb128 0x15
+ 1303 04a7 6E00     		.ascii	"n\000"
+ 1304 04a9 01       		.byte	0x1
+ 1305 04aa 95       		.byte	0x95
+ 1306 04ab 81000000 		.4byte	0x81
+ 1307 04af 02       		.uleb128 0x2
+ 1308 04b0 91       		.byte	0x91
+ 1309 04b1 6B       		.sleb128 -21
+ 1310 04b2 11       		.uleb128 0x11
+ 1311 04b3 6900     		.ascii	"i\000"
+ 1312 04b5 01       		.byte	0x1
+ 1313 04b6 96       		.byte	0x96
+ 1314 04b7 81000000 		.4byte	0x81
+ 1315 04bb 02       		.uleb128 0x2
+ 1316 04bc 91       		.byte	0x91
+ 1317 04bd 77       		.sleb128 -9
+ 1318 04be 11       		.uleb128 0x11
+ 1319 04bf 6A00     		.ascii	"j\000"
+ 1320 04c1 01       		.byte	0x1
+ 1321 04c2 96       		.byte	0x96
+ 1322 04c3 81000000 		.4byte	0x81
+ 1323 04c7 02       		.uleb128 0x2
+ 1324 04c8 91       		.byte	0x91
+ 1325 04c9 76       		.sleb128 -10
+ 1326 04ca 00       		.byte	0
+ 1327 04cb 17       		.uleb128 0x17
+ 1328 04cc 25010000 		.4byte	.LASF71
+ 1329 04d0 01       		.byte	0x1
+ 1330 04d1 A1       		.byte	0xa1
+ 1331 04d2 00000000 		.4byte	.LFB69
+ 1332 04d6 28000000 		.4byte	.LFE69-.LFB69
+ 1333 04da 01       		.uleb128 0x1
+ 1334 04db 9C       		.byte	0x9c
+ 1335 04dc 05050000 		.4byte	0x505
+ 1336 04e0 15       		.uleb128 0x15
+ 1337 04e1 7000     		.ascii	"p\000"
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 28
 
 
- 1420              	.LASF74:
- 1421 0208 616C6172 		.ascii	"alarmSync\000"
- 1421      6D53796E 
- 1421      6300
- 1422              	.LASF18:
- 1423 0212 6C6F6E67 		.ascii	"long double\000"
- 1423      20646F75 
- 1423      626C6500 
- 1424              	.LASF78:
- 1425 021e 646F5F73 		.ascii	"do_string_index\000"
- 1425      7472696E 
- 1425      675F696E 
- 1425      64657800 
- 1426              	.LASF1:
- 1427 022e 756E7369 		.ascii	"unsigned char\000"
- 1427      676E6564 
- 1427      20636861 
- 1427      7200
- 1428              	.LASF35:
- 1429 023c 72737270 		.ascii	"rsrp\000"
- 1429      00
- 1430              	.LASF64:
- 1431 0241 6D6F6465 		.ascii	"modem_start_time_stamp\000"
- 1431      6D5F7374 
- 1431      6172745F 
- 1431      74696D65 
- 1431      5F737461 
- 1432              	.LASF63:
- 1433 0258 6D6F6465 		.ascii	"modem_state\000"
- 1433      6D5F7374 
- 1433      61746500 
- 1434              	.LASF0:
- 1435 0264 7369676E 		.ascii	"signed char\000"
- 1435      65642063 
- 1435      68617200 
- 1436              	.LASF7:
- 1437 0270 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1437      206C6F6E 
- 1437      6720756E 
- 1437      7369676E 
- 1437      65642069 
- 1438              	.LASF71:
- 1439 0287 73797374 		.ascii	"system_settings\000"
- 1439      656D5F73 
- 1439      65747469 
- 1439      6E677300 
- 1440              	.LASF83:
- 1441 0297 444F5F73 		.ascii	"DO_sensor_test\000"
- 1441      656E736F 
- 1441      725F7465 
- 1441      737400
- 1442              	.LASF8:
- 1443 02a6 756E7369 		.ascii	"unsigned int\000"
- 1443      676E6564 
- 1443      20696E74 
- 1443      00
- 1444              	.LASF26:
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 30
+ 1338 04e3 01       		.byte	0x1
+ 1339 04e4 A1       		.byte	0xa1
+ 1340 04e5 7F040000 		.4byte	0x47f
+ 1341 04e9 02       		.uleb128 0x2
+ 1342 04ea 91       		.byte	0x91
+ 1343 04eb 6C       		.sleb128 -20
+ 1344 04ec 15       		.uleb128 0x15
+ 1345 04ed 7100     		.ascii	"q\000"
+ 1346 04ef 01       		.byte	0x1
+ 1347 04f0 A1       		.byte	0xa1
+ 1348 04f1 7F040000 		.4byte	0x47f
+ 1349 04f5 02       		.uleb128 0x2
+ 1350 04f6 91       		.byte	0x91
+ 1351 04f7 68       		.sleb128 -24
+ 1352 04f8 11       		.uleb128 0x11
+ 1353 04f9 7400     		.ascii	"t\000"
+ 1354 04fb 01       		.byte	0x1
+ 1355 04fc A2       		.byte	0xa2
+ 1356 04fd B1000000 		.4byte	0xb1
+ 1357 0501 02       		.uleb128 0x2
+ 1358 0502 91       		.byte	0x91
+ 1359 0503 74       		.sleb128 -12
+ 1360 0504 00       		.byte	0
+ 1361 0505 18       		.uleb128 0x18
+ 1362 0506 9E030000 		.4byte	.LASF72
+ 1363 050a 0A       		.byte	0xa
+ 1364 050b 1207     		.2byte	0x712
+ 1365 050d 11050000 		.4byte	0x511
+ 1366 0511 0D       		.uleb128 0xd
+ 1367 0512 76000000 		.4byte	0x76
+ 1368 0516 19       		.uleb128 0x19
+ 1369 0517 BF010000 		.4byte	.LASF73
+ 1370 051b 06       		.byte	0x6
+ 1371 051c 11       		.byte	0x11
+ 1372 051d 88020000 		.4byte	0x288
+ 1373 0521 05       		.uleb128 0x5
+ 1374 0522 03       		.byte	0x3
+ 1375 0523 00000000 		.4byte	buffer_overflow
+ 1376 0527 19       		.uleb128 0x19
+ 1377 0528 3D010000 		.4byte	.LASF74
+ 1378 052c 06       		.byte	0x6
+ 1379 052d 22       		.byte	0x22
+ 1380 052e 8D000000 		.4byte	0x8d
+ 1381 0532 05       		.uleb128 0x5
+ 1382 0533 03       		.byte	0x3
+ 1383 0534 00000000 		.4byte	dataPointsInStack
+ 1384 0538 19       		.uleb128 0x19
+ 1385 0539 64010000 		.4byte	.LASF75
+ 1386 053d 06       		.byte	0x6
+ 1387 053e 23       		.byte	0x23
+ 1388 053f 8D000000 		.4byte	0x8d
+ 1389 0543 05       		.uleb128 0x5
+ 1390 0544 03       		.byte	0x3
+ 1391 0545 00000000 		.4byte	dataPointsInStackDesired
+ 1392 0549 07       		.uleb128 0x7
+ 1393 054a 8C010000 		.4byte	0x18c
+ 1394 054e 59050000 		.4byte	0x559
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 29
 
 
- 1445 02b3 6B65795F 		.ascii	"key_value_t\000"
- 1445      76616C75 
- 1445      655F7400 
- 1446              	.LASF31:
- 1447 02bf 72786C65 		.ascii	"rxlev\000"
- 1447      7600
- 1448              	.LASF42:
- 1449 02c5 73796E63 		.ascii	"sync_time\000"
- 1449      5F74696D 
- 1449      6500
- 1450              	.LASF65:
- 1451 02cf 6D6F6465 		.ascii	"modem_stats\000"
- 1451      6D5F7374 
- 1451      61747300 
- 1452              	.LASF73:
- 1453 02db 74696D65 		.ascii	"timeToMeasure\000"
- 1453      546F4D65 
- 1453      61737572 
- 1453      6500
- 1454              	.LASF45:
- 1455 02e9 75706461 		.ascii	"updatable_parameters_t\000"
- 1455      7461626C 
- 1455      655F7061 
- 1455      72616D65 
- 1455      74657273 
- 1456              	.LASF40:
- 1457 0300 73696D5F 		.ascii	"sim_type\000"
- 1457      74797065 
- 1457      00
- 1458              	.LASF53:
- 1459 0309 7379735F 		.ascii	"sys_info_t\000"
- 1459      696E666F 
- 1459      5F7400
- 1460              	.LASF3:
- 1461 0314 73686F72 		.ascii	"short unsigned int\000"
- 1461      7420756E 
- 1461      7369676E 
- 1461      65642069 
- 1461      6E7400
- 1462              	.LASF36:
- 1463 0327 74696D65 		.ascii	"time_to_network_connect\000"
- 1463      5F746F5F 
- 1463      6E657477 
- 1463      6F726B5F 
- 1463      636F6E6E 
- 1464              	.LASF21:
- 1465 033f 73746174 		.ascii	"status\000"
- 1465      757300
- 1466              	.LASF70:
- 1467 0346 73797374 		.ascii	"system_info\000"
- 1467      656D5F69 
- 1467      6E666F00 
- 1468              	.LASF37:
- 1469 0352 74696D65 		.ascii	"time_to_acquire_ip\000"
- 1469      5F746F5F 
- 1469      61637175 
- 1469      6972655F 
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 31
+ 1395 0552 08       		.uleb128 0x8
+ 1396 0553 D9000000 		.4byte	0xd9
+ 1397 0557 95       		.byte	0x95
+ 1398 0558 00       		.byte	0
+ 1399 0559 19       		.uleb128 0x19
+ 1400 055a 0E010000 		.4byte	.LASF76
+ 1401 055e 06       		.byte	0x6
+ 1402 055f 24       		.byte	0x24
+ 1403 0560 49050000 		.4byte	0x549
+ 1404 0564 05       		.uleb128 0x5
+ 1405 0565 03       		.byte	0x3
+ 1406 0566 00000000 		.4byte	data
+ 1407 056a 19       		.uleb128 0x19
+ 1408 056b 83020000 		.4byte	.LASF77
+ 1409 056f 07       		.byte	0x7
+ 1410 0570 1F       		.byte	0x1f
+ 1411 0571 81000000 		.4byte	0x81
+ 1412 0575 05       		.uleb128 0x5
+ 1413 0576 03       		.byte	0x3
+ 1414 0577 00000000 		.4byte	modem_state
+ 1415 057b 19       		.uleb128 0x19
+ 1416 057c 60020000 		.4byte	.LASF78
+ 1417 0580 07       		.byte	0x7
+ 1418 0581 62       		.byte	0x62
+ 1419 0582 A5000000 		.4byte	0xa5
+ 1420 0586 05       		.uleb128 0x5
+ 1421 0587 03       		.byte	0x3
+ 1422 0588 00000000 		.4byte	modem_start_time_stamp
+ 1423 058c 19       		.uleb128 0x19
+ 1424 058d CF010000 		.4byte	.LASF55
+ 1425 0591 07       		.byte	0x7
+ 1426 0592 63       		.byte	0x63
+ 1427 0593 C4010000 		.4byte	0x1c4
+ 1428 0597 05       		.uleb128 0x5
+ 1429 0598 03       		.byte	0x3
+ 1430 0599 00000000 		.4byte	modem_info
+ 1431 059d 19       		.uleb128 0x19
+ 1432 059e 08030000 		.4byte	.LASF79
+ 1433 05a2 07       		.byte	0x7
+ 1434 05a3 64       		.byte	0x64
+ 1435 05a4 38020000 		.4byte	0x238
+ 1436 05a8 05       		.uleb128 0x5
+ 1437 05a9 03       		.byte	0x3
+ 1438 05aa 00000000 		.4byte	modem_stats
+ 1439 05ae 19       		.uleb128 0x19
+ 1440 05af CA040000 		.4byte	.LASF80
+ 1441 05b3 07       		.byte	0x7
+ 1442 05b4 65       		.byte	0x65
+ 1443 05b5 8F020000 		.4byte	0x28f
+ 1444 05b9 05       		.uleb128 0x5
+ 1445 05ba 03       		.byte	0x3
+ 1446 05bb 00000000 		.4byte	updatable_parameters
+ 1447 05bf 07       		.uleb128 0x7
+ 1448 05c0 CB000000 		.4byte	0xcb
+ 1449 05c4 D0050000 		.4byte	0x5d0
+ 1450 05c8 1A       		.uleb128 0x1a
+ 1451 05c9 D9000000 		.4byte	0xd9
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 30
 
 
- 1469      697000
- 1470              	.LASF23:
- 1471 0365 74657374 		.ascii	"test_t\000"
- 1471      5F7400
- 1472              	.LASF29:
- 1473 036c 696D6569 		.ascii	"imei\000"
- 1473      00
- 1474              	.LASF10:
- 1475 0371 696E7433 		.ascii	"int32_t\000"
- 1475      325F7400 
- 1476              	.LASF38:
- 1477 0379 6D6F6465 		.ascii	"modem_stats_t\000"
- 1477      6D5F7374 
- 1477      6174735F 
- 1477      7400
- 1478              	.LASF44:
- 1479 0387 5F426F6F 		.ascii	"_Bool\000"
- 1479      6C00
- 1480              	.LASF76:
- 1481 038d 74696D65 		.ascii	"timeToSycnRemoteParams\000"
- 1481      546F5379 
- 1481      636E5265 
- 1481      6D6F7465 
- 1481      50617261 
- 1482              	.LASF57:
- 1483 03a4 74657374 		.ascii	"test\000"
- 1483      00
- 1484              	.LASF34:
- 1485 03a9 72737271 		.ascii	"rsrq\000"
- 1485      00
- 1486              	.LASF69:
- 1487 03ae 68747470 		.ascii	"http_route\000"
- 1487      5F726F75 
- 1487      746500
- 1488              	.LASF5:
- 1489 03b9 6C6F6E67 		.ascii	"long unsigned int\000"
- 1489      20756E73 
- 1489      69676E65 
- 1489      6420696E 
- 1489      7400
- 1490              	.LASF14:
- 1491 03cb 696E7433 		.ascii	"int32\000"
- 1491      3200
- 1492              	.LASF16:
- 1493 03d1 646F7562 		.ascii	"double\000"
- 1493      6C6500
- 1494              	.LASF58:
- 1495 03d8 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1495      52784275 
- 1495      66666572 
- 1495      00
- 1496              	.LASF77:
- 1497 03e5 646F5F72 		.ascii	"do_received_string\000"
- 1497      65636569 
- 1497      7665645F 
- 1497      73747269 
- 1497      6E6700
-ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc8QvpQd.s 			page 32
+ 1452 05cd 0F27     		.2byte	0x270f
+ 1453 05cf 00       		.byte	0
+ 1454 05d0 19       		.uleb128 0x19
+ 1455 05d1 FB040000 		.4byte	.LASF81
+ 1456 05d5 09       		.byte	0x9
+ 1457 05d6 18       		.byte	0x18
+ 1458 05d7 BF050000 		.4byte	0x5bf
+ 1459 05db 05       		.uleb128 0x5
+ 1460 05dc 03       		.byte	0x3
+ 1461 05dd 00000000 		.4byte	http_request
+ 1462 05e1 19       		.uleb128 0x19
+ 1463 05e2 E7040000 		.4byte	.LASF82
+ 1464 05e6 09       		.byte	0x9
+ 1465 05e7 19       		.byte	0x19
+ 1466 05e8 BF050000 		.4byte	0x5bf
+ 1467 05ec 05       		.uleb128 0x5
+ 1468 05ed 03       		.byte	0x3
+ 1469 05ee 00000000 		.4byte	http_body
+ 1470 05f2 07       		.uleb128 0x7
+ 1471 05f3 CB000000 		.4byte	0xcb
+ 1472 05f7 02060000 		.4byte	0x602
+ 1473 05fb 08       		.uleb128 0x8
+ 1474 05fc D9000000 		.4byte	0xd9
+ 1475 0600 C7       		.byte	0xc7
+ 1476 0601 00       		.byte	0
+ 1477 0602 19       		.uleb128 0x19
+ 1478 0603 F3030000 		.4byte	.LASF83
+ 1479 0607 09       		.byte	0x9
+ 1480 0608 1A       		.byte	0x1a
+ 1481 0609 F2050000 		.4byte	0x5f2
+ 1482 060d 05       		.uleb128 0x5
+ 1483 060e 03       		.byte	0x3
+ 1484 060f 00000000 		.4byte	http_route
+ 1485 0613 19       		.uleb128 0x19
+ 1486 0614 7F030000 		.4byte	.LASF84
+ 1487 0618 09       		.byte	0x9
+ 1488 0619 41       		.byte	0x41
+ 1489 061a 46030000 		.4byte	0x346
+ 1490 061e 05       		.uleb128 0x5
+ 1491 061f 03       		.byte	0x3
+ 1492 0620 00000000 		.4byte	system_info
+ 1493 0624 19       		.uleb128 0x19
+ 1494 0625 B2020000 		.4byte	.LASF85
+ 1495 0629 09       		.byte	0x9
+ 1496 062a 53       		.byte	0x53
+ 1497 062b 82030000 		.4byte	0x382
+ 1498 062f 05       		.uleb128 0x5
+ 1499 0630 03       		.byte	0x3
+ 1500 0631 00000000 		.4byte	system_settings
+ 1501 0635 19       		.uleb128 0x19
+ 1502 0636 9D010000 		.4byte	.LASF86
+ 1503 063a 09       		.byte	0x9
+ 1504 063b 6F       		.byte	0x6f
+ 1505 063c 0F030000 		.4byte	0x30f
+ 1506 0640 05       		.uleb128 0x5
+ 1507 0641 03       		.byte	0x3
+ 1508 0642 00000000 		.4byte	alarmMeasure
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 31
 
 
- 1498              	.LASF43:
- 1499 03f8 64656275 		.ascii	"debug_level\000"
- 1499      675F6C65 
- 1499      76656C00 
- 1500              	.LASF30:
- 1501 0404 6D6F6465 		.ascii	"modem_info_t\000"
- 1501      6D5F696E 
- 1501      666F5F74 
- 1501      00
- 1502              	.LASF48:
- 1503 0411 636F756E 		.ascii	"countDownType\000"
- 1503      74446F77 
- 1503      6E547970 
- 1503      6500
- 1504              	.LASF9:
- 1505 041f 5F5F696E 		.ascii	"__int32_t\000"
- 1505      7433325F 
- 1505      7400
- 1506              	.LASF49:
- 1507 0429 636F756E 		.ascii	"countDownResetCondition\000"
- 1507      74446F77 
- 1507      6E526573 
- 1507      6574436F 
- 1507      6E646974 
- 1508              	.LASF20:
- 1509 0441 74657374 		.ascii	"test_name\000"
- 1509      5F6E616D 
- 1509      6500
- 1510              	.LASF66:
- 1511 044b 75706461 		.ascii	"updatable_parameters\000"
- 1511      7461626C 
- 1511      655F7061 
- 1511      72616D65 
- 1511      74657273 
- 1512              	.LASF55:
- 1513 0460 65705F70 		.ascii	"ep_port\000"
- 1513      6F727400 
- 1514              	.LASF68:
- 1515 0468 68747470 		.ascii	"http_body\000"
- 1515      5F626F64 
- 1515      7900
- 1516              	.LASF39:
- 1517 0472 6E6F6465 		.ascii	"node_type\000"
- 1517      5F747970 
- 1517      6500
- 1518              	.LASF67:
- 1519 047c 68747470 		.ascii	"http_request\000"
- 1519      5F726571 
- 1519      75657374 
- 1519      00
- 1520              	.LASF75:
- 1521 0489 74696D65 		.ascii	"timeToSync\000"
- 1521      546F5379 
- 1521      6E6300
- 1522              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 1509 0646 19       		.uleb128 0x19
+ 1510 0647 14030000 		.4byte	.LASF87
+ 1511 064b 09       		.byte	0x9
+ 1512 064c 70       		.byte	0x70
+ 1513 064d 81000000 		.4byte	0x81
+ 1514 0651 05       		.uleb128 0x5
+ 1515 0652 03       		.byte	0x3
+ 1516 0653 00000000 		.4byte	timeToMeasure
+ 1517 0657 19       		.uleb128 0x19
+ 1518 0658 27020000 		.4byte	.LASF88
+ 1519 065c 09       		.byte	0x9
+ 1520 065d 71       		.byte	0x71
+ 1521 065e 0F030000 		.4byte	0x30f
+ 1522 0662 05       		.uleb128 0x5
+ 1523 0663 03       		.byte	0x3
+ 1524 0664 00000000 		.4byte	alarmSync
+ 1525 0668 19       		.uleb128 0x19
+ 1526 0669 08050000 		.4byte	.LASF89
+ 1527 066d 09       		.byte	0x9
+ 1528 066e 72       		.byte	0x72
+ 1529 066f 81000000 		.4byte	0x81
+ 1530 0673 05       		.uleb128 0x5
+ 1531 0674 03       		.byte	0x3
+ 1532 0675 00000000 		.4byte	timeToSync
+ 1533 0679 19       		.uleb128 0x19
+ 1534 067a D2030000 		.4byte	.LASF90
+ 1535 067e 09       		.byte	0x9
+ 1536 067f 73       		.byte	0x73
+ 1537 0680 81000000 		.4byte	0x81
+ 1538 0684 05       		.uleb128 0x5
+ 1539 0685 03       		.byte	0x3
+ 1540 0686 00000000 		.4byte	timeToSycnRemoteParams
+ 1541 068a 1B       		.uleb128 0x1b
+ 1542 068b 68657900 		.ascii	"hey\000"
+ 1543 068f 09       		.byte	0x9
+ 1544 0690 74       		.byte	0x74
+ 1545 0691 81000000 		.4byte	0x81
+ 1546 0695 05       		.uleb128 0x5
+ 1547 0696 03       		.byte	0x3
+ 1548 0697 00000000 		.4byte	hey
+ 1549 069b 07       		.uleb128 0x7
+ 1550 069c CB000000 		.4byte	0xcb
+ 1551 06a0 AC060000 		.4byte	0x6ac
+ 1552 06a4 1A       		.uleb128 0x1a
+ 1553 06a5 D9000000 		.4byte	0xd9
+ 1554 06a9 FF03     		.2byte	0x3ff
+ 1555 06ab 00       		.byte	0
+ 1556 06ac 19       		.uleb128 0x19
+ 1557 06ad 38040000 		.4byte	.LASF91
+ 1558 06b1 01       		.byte	0x1
+ 1559 06b2 03       		.byte	0x3
+ 1560 06b3 9B060000 		.4byte	0x69b
+ 1561 06b7 05       		.uleb128 0x5
+ 1562 06b8 03       		.byte	0x3
+ 1563 06b9 00000000 		.4byte	do_received_string
+ 1564 06bd 19       		.uleb128 0x19
+ 1565 06be BA040000 		.4byte	.LASF92
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 32
+
+
+ 1566 06c2 01       		.byte	0x1
+ 1567 06c3 04       		.byte	0x4
+ 1568 06c4 99000000 		.4byte	0x99
+ 1569 06c8 05       		.uleb128 0x5
+ 1570 06c9 03       		.byte	0x3
+ 1571 06ca 00000000 		.4byte	do_string_index
+ 1572 06ce 00       		.byte	0
+ 1573              		.section	.debug_abbrev,"",%progbits
+ 1574              	.Ldebug_abbrev0:
+ 1575 0000 01       		.uleb128 0x1
+ 1576 0001 11       		.uleb128 0x11
+ 1577 0002 01       		.byte	0x1
+ 1578 0003 25       		.uleb128 0x25
+ 1579 0004 0E       		.uleb128 0xe
+ 1580 0005 13       		.uleb128 0x13
+ 1581 0006 0B       		.uleb128 0xb
+ 1582 0007 03       		.uleb128 0x3
+ 1583 0008 0E       		.uleb128 0xe
+ 1584 0009 1B       		.uleb128 0x1b
+ 1585 000a 0E       		.uleb128 0xe
+ 1586 000b 55       		.uleb128 0x55
+ 1587 000c 17       		.uleb128 0x17
+ 1588 000d 11       		.uleb128 0x11
+ 1589 000e 01       		.uleb128 0x1
+ 1590 000f 10       		.uleb128 0x10
+ 1591 0010 17       		.uleb128 0x17
+ 1592 0011 00       		.byte	0
+ 1593 0012 00       		.byte	0
+ 1594 0013 02       		.uleb128 0x2
+ 1595 0014 24       		.uleb128 0x24
+ 1596 0015 00       		.byte	0
+ 1597 0016 0B       		.uleb128 0xb
+ 1598 0017 0B       		.uleb128 0xb
+ 1599 0018 3E       		.uleb128 0x3e
+ 1600 0019 0B       		.uleb128 0xb
+ 1601 001a 03       		.uleb128 0x3
+ 1602 001b 0E       		.uleb128 0xe
+ 1603 001c 00       		.byte	0
+ 1604 001d 00       		.byte	0
+ 1605 001e 03       		.uleb128 0x3
+ 1606 001f 16       		.uleb128 0x16
+ 1607 0020 00       		.byte	0
+ 1608 0021 03       		.uleb128 0x3
+ 1609 0022 0E       		.uleb128 0xe
+ 1610 0023 3A       		.uleb128 0x3a
+ 1611 0024 0B       		.uleb128 0xb
+ 1612 0025 3B       		.uleb128 0x3b
+ 1613 0026 0B       		.uleb128 0xb
+ 1614 0027 49       		.uleb128 0x49
+ 1615 0028 13       		.uleb128 0x13
+ 1616 0029 00       		.byte	0
+ 1617 002a 00       		.byte	0
+ 1618 002b 04       		.uleb128 0x4
+ 1619 002c 24       		.uleb128 0x24
+ 1620 002d 00       		.byte	0
+ 1621 002e 0B       		.uleb128 0xb
+ 1622 002f 0B       		.uleb128 0xb
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 33
+
+
+ 1623 0030 3E       		.uleb128 0x3e
+ 1624 0031 0B       		.uleb128 0xb
+ 1625 0032 03       		.uleb128 0x3
+ 1626 0033 08       		.uleb128 0x8
+ 1627 0034 00       		.byte	0
+ 1628 0035 00       		.byte	0
+ 1629 0036 05       		.uleb128 0x5
+ 1630 0037 16       		.uleb128 0x16
+ 1631 0038 00       		.byte	0
+ 1632 0039 03       		.uleb128 0x3
+ 1633 003a 0E       		.uleb128 0xe
+ 1634 003b 3A       		.uleb128 0x3a
+ 1635 003c 0B       		.uleb128 0xb
+ 1636 003d 3B       		.uleb128 0x3b
+ 1637 003e 05       		.uleb128 0x5
+ 1638 003f 49       		.uleb128 0x49
+ 1639 0040 13       		.uleb128 0x13
+ 1640 0041 00       		.byte	0
+ 1641 0042 00       		.byte	0
+ 1642 0043 06       		.uleb128 0x6
+ 1643 0044 0F       		.uleb128 0xf
+ 1644 0045 00       		.byte	0
+ 1645 0046 0B       		.uleb128 0xb
+ 1646 0047 0B       		.uleb128 0xb
+ 1647 0048 49       		.uleb128 0x49
+ 1648 0049 13       		.uleb128 0x13
+ 1649 004a 00       		.byte	0
+ 1650 004b 00       		.byte	0
+ 1651 004c 07       		.uleb128 0x7
+ 1652 004d 01       		.uleb128 0x1
+ 1653 004e 01       		.byte	0x1
+ 1654 004f 49       		.uleb128 0x49
+ 1655 0050 13       		.uleb128 0x13
+ 1656 0051 01       		.uleb128 0x1
+ 1657 0052 13       		.uleb128 0x13
+ 1658 0053 00       		.byte	0
+ 1659 0054 00       		.byte	0
+ 1660 0055 08       		.uleb128 0x8
+ 1661 0056 21       		.uleb128 0x21
+ 1662 0057 00       		.byte	0
+ 1663 0058 49       		.uleb128 0x49
+ 1664 0059 13       		.uleb128 0x13
+ 1665 005a 2F       		.uleb128 0x2f
+ 1666 005b 0B       		.uleb128 0xb
+ 1667 005c 00       		.byte	0
+ 1668 005d 00       		.byte	0
+ 1669 005e 09       		.uleb128 0x9
+ 1670 005f 13       		.uleb128 0x13
+ 1671 0060 01       		.byte	0x1
+ 1672 0061 0B       		.uleb128 0xb
+ 1673 0062 05       		.uleb128 0x5
+ 1674 0063 3A       		.uleb128 0x3a
+ 1675 0064 0B       		.uleb128 0xb
+ 1676 0065 3B       		.uleb128 0x3b
+ 1677 0066 0B       		.uleb128 0xb
+ 1678 0067 01       		.uleb128 0x1
+ 1679 0068 13       		.uleb128 0x13
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 34
+
+
+ 1680 0069 00       		.byte	0
+ 1681 006a 00       		.byte	0
+ 1682 006b 0A       		.uleb128 0xa
+ 1683 006c 0D       		.uleb128 0xd
+ 1684 006d 00       		.byte	0
+ 1685 006e 03       		.uleb128 0x3
+ 1686 006f 0E       		.uleb128 0xe
+ 1687 0070 3A       		.uleb128 0x3a
+ 1688 0071 0B       		.uleb128 0xb
+ 1689 0072 3B       		.uleb128 0x3b
+ 1690 0073 0B       		.uleb128 0xb
+ 1691 0074 49       		.uleb128 0x49
+ 1692 0075 13       		.uleb128 0x13
+ 1693 0076 38       		.uleb128 0x38
+ 1694 0077 0B       		.uleb128 0xb
+ 1695 0078 00       		.byte	0
+ 1696 0079 00       		.byte	0
+ 1697 007a 0B       		.uleb128 0xb
+ 1698 007b 13       		.uleb128 0x13
+ 1699 007c 01       		.byte	0x1
+ 1700 007d 0B       		.uleb128 0xb
+ 1701 007e 0B       		.uleb128 0xb
+ 1702 007f 3A       		.uleb128 0x3a
+ 1703 0080 0B       		.uleb128 0xb
+ 1704 0081 3B       		.uleb128 0x3b
+ 1705 0082 0B       		.uleb128 0xb
+ 1706 0083 01       		.uleb128 0x1
+ 1707 0084 13       		.uleb128 0x13
+ 1708 0085 00       		.byte	0
+ 1709 0086 00       		.byte	0
+ 1710 0087 0C       		.uleb128 0xc
+ 1711 0088 0D       		.uleb128 0xd
+ 1712 0089 00       		.byte	0
+ 1713 008a 03       		.uleb128 0x3
+ 1714 008b 08       		.uleb128 0x8
+ 1715 008c 3A       		.uleb128 0x3a
+ 1716 008d 0B       		.uleb128 0xb
+ 1717 008e 3B       		.uleb128 0x3b
+ 1718 008f 0B       		.uleb128 0xb
+ 1719 0090 49       		.uleb128 0x49
+ 1720 0091 13       		.uleb128 0x13
+ 1721 0092 38       		.uleb128 0x38
+ 1722 0093 0B       		.uleb128 0xb
+ 1723 0094 00       		.byte	0
+ 1724 0095 00       		.byte	0
+ 1725 0096 0D       		.uleb128 0xd
+ 1726 0097 35       		.uleb128 0x35
+ 1727 0098 00       		.byte	0
+ 1728 0099 49       		.uleb128 0x49
+ 1729 009a 13       		.uleb128 0x13
+ 1730 009b 00       		.byte	0
+ 1731 009c 00       		.byte	0
+ 1732 009d 0E       		.uleb128 0xe
+ 1733 009e 2E       		.uleb128 0x2e
+ 1734 009f 00       		.byte	0
+ 1735 00a0 3F       		.uleb128 0x3f
+ 1736 00a1 19       		.uleb128 0x19
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 35
+
+
+ 1737 00a2 03       		.uleb128 0x3
+ 1738 00a3 0E       		.uleb128 0xe
+ 1739 00a4 3A       		.uleb128 0x3a
+ 1740 00a5 0B       		.uleb128 0xb
+ 1741 00a6 3B       		.uleb128 0x3b
+ 1742 00a7 0B       		.uleb128 0xb
+ 1743 00a8 27       		.uleb128 0x27
+ 1744 00a9 19       		.uleb128 0x19
+ 1745 00aa 11       		.uleb128 0x11
+ 1746 00ab 01       		.uleb128 0x1
+ 1747 00ac 12       		.uleb128 0x12
+ 1748 00ad 06       		.uleb128 0x6
+ 1749 00ae 40       		.uleb128 0x40
+ 1750 00af 18       		.uleb128 0x18
+ 1751 00b0 9642     		.uleb128 0x2116
+ 1752 00b2 19       		.uleb128 0x19
+ 1753 00b3 00       		.byte	0
+ 1754 00b4 00       		.byte	0
+ 1755 00b5 0F       		.uleb128 0xf
+ 1756 00b6 2E       		.uleb128 0x2e
+ 1757 00b7 01       		.byte	0x1
+ 1758 00b8 3F       		.uleb128 0x3f
+ 1759 00b9 19       		.uleb128 0x19
+ 1760 00ba 03       		.uleb128 0x3
+ 1761 00bb 0E       		.uleb128 0xe
+ 1762 00bc 3A       		.uleb128 0x3a
+ 1763 00bd 0B       		.uleb128 0xb
+ 1764 00be 3B       		.uleb128 0x3b
+ 1765 00bf 0B       		.uleb128 0xb
+ 1766 00c0 49       		.uleb128 0x49
+ 1767 00c1 13       		.uleb128 0x13
+ 1768 00c2 11       		.uleb128 0x11
+ 1769 00c3 01       		.uleb128 0x1
+ 1770 00c4 12       		.uleb128 0x12
+ 1771 00c5 06       		.uleb128 0x6
+ 1772 00c6 40       		.uleb128 0x40
+ 1773 00c7 18       		.uleb128 0x18
+ 1774 00c8 9642     		.uleb128 0x2116
+ 1775 00ca 19       		.uleb128 0x19
+ 1776 00cb 01       		.uleb128 0x1
+ 1777 00cc 13       		.uleb128 0x13
+ 1778 00cd 00       		.byte	0
+ 1779 00ce 00       		.byte	0
+ 1780 00cf 10       		.uleb128 0x10
+ 1781 00d0 34       		.uleb128 0x34
+ 1782 00d1 00       		.byte	0
+ 1783 00d2 03       		.uleb128 0x3
+ 1784 00d3 0E       		.uleb128 0xe
+ 1785 00d4 3A       		.uleb128 0x3a
+ 1786 00d5 0B       		.uleb128 0xb
+ 1787 00d6 3B       		.uleb128 0x3b
+ 1788 00d7 0B       		.uleb128 0xb
+ 1789 00d8 49       		.uleb128 0x49
+ 1790 00d9 13       		.uleb128 0x13
+ 1791 00da 02       		.uleb128 0x2
+ 1792 00db 18       		.uleb128 0x18
+ 1793 00dc 00       		.byte	0
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 36
+
+
+ 1794 00dd 00       		.byte	0
+ 1795 00de 11       		.uleb128 0x11
+ 1796 00df 34       		.uleb128 0x34
+ 1797 00e0 00       		.byte	0
+ 1798 00e1 03       		.uleb128 0x3
+ 1799 00e2 08       		.uleb128 0x8
+ 1800 00e3 3A       		.uleb128 0x3a
+ 1801 00e4 0B       		.uleb128 0xb
+ 1802 00e5 3B       		.uleb128 0x3b
+ 1803 00e6 0B       		.uleb128 0xb
+ 1804 00e7 49       		.uleb128 0x49
+ 1805 00e8 13       		.uleb128 0x13
+ 1806 00e9 02       		.uleb128 0x2
+ 1807 00ea 18       		.uleb128 0x18
+ 1808 00eb 00       		.byte	0
+ 1809 00ec 00       		.byte	0
+ 1810 00ed 12       		.uleb128 0x12
+ 1811 00ee 0B       		.uleb128 0xb
+ 1812 00ef 01       		.byte	0x1
+ 1813 00f0 11       		.uleb128 0x11
+ 1814 00f1 01       		.uleb128 0x1
+ 1815 00f2 12       		.uleb128 0x12
+ 1816 00f3 06       		.uleb128 0x6
+ 1817 00f4 00       		.byte	0
+ 1818 00f5 00       		.byte	0
+ 1819 00f6 13       		.uleb128 0x13
+ 1820 00f7 2E       		.uleb128 0x2e
+ 1821 00f8 01       		.byte	0x1
+ 1822 00f9 3F       		.uleb128 0x3f
+ 1823 00fa 19       		.uleb128 0x19
+ 1824 00fb 03       		.uleb128 0x3
+ 1825 00fc 0E       		.uleb128 0xe
+ 1826 00fd 3A       		.uleb128 0x3a
+ 1827 00fe 0B       		.uleb128 0xb
+ 1828 00ff 3B       		.uleb128 0x3b
+ 1829 0100 0B       		.uleb128 0xb
+ 1830 0101 27       		.uleb128 0x27
+ 1831 0102 19       		.uleb128 0x19
+ 1832 0103 49       		.uleb128 0x49
+ 1833 0104 13       		.uleb128 0x13
+ 1834 0105 11       		.uleb128 0x11
+ 1835 0106 01       		.uleb128 0x1
+ 1836 0107 12       		.uleb128 0x12
+ 1837 0108 06       		.uleb128 0x6
+ 1838 0109 40       		.uleb128 0x40
+ 1839 010a 18       		.uleb128 0x18
+ 1840 010b 9642     		.uleb128 0x2116
+ 1841 010d 19       		.uleb128 0x19
+ 1842 010e 01       		.uleb128 0x1
+ 1843 010f 13       		.uleb128 0x13
+ 1844 0110 00       		.byte	0
+ 1845 0111 00       		.byte	0
+ 1846 0112 14       		.uleb128 0x14
+ 1847 0113 05       		.uleb128 0x5
+ 1848 0114 00       		.byte	0
+ 1849 0115 03       		.uleb128 0x3
+ 1850 0116 0E       		.uleb128 0xe
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 37
+
+
+ 1851 0117 3A       		.uleb128 0x3a
+ 1852 0118 0B       		.uleb128 0xb
+ 1853 0119 3B       		.uleb128 0x3b
+ 1854 011a 0B       		.uleb128 0xb
+ 1855 011b 49       		.uleb128 0x49
+ 1856 011c 13       		.uleb128 0x13
+ 1857 011d 02       		.uleb128 0x2
+ 1858 011e 18       		.uleb128 0x18
+ 1859 011f 00       		.byte	0
+ 1860 0120 00       		.byte	0
+ 1861 0121 15       		.uleb128 0x15
+ 1862 0122 05       		.uleb128 0x5
+ 1863 0123 00       		.byte	0
+ 1864 0124 03       		.uleb128 0x3
+ 1865 0125 08       		.uleb128 0x8
+ 1866 0126 3A       		.uleb128 0x3a
+ 1867 0127 0B       		.uleb128 0xb
+ 1868 0128 3B       		.uleb128 0x3b
+ 1869 0129 0B       		.uleb128 0xb
+ 1870 012a 49       		.uleb128 0x49
+ 1871 012b 13       		.uleb128 0x13
+ 1872 012c 02       		.uleb128 0x2
+ 1873 012d 18       		.uleb128 0x18
+ 1874 012e 00       		.byte	0
+ 1875 012f 00       		.byte	0
+ 1876 0130 16       		.uleb128 0x16
+ 1877 0131 2E       		.uleb128 0x2e
+ 1878 0132 01       		.byte	0x1
+ 1879 0133 3F       		.uleb128 0x3f
+ 1880 0134 19       		.uleb128 0x19
+ 1881 0135 03       		.uleb128 0x3
+ 1882 0136 0E       		.uleb128 0xe
+ 1883 0137 3A       		.uleb128 0x3a
+ 1884 0138 0B       		.uleb128 0xb
+ 1885 0139 3B       		.uleb128 0x3b
+ 1886 013a 0B       		.uleb128 0xb
+ 1887 013b 27       		.uleb128 0x27
+ 1888 013c 19       		.uleb128 0x19
+ 1889 013d 11       		.uleb128 0x11
+ 1890 013e 01       		.uleb128 0x1
+ 1891 013f 12       		.uleb128 0x12
+ 1892 0140 06       		.uleb128 0x6
+ 1893 0141 40       		.uleb128 0x40
+ 1894 0142 18       		.uleb128 0x18
+ 1895 0143 9642     		.uleb128 0x2116
+ 1896 0145 19       		.uleb128 0x19
+ 1897 0146 01       		.uleb128 0x1
+ 1898 0147 13       		.uleb128 0x13
+ 1899 0148 00       		.byte	0
+ 1900 0149 00       		.byte	0
+ 1901 014a 17       		.uleb128 0x17
+ 1902 014b 2E       		.uleb128 0x2e
+ 1903 014c 01       		.byte	0x1
+ 1904 014d 3F       		.uleb128 0x3f
+ 1905 014e 19       		.uleb128 0x19
+ 1906 014f 03       		.uleb128 0x3
+ 1907 0150 0E       		.uleb128 0xe
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 38
+
+
+ 1908 0151 3A       		.uleb128 0x3a
+ 1909 0152 0B       		.uleb128 0xb
+ 1910 0153 3B       		.uleb128 0x3b
+ 1911 0154 0B       		.uleb128 0xb
+ 1912 0155 27       		.uleb128 0x27
+ 1913 0156 19       		.uleb128 0x19
+ 1914 0157 11       		.uleb128 0x11
+ 1915 0158 01       		.uleb128 0x1
+ 1916 0159 12       		.uleb128 0x12
+ 1917 015a 06       		.uleb128 0x6
+ 1918 015b 40       		.uleb128 0x40
+ 1919 015c 18       		.uleb128 0x18
+ 1920 015d 9742     		.uleb128 0x2117
+ 1921 015f 19       		.uleb128 0x19
+ 1922 0160 01       		.uleb128 0x1
+ 1923 0161 13       		.uleb128 0x13
+ 1924 0162 00       		.byte	0
+ 1925 0163 00       		.byte	0
+ 1926 0164 18       		.uleb128 0x18
+ 1927 0165 34       		.uleb128 0x34
+ 1928 0166 00       		.byte	0
+ 1929 0167 03       		.uleb128 0x3
+ 1930 0168 0E       		.uleb128 0xe
+ 1931 0169 3A       		.uleb128 0x3a
+ 1932 016a 0B       		.uleb128 0xb
+ 1933 016b 3B       		.uleb128 0x3b
+ 1934 016c 05       		.uleb128 0x5
+ 1935 016d 49       		.uleb128 0x49
+ 1936 016e 13       		.uleb128 0x13
+ 1937 016f 3F       		.uleb128 0x3f
+ 1938 0170 19       		.uleb128 0x19
+ 1939 0171 3C       		.uleb128 0x3c
+ 1940 0172 19       		.uleb128 0x19
+ 1941 0173 00       		.byte	0
+ 1942 0174 00       		.byte	0
+ 1943 0175 19       		.uleb128 0x19
+ 1944 0176 34       		.uleb128 0x34
+ 1945 0177 00       		.byte	0
+ 1946 0178 03       		.uleb128 0x3
+ 1947 0179 0E       		.uleb128 0xe
+ 1948 017a 3A       		.uleb128 0x3a
+ 1949 017b 0B       		.uleb128 0xb
+ 1950 017c 3B       		.uleb128 0x3b
+ 1951 017d 0B       		.uleb128 0xb
+ 1952 017e 49       		.uleb128 0x49
+ 1953 017f 13       		.uleb128 0x13
+ 1954 0180 3F       		.uleb128 0x3f
+ 1955 0181 19       		.uleb128 0x19
+ 1956 0182 02       		.uleb128 0x2
+ 1957 0183 18       		.uleb128 0x18
+ 1958 0184 00       		.byte	0
+ 1959 0185 00       		.byte	0
+ 1960 0186 1A       		.uleb128 0x1a
+ 1961 0187 21       		.uleb128 0x21
+ 1962 0188 00       		.byte	0
+ 1963 0189 49       		.uleb128 0x49
+ 1964 018a 13       		.uleb128 0x13
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 39
+
+
+ 1965 018b 2F       		.uleb128 0x2f
+ 1966 018c 05       		.uleb128 0x5
+ 1967 018d 00       		.byte	0
+ 1968 018e 00       		.byte	0
+ 1969 018f 1B       		.uleb128 0x1b
+ 1970 0190 34       		.uleb128 0x34
+ 1971 0191 00       		.byte	0
+ 1972 0192 03       		.uleb128 0x3
+ 1973 0193 08       		.uleb128 0x8
+ 1974 0194 3A       		.uleb128 0x3a
+ 1975 0195 0B       		.uleb128 0xb
+ 1976 0196 3B       		.uleb128 0x3b
+ 1977 0197 0B       		.uleb128 0xb
+ 1978 0198 49       		.uleb128 0x49
+ 1979 0199 13       		.uleb128 0x13
+ 1980 019a 3F       		.uleb128 0x3f
+ 1981 019b 19       		.uleb128 0x19
+ 1982 019c 02       		.uleb128 0x2
+ 1983 019d 18       		.uleb128 0x18
+ 1984 019e 00       		.byte	0
+ 1985 019f 00       		.byte	0
+ 1986 01a0 00       		.byte	0
+ 1987              		.section	.debug_aranges,"",%progbits
+ 1988 0000 44000000 		.4byte	0x44
+ 1989 0004 0200     		.2byte	0x2
+ 1990 0006 00000000 		.4byte	.Ldebug_info0
+ 1991 000a 04       		.byte	0x4
+ 1992 000b 00       		.byte	0
+ 1993 000c 0000     		.2byte	0
+ 1994 000e 0000     		.2byte	0
+ 1995 0010 00000000 		.4byte	.LFB64
+ 1996 0014 44000000 		.4byte	.LFE64-.LFB64
+ 1997 0018 00000000 		.4byte	.LFB65
+ 1998 001c F8000000 		.4byte	.LFE65-.LFB65
+ 1999 0020 00000000 		.4byte	.LFB66
+ 2000 0024 74010000 		.4byte	.LFE66-.LFB66
+ 2001 0028 00000000 		.4byte	.LFB67
+ 2002 002c 7A000000 		.4byte	.LFE67-.LFB67
+ 2003 0030 00000000 		.4byte	.LFB68
+ 2004 0034 7E000000 		.4byte	.LFE68-.LFB68
+ 2005 0038 00000000 		.4byte	.LFB69
+ 2006 003c 28000000 		.4byte	.LFE69-.LFB69
+ 2007 0040 00000000 		.4byte	0
+ 2008 0044 00000000 		.4byte	0
+ 2009              		.section	.debug_ranges,"",%progbits
+ 2010              	.Ldebug_ranges0:
+ 2011 0000 00000000 		.4byte	.LFB64
+ 2012 0004 44000000 		.4byte	.LFE64
+ 2013 0008 00000000 		.4byte	.LFB65
+ 2014 000c F8000000 		.4byte	.LFE65
+ 2015 0010 00000000 		.4byte	.LFB66
+ 2016 0014 74010000 		.4byte	.LFE66
+ 2017 0018 00000000 		.4byte	.LFB67
+ 2018 001c 7A000000 		.4byte	.LFE67
+ 2019 0020 00000000 		.4byte	.LFB68
+ 2020 0024 7E000000 		.4byte	.LFE68
+ 2021 0028 00000000 		.4byte	.LFB69
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 40
+
+
+ 2022 002c 28000000 		.4byte	.LFE69
+ 2023 0030 00000000 		.4byte	0
+ 2024 0034 00000000 		.4byte	0
+ 2025              		.section	.debug_line,"",%progbits
+ 2026              	.Ldebug_line0:
+ 2027 0000 74020000 		.section	.debug_str,"MS",%progbits,1
+ 2027      02008E01 
+ 2027      00000201 
+ 2027      FB0E0D00 
+ 2027      01010101 
+ 2028              	.LASF29:
+ 2029 0000 6D6F6465 		.ascii	"model_id\000"
+ 2029      6C5F6964 
+ 2029      00
+ 2030              	.LASF96:
+ 2031 0009 444F5F49 		.ascii	"DO_ISR\000"
+ 2031      535200
+ 2032              	.LASF28:
+ 2033 0010 73696D5F 		.ascii	"sim_id\000"
+ 2033      696400
+ 2034              	.LASF60:
+ 2035 0017 7379735F 		.ascii	"sys_settings_t\000"
+ 2035      73657474 
+ 2035      696E6773 
+ 2035      5F7400
+ 2036              	.LASF15:
+ 2037 0026 666C6F61 		.ascii	"float32\000"
+ 2037      74333200 
+ 2038              	.LASF51:
+ 2039 002e 63757272 		.ascii	"currentCountDownValue\000"
+ 2039      656E7443 
+ 2039      6F756E74 
+ 2039      446F776E 
+ 2039      56616C75 
+ 2040              	.LASF69:
+ 2041 0044 6D656469 		.ascii	"median\000"
+ 2041      616E00
+ 2042              	.LASF50:
+ 2043 004b 636F756E 		.ascii	"countDownValue\000"
+ 2043      74446F77 
+ 2043      6E56616C 
+ 2043      756500
+ 2044              	.LASF2:
+ 2045 005a 73686F72 		.ascii	"short int\000"
+ 2045      7420696E 
+ 2045      7400
+ 2046              	.LASF20:
+ 2047 0064 73697A65 		.ascii	"sizetype\000"
+ 2047      74797065 
+ 2047      00
+ 2048              	.LASF58:
+ 2049 006d 65705F68 		.ascii	"ep_host\000"
+ 2049      6F737400 
+ 2050              	.LASF94:
+ 2051 0075 64697373 		.ascii	"diss_oxy.c\000"
+ 2051      5F6F7879 
+ 2051      2E6300
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 41
+
+
+ 2052              	.LASF93:
+ 2053 0080 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2053      43313120 
+ 2053      352E342E 
+ 2053      31203230 
+ 2053      31363036 
+ 2054 00b3 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2054      20726576 
+ 2054      6973696F 
+ 2054      6E203233 
+ 2054      37373135 
+ 2055 00e6 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2055      66756E63 
+ 2055      74696F6E 
+ 2055      2D736563 
+ 2055      74696F6E 
+ 2056              	.LASF76:
+ 2057 010e 64617461 		.ascii	"data\000"
+ 2057      00
+ 2058              	.LASF97:
+ 2059 0113 666C6F61 		.ascii	"float_find_median\000"
+ 2059      745F6669 
+ 2059      6E645F6D 
+ 2059      65646961 
+ 2059      6E00
+ 2060              	.LASF71:
+ 2061 0125 66737761 		.ascii	"fswap\000"
+ 2061      7000
+ 2062              	.LASF34:
+ 2063 012b 65636E6F 		.ascii	"ecno\000"
+ 2063      00
+ 2064              	.LASF25:
+ 2065 0130 76616C75 		.ascii	"value\000"
+ 2065      6500
+ 2066              	.LASF12:
+ 2067 0136 75696E74 		.ascii	"uint16\000"
+ 2067      313600
+ 2068              	.LASF74:
+ 2069 013d 64617461 		.ascii	"dataPointsInStack\000"
+ 2069      506F696E 
+ 2069      7473496E 
+ 2069      53746163 
+ 2069      6B00
+ 2070              	.LASF11:
+ 2071 014f 75696E74 		.ascii	"uint8\000"
+ 2071      3800
+ 2072              	.LASF33:
+ 2073 0155 72736370 		.ascii	"rscp\000"
+ 2073      00
+ 2074              	.LASF26:
+ 2075 015a 74696D65 		.ascii	"timeStamp\000"
+ 2075      5374616D 
+ 2075      7000
+ 2076              	.LASF75:
+ 2077 0164 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 2077      506F696E 
+ 2077      7473496E 
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 42
+
+
+ 2077      53746163 
+ 2077      6B446573 
+ 2078              	.LASF16:
+ 2079 017d 666C6F61 		.ascii	"float\000"
+ 2079      7400
+ 2080              	.LASF14:
+ 2081 0183 696E7433 		.ascii	"int32\000"
+ 2081      3200
+ 2082              	.LASF6:
+ 2083 0189 6C6F6E67 		.ascii	"long long int\000"
+ 2083      206C6F6E 
+ 2083      6720696E 
+ 2083      7400
+ 2084              	.LASF13:
+ 2085 0197 696E7431 		.ascii	"int16\000"
+ 2085      3600
+ 2086              	.LASF86:
+ 2087 019d 616C6172 		.ascii	"alarmMeasure\000"
+ 2087      6D4D6561 
+ 2087      73757265 
+ 2087      00
+ 2088              	.LASF18:
+ 2089 01aa 63686172 		.ascii	"char\000"
+ 2089      00
+ 2090              	.LASF23:
+ 2091 01af 72656173 		.ascii	"reason\000"
+ 2091      6F6E00
+ 2092              	.LASF4:
+ 2093 01b6 6C6F6E67 		.ascii	"long int\000"
+ 2093      20696E74 
+ 2093      00
+ 2094              	.LASF73:
+ 2095 01bf 62756666 		.ascii	"buffer_overflow\000"
+ 2095      65725F6F 
+ 2095      76657266 
+ 2095      6C6F7700 
+ 2096              	.LASF55:
+ 2097 01cf 6D6F6465 		.ascii	"modem_info\000"
+ 2097      6D5F696E 
+ 2097      666F00
+ 2098              	.LASF95:
+ 2099 01da 433A5C55 		.ascii	"C:\\Users\\dantz\\Documents\\notoriOS\\notoriOS\\no"
+ 2099      73657273 
+ 2099      5C64616E 
+ 2099      747A5C44 
+ 2099      6F63756D 
+ 2100 0207 746F7269 		.ascii	"toriOS.cydsn\000"
+ 2100      4F532E63 
+ 2100      7964736E 
+ 2100      00
+ 2101              	.LASF54:
+ 2102 0214 616C6172 		.ascii	"alarm\000"
+ 2102      6D00
+ 2103              	.LASF42:
+ 2104 021a 6D656173 		.ascii	"measure_time\000"
+ 2104      7572655F 
+ 2104      74696D65 
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 43
+
+
+ 2104      00
+ 2105              	.LASF88:
+ 2106 0227 616C6172 		.ascii	"alarmSync\000"
+ 2106      6D53796E 
+ 2106      6300
+ 2107              	.LASF19:
+ 2108 0231 6C6F6E67 		.ascii	"long double\000"
+ 2108      20646F75 
+ 2108      626C6500 
+ 2109              	.LASF1:
+ 2110 023d 756E7369 		.ascii	"unsigned char\000"
+ 2110      676E6564 
+ 2110      20636861 
+ 2110      7200
+ 2111              	.LASF36:
+ 2112 024b 72737270 		.ascii	"rsrp\000"
+ 2112      00
+ 2113              	.LASF47:
+ 2114 0250 616C6C5F 		.ascii	"all_do_readings\000"
+ 2114      646F5F72 
+ 2114      65616469 
+ 2114      6E677300 
+ 2115              	.LASF78:
+ 2116 0260 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 2116      6D5F7374 
+ 2116      6172745F 
+ 2116      74696D65 
+ 2116      5F737461 
+ 2117              	.LASF49:
+ 2118 0277 444F5F73 		.ascii	"DO_sensor_t\000"
+ 2118      656E736F 
+ 2118      725F7400 
+ 2119              	.LASF77:
+ 2120 0283 6D6F6465 		.ascii	"modem_state\000"
+ 2120      6D5F7374 
+ 2120      61746500 
+ 2121              	.LASF0:
+ 2122 028f 7369676E 		.ascii	"signed char\000"
+ 2122      65642063 
+ 2122      68617200 
+ 2123              	.LASF7:
+ 2124 029b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2124      206C6F6E 
+ 2124      6720756E 
+ 2124      7369676E 
+ 2124      65642069 
+ 2125              	.LASF85:
+ 2126 02b2 73797374 		.ascii	"system_settings\000"
+ 2126      656D5F73 
+ 2126      65747469 
+ 2126      6E677300 
+ 2127              	.LASF65:
+ 2128 02c2 444F5F73 		.ascii	"DO_sensor_test\000"
+ 2128      656E736F 
+ 2128      725F7465 
+ 2128      737400
+ 2129              	.LASF56:
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 44
+
+
+ 2130 02d1 63686970 		.ascii	"chip_uniqueId\000"
+ 2130      5F756E69 
+ 2130      71756549 
+ 2130      6400
+ 2131              	.LASF8:
+ 2132 02df 756E7369 		.ascii	"unsigned int\000"
+ 2132      676E6564 
+ 2132      20696E74 
+ 2132      00
+ 2133              	.LASF27:
+ 2134 02ec 6B65795F 		.ascii	"key_value_t\000"
+ 2134      76616C75 
+ 2134      655F7400 
+ 2135              	.LASF32:
+ 2136 02f8 72786C65 		.ascii	"rxlev\000"
+ 2136      7600
+ 2137              	.LASF43:
+ 2138 02fe 73796E63 		.ascii	"sync_time\000"
+ 2138      5F74696D 
+ 2138      6500
+ 2139              	.LASF79:
+ 2140 0308 6D6F6465 		.ascii	"modem_stats\000"
+ 2140      6D5F7374 
+ 2140      61747300 
+ 2141              	.LASF87:
+ 2142 0314 74696D65 		.ascii	"timeToMeasure\000"
+ 2142      546F4D65 
+ 2142      61737572 
+ 2142      6500
+ 2143              	.LASF46:
+ 2144 0322 75706461 		.ascii	"updatable_parameters_t\000"
+ 2144      7461626C 
+ 2144      655F7061 
+ 2144      72616D65 
+ 2144      74657273 
+ 2145              	.LASF41:
+ 2146 0339 73696D5F 		.ascii	"sim_type\000"
+ 2146      74797065 
+ 2146      00
+ 2147              	.LASF57:
+ 2148 0342 7379735F 		.ascii	"sys_info_t\000"
+ 2148      696E666F 
+ 2148      5F7400
+ 2149              	.LASF3:
+ 2150 034d 73686F72 		.ascii	"short unsigned int\000"
+ 2150      7420756E 
+ 2150      7369676E 
+ 2150      65642069 
+ 2150      6E7400
+ 2151              	.LASF37:
+ 2152 0360 74696D65 		.ascii	"time_to_network_connect\000"
+ 2152      5F746F5F 
+ 2152      6E657477 
+ 2152      6F726B5F 
+ 2152      636F6E6E 
+ 2153              	.LASF22:
+ 2154 0378 73746174 		.ascii	"status\000"
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 45
+
+
+ 2154      757300
+ 2155              	.LASF84:
+ 2156 037f 73797374 		.ascii	"system_info\000"
+ 2156      656D5F69 
+ 2156      6E666F00 
+ 2157              	.LASF38:
+ 2158 038b 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 2158      5F746F5F 
+ 2158      61637175 
+ 2158      6972655F 
+ 2158      697000
+ 2159              	.LASF72:
+ 2160 039e 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2160      52784275 
+ 2160      66666572 
+ 2160      00
+ 2161              	.LASF30:
+ 2162 03ab 696D6569 		.ascii	"imei\000"
+ 2162      00
+ 2163              	.LASF10:
+ 2164 03b0 696E7433 		.ascii	"int32_t\000"
+ 2164      325F7400 
+ 2165              	.LASF70:
+ 2166 03b8 66736F72 		.ascii	"fsort\000"
+ 2166      7400
+ 2167              	.LASF39:
+ 2168 03be 6D6F6465 		.ascii	"modem_stats_t\000"
+ 2168      6D5F7374 
+ 2168      6174735F 
+ 2168      7400
+ 2169              	.LASF45:
+ 2170 03cc 5F426F6F 		.ascii	"_Bool\000"
+ 2170      6C00
+ 2171              	.LASF90:
+ 2172 03d2 74696D65 		.ascii	"timeToSycnRemoteParams\000"
+ 2172      546F5379 
+ 2172      636E5265 
+ 2172      6D6F7465 
+ 2172      50617261 
+ 2173              	.LASF67:
+ 2174 03e9 74657374 		.ascii	"test\000"
+ 2174      00
+ 2175              	.LASF35:
+ 2176 03ee 72737271 		.ascii	"rsrq\000"
+ 2176      00
+ 2177              	.LASF83:
+ 2178 03f3 68747470 		.ascii	"http_route\000"
+ 2178      5F726F75 
+ 2178      746500
+ 2179              	.LASF63:
+ 2180 03fe 72656164 		.ascii	"reading\000"
+ 2180      696E6700 
+ 2181              	.LASF66:
+ 2182 0406 72657375 		.ascii	"results\000"
+ 2182      6C747300 
+ 2183              	.LASF48:
+ 2184 040e 646F5F72 		.ascii	"do_reading\000"
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 46
+
+
+ 2184      65616469 
+ 2184      6E6700
+ 2185              	.LASF5:
+ 2186 0419 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2186      20756E73 
+ 2186      69676E65 
+ 2186      6420696E 
+ 2186      7400
+ 2187              	.LASF17:
+ 2188 042b 646F7562 		.ascii	"double\000"
+ 2188      6C6500
+ 2189              	.LASF68:
+ 2190 0432 61727261 		.ascii	"array\000"
+ 2190      7900
+ 2191              	.LASF91:
+ 2192 0438 646F5F72 		.ascii	"do_received_string\000"
+ 2192      65636569 
+ 2192      7665645F 
+ 2192      73747269 
+ 2192      6E6700
+ 2193              	.LASF44:
+ 2194 044b 64656275 		.ascii	"debug_level\000"
+ 2194      675F6C65 
+ 2194      76656C00 
+ 2195              	.LASF31:
+ 2196 0457 6D6F6465 		.ascii	"modem_info_t\000"
+ 2196      6D5F696E 
+ 2196      666F5F74 
+ 2196      00
+ 2197              	.LASF52:
+ 2198 0464 636F756E 		.ascii	"countDownType\000"
+ 2198      74446F77 
+ 2198      6E547970 
+ 2198      6500
+ 2199              	.LASF9:
+ 2200 0472 5F5F696E 		.ascii	"__int32_t\000"
+ 2200      7433325F 
+ 2200      7400
+ 2201              	.LASF64:
+ 2202 047c 444F5F72 		.ascii	"DO_read\000"
+ 2202      65616400 
+ 2203              	.LASF62:
+ 2204 0484 746F6B65 		.ascii	"token\000"
+ 2204      6E00
+ 2205              	.LASF53:
+ 2206 048a 636F756E 		.ascii	"countDownResetCondition\000"
+ 2206      74446F77 
+ 2206      6E526573 
+ 2206      6574436F 
+ 2206      6E646974 
+ 2207              	.LASF24:
+ 2208 04a2 74657374 		.ascii	"test_t\000"
+ 2208      5F7400
+ 2209              	.LASF21:
+ 2210 04a9 74657374 		.ascii	"test_name\000"
+ 2210      5F6E616D 
+ 2210      6500
+ARM GAS  C:\Users\dantz\AppData\Local\Temp\cc2TrK4h.s 			page 47
+
+
+ 2211              	.LASF61:
+ 2212 04b3 6F757470 		.ascii	"output\000"
+ 2212      757400
+ 2213              	.LASF92:
+ 2214 04ba 646F5F73 		.ascii	"do_string_index\000"
+ 2214      7472696E 
+ 2214      675F696E 
+ 2214      64657800 
+ 2215              	.LASF80:
+ 2216 04ca 75706461 		.ascii	"updatable_parameters\000"
+ 2216      7461626C 
+ 2216      655F7061 
+ 2216      72616D65 
+ 2216      74657273 
+ 2217              	.LASF59:
+ 2218 04df 65705F70 		.ascii	"ep_port\000"
+ 2218      6F727400 
+ 2219              	.LASF82:
+ 2220 04e7 68747470 		.ascii	"http_body\000"
+ 2220      5F626F64 
+ 2220      7900
+ 2221              	.LASF40:
+ 2222 04f1 6E6F6465 		.ascii	"node_type\000"
+ 2222      5F747970 
+ 2222      6500
+ 2223              	.LASF81:
+ 2224 04fb 68747470 		.ascii	"http_request\000"
+ 2224      5F726571 
+ 2224      75657374 
+ 2224      00
+ 2225              	.LASF89:
+ 2226 0508 74696D65 		.ascii	"timeToSync\000"
+ 2226      546F5379 
+ 2226      6E6300
+ 2227              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -206,7 +206,7 @@ uint8_t at_write_command(char* commands, char* expected_response,uint32_t timeou
         }  
         
         // Something went wrong, restart UART
-        printNotif(NOTIF_TYPE_ERROR,"Could not write AT command: %s\n Received: %s\n", commands,uart_received_string);
+        //printNotif(NOTIF_TYPE_ERROR,"Could not write AT command: %s\n Received: %s\n", commands,uart_received_string);
       
     }
    // printNotif(NOTIF_TYPE_ERROR,"Modem AT response timeout: %s\r\n", commands);
