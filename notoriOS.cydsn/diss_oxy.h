@@ -21,3 +21,15 @@ void fsort(float32 a[],uint8 n);
 
 // function to swap elements in the level readings array in order to sort them
 void fswap(float32 *p,float32 *q);
+
+// calibrate sensor to atmospheric oxygen levels
+// see "single piont calibration" in datasheet
+// this should be done once, before deploying, as calibration is robust to power cycling
+uint8 DO_cal();
+
+// prepare lines of communication
+void DO_start_talking();
+
+
+// pull everything low to stop power leaks
+void DO_stop_talking();

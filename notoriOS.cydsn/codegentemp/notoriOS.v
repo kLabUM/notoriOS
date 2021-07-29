@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 07/28/2021 at 15:37
+// 07/29/2021 at 13:11
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -3205,7 +3205,7 @@ module top ;
 
 	cy_psoc3_pins_v1_10
 		#(.id("c8dee6af-5a71-4f9a-9ffd-62788ea9a4d4"),
-		  .drive_mode(3'b001),
+		  .drive_mode(3'b110),
 		  .ibuf_enabled(1'b1),
 		  .init_dr_st(1'b0),
 		  .input_clk_en(0),

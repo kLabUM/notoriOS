@@ -3,7 +3,7 @@
 char do_received_string[1024];
 int16 do_string_index=0;
 
-// mostly copied from modem.c
+// adapted from modem.c and level_sensor.c
 
 CY_ISR_PROTO(DO_ISR); // Declares a custom ISR function "isr_telit_rx" using the CY_ISR_PROTO macro instead of modifying the auto-generated code
 
@@ -22,31 +22,75 @@ CY_ISR(DO_ISR){
 
 }
 
+
+// Clears the sensor data 
+void do_uart_clear(void) {
+  // UART_ClearRxBuffer(): Clears the receiver memory buffer and hardware RX FIFO of all received data.
+  DO_UART_ClearRxBuffer();
+  // void *memset(void *str, int c, size_t n) where str is a pointer to the block of memory to fill;  c is the value to be set. 
+  // The value is passed as an int, but the function fills the block of memory using the unsigned char conversion of this value.
+  // n is the number of bytes to be set to the value.
+  memset((void*)do_received_string, 0, 1023);
+  do_string_index = 0;
+}
+
+// get everything ready to communicate
+void DO_start_talking(){
+    DO_UART_Start();
+    DO_RX_SetDriveMode(PIN_DM_DIG_HIZ); // RX_SetDriveMode(): Sets the drive mode for each of the Pins component's pins. PIN_DM_DIG_HIZ: High Impedance Digital.
+    DO_UART_ClearRxBuffer();
+    DO_ISR_StartEx(DO_ISR);
+    Level_Sensor_Power_Write(ON); // Pulls pwr pin high (turns it on).
+    CyDelay(1000u); // reset sequence
+
+}
+
+// pull everything low to stop power leaks
+void DO_stop_talking(){
+
+    Level_Sensor_Power_Write(OFF);
+    DO_UART_Stop();
+    DO_RX_SetDriveMode(PIN_DM_STRONG); // to die
+    DO_RX_Write(OFF);
+    DO_TX_Write(OFF);
+    DO_ISR_Stop();
+
+}
+
 DO_sensor_t DO_read(){
     
     DO_sensor_t output;
     
-    DO_UART_Start();
-    DO_UART_ClearRxBuffer();
-    DO_ISR_StartEx(DO_ISR);
-    Level_Sensor_Power_Write(ON); // Pulls pwr pin high (turns it on).
-    DO_UART_PutString("C,0"); // turn off automated sampling
+    DO_start_talking();
+    //char excerpt[80]; // for debugging
+    DO_UART_PutString("C,0\r"); // turn off automated sampling
+    
+    // turn "*OK" response off
+    CyDelay(1000u);
+    DO_UART_PutString("*OK,0\r");
     CyDelay(2000u);
-    
-    
-    // get the tokens we actually want which are readings
+    /*
+    for (uint i = 0; i < 80; i++){
+        excerpt[i] = do_received_string[i];  
+        if (i>78u){
+            printNotif(NOTIF_TYPE_EVENT,"asdf");
+        }
+    }
+    */
+    DO_UART_ClearRxBuffer();
+    do_uart_clear(); // get rid of anything we've received so far
+    // should just be the startup messages 
 
+    // take 11 readings
     for (int i = 0; i < 11; i++){
-        DO_UART_PutString("R"); // take one reading
-        CyDelay(1000u);
+        DO_UART_PutString("R\r"); // take one reading
+        CyDelay(1200u);
     }
 
-    // eat the first two tokens because they're not measurements
-    char *token;
-    
+
+    char *token;    
     token = strtok(do_received_string, "\r");
-    token = strtok(NULL, "\r"); // eat *RS/r
-    token = strtok(NULL, "\r"); // eat RE/r
+
     uint8 i = 0;
     float32 reading;
     while( token != NULL ) {
@@ -57,22 +101,30 @@ DO_sensor_t DO_read(){
     }
 
     // readings array should have eleven nice floats now
+    // TODO: check this and throw an error if not
    
     output.do_reading = float_find_median(output.all_do_readings, 11);
-
+    
+    // turn "*OK" response back on (this is default and useful for debugging)
+    DO_UART_PutString("*OK,1\r");
+    CyDelay(1000u);
+    DO_stop_talking();
     return output;
 }
 
 test_t DO_sensor_test(){
 
+    // only call this in the lab for initial setup (calibration to air)
+    // DO_cal() should be commented out in the main repo and never called in the field
+    DO_cal();
     
     DO_sensor_t results = DO_read();
 
     test_t test;
 
     test.status = 0; // set test status to zero
+    // not sure yet what will constitute "passing" the test
     snprintf(test.test_name,sizeof(test.test_name),"TEST_DO_SENSOR");
-
     
     /*
     DO_UART_Start();
@@ -109,11 +161,9 @@ test_t DO_sensor_test(){
     Level_Sensor_Power_Write(OFF);
     */
     
-
-    // test print
-    
+    // test reason  
     snprintf(test.reason,sizeof(test.reason), 
-    "median reading:%f \r\nall readings: %f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n%f\r\n",
+    "median reading:%f \r\nall readings (11): %f : %f : %f : %f : %f : %f : %f : %f : %f : %f : %f",
     results.do_reading,
     results.all_do_readings[0], results.all_do_readings[1], results.all_do_readings[2], 
     results.all_do_readings[3], results.all_do_readings[4], results.all_do_readings[5], 
@@ -125,11 +175,80 @@ test_t DO_sensor_test(){
     
 }
 
+uint8 DO_cal(){
+
+    
+    for (int i = 0; i < 2; i++){
+        DO_sensor_t readings = DO_read();
+        // I'll take convergence as the range less than 5 percent the median
+        // this is arbitrary but information we can already generate
+        fsort(readings.all_do_readings,DO_N_READINGS); // sort it
+        float32 range = readings.all_do_readings[DO_N_READINGS-1] - readings.all_do_readings[0];
+        
+        // we did it in less than two tries so it's converging quickly as expected
+        // send calibration command and return 1 indicating success
+        if (range < (0.05*readings.do_reading)){
+            do_uart_clear(); // forget what you think you know
+            DO_start_talking();
+            /*
+            // char excerpt[100]; // for debugging
+            //DO_UART_PutString("*OK,1\r"); // are you hearing me?
+            // 
+            //CyDelay(1000u); 
+            */
+            DO_UART_PutString("C,0\r"); // turn off automated sampling
+            CyDelay(1000u); 
+            DO_UART_PutString("Cal,clear\r"); // clear existing calibration data
+            CyDelay(1000u);
+            DO_UART_PutString("Cal\r"); // calibrate to atmospheric oxygen
+            /*CyDelay(1000u); 
+            // "temp, salinity, and pressure compensation values have no effect on calibration"
+            DO_UART_PutString("T,?\r"); // compensated temp value?
+            CyDelay(1000u); 
+            //DO_UART_PutString("T,20\r"); // for some reason temp was set to 0 C
+            //CyDelay(1000u); 
+            //DO_UART_PutString("T,?\r"); // compensated temp value?
+            //CyDelay(1000u); 
+            DO_UART_PutString("S,?\r"); // salinity?
+            CyDelay(1000u); 
+            DO_UART_PutString("P,?\r"); // pressure?
+            */
+            CyDelay(2000u); 
+            DO_stop_talking();
+            // "After calibration is complete, you should see readings between 9.09 - 9.2 mg/l
+            // if temperature, salinity, and pressure compensation are at default values"
+            /*
+            for (uint i = 0; i < 100; i++){
+                excerpt[i] = do_received_string[i];  
+                if (i>98u){
+                    printNotif(NOTIF_TYPE_EVENT,"asdf");
+                }
+            }
+            */
+            CyDelay(1000u);
+            DO_sensor_t calibrated = DO_read();
+            
+            if (calibrated.do_reading > 9.0 && calibrated.do_reading < 9.3){
+                printNotif(NOTIF_TYPE_EVENT, "Successfully calibrated DO sensor");
+                return 1;
+            }
+            // if we didn't get what we expected, let us know what we did get
+            printNotif(NOTIF_TYPE_ERROR, "calibrated DO reading: %f\r\n Expected [9.0,9.3] mg/L", calibrated.do_reading);           
+            return 0;
+            
+        }
+    
+    }
+    
+    printNotif(NOTIF_TYPE_ERROR, "DO readings failed to converge");
+    return 0;   
+}
+
+
 // code for finding medians duplicated from level_sensor because we need floats not longs
 
 // function to calculate the median of the array, after array is sorted
-float32 float_find_median(float32 array[] , uint8 n)
-{
+float32 float_find_median(float32 array[] , uint8 n){
     float32 median=0;
     fsort(array,n);
     
@@ -165,3 +284,5 @@ void fswap(float32 *p,float32 *q) {
    *p=*q; 
    *q=t;
 }
+
+
