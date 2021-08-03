@@ -121,45 +121,25 @@ test_t DO_sensor_test(){
     DO_sensor_t results = DO_read();
 
     test_t test;
-
-    test.status = 0; // set test status to zero
-    // not sure yet what will constitute "passing" the test
-    snprintf(test.test_name,sizeof(test.test_name),"TEST_DO_SENSOR");
     
-    /*
-    DO_UART_Start();
-    DO_ISR_StartEx(DO_ISR);
-    Level_Sensor_Power_Write(ON); // Pulls pwr pin high (turns it on).
-    CyDelay(6000u);
-    DO_UART_PutString("i\r");
-    
-    CyDelay(6000u);
-    DO_UART_PutString("Find\r");
-    CyDelay(6000u);
-    Level_Sensor_Power_Write(OFF);
-    
-    // as in level_sensor.c
-    
-    char *token;
-    
-    token = strtok(do_received_string, "\r");
-        // walk through other tokens /
-    while( token != NULL ) {
-        float32 reading = atof(token);
-        token = strtok(NULL, "\r"); // This "NULL" says to continue where you left off last time.
-        printNotif(NOTIF_TYPE_EVENT,"%s",token);     
-   }
-    
-    char excerpt[800];
-    for (int i = 0; i < 800; i++){
-        excerpt[i] = do_received_string[i];  
-        if (i>797){
-            printNotif(NOTIF_TYPE_EVENT,"asdf");
-        }
+    if (results.do_reading < 0.01){
+        test.status = 0;
+        // test reason  
+        snprintf(test.reason,sizeof(test.reason), 
+        "DO readings invalid\r\nDetails:\r\nmedian reading:%f \r\nall readings (11): %f : %f : %f : %f : %f : %f : %f : %f : %f : %f : %f",
+        results.do_reading,
+        results.all_do_readings[0], results.all_do_readings[1], results.all_do_readings[2], 
+        results.all_do_readings[3], results.all_do_readings[4], results.all_do_readings[5], 
+        results.all_do_readings[6], results.all_do_readings[7], results.all_do_readings[8], 
+        results.all_do_readings[9], results.all_do_readings[10]
+        );
+        return test;
     }
 
-    Level_Sensor_Power_Write(OFF);
-    */
+    // for now, getting something besides zeros is valid
+    test.status = 1; // set test status to zero
+    snprintf(test.test_name,sizeof(test.test_name),"TEST_DO_SENSOR");
+   
     
     // test reason  
     snprintf(test.reason,sizeof(test.reason), 

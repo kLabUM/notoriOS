@@ -622,6 +622,36 @@ uint8 makeMeasurements(){
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
     }
     
+        // If node type is dissolved oxygen, take DO measuremetns
+    if(updatable_parameters.node_type == NODE_TYPE_DO){
+        
+        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+        DO_sensor_t m_DO_sensor;
+        
+        // Take level sensor readings and save them to m_level_sensor
+        m_DO_sensor = DO_read();
+    
+        // TODO: data validity check for DO readings
+        // for now
+        bool DO_valid = 1;
+        
+        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+        if(DO_valid){
+            snprintf(value,sizeof(value),"%f",m_DO_sensor.do_reading);
+            printNotif(NOTIF_TYPE_EVENT,"dissolved_oxygen_(mg/L)=%s",value);
+            pushData("dissolved_oxygen_(mg/L)",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " dissolved_oxygen_(mg/L): ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from DO sensor.");
+            //pushData("maxbotix_depth","error",timeStamp);
+        }
+    }
+    
     return 0u;
 }
 

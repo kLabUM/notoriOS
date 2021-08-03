@@ -23,6 +23,8 @@
 // Define node types
 #define NODE_TYPE_DEPTH                 0u
 #define NODE_TYPE_GREENINFRASTRUCTURE   1u  
+#define NODE_TYPE_VALVE                 4u
+#define NODE_TYPE_DO                    5u
     
 // Define sim types
 #define SIM_TYPE_STANDARD               0u
