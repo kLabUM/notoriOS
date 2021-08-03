@@ -450,8 +450,8 @@ void get_cell_network_stats(){
 void updatable_parameters_initialize(){
     updatable_parameters.node_type = NODE_TYPE_DO;
     updatable_parameters.sim_type = SIM_TYPE_STANDARD;
-    updatable_parameters.measure_time = 10u;
-    updatable_parameters.sync_time = 60u;
+    updatable_parameters.measure_time = 1u;
+    updatable_parameters.sync_time = 5u;
     updatable_parameters.debug_level = 1u;
 }
 
@@ -484,8 +484,8 @@ void get_updated_parameters_from_malcom(){
     // Scan character arrays and save values 
     if(sscanf(s_node_type, "%d", &node_type)==1){
         // influx isn't updating from airtable properly atm so skip this
-        // updatable_parameters.node_type = node_type;
-        // printNotif(NOTIF_TYPE_EVENT, "Node type changed to: %d\r\n", node_type);
+        updatable_parameters.node_type = node_type;
+        printNotif(NOTIF_TYPE_EVENT, "Node type changed to: %d\r\n", node_type);
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not change node type.");
     }
@@ -496,7 +496,7 @@ void get_updated_parameters_from_malcom(){
         printNotif(NOTIF_TYPE_ERROR,"Could not change SIM type.");
     }
     if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
-        updatable_parameters.measure_time = sample_freq;
+        //updatable_parameters.measure_time = sample_freq;
         // Create a continuous alarm called alarmMeasure that triggers at the required time to take measurements
         alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
         printNotif(NOTIF_TYPE_EVENT, "Sampling frequency changed to: %d\r\n", sample_freq);
