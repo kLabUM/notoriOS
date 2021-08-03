@@ -628,6 +628,46 @@ uint8 makeMeasurements(){
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
     }
     
+       // If node type is valve, take level sensor measurements and valve position measurements
+    if(updatable_parameters.node_type == NODE_TYPE_VALVE){
+        
+        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+        level_sensor_t m_level_sensor;
+        
+        // Take level sensor readings and save them to m_level_sensor
+        m_level_sensor = level_sensor_take_reading();
+    
+        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+        if(m_level_sensor.num_valid_readings > 0){
+            snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
+            printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
+            pushData("maxbotix_depth",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " maxbotix_depth: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
+            //pushData("maxbotix_depth","error",timeStamp);
+        }
+        
+        float32 valve_position = read_Valve_pos();
+        
+        // TODO: check this for validity
+        snprintf(value,sizeof(value),"%f",valve_position);
+        printNotif(NOTIF_TYPE_EVENT,"valve_open=%s",value);
+        pushData("valve_open",value,timeStamp);
+        
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " valve_open: ");
+        SD_write(Data_fileName, "a+", value);
+        SD_write(Data_fileName, "a+", " ");
+        
+    }
+    
     return 0u;
 }
 

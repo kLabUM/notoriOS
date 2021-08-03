@@ -114,6 +114,7 @@ uint8 move_valve(float32 position_desired){
                 Power_VDD2_Write(0u);
                 // deactivate 12V battery
                 Pressure_Voltage_Enable_Write(OFF);
+                printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
                 return 0;
             }
         }
@@ -128,6 +129,7 @@ uint8 move_valve(float32 position_desired){
         if(fabs(read_Valve_pos() - position_desired) > 0.05){
             // deactivate 12V battery
             Pressure_Voltage_Enable_Write(OFF);
+            printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
             return 0;
         }
         
@@ -150,6 +152,7 @@ uint8 move_valve(float32 position_desired){
                 Power_VDD1_Write(0u);
                 // deactivate 12V battery
                 Pressure_Voltage_Enable_Write(OFF);
+                printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
                 return 0;
             }
         }
@@ -163,6 +166,7 @@ uint8 move_valve(float32 position_desired){
         if(fabs(read_Valve_pos() - position_desired) > 0.05){
             // deactivate 12V battery
             Pressure_Voltage_Enable_Write(OFF);
+            printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
             return 0;
         }
         
