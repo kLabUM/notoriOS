@@ -8,6 +8,11 @@
 #include <project.h>
 #include "testing.h"
 
+// TODO:
+// define valve_t struct
+// this will hold valve_type in the future when linear actuator is integrated
+
+
 // for opening and clsing valve
 //open
 void Power_VDD1_Write(uint8);

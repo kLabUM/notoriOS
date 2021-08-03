@@ -74,7 +74,8 @@ test_t valve_test(){
 float32 read_Valve_pos(){
     // take analog voltage readings
     voltage_t readings = voltage_take_readings();
-    return (readings.voltage_valve_pos/readings.voltage_valve_pot_power)/0.94; // divide because of the non-pot resistance   
+    return (readings.voltage_valve_pos/readings.voltage_valve_pot_power)/0.94; // divide because of the non-potentiometer resistance
+    // this code is written for the blue rotating dynaquip valve, not the linear actuator
     
 }
 
