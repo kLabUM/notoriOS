@@ -639,12 +639,12 @@ uint8 makeMeasurements(){
         // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
         if(DO_valid){
             snprintf(value,sizeof(value),"%f",m_DO_sensor.do_reading);
-            printNotif(NOTIF_TYPE_EVENT,"dissolved_oxygen_(mg/L)=%s",value);
-            pushData("dissolved_oxygen_(mg/L)",value,timeStamp);
+            printNotif(NOTIF_TYPE_EVENT,"dissolved_oxygen_mg_L=%s",value);
+            pushData("dissolved_oxygen_mg_L",value,timeStamp);
             
             // Print measurement to SD card to file called data.txt
             SD_write(Data_fileName, "a+", c_timeStamp);
-            SD_write(Data_fileName, "a+", " dissolved_oxygen_(mg/L): ");
+            SD_write(Data_fileName, "a+", " dissolved_oxygen_mg_L: ");
             SD_write(Data_fileName, "a+", value);
             SD_write(Data_fileName, "a+", " ");
         }else{
