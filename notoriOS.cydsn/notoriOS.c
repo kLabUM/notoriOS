@@ -655,7 +655,9 @@ uint8 makeMeasurements(){
         
         float32 valve_position = read_Valve_pos();
         
-        // TODO: check this for validity
+        // TODO: check this reading for validity
+        
+        
         snprintf(value,sizeof(value),"%f",valve_position);
         printNotif(NOTIF_TYPE_EVENT,"valve_open=%s",value);
         pushData("valve_open",value,timeStamp);

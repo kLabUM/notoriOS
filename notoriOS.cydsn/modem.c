@@ -450,8 +450,8 @@ void get_cell_network_stats(){
 void updatable_parameters_initialize(){
     updatable_parameters.node_type = NODE_TYPE_VALVE;
     updatable_parameters.sim_type = SIM_TYPE_SUPER;
-    updatable_parameters.measure_time = 2u;
-    updatable_parameters.sync_time = 10u;
+    updatable_parameters.measure_time = 1u;
+    updatable_parameters.sync_time = 5u;
     updatable_parameters.debug_level = 1u;
 }
 
@@ -477,6 +477,19 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
+    if (updatable_parameters.node_type == NODE_TYPE_VALVE){
+        extract_string(uart_received_string,"Valve_Open: ","\r",valve_open_desired);
+        success = move_valve(valve_open_desired);
+        if (success){
+            printNotif(NOTIF_TYPE_EVENT, "Successfully moved valve to %f",valve_open_desired);
+            pushData("valve_moved_to: ", valve_open_desired,getTimeStamp());
+        }
+        else {
+            // move_valve will print to serial that we failed
+            // i wrote that function to follow a pythonic idea of being quiet when successful, it just returns 1
+            pushData("valve_move_requested_but_failed: ", valve_open_desired,getTimeStamp());
+        }
+    }
     
     // Create variables for what is sent back from the server
     int node_type, sim_type, sample_freq, report_freq, debug_freq;
