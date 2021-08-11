@@ -452,7 +452,7 @@ void updatable_parameters_initialize(){
     updatable_parameters.sim_type = SIM_TYPE_STANDARD;
     updatable_parameters.measure_time = 10u;
     updatable_parameters.sync_time = 60u;
-    updatable_parameters.debug_level = 2u;
+    updatable_parameters.debug_level = 1u;
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
