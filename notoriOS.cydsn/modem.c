@@ -448,11 +448,11 @@ void get_cell_network_stats(){
 
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
-    updatable_parameters.node_type = NODE_TYPE_VALVE;
-    updatable_parameters.sim_type = SIM_TYPE_SUPER;
-    updatable_parameters.measure_time = 1u;
-    updatable_parameters.sync_time = 5u;
-    updatable_parameters.debug_level = 1u;
+    updatable_parameters.node_type = NODE_TYPE_DEPTH;
+    updatable_parameters.sim_type = SIM_TYPE_STANDARD;
+    updatable_parameters.measure_time = 10u;
+    updatable_parameters.sync_time = 60u;
+    updatable_parameters.debug_level = 2u;
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -477,24 +477,11 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
-    if (updatable_parameters.node_type == NODE_TYPE_VALVE){
-        extract_string(uart_received_string,"Valve_Open: ","\r",valve_open_desired);
-        success = move_valve(valve_open_desired);
-        if (success){
-            printNotif(NOTIF_TYPE_EVENT, "Successfully moved valve to %f",valve_open_desired);
-            pushData("valve_moved_to: ", valve_open_desired,getTimeStamp());
-        }
-        else {
-            // move_valve will print to serial that we failed
-            // i wrote that function to follow a pythonic idea of being quiet when successful, it just returns 1
-            pushData("valve_move_requested_but_failed: ", valve_open_desired,getTimeStamp());
-        }
-    }
-    
     // Create variables for what is sent back from the server
     int node_type, sim_type, sample_freq, report_freq, debug_freq;
     
     // Scan character arrays and save values 
+    
     if(sscanf(s_node_type, "%d", &node_type)==1){
         updatable_parameters.node_type = node_type;
         printNotif(NOTIF_TYPE_EVENT, "Node type changed to: %d\r\n", node_type);
@@ -529,6 +516,26 @@ void get_updated_parameters_from_malcom(){
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new debugging frequency value.");
     }
+   
+    
+    if (updatable_parameters.node_type == NODE_TYPE_VALVE){
+        char valve_open_desired[6] = "-1\0"; // if we see -1 in the print we know we didn't parse correctly
+        extract_string(uart_received_string,"Valve_Open: ","\r",valve_open_desired);
+        
+        uint8 success = move_valve(atof(valve_open_desired));
+        if (success){
+            printNotif(NOTIF_TYPE_EVENT, "Successfully moved valve to %f",atof(valve_open_desired));
+            pushData("valve_moved_to: ", valve_open_desired,getTimeStamp());
+        }
+        else {
+            // move_valve will print to serial that we failed
+            // i wrote that function to follow a pythonic idea of being quiet when successful, it just returns 1
+            printNotif(NOTIF_TYPE_ERROR, "Valve move requested but failed to %f",atof(valve_open_desired));
+            pushData("valve_move_requested_but_failed: ", valve_open_desired,getTimeStamp());
+        }
+    }
+    
+    
 }
     
 // Configure the modem settings

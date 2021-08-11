@@ -114,7 +114,7 @@ uint8 move_valve(float32 position_desired){
                 Power_VDD2_Write(0u);
                 // deactivate 12V battery
                 Pressure_Voltage_Enable_Write(OFF);
-                printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
+                printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
                 return 0;
             }
         }
@@ -129,7 +129,7 @@ uint8 move_valve(float32 position_desired){
         if(fabs(read_Valve_pos() - position_desired) > 0.05){
             // deactivate 12V battery
             Pressure_Voltage_Enable_Write(OFF);
-            printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
+            printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
             return 0;
         }
         
@@ -152,7 +152,7 @@ uint8 move_valve(float32 position_desired){
                 Power_VDD1_Write(0u);
                 // deactivate 12V battery
                 Pressure_Voltage_Enable_Write(OFF);
-                printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
+                printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
                 return 0;
             }
         }
@@ -166,7 +166,7 @@ uint8 move_valve(float32 position_desired){
         if(fabs(read_Valve_pos() - position_desired) > 0.05){
             // deactivate 12V battery
             Pressure_Voltage_Enable_Write(OFF);
-            printNotif(NOTIF_TYPE_ERROR, "move_valve failed");
+            printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: nrequested_position: %f", position_desired);
             return 0;
         }
         
@@ -181,6 +181,8 @@ uint8 move_valve(float32 position_desired){
 }
 
 void valve_level_controller(int16 level_reading){
+
+    // these controls should be site specific. i.e. if site_id = ARB016 cutoff = 1400 mm
     printNotif(NOTIF_TYPE_EVENT, "level_controller using level_reading:%d", level_reading);
     if(level_reading > 500){
         move_valve(0);
