@@ -128,8 +128,8 @@ uint8 modem_power_up(){
         }
     }
     // Calculate boot up time and save to variable boot_time.
-    boot_time = getTimeStamp() - boot_time;
-    printNotif(NOTIF_TYPE_EVENT,"Modem boot time: %d",boot_time);Pin_Regulator_PWM
+    boot_time = getTimeStamp();
+    printNotif(NOTIF_TYPE_EVENT,"Modem boot time: %d",boot_time);
    
     if(at_ready == 1){
         printNotif(NOTIF_TYPE_EVENT,"Modem ready for AT commands after %d attempt(s).",attempts);
