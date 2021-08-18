@@ -58,7 +58,8 @@ void DO_stop_talking(){
 }
 
 DO_sensor_t DO_read(){
-    
+
+    do_uart_clear();
     DO_sensor_t output;
     
     DO_start_talking();
@@ -84,14 +85,14 @@ DO_sensor_t DO_read(){
     // take 11 readings
     for (int i = 0; i < 11; i++){
         DO_UART_PutString("R\r"); // take one reading
-        CyDelay(1200u);
+        CyDelay(1200u); // docs say readings take one second
     }
 
 
     char *token;    
     token = strtok(do_received_string, "\r");
 
-    uint8 i = 0;
+    int i = 0;
     float32 reading;
     while( token != NULL ) {
         reading = atof(token);
@@ -109,12 +110,19 @@ DO_sensor_t DO_read(){
     DO_UART_PutString("*OK,1\r");
     CyDelay(1000u);
     DO_stop_talking();
+    
+
+    
+    
     return output;
 }
 
 test_t DO_sensor_test(){
-
+    do_uart_clear();
+    char excerpt[300]; // for debugging
     // only call this in the lab for initial setup (calibration to air)
+    DO_UART_PutString("Factory\r"); // take one reading
+    CyDelay(2000u); // docs say readings take one second
     // DO_cal() should be commented out in the main repo and never called in the field
     DO_cal();
     
@@ -151,13 +159,18 @@ test_t DO_sensor_test(){
     results.all_do_readings[9], results.all_do_readings[10]
     );
     
+    for (uint i = 0; i < 300; i++){
+        excerpt[i] = do_received_string[i];  
+    }
+    
+
     return test;
     
 }
 
 uint8 DO_cal(){
-
-    
+    do_uart_clear(); // forget what you think you know
+    char excerpt[300]; // for debugging
     for (int i = 0; i < 2; i++){
         DO_sensor_t readings = DO_read();
         // I'll take convergence as the range less than 5 percent the median
@@ -165,13 +178,17 @@ uint8 DO_cal(){
         fsort(readings.all_do_readings,DO_N_READINGS); // sort it
         float32 range = readings.all_do_readings[DO_N_READINGS-1] - readings.all_do_readings[0];
         
+        for (uint i = 0; i < 300; i++){
+            excerpt[i] = do_received_string[i];  
+        }
+        
         // we did it in less than two tries so it's converging quickly as expected
         // send calibration command and return 1 indicating success
-        if (range < (0.05*readings.do_reading)){
-            do_uart_clear(); // forget what you think you know
+        if (range <= (0.05*readings.do_reading)){
+            
             DO_start_talking();
             /*
-            // char excerpt[100]; // for debugging
+            
             //DO_UART_PutString("*OK,1\r"); // are you hearing me?
             // 
             //CyDelay(1000u); 
@@ -197,29 +214,24 @@ uint8 DO_cal(){
             DO_stop_talking();
             // "After calibration is complete, you should see readings between 9.09 - 9.2 mg/l
             // if temperature, salinity, and pressure compensation are at default values"
-            /*
-            for (uint i = 0; i < 100; i++){
-                excerpt[i] = do_received_string[i];  
-                if (i>98u){
-                    printNotif(NOTIF_TYPE_EVENT,"asdf");
-                }
-            }
-            */
+            
+
+            
             CyDelay(1000u);
             DO_sensor_t calibrated = DO_read();
-            
+            calibrated.all_do_readings;
             if (calibrated.do_reading > 9.0 && calibrated.do_reading < 9.3){
                 printNotif(NOTIF_TYPE_EVENT, "Successfully calibrated DO sensor");
                 return 1;
             }
             // if we didn't get what we expected, let us know what we did get
-            printNotif(NOTIF_TYPE_ERROR, "calibrated DO reading: %f\r\n Expected [9.0,9.3] mg/L", calibrated.do_reading);           
+            printNotif(NOTIF_TYPE_ERROR, "calibrated DO reading: %f ::: Expected [9.0,9.3] mg/L", calibrated.do_reading);           
             return 0;
             
         }
     
     }
-    
+
     printNotif(NOTIF_TYPE_ERROR, "DO readings failed to converge");
     return 0;   
 }

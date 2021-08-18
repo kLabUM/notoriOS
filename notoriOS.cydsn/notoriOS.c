@@ -462,8 +462,7 @@ uint8 syncData(){
   
         // If it worked, clear the queue and clock how long the end-to-end tx took
         if(status == 1u){
-            // skip this for now - travis developing DO sensor aug 3
-            //get_updated_parameters_from_malcom();
+            get_updated_parameters_from_malcom();
             Clear_Data_Stack();
             int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
             char s_send_time[10];
@@ -639,7 +638,7 @@ uint8 makeMeasurements(){
         // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
         if(DO_valid){
             snprintf(value,sizeof(value),"%f",m_DO_sensor.do_reading);
-            printNotif(NOTIF_TYPE_EVENT,"dissolved_oxygen_mg_L=%s",value);
+            printNotif(NOTIF_TYPE_EVENT,"pushed: dissolved_oxygen_mg_L=%s",value);
             pushData("dissolved_oxygen_mg_L",value,timeStamp);
             
             // Print measurement to SD card to file called data.txt
