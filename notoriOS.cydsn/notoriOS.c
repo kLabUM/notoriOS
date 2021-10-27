@@ -649,9 +649,9 @@ uint8 makeMeasurements(){
             SD_write(Data_fileName, "a+", "\n");    //new line
             
             //send specific measurements from m_sontek.values array to influx
-//            //temperature - 0 data0
-//            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]);
-//            pushData("sontek_temp",value,timeStamp);
+            //temperature - 0 data0
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data0[0]);
+            pushData("sontek_temp",value,timeStamp);
             //stage - 2 data0
             snprintf(value,sizeof(value),"%.2f",m_sontek.data0[2]);
             pushData("sontek_stage",value,timeStamp);
@@ -661,6 +661,9 @@ uint8 makeMeasurements(){
             //flow - 4 data1
             snprintf(value,sizeof(value),"%.2f",m_sontek.data1[4]);
             pushData("sontek_Q",value,timeStamp);
+            //velocity - 2 data1
+            snprintf(value,sizeof(value),"%.2f",m_sontek.data1[2]);
+            pushData("sontek_Vb",value,timeStamp);
             //average SNR - 3 data1
             snprintf(value,sizeof(value),"%.2f",m_sontek.data1[3]);
             pushData("sontek_avg_SNR",value,timeStamp);
