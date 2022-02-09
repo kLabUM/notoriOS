@@ -362,7 +362,7 @@ uint8 syncData(){
         pushData("rsrp", s_rsrp, getTimeStamp());
         
         char s_rscp[DATA_MAX_KEY_LENGTH];
-        snprintf(s_rscp,sizeof(s_rsrp),"%d",modem_stats.rscp);
+        snprintf(s_rscp,sizeof(s_rscp),"%d",modem_stats.rscp);
         pushData("rscp", s_rscp, getTimeStamp());
         
         // Push syncData try_counter to know how many tries it tried to connect

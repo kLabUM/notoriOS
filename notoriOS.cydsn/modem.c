@@ -313,10 +313,10 @@ uint8 modem_process_tasks(){
                     break;
                 }
             }
-            // If SIM is super, check rscp
+            // If SIM is super, check if rsrp or rscp are strong enough
             if(updatable_parameters.sim_type == SIM_TYPE_SUPER){
-                // If cell signal (rscp) is strong enough, break and connect to the network
-                // Otherwise, keep checking rscp
+                // If cell signal is strong enough, break and connect to the network
+                // Otherwise, keep checking rsrp or rscp
                 if((modem_stats.rscp > 36 && modem_stats.rscp != 255)||(modem_stats.rsrp > 26 && modem_stats.rsrp != 255)){
                     break;
                 }
