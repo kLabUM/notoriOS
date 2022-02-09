@@ -84,12 +84,6 @@ void ReadyOrNot()
     
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
     
-    // send hey to server saying the node rebooted
-    hey = 1u;
-    char c_hey[10];
-    snprintf(c_hey,sizeof(c_hey),"%d",hey);
-    pushData("reboot",c_hey,getTimeStamp());
-    
     // Initialize the try counter to 0
     uint8 try_counter = 0;
 }
@@ -362,10 +356,14 @@ uint8 syncData(){
         http_route[0] = '\0';
         //char *base = "write";
         
-        // Push cell strength data (RSRP: reference signal received power)
+        // Push cell strength data (RSRP: reference signal received power and RSCP: received signal code power)
         char s_rsrp[DATA_MAX_KEY_LENGTH];
         snprintf(s_rsrp,sizeof(s_rsrp),"%d",modem_stats.rsrp);
         pushData("rsrp", s_rsrp, getTimeStamp());
+        
+        char s_rscp[DATA_MAX_KEY_LENGTH];
+        snprintf(s_rscp,sizeof(s_rsrp),"%d",modem_stats.rscp);
+        pushData("rscp", s_rscp, getTimeStamp());
         
         // Push syncData try_counter to know how many tries it tried to connect
         char c_try_counter[20];

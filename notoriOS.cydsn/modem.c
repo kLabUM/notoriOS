@@ -305,10 +305,21 @@ uint8 modem_process_tasks(){
         for(uint8 i=0;i<30;i++){
             // Get cell network stats
             get_cell_network_stats();
-            // If cell signal (rsrp) is strong enough, break and connect to the network
-            // Otherwise, keep checking rsrp
-            if(modem_stats.rsrp > 26 && modem_stats.rsrp != 255){
-                break;
+            // If SIM is standard, check rsrp
+            if(updatable_parameters.sim_type == SIM_TYPE_STANDARD){
+                // If cell signal (rsrp) is strong enough, break and connect to the network
+                // Otherwise, keep checking rsrp
+                if(modem_stats.rsrp > 26 && modem_stats.rsrp != 255){
+                    break;
+                }
+            }
+            // If SIM is super, check rscp
+            if(updatable_parameters.sim_type == SIM_TYPE_SUPER){
+                // If cell signal (rscp) is strong enough, break and connect to the network
+                // Otherwise, keep checking rscp
+                if((modem_stats.rscp > 36 && modem_stats.rscp != 255)||(modem_stats.rsrp > 26 && modem_stats.rsrp != 255)){
+                    break;
+                }
             }
             // Delay for 1 second
             CyDelay(1000u);
@@ -449,7 +460,7 @@ void get_cell_network_stats(){
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
     updatable_parameters.node_type = NODE_TYPE_DEPTH;
-    updatable_parameters.sim_type = SIM_TYPE_STANDARD;
+    updatable_parameters.sim_type = SIM_TYPE_SUPER;
     updatable_parameters.measure_time = 10u;
     updatable_parameters.sync_time = 60u;
     updatable_parameters.debug_level = 1u;
