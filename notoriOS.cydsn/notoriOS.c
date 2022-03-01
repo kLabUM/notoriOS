@@ -27,7 +27,6 @@ uint8 syncData();               // Syncs data with server
 uint8 configureRemoteParams();  // Syncs RTC with cell network and obtains meta-DB params
 uint8 makeMeasurements();       // Takes sensor measurements
 char  Data_fileName[30] = "data.txt";
-uint8 try_counter;
 
 
 // ==============================================
@@ -83,9 +82,6 @@ void ReadyOrNot()
     timeToSync = 1u;
     
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
-    
-    // Initialize the try counter to 0
-    uint8 try_counter = 0;
 }
 
 
