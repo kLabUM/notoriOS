@@ -65,7 +65,7 @@ void ReadyOrNot()
     system_info.modem_info = &modem_info;
     
     // Configure server endpoints -- these should obviosuly be provided  remotely by the meta data-base server
-    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","ec2-13-59-131-167.us-east-2.compute.amazonaws.com");//data.open-storm.org
+    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","malcom.open-storm.org");
    
     system_settings.ep_port = 5000;
     // Don't need the following for new nodes
