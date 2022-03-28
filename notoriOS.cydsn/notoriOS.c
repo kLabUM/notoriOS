@@ -265,9 +265,14 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
+    // Test temperature sensor
+    test_t t_TEMP_sensor = TEMP_test();
+    printTestStatus(t_TEMP_sensor);
+    
     // Test DO sensor
     test_t t_DO_sensor = DO_sensor_test();
     printTestStatus(t_DO_sensor);
+    
     
     // Test level sensor
     test_t t_level_sensor = level_sensor_test();  
@@ -630,7 +635,7 @@ uint8 makeMeasurements(){
         
         // Take level sensor readings and save them to m_level_sensor
         m_DO_sensor = DO_read();
-    
+        
         // TODO: data validity check for DO readings
         // for now
         bool DO_valid = 1;

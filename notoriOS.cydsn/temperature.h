@@ -1,14 +1,19 @@
 #include "project.h"
 #include "testing.h"
 
-// define temp struct 
-typedef struct {
+#define TEMP_N_READINGS 11
+
+typedef struct { 
+    float32 all_TEMP_readings[TEMP_N_READINGS];
     float32 TEMP_reading;
-} TEMP_sensor_t;
+} TEMP_t;
+
+test_t TEMP_test();
+
+TEMP_t TEMP_read();
 
 // establish a debugging and reading struct
-TEMP_sensor_t TEMP_Debug();
-TEMP_sensor_t TEMP_Read();
+void TEMP_Debug();
 
 // Calibration must be done in boiling water
 // Calibration needs to be set only once 
