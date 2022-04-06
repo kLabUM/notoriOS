@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: DO_UART_PM.c
+* File Name: WQ_UART_PM.c
 * Version 2.50
 *
 * Description:
@@ -14,14 +14,14 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#include "DO_UART.h"
+#include "WQ_UART.h"
 
 
 /***************************************
 * Local data allocation
 ***************************************/
 
-static DO_UART_BACKUP_STRUCT  DO_UART_backup =
+static WQ_UART_BACKUP_STRUCT  WQ_UART_backup =
 {
     /* enableState - disabled */
     0u,
@@ -30,13 +30,13 @@ static DO_UART_BACKUP_STRUCT  DO_UART_backup =
 
 
 /*******************************************************************************
-* Function Name: DO_UART_SaveConfig
+* Function Name: WQ_UART_SaveConfig
 ********************************************************************************
 *
 * Summary:
 *  This function saves the component nonretention control register.
 *  Does not save the FIFO which is a set of nonretention registers.
-*  This function is called by the DO_UART_Sleep() function.
+*  This function is called by the WQ_UART_Sleep() function.
 *
 * Parameters:
 *  None.
@@ -45,22 +45,22 @@ static DO_UART_BACKUP_STRUCT  DO_UART_backup =
 *  None.
 *
 * Global Variables:
-*  DO_UART_backup - modified when non-retention registers are saved.
+*  WQ_UART_backup - modified when non-retention registers are saved.
 *
 * Reentrant:
 *  No.
 *
 *******************************************************************************/
-void DO_UART_SaveConfig(void)
+void WQ_UART_SaveConfig(void)
 {
-    #if(DO_UART_CONTROL_REG_REMOVED == 0u)
-        DO_UART_backup.cr = DO_UART_CONTROL_REG;
-    #endif /* End DO_UART_CONTROL_REG_REMOVED */
+    #if(WQ_UART_CONTROL_REG_REMOVED == 0u)
+        WQ_UART_backup.cr = WQ_UART_CONTROL_REG;
+    #endif /* End WQ_UART_CONTROL_REG_REMOVED */
 }
 
 
 /*******************************************************************************
-* Function Name: DO_UART_RestoreConfig
+* Function Name: WQ_UART_RestoreConfig
 ********************************************************************************
 *
 * Summary:
@@ -74,34 +74,34 @@ void DO_UART_SaveConfig(void)
 *  None.
 *
 * Global Variables:
-*  DO_UART_backup - used when non-retention registers are restored.
+*  WQ_UART_backup - used when non-retention registers are restored.
 *
 * Reentrant:
 *  No.
 *
 * Notes:
-*  If this function is called without calling DO_UART_SaveConfig() 
+*  If this function is called without calling WQ_UART_SaveConfig() 
 *  first, the data loaded may be incorrect.
 *
 *******************************************************************************/
-void DO_UART_RestoreConfig(void)
+void WQ_UART_RestoreConfig(void)
 {
-    #if(DO_UART_CONTROL_REG_REMOVED == 0u)
-        DO_UART_CONTROL_REG = DO_UART_backup.cr;
-    #endif /* End DO_UART_CONTROL_REG_REMOVED */
+    #if(WQ_UART_CONTROL_REG_REMOVED == 0u)
+        WQ_UART_CONTROL_REG = WQ_UART_backup.cr;
+    #endif /* End WQ_UART_CONTROL_REG_REMOVED */
 }
 
 
 /*******************************************************************************
-* Function Name: DO_UART_Sleep
+* Function Name: WQ_UART_Sleep
 ********************************************************************************
 *
 * Summary:
 *  This is the preferred API to prepare the component for sleep. 
-*  The DO_UART_Sleep() API saves the current component state. Then it
-*  calls the DO_UART_Stop() function and calls 
-*  DO_UART_SaveConfig() to save the hardware configuration.
-*  Call the DO_UART_Sleep() function before calling the CyPmSleep() 
+*  The WQ_UART_Sleep() API saves the current component state. Then it
+*  calls the WQ_UART_Stop() function and calls 
+*  WQ_UART_SaveConfig() to save the hardware configuration.
+*  Call the WQ_UART_Sleep() function before calling the CyPmSleep() 
 *  or the CyPmHibernate() function. 
 *
 * Parameters:
@@ -111,49 +111,49 @@ void DO_UART_RestoreConfig(void)
 *  None.
 *
 * Global Variables:
-*  DO_UART_backup - modified when non-retention registers are saved.
+*  WQ_UART_backup - modified when non-retention registers are saved.
 *
 * Reentrant:
 *  No.
 *
 *******************************************************************************/
-void DO_UART_Sleep(void)
+void WQ_UART_Sleep(void)
 {
-    #if(DO_UART_RX_ENABLED || DO_UART_HD_ENABLED)
-        if((DO_UART_RXSTATUS_ACTL_REG  & DO_UART_INT_ENABLE) != 0u)
+    #if(WQ_UART_RX_ENABLED || WQ_UART_HD_ENABLED)
+        if((WQ_UART_RXSTATUS_ACTL_REG  & WQ_UART_INT_ENABLE) != 0u)
         {
-            DO_UART_backup.enableState = 1u;
+            WQ_UART_backup.enableState = 1u;
         }
         else
         {
-            DO_UART_backup.enableState = 0u;
+            WQ_UART_backup.enableState = 0u;
         }
     #else
-        if((DO_UART_TXSTATUS_ACTL_REG  & DO_UART_INT_ENABLE) !=0u)
+        if((WQ_UART_TXSTATUS_ACTL_REG  & WQ_UART_INT_ENABLE) !=0u)
         {
-            DO_UART_backup.enableState = 1u;
+            WQ_UART_backup.enableState = 1u;
         }
         else
         {
-            DO_UART_backup.enableState = 0u;
+            WQ_UART_backup.enableState = 0u;
         }
-    #endif /* End DO_UART_RX_ENABLED || DO_UART_HD_ENABLED*/
+    #endif /* End WQ_UART_RX_ENABLED || WQ_UART_HD_ENABLED*/
 
-    DO_UART_Stop();
-    DO_UART_SaveConfig();
+    WQ_UART_Stop();
+    WQ_UART_SaveConfig();
 }
 
 
 /*******************************************************************************
-* Function Name: DO_UART_Wakeup
+* Function Name: WQ_UART_Wakeup
 ********************************************************************************
 *
 * Summary:
 *  This is the preferred API to restore the component to the state when 
-*  DO_UART_Sleep() was called. The DO_UART_Wakeup() function
-*  calls the DO_UART_RestoreConfig() function to restore the 
+*  WQ_UART_Sleep() was called. The WQ_UART_Wakeup() function
+*  calls the WQ_UART_RestoreConfig() function to restore the 
 *  configuration. If the component was enabled before the 
-*  DO_UART_Sleep() function was called, the DO_UART_Wakeup()
+*  WQ_UART_Sleep() function was called, the WQ_UART_Wakeup()
 *  function will also re-enable the component.
 *
 * Parameters:
@@ -163,25 +163,25 @@ void DO_UART_Sleep(void)
 *  None.
 *
 * Global Variables:
-*  DO_UART_backup - used when non-retention registers are restored.
+*  WQ_UART_backup - used when non-retention registers are restored.
 *
 * Reentrant:
 *  No.
 *
 *******************************************************************************/
-void DO_UART_Wakeup(void)
+void WQ_UART_Wakeup(void)
 {
-    DO_UART_RestoreConfig();
-    #if( (DO_UART_RX_ENABLED) || (DO_UART_HD_ENABLED) )
-        DO_UART_ClearRxBuffer();
-    #endif /* End (DO_UART_RX_ENABLED) || (DO_UART_HD_ENABLED) */
-    #if(DO_UART_TX_ENABLED || DO_UART_HD_ENABLED)
-        DO_UART_ClearTxBuffer();
-    #endif /* End DO_UART_TX_ENABLED || DO_UART_HD_ENABLED */
+    WQ_UART_RestoreConfig();
+    #if( (WQ_UART_RX_ENABLED) || (WQ_UART_HD_ENABLED) )
+        WQ_UART_ClearRxBuffer();
+    #endif /* End (WQ_UART_RX_ENABLED) || (WQ_UART_HD_ENABLED) */
+    #if(WQ_UART_TX_ENABLED || WQ_UART_HD_ENABLED)
+        WQ_UART_ClearTxBuffer();
+    #endif /* End WQ_UART_TX_ENABLED || WQ_UART_HD_ENABLED */
 
-    if(DO_UART_backup.enableState != 0u)
+    if(WQ_UART_backup.enableState != 0u)
     {
-        DO_UART_Enable();
+        WQ_UART_Enable();
     }
 }
 

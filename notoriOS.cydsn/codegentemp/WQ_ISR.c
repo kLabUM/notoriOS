@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: DO_ISR.c  
+* File Name: WQ_ISR.c  
 * Version 1.70
 *
 *  Description:
@@ -18,15 +18,15 @@
 
 #include <cydevice_trm.h>
 #include <CyLib.h>
-#include <DO_ISR.h>
+#include <WQ_ISR.h>
 #include "cyapicallbacks.h"
 
-#if !defined(DO_ISR__REMOVED) /* Check for removal by optimization */
+#if !defined(WQ_ISR__REMOVED) /* Check for removal by optimization */
 
 /*******************************************************************************
 *  Place your includes, defines and code here 
 ********************************************************************************/
-/* `#START DO_ISR_intc` */
+/* `#START WQ_ISR_intc` */
 
 /* `#END` */
 
@@ -42,7 +42,7 @@ CY_ISR_PROTO(IntDefaultHandler);
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_Start
+* Function Name: WQ_ISR_Start
 ********************************************************************************
 *
 * Summary:
@@ -58,24 +58,24 @@ CY_ISR_PROTO(IntDefaultHandler);
 *   None
 *
 *******************************************************************************/
-void DO_ISR_Start(void)
+void WQ_ISR_Start(void)
 {
     /* For all we know the interrupt is active. */
-    DO_ISR_Disable();
+    WQ_ISR_Disable();
 
-    /* Set the ISR to point to the DO_ISR Interrupt. */
-    DO_ISR_SetVector(&DO_ISR_Interrupt);
+    /* Set the ISR to point to the WQ_ISR Interrupt. */
+    WQ_ISR_SetVector(&WQ_ISR_Interrupt);
 
     /* Set the priority. */
-    DO_ISR_SetPriority((uint8)DO_ISR_INTC_PRIOR_NUMBER);
+    WQ_ISR_SetPriority((uint8)WQ_ISR_INTC_PRIOR_NUMBER);
 
     /* Enable it. */
-    DO_ISR_Enable();
+    WQ_ISR_Enable();
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_StartEx
+* Function Name: WQ_ISR_StartEx
 ********************************************************************************
 *
 * Summary:
@@ -101,24 +101,24 @@ void DO_ISR_Start(void)
 *   None
 *
 *******************************************************************************/
-void DO_ISR_StartEx(cyisraddress address)
+void WQ_ISR_StartEx(cyisraddress address)
 {
     /* For all we know the interrupt is active. */
-    DO_ISR_Disable();
+    WQ_ISR_Disable();
 
-    /* Set the ISR to point to the DO_ISR Interrupt. */
-    DO_ISR_SetVector(address);
+    /* Set the ISR to point to the WQ_ISR Interrupt. */
+    WQ_ISR_SetVector(address);
 
     /* Set the priority. */
-    DO_ISR_SetPriority((uint8)DO_ISR_INTC_PRIOR_NUMBER);
+    WQ_ISR_SetPriority((uint8)WQ_ISR_INTC_PRIOR_NUMBER);
 
     /* Enable it. */
-    DO_ISR_Enable();
+    WQ_ISR_Enable();
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_Stop
+* Function Name: WQ_ISR_Stop
 ********************************************************************************
 *
 * Summary:
@@ -131,22 +131,22 @@ void DO_ISR_StartEx(cyisraddress address)
 *   None
 *
 *******************************************************************************/
-void DO_ISR_Stop(void)
+void WQ_ISR_Stop(void)
 {
     /* Disable this interrupt. */
-    DO_ISR_Disable();
+    WQ_ISR_Disable();
 
     /* Set the ISR to point to the passive one. */
-    DO_ISR_SetVector(&IntDefaultHandler);
+    WQ_ISR_SetVector(&IntDefaultHandler);
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_Interrupt
+* Function Name: WQ_ISR_Interrupt
 ********************************************************************************
 *
 * Summary:
-*   The default Interrupt Service Routine for DO_ISR.
+*   The default Interrupt Service Routine for WQ_ISR.
 *
 *   Add custom code between the coments to keep the next version of this file
 *   from over writting your code.
@@ -157,27 +157,27 @@ void DO_ISR_Stop(void)
 *   None
 *
 *******************************************************************************/
-CY_ISR(DO_ISR_Interrupt)
+CY_ISR(WQ_ISR_Interrupt)
 {
-    #ifdef DO_ISR_INTERRUPT_INTERRUPT_CALLBACK
-        DO_ISR_Interrupt_InterruptCallback();
-    #endif /* DO_ISR_INTERRUPT_INTERRUPT_CALLBACK */ 
+    #ifdef WQ_ISR_INTERRUPT_INTERRUPT_CALLBACK
+        WQ_ISR_Interrupt_InterruptCallback();
+    #endif /* WQ_ISR_INTERRUPT_INTERRUPT_CALLBACK */ 
 
     /*  Place your Interrupt code here. */
-    /* `#START DO_ISR_Interrupt` */
+    /* `#START WQ_ISR_Interrupt` */
 
     /* `#END` */
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_SetVector
+* Function Name: WQ_ISR_SetVector
 ********************************************************************************
 *
 * Summary:
-*   Change the ISR vector for the Interrupt. Note calling DO_ISR_Start
+*   Change the ISR vector for the Interrupt. Note calling WQ_ISR_Start
 *   will override any effect this method would have had. To set the vector 
-*   before the component has been started use DO_ISR_StartEx instead.
+*   before the component has been started use WQ_ISR_StartEx instead.
 * 
 *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
 *   used to provide consistent definition across compilers:
@@ -197,18 +197,18 @@ CY_ISR(DO_ISR_Interrupt)
 *   None
 *
 *******************************************************************************/
-void DO_ISR_SetVector(cyisraddress address)
+void WQ_ISR_SetVector(cyisraddress address)
 {
     cyisraddress * ramVectorTable;
 
     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
 
-    ramVectorTable[CYINT_IRQ_BASE + (uint32)DO_ISR__INTC_NUMBER] = address;
+    ramVectorTable[CYINT_IRQ_BASE + (uint32)WQ_ISR__INTC_NUMBER] = address;
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_GetVector
+* Function Name: WQ_ISR_GetVector
 ********************************************************************************
 *
 * Summary:
@@ -221,26 +221,26 @@ void DO_ISR_SetVector(cyisraddress address)
 *   Address of the ISR in the interrupt vector table.
 *
 *******************************************************************************/
-cyisraddress DO_ISR_GetVector(void)
+cyisraddress WQ_ISR_GetVector(void)
 {
     cyisraddress * ramVectorTable;
 
     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
 
-    return ramVectorTable[CYINT_IRQ_BASE + (uint32)DO_ISR__INTC_NUMBER];
+    return ramVectorTable[CYINT_IRQ_BASE + (uint32)WQ_ISR__INTC_NUMBER];
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_SetPriority
+* Function Name: WQ_ISR_SetPriority
 ********************************************************************************
 *
 * Summary:
 *   Sets the Priority of the Interrupt. 
 *
-*   Note calling DO_ISR_Start or DO_ISR_StartEx will 
+*   Note calling WQ_ISR_Start or WQ_ISR_StartEx will 
 *   override any effect this API would have had. This API should only be called
-*   after DO_ISR_Start or DO_ISR_StartEx has been called. 
+*   after WQ_ISR_Start or WQ_ISR_StartEx has been called. 
 *   To set the initial priority for the component, use the Design-Wide Resources
 *   Interrupt Editor.
 *
@@ -255,14 +255,14 @@ cyisraddress DO_ISR_GetVector(void)
 *   None
 *
 *******************************************************************************/
-void DO_ISR_SetPriority(uint8 priority)
+void WQ_ISR_SetPriority(uint8 priority)
 {
-    *DO_ISR_INTC_PRIOR = priority << 5;
+    *WQ_ISR_INTC_PRIOR = priority << 5;
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_GetPriority
+* Function Name: WQ_ISR_GetPriority
 ********************************************************************************
 *
 * Summary:
@@ -277,19 +277,19 @@ void DO_ISR_SetPriority(uint8 priority)
 *    PSoC 4: Priority is from 0 to 3.
 *
 *******************************************************************************/
-uint8 DO_ISR_GetPriority(void)
+uint8 WQ_ISR_GetPriority(void)
 {
     uint8 priority;
 
 
-    priority = *DO_ISR_INTC_PRIOR >> 5;
+    priority = *WQ_ISR_INTC_PRIOR >> 5;
 
     return priority;
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_Enable
+* Function Name: WQ_ISR_Enable
 ********************************************************************************
 *
 * Summary:
@@ -304,15 +304,15 @@ uint8 DO_ISR_GetPriority(void)
 *   None
 *
 *******************************************************************************/
-void DO_ISR_Enable(void)
+void WQ_ISR_Enable(void)
 {
     /* Enable the general interrupt. */
-    *DO_ISR_INTC_SET_EN = DO_ISR__INTC_MASK;
+    *WQ_ISR_INTC_SET_EN = WQ_ISR__INTC_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_GetState
+* Function Name: WQ_ISR_GetState
 ********************************************************************************
 *
 * Summary:
@@ -325,15 +325,15 @@ void DO_ISR_Enable(void)
 *   1 if enabled, 0 if disabled.
 *
 *******************************************************************************/
-uint8 DO_ISR_GetState(void)
+uint8 WQ_ISR_GetState(void)
 {
     /* Get the state of the general interrupt. */
-    return ((*DO_ISR_INTC_SET_EN & (uint32)DO_ISR__INTC_MASK) != 0u) ? 1u:0u;
+    return ((*WQ_ISR_INTC_SET_EN & (uint32)WQ_ISR__INTC_MASK) != 0u) ? 1u:0u;
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_Disable
+* Function Name: WQ_ISR_Disable
 ********************************************************************************
 *
 * Summary:
@@ -346,15 +346,15 @@ uint8 DO_ISR_GetState(void)
 *   None
 *
 *******************************************************************************/
-void DO_ISR_Disable(void)
+void WQ_ISR_Disable(void)
 {
     /* Disable the general interrupt. */
-    *DO_ISR_INTC_CLR_EN = DO_ISR__INTC_MASK;
+    *WQ_ISR_INTC_CLR_EN = WQ_ISR__INTC_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_SetPending
+* Function Name: WQ_ISR_SetPending
 ********************************************************************************
 *
 * Summary:
@@ -373,14 +373,14 @@ void DO_ISR_Disable(void)
 *   interrupts).
 *
 *******************************************************************************/
-void DO_ISR_SetPending(void)
+void WQ_ISR_SetPending(void)
 {
-    *DO_ISR_INTC_SET_PD = DO_ISR__INTC_MASK;
+    *WQ_ISR_INTC_SET_PD = WQ_ISR__INTC_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: DO_ISR_ClearPending
+* Function Name: WQ_ISR_ClearPending
 ********************************************************************************
 *
 * Summary:
@@ -398,9 +398,9 @@ void DO_ISR_SetPending(void)
 *   None
 *
 *******************************************************************************/
-void DO_ISR_ClearPending(void)
+void WQ_ISR_ClearPending(void)
 {
-    *DO_ISR_INTC_CLR_PD = DO_ISR__INTC_MASK;
+    *WQ_ISR_INTC_CLR_PD = WQ_ISR__INTC_MASK;
 }
 
 #endif /* End check for removal by optimization */

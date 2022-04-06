@@ -1,5 +1,7 @@
+/* comment out the whole file
 #include "notoriOS.h"
 //#include "temperature.h"
+
 
 char temperature_received_string[1024];
 int16 temperature_string_index=0;
@@ -64,7 +66,7 @@ Temperature_sensor_t Temperature_read(){
             printNotif(NOTIF_TYPE_EVENT,"asdf");
         }
     }
-    */
+    //
     TEMP_UART_ClearRxBuffer();
     TEMP_clear(); // get rid of anything we've received so far
     // should just be the startup messages 
@@ -360,5 +362,7 @@ void fswap(float32 *p,float32 *q) {
    *p=*q; 
    *q=t;
 }
+
+//
 
 */

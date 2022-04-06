@@ -265,6 +265,7 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
+    /* old way for water quality
     // Test temperature sensor
     test_t t_TEMP_sensor = Temperature_sensor_test();
     printTestStatus(t_TEMP_sensor);
@@ -272,7 +273,11 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     // Test DO sensor
     test_t t_DO_sensor = DO_sensor_test();
     printTestStatus(t_DO_sensor);
+    */
     
+    // consolidated water quality
+    test_t t_wq_sensors = wq_sensor_test();
+    printTestStatus(t_wq_sensors);
     
     // Test level sensor
     test_t t_level_sensor = level_sensor_test();  
@@ -628,8 +633,13 @@ uint8 makeMeasurements(){
     }
     
         // If node type is dissolved oxygen, take DO measuremetns
-    if(updatable_parameters.node_type == NODE_TYPE_DO){
+    if(updatable_parameters.node_type == NODE_TYPE_WQ){
         
+        
+        
+        
+        
+        /* old way below
         // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
         DO_sensor_t m_DO_sensor;
         Temperature_sensor_t m_TEMP_sensor;
@@ -673,7 +683,8 @@ uint8 makeMeasurements(){
         }else{
             printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from temperature sensor.");
             //pushData("maxbotix_depth","error",timeStamp);
-        }    
+        }   
+        */
     }
     
     return 0u;

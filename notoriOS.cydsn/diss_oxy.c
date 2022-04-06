@@ -1,3 +1,4 @@
+/* comment out the whole file
 #include "notoriOS.h"
 // #include diss_oxy.h  - this was causing a multiple definition error
 char do_received_string[1024];
@@ -77,7 +78,7 @@ DO_sensor_t DO_read(){
             printNotif(NOTIF_TYPE_EVENT,"asdf");
         }
     }
-    */
+    //
     DO_UART_ClearRxBuffer();
     do_uart_clear(); // get rid of anything we've received so far
     // should just be the startup messages 
@@ -192,7 +193,7 @@ uint8 DO_cal(){
             //DO_UART_PutString("*OK,1\r"); // are you hearing me?
             // 
             //CyDelay(1000u); 
-            */
+            //
             DO_UART_PutString("C,0\r"); // turn off automated sampling
             CyDelay(1000u); 
             DO_UART_PutString("Cal,clear\r"); // clear existing calibration data
@@ -209,7 +210,7 @@ uint8 DO_cal(){
             DO_UART_PutString("S,?\r"); // salinity?
             CyDelay(1000u); 
             DO_UART_PutString("P,?\r"); // pressure?
-            */
+            //
             CyDelay(2000u); 
             DO_stop_talking();
             // "After calibration is complete, you should see readings between 9.09 - 9.2 mg/l
@@ -235,6 +236,7 @@ uint8 DO_cal(){
     printNotif(NOTIF_TYPE_ERROR, "DO readings failed to converge");
     return 0;   
 }
+
 
 
 // code for finding medians duplicated from level_sensor because we need floats not longs
@@ -276,5 +278,5 @@ void fswap(float32 *p,float32 *q) {
    *p=*q; 
    *q=t;
 }
-
+*/
 
