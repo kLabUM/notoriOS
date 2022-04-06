@@ -266,7 +266,7 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
     // Test temperature sensor
-    test_t t_TEMP_sensor = TEMP_test();
+    test_t t_TEMP_sensor = Temperature_sensor_test();
     printTestStatus(t_TEMP_sensor);
     
     // Test DO sensor
@@ -467,7 +467,7 @@ uint8 syncData(){
   
         // If it worked, clear the queue and clock how long the end-to-end tx took
         if(status == 1u){
-            get_updated_parameters_from_malcom();
+            //get_updated_parameters_from_malcom();
             Clear_Data_Stack();
             int send_time = (int)(getTimeStamp()-(int32)modem_start_time_stamp);
             char s_send_time[10];
@@ -632,13 +632,16 @@ uint8 makeMeasurements(){
         
         // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
         DO_sensor_t m_DO_sensor;
+        Temperature_sensor_t m_TEMP_sensor;
         
         // Take level sensor readings and save them to m_level_sensor
         m_DO_sensor = DO_read();
+        m_TEMP_sensor = Temperature_read();
         
         // TODO: data validity check for DO readings
         // for now
         bool DO_valid = 1;
+        bool TEMP_valid = 1;
         
         // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
         if(DO_valid){
@@ -655,6 +658,22 @@ uint8 makeMeasurements(){
             printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from DO sensor.");
             //pushData("maxbotix_depth","error",timeStamp);
         }
+        
+        
+        if(TEMP_valid){
+            snprintf(value,sizeof(value),"%f",m_TEMP_sensor.temp_reading);
+            printNotif(NOTIF_TYPE_EVENT,"pushed: temperature_C=%s",value);
+            pushData("temperature_C",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " temperature_C: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from temperature sensor.");
+            //pushData("maxbotix_depth","error",timeStamp);
+        }    
     }
     
     return 0u;

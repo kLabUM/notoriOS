@@ -4,27 +4,25 @@
 #define TEMP_N_READINGS 11
 
 typedef struct { 
-    float32 all_TEMP_readings[TEMP_N_READINGS];
-    float32 TEMP_reading;
-} TEMP_sensor_t;
+    float32 all_temp_readings[TEMP_N_READINGS];
+    float32 temp_reading;
+} Temperature_sensor_t;
 
-test_t TEMP_sensor_test();
+test_t Temperature_sensor_test();
+Temperature_sensor_t Temperature_read();
 
-TEMP_sensor_t TEMP_read();
-
-
-float32 float_find_median(float32 array[] , uint8 n);
+float32 float_find_median1(float32 array[] , uint8 n);
 
 // function to sort the elements in the level readings array
-void fsort(float32 a[],uint8 n);
+void fsort1(float32 a[],uint8 n);
 
 // function to swap elements in the level readings array in order to sort them
-void fswap(float32 *p,float32 *q);
+void fswap1(float32 *p,float32 *q);
 
 // calibrate sensor to atmospheric oxygen levels
 // see "single piont calibration" in datasheet
 // this should be done once, before deploying, as calibration is robust to power cycling
-uint8 TEMP_Cal();
+uint8 TEMP_cal();
 
 // prepare lines of communication
 void TEMP_Talk();
