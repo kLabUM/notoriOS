@@ -46,7 +46,7 @@ void wq_start_talking(){
     
     WQ_UART_ClearRxBuffer();
     WQ_ISR_StartEx(WQ_ISR);
-    Level_Sensor_Power_Write(ON); // Pulls pwr pin high (turns it on).
+    Power_VDD1_Write(ON); // Pulls pwr pin high (turns it on).
     CyDelay(1000u); // reset sequence
 
 }
@@ -54,7 +54,7 @@ void wq_start_talking(){
 // pull everything low to stop power leaks
 void wq_stop_talking(){
 
-    Level_Sensor_Power_Write(OFF);
+    Power_VDD1_Write(OFF);
     WQ_UART_Stop();
     
     // sensor specific calls
@@ -115,10 +115,10 @@ wq_sensors_t wq_take_reading(){
         float32 reading;
         while( token != NULL ) {
             reading = atof(token);
-            if (channel < 1){ // we're reading DO
+            if (channel < 1){ // we're reading DO (channel 0)
                 output.all_do_readings[i] = reading;
             }
-            else if (channel < 2) { // we're reading temperature
+            else if (channel < 2) { // we're reading temperature (channel 1)
                 output.all_temp_readings[i] = reading;
             }
             
@@ -138,7 +138,7 @@ wq_sensors_t wq_take_reading(){
    
     output.do_reading = float_find_median(output.all_do_readings, 11);
     output.temp_reading = float_find_median(output.all_temp_readings, 11);
-    
+    /*
     // turn "*OK" response back on (this is default and useful for debugging)
     for (uint8 channel = 0; channel < N_params; channel++){
         
@@ -147,7 +147,7 @@ wq_sensors_t wq_take_reading(){
         WQ_UART_PutString("*OK,1\r");
 
     }
-    
+    */
     
     CyDelay(1000u);
     wq_stop_talking();
