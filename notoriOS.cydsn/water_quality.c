@@ -158,12 +158,7 @@ wq_sensors_t wq_take_reading(){
 test_t wq_sensor_test(){
     wq_uart_clear();
     char excerpt[300]; // for debugging
-    // only call this in the lab for initial setup (calibration to air)
-    WQ_UART_PutString("Factory\r"); // take one reading
-    CyDelay(2000u); // docs say readings take one second
-    // wq_cal() should be commented out in the main repo and never called in the field
-    //wq_cal();
-    
+
     wq_sensors_t results = wq_take_reading();
 
     test_t test;
@@ -221,9 +216,15 @@ test_t wq_sensor_test(){
     
 }
 
-uint8 wq_cal(){ // NOT DONE YET AS OF APR 6
+// ref: https://atlas-scientific.com/kits/dissolved-oxygen-kit/
+// DO EZO circuit datasheet -> UART calibration
+// let DO probe sit exposed to air until readings stabilize, then send "cal" command
+// make sure to put DO probe back in water after calibrated so it doesn't dry out
+uint8 DO_cal(){
     wq_uart_clear(); // forget what you think you know
     char excerpt[300]; // for debugging
+    
+    
     for (int i = 0; i < 2; i++){
         wq_sensors_t readings = wq_take_reading();
         // I'll take convergence as the range less than 5 percent the median
@@ -240,37 +241,26 @@ uint8 wq_cal(){ // NOT DONE YET AS OF APR 6
         if (range <= (0.05*readings.do_reading)){
             
             wq_start_talking();
-            /*
+            rx_mux_controller_Write(0);// DO is parameter 0
+            tx_mux_controller_Write(0); // talking and listening on the same channel
+        
             
             //DO_UART_PutString("*OK,1\r"); // are you hearing me?
             // 
-            //CyDelay(1000u); 
-            */
+            CyDelay(1000u); 
+            //
             WQ_UART_PutString("C,0\r"); // turn off automated sampling
             CyDelay(1000u); 
             WQ_UART_PutString("Cal,clear\r"); // clear existing calibration data
             CyDelay(1000u);
-            WQ_UART_PutString("Cal\r"); // calibrate to atmospheric oxygen for DO sensor
-            
-            /*CyDelay(1000u); 
-            // "temp, salinity, and pressure compensation values have no effect on calibration"
-            DO_UART_PutString("T,?\r"); // compensated temp value?
-            CyDelay(1000u); 
-            //DO_UART_PutString("T,20\r"); // for some reason temp was set to 0 C
-            //CyDelay(1000u); 
-            //DO_UART_PutString("T,?\r"); // compensated temp value?
-            //CyDelay(1000u); 
-            DO_UART_PutString("S,?\r"); // salinity?
-            CyDelay(1000u); 
-            DO_UART_PutString("P,?\r"); // pressure?
-            */
+            WQ_UART_PutString("Cal\r"); // calibrate to atmospheric oxygen
+
             CyDelay(2000u); 
             wq_stop_talking();
             // "After calibration is complete, you should see readings between 9.09 - 9.2 mg/l
             // if temperature, salinity, and pressure compensation are at default values"
             
-
-            
+      
             CyDelay(1000u);
             wq_sensors_t calibrated = wq_take_reading();
             //calibrated.all_do_readings;
@@ -290,10 +280,58 @@ uint8 wq_cal(){ // NOT DONE YET AS OF APR 6
     return 0;   
 }
 
+// ref: https://atlas-scientific.com/kits/pt-1000-temperature-kit/
+// EZO RTD circuit datasheet -> single point calibration
+// use boiling water
+uint8 Temperature_cal(){
+    wq_uart_clear(); // forget what you think you know
+    char excerpt[300]; // for debugging
+    
+    
+    for (int i = 0; i < 2; i++){
+        wq_sensors_t readings = wq_take_reading();
+       
+        for (uint i = 0; i < 300; i++){
+            excerpt[i] = wq_received_string[i];  
+        }
+        
+        // we did it in less than two tries so it's converging quickly as expected
+        // send calibration command and return 1 indicating success
+        // specify that reading is within one degree of 100 C
+        if (fabs(readings.temp_reading-100) <= 1){
+            
+            wq_start_talking();
+            rx_mux_controller_Write(1);//temperature is parameter 1
+            tx_mux_controller_Write(1); // talking and listening on the same channel
+        
+          
+            CyDelay(1000u); 
+            //
+            WQ_UART_PutString("C,0\r"); // turn off automated sampling
+            CyDelay(1000u); 
+            WQ_UART_PutString("Cal,clear\r"); // clear existing calibration data
+            CyDelay(1000u);
+            WQ_UART_PutString("Cal\r"); // temperature is currently reading correctly
+
+            CyDelay(2000u); 
+            wq_stop_talking();
+
+            printNotif(NOTIF_TYPE_EVENT, "Successfully calibrated temperature sensor");
+            return 1;
+            
+        }
+        
+
+    
+    }
+    wq_sensors_t readings = wq_take_reading();
+    // if we didn't get what we expected, let us know what we did get
+    printNotif(NOTIF_TYPE_ERROR, "temp reading: %f ::: Expected 100 +/- 1 C", readings.temp_reading);           
+    return 0; 
+
+}
 
 // code for finding medians "duplicated" from level_sensor because we need *floats* not *longs*
-
-
 // function to calculate the median of the array, after array is sorted
 float32 float_find_median(float32 array[] , uint8 n){
     float32 median=0;

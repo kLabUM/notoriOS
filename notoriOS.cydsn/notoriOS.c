@@ -265,19 +265,15 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     
     printNotif(NOTIF_TYPE_STARTUP,"-------------BEGIN TESTS---------------\n\n");
     
-    /* old way for water quality
-    // Test temperature sensor
-    test_t t_TEMP_sensor = Temperature_sensor_test();
-    printTestStatus(t_TEMP_sensor);
-    
-    // Test DO sensor
-    test_t t_DO_sensor = DO_sensor_test();
-    printTestStatus(t_DO_sensor);
-    */
-    
     // consolidated water quality
     test_t t_wq_sensors = wq_sensor_test();
     printTestStatus(t_wq_sensors);
+    
+    // Water Quality Calibrations 
+    // These MUST be commented out in production code and only run in lab
+    // These should be run in Debug mode though the process should be automatic if you've set up correctly     
+    // DO_cal();
+    // Temperature_cal();
     
     // Test level sensor
     test_t t_level_sensor = level_sensor_test();  

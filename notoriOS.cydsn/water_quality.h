@@ -15,6 +15,10 @@ test_t wq_sensor_test();
 
 wq_sensors_t wq_take_reading();
 
+// sensor calibration scripts
+uint8 DO_cal();
+uint8 Temperature_cal();
+
 float32 float_find_median(float32 array[] , uint8 n);
 
 // function to sort the elements in the level readings array
