@@ -13,8 +13,6 @@
 #include "modem.h"
 #include "data.h"
 #include "influx.h"
-//#include "diss_oxy.h"
-//#include "temperature.h"
 #include "water_quality.h"
 #include "commit.h"
 #include <math.h>       // designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 

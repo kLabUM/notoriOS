@@ -16,7 +16,6 @@ CY_ISR(WQ_ISR){
         wq_received_string[wq_string_index] = WQ_UART_GetChar();
         //printNotif(NOTIF_TYPE_EVENT, "received char: %c", rx);
         wq_string_index ++;
-
     }
 
 }
@@ -30,14 +29,11 @@ void wq_uart_clear(void) {
   // n is the number of bytes to be set to the value.
   memset((void*)wq_received_string, 0, 1023);
   wq_string_index = 0;
+
 }
 
 // get everything ready to communicate
 void wq_start_talking(){
-    // I think the below two lines are not necessary for digital multiplexers, just analog
-    //RXmux_Start();       // Start the Digital Multiplexer
-    //TXmux_Start();       // Start the Digital Multiplexer
-    
     WQ_UART_Start();
     
     // sensor specific calls
@@ -91,9 +87,7 @@ wq_sensors_t wq_take_reading(){
         CyDelay(1000u);
         WQ_UART_PutString("*OK,0\r");
 
-
     }
-    // CyDelay(2000u);
 
     wq_uart_clear(); // get rid of anything we've received so far
     // now let's take some readings
@@ -145,7 +139,6 @@ wq_sensors_t wq_take_reading(){
         rx_mux_controller_Write(channel);
         tx_mux_controller_Write(channel); // talking and listening on the same channel
         WQ_UART_PutString("*OK,1\r");
-
     }
     */
     
@@ -166,7 +159,7 @@ test_t wq_sensor_test(){
     // I don't think the way the tests fail is ideal, 
     // can't tell if temperature is working or not if DO fails currently
     
-    if (results.do_reading < 0.01){
+    if ((results.do_reading < 0.01)||(results.do_reading > 100.0)){ // this is the sensor's output range, there is no error code in UART
         test.status = 0;
         // test reason  
         snprintf(test.reason,sizeof(test.reason), 
@@ -180,8 +173,7 @@ test_t wq_sensor_test(){
         return test;
     }
     
-    if (results.temp_reading > 150){ // not sure what the error reading actually is
-        // this cutoff threshold needs to be changed to reflect the documenation of the sensor
+    if ((results.temp_reading < -55.0)||(results.temp_reading > 125.0)){ // this is the sensor's output range, there is no error code in UART
         test.status = 0;
         // test reason  
         snprintf(test.reason,sizeof(test.reason), 
@@ -210,7 +202,6 @@ test_t wq_sensor_test(){
     for (uint i = 0; i < 300; i++){
         excerpt[i] = wq_received_string[i];  
     }
-    
 
     return test;
     
@@ -223,7 +214,6 @@ test_t wq_sensor_test(){
 uint8 DO_cal(){
     wq_uart_clear(); // forget what you think you know
     char excerpt[300]; // for debugging
-    
     
     for (int i = 0; i < 2; i++){
         wq_sensors_t readings = wq_take_reading();
@@ -245,10 +235,8 @@ uint8 DO_cal(){
             tx_mux_controller_Write(0); // talking and listening on the same channel
         
             
-            //DO_UART_PutString("*OK,1\r"); // are you hearing me?
-            // 
-            CyDelay(1000u); 
-            //
+            //DO_UART_PutString("*OK,1\r"); // are you hearing me? (for debugging)
+            CyDelay(1000u);
             WQ_UART_PutString("C,0\r"); // turn off automated sampling
             CyDelay(1000u); 
             WQ_UART_PutString("Cal,clear\r"); // clear existing calibration data
@@ -277,7 +265,8 @@ uint8 DO_cal(){
     }
 
     printNotif(NOTIF_TYPE_ERROR, "DO readings failed to converge");
-    return 0;   
+    return 0;  
+    
 }
 
 // ref: https://atlas-scientific.com/kits/pt-1000-temperature-kit/
@@ -286,7 +275,6 @@ uint8 DO_cal(){
 uint8 Temperature_cal(){
     wq_uart_clear(); // forget what you think you know
     char excerpt[300]; // for debugging
-    
     
     for (int i = 0; i < 2; i++){
         wq_sensors_t readings = wq_take_reading();
@@ -320,8 +308,6 @@ uint8 Temperature_cal(){
             return 1;
             
         }
-        
-
     
     }
     wq_sensors_t readings = wq_take_reading();
@@ -369,6 +355,3 @@ void fswap(float32 *p,float32 *q) {
    *p=*q; 
    *q=t;
 }
-
-
-
