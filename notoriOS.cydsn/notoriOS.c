@@ -630,57 +630,35 @@ uint8 makeMeasurements(){
     
         // If node type is dissolved oxygen, take DO measuremetns
     if(updatable_parameters.node_type == NODE_TYPE_WQ){
+       
+        // wq_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+        wq_sensors_t m_wq_sensors;
         
+        // Take readings from the wq sensors and save them to m_wq_sensors
+        m_wq_sensors = wq_take_reading();
         
-        
-        
-        
-        /* old way below
-        // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
-        DO_sensor_t m_DO_sensor;
-        Temperature_sensor_t m_TEMP_sensor;
-        
-        // Take level sensor readings and save them to m_level_sensor
-        m_DO_sensor = DO_read();
-        m_TEMP_sensor = Temperature_read();
-        
-        // TODO: data validity check for DO readings
-        // for now
-        bool DO_valid = 1;
-        bool TEMP_valid = 1;
-        
-        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
-        if(DO_valid){
-            snprintf(value,sizeof(value),"%f",m_DO_sensor.do_reading);
-            printNotif(NOTIF_TYPE_EVENT,"pushed: dissolved_oxygen_mg_L=%s",value);
-            pushData("dissolved_oxygen_mg_L",value,timeStamp);
+        // Print the wq sensor readings and push the data to the data wheel
+        snprintf(value,sizeof(value),"%f",m_wq_sensors.do_reading);
+        printNotif(NOTIF_TYPE_EVENT,"pushed: dissolved_oxygen_mg_L=%s",value);
+        pushData("dissolved_oxygen_mg_L",value,timeStamp);
             
-            // Print measurement to SD card to file called data.txt
-            SD_write(Data_fileName, "a+", c_timeStamp);
-            SD_write(Data_fileName, "a+", " dissolved_oxygen_mg_L: ");
-            SD_write(Data_fileName, "a+", value);
-            SD_write(Data_fileName, "a+", " ");
-        }else{
-            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from DO sensor.");
-            //pushData("maxbotix_depth","error",timeStamp);
-        }
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " dissolved_oxygen_mg_L: ");
+        SD_write(Data_fileName, "a+", value);
+        SD_write(Data_fileName, "a+", " ");
         
-        
-        if(TEMP_valid){
-            snprintf(value,sizeof(value),"%f",m_TEMP_sensor.temp_reading);
-            printNotif(NOTIF_TYPE_EVENT,"pushed: temperature_C=%s",value);
-            pushData("temperature_C",value,timeStamp);
+   
+        snprintf(value,sizeof(value),"%f",m_wq_sensors.temp_reading);
+        printNotif(NOTIF_TYPE_EVENT,"pushed: temperature_C=%s",value);
+        pushData("temperature_C",value,timeStamp);
             
-            // Print measurement to SD card to file called data.txt
-            SD_write(Data_fileName, "a+", c_timeStamp);
-            SD_write(Data_fileName, "a+", " temperature_C: ");
-            SD_write(Data_fileName, "a+", value);
-            SD_write(Data_fileName, "a+", " ");
-        }else{
-            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from temperature sensor.");
-            //pushData("maxbotix_depth","error",timeStamp);
-        }   
-        */
+        // Print measurement to SD card to file called data.txt
+         SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " temperature_C: ");
+        SD_write(Data_fileName, "a+", value);
+        SD_write(Data_fileName, "a+", " ");
+   
     }
     
     return 0u;
