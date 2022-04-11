@@ -654,11 +654,10 @@ uint8 makeMeasurements(){
         pushData("temperature_C",value,timeStamp);
             
         // Print measurement to SD card to file called data.txt
-         SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", c_timeStamp);
         SD_write(Data_fileName, "a+", " temperature_C: ");
         SD_write(Data_fileName, "a+", value);
-        SD_write(Data_fileName, "a+", " ");
-   
+        SD_write(Data_fileName, "a+", " "); 
     }
     
     return 0u;
