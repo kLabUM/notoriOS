@@ -42,7 +42,7 @@ void wq_start_talking(){
     
     WQ_UART_ClearRxBuffer();
     WQ_ISR_StartEx(WQ_ISR);
-    Power_VDD1_Write(ON); // Pulls pwr pin high (turns it on).
+    Water_Quality_Power_Write(ON); // Pulls pwr pin high (turns it on).
     CyDelay(1000u); // reset sequence
 
 }
@@ -50,7 +50,7 @@ void wq_start_talking(){
 // pull everything low to stop power leaks
 void wq_stop_talking(){
 
-    Power_VDD1_Write(OFF);
+    Water_Quality_Power_Write(OFF);
     WQ_UART_Stop();
     
     // sensor specific calls
@@ -60,6 +60,7 @@ void wq_stop_talking(){
     TEMP_RX_Write(OFF);
     DO_TX_Write(OFF);
     TEMP_TX_Write(OFF);
+    Water_Quality_Power_Write(OFF); // Pulls pwr pin high (turns it on).
     
     WQ_ISR_Stop();
 
