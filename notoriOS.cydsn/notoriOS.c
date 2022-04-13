@@ -263,6 +263,16 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     test_t t_level_sensor = level_sensor_test();  
     printTestStatus(t_level_sensor);
     
+    // Test water quality sensors
+    test_t t_wq_sensors = wq_sensor_test();
+    printTestStatus(t_wq_sensors);
+    
+    // Water Quality Calibrations 
+    // These MUST be commented out in production code and only run in lab
+    // These should be run in Debug mode though the process should be automatic if you've set up correctly     
+    // DO_cal();
+    // Temperature_cal();
+    
     // Test voltages
     test_t t_voltages = voltages_test();
     printTestStatus(t_voltages);
@@ -614,6 +624,38 @@ uint8 makeMeasurements(){
         }    
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
+    }
+    
+    // If node type is dissolved oxygen, take DO measuremetns
+    if(updatable_parameters.node_type == NODE_TYPE_WQ){
+       
+        // wq_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+        wq_sensors_t m_wq_sensors;
+        
+        // Take readings from the wq sensors and save them to m_wq_sensors
+        m_wq_sensors = wq_take_reading();
+        
+        // Print the wq sensor readings and push the data to the data wheel
+        snprintf(value,sizeof(value),"%f",m_wq_sensors.do_reading);
+        printNotif(NOTIF_TYPE_EVENT,"pushed: dissolved_oxygen_mg_L=%s",value);
+        pushData("dissolved_oxygen_mg_L",value,timeStamp);
+            
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " dissolved_oxygen_mg_L: ");
+        SD_write(Data_fileName, "a+", value);
+        SD_write(Data_fileName, "a+", " ");
+        
+   
+        snprintf(value,sizeof(value),"%f",m_wq_sensors.temp_reading);
+        printNotif(NOTIF_TYPE_EVENT,"pushed: temperature_C=%s",value);
+        pushData("temperature_C",value,timeStamp);
+            
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " temperature_C: ");
+        SD_write(Data_fileName, "a+", value);
+        SD_write(Data_fileName, "a+", " "); 
     }
     
     return 0u;
