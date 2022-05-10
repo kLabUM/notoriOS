@@ -4,7 +4,6 @@
 char wq_received_string[1024];
 int16 wq_string_index = 0;
 
-CY_ISR_PROTO(WQ_ISR); // Declares a custom ISR function "isr_telit_rx" using the CY_ISR_PROTO macro instead of modifying the auto-generated code
 
 // Define the custom ISR function "isr_telit_rx" using the CY_ISR macro
 // Get each character from Telit and saves it to uart_received_string
@@ -34,11 +33,18 @@ void wq_uart_clear(void) {
 
 // get everything ready to communicate
 void wq_start_talking(){
+    
+    rx_mux_controller_Write(1u);
+    tx_mux_controller_Write(1u); 
+    rx_mux_controller_Wakeup();
+    tx_mux_controller_Wakeup();
+    
     WQ_UART_Start();
     
     // sensor specific calls
     DO_RX_SetDriveMode(PIN_DM_DIG_HIZ); // RX_SetDriveMode(): Sets the drive mode for each of the Pins component's pins. PIN_DM_DIG_HIZ: High Impedance Digital.
     TEMP_RX_SetDriveMode(PIN_DM_DIG_HIZ); // RX_SetDriveMode(): Sets the drive mode for each of the Pins component's pins. PIN_DM_DIG_HIZ: High Impedance Digital.
+    
     
     WQ_UART_ClearRxBuffer();
     WQ_ISR_StartEx(WQ_ISR);
@@ -50,20 +56,26 @@ void wq_start_talking(){
 // pull everything low to stop power leaks
 void wq_stop_talking(){
 
+    Water_Quality_Power_SetDriveMode(PIN_DM_STRONG); // to die
     Water_Quality_Power_Write(OFF);
     WQ_UART_Stop();
+    WQ_ISR_Stop();
     
     // sensor specific calls
     DO_RX_SetDriveMode(PIN_DM_STRONG); // to die
     TEMP_RX_SetDriveMode(PIN_DM_STRONG); // to die
-    DO_RX_Write(OFF);
+    DO_RX_Write(OFF); 
     TEMP_RX_Write(OFF);
+    DO_TX_SetDriveMode(PIN_DM_STRONG); // to die
+    TEMP_TX_SetDriveMode(PIN_DM_STRONG); // to die
     DO_TX_Write(OFF);
-    TEMP_TX_Write(OFF);
-    Water_Quality_Power_Write(OFF); // Pulls pwr pin high (turns it on).
+    TEMP_TX_Write(OFF); 
     
-    WQ_ISR_Stop();
+    rx_mux_controller_Sleep();
+    tx_mux_controller_Sleep();
 
+    rx_mux_controller_Write(0u);
+    tx_mux_controller_Write(0u); // kill
 }
 
 wq_sensors_t wq_take_reading(){
@@ -72,9 +84,6 @@ wq_sensors_t wq_take_reading(){
     wq_sensors_t output;
     
     wq_start_talking();
-    
-    rx_mux_controller_Wakeup();
-    tx_mux_controller_Wakeup();
     
     // first, everyone shut up
     for (uint8 channel = 0; channel < N_params; channel++){
@@ -127,9 +136,6 @@ wq_sensors_t wq_take_reading(){
         // TODO: check this and throw an error if not
         
     }
-    
-    rx_mux_controller_Sleep();
-    tx_mux_controller_Sleep();
    
     output.do_reading = float_find_median(output.all_do_readings, 11);
     output.temp_reading = float_find_median(output.all_temp_readings, 11);

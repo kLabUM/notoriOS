@@ -1,3 +1,3 @@
-# Component constraints for C:\Users\klabu\Desktop\BrookeResearch\notoriOS\notoriOS.cydsn\TopDesign\TopDesign.cysch
-# Project: C:\Users\klabu\Desktop\BrookeResearch\notoriOS\notoriOS.cydsn\notoriOS.cyprj
-# Date: Wed, 13 Apr 2022 15:18:49 GMT
+# Component constraints for C:\Users\jniej\OneDrive\Documents\GitHub\notoriOS\notoriOS.cydsn\TopDesign\TopDesign.cysch
+# Project: C:\Users\jniej\OneDrive\Documents\GitHub\notoriOS\notoriOS.cydsn\notoriOS.cyprj
+# Date: Tue, 10 May 2022 18:06:21 GMT

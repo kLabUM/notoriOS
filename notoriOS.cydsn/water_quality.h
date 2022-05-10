@@ -24,6 +24,9 @@ float32 float_find_median(float32 array[] , uint8 n);
 // function to sort the elements in the level readings array
 void fsort(float32 a[],uint8 n);
 
+CY_ISR_PROTO(WQ_ISR); // Declares a custom ISR function "isr_telit_rx" using the CY_ISR_PROTO macro instead of modifying the auto-generated code
+
+
 // function to swap elements in the level readings array in order to sort them
 void fswap(float32 *p,float32 *q);
 
