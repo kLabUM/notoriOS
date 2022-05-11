@@ -159,31 +159,31 @@ CYPACKED typedef struct
 #define cy_cfg_data_table ((const cy_cfg_addrvalue_t CYFAR *)0x48000098u)
 
 /* UDB_1_5_0_CONFIG Address: CYDEV_UCFG_B0_P0_U0_BASE Size (bytes): 128 */
-#define BS_UDB_1_5_0_CONFIG_VAL ((const uint8 CYFAR *)0x48000AE4u)
+#define BS_UDB_1_5_0_CONFIG_VAL ((const uint8 CYFAR *)0x48000AF0u)
 
 /* UDB_0_3_1_CONFIG Address: CYDEV_UCFG_B0_P5_U1_BASE Size (bytes): 128 */
-#define BS_UDB_0_3_1_CONFIG_VAL ((const uint8 CYFAR *)0x48000B64u)
+#define BS_UDB_0_3_1_CONFIG_VAL ((const uint8 CYFAR *)0x48000B70u)
 
 /* UDB_1_0_1_CONFIG Address: CYDEV_UCFG_B1_P2_U1_BASE Size (bytes): 128 */
-#define BS_UDB_1_0_1_CONFIG_VAL ((const uint8 CYFAR *)0x48000BE4u)
+#define BS_UDB_1_0_1_CONFIG_VAL ((const uint8 CYFAR *)0x48000BF0u)
 
 /* IOPINS0_0 Address: CYREG_PRT0_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_0_VAL ((const uint8 CYFAR *)0x48000C64u)
+#define BS_IOPINS0_0_VAL ((const uint8 CYFAR *)0x48000C70u)
 
 /* IOPINS0_7 Address: CYREG_PRT12_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_7_VAL ((const uint8 CYFAR *)0x48000C6Cu)
+#define BS_IOPINS0_7_VAL ((const uint8 CYFAR *)0x48000C78u)
 
 /* IOPINS0_8 Address: CYREG_PRT15_DR Size (bytes): 10 */
-#define BS_IOPINS0_8_VAL ((const uint8 CYFAR *)0x48000C74u)
+#define BS_IOPINS0_8_VAL ((const uint8 CYFAR *)0x48000C80u)
 
 /* IOPINS0_2 Address: CYREG_PRT2_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_2_VAL ((const uint8 CYFAR *)0x48000C80u)
+#define BS_IOPINS0_2_VAL ((const uint8 CYFAR *)0x48000C8Cu)
 
 /* IOPINS0_3 Address: CYREG_PRT3_DM0 Size (bytes): 8 */
-#define BS_IOPINS0_3_VAL ((const uint8 CYFAR *)0x48000C88u)
+#define BS_IOPINS0_3_VAL ((const uint8 CYFAR *)0x48000C94u)
 
 /* CYDEV_CLKDIST_ACFG0_CFG0 Address: CYREG_CLKDIST_ACFG0_CFG0 Size (bytes): 4 */
-#define BS_CYDEV_CLKDIST_ACFG0_CFG0_VAL ((const uint8 CYFAR *)0x48000C90u)
+#define BS_CYDEV_CLKDIST_ACFG0_CFG0_VAL ((const uint8 CYFAR *)0x48000C9Cu)
 
 
 /*******************************************************************************
