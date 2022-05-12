@@ -197,7 +197,7 @@ test_t wq_sensor_test(){
     }
 
     // for now, getting something besides zeros is valid
-    test.status = 1; // set test status to zero
+    test.status = 1; 
     snprintf(test.test_name,sizeof(test.test_name),"TEST_wq_SENSOR");
    
     
