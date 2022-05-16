@@ -6,6 +6,11 @@
 
 test_t valve_test(){
 
+        // Test  downstreamlevel sensor
+    test_t t_level_sensor = downstream_level_sensor_test();  
+    printTestStatus(t_level_sensor);
+    
+    
     // activate 12V battery
     Pressure_Voltage_Enable_Write(ON);
 
@@ -191,3 +196,27 @@ void valve_level_controller(int16 level_reading){
         move_valve(1);
     }
 }
+
+float32 calculate_discharge(){
+    level_sensor_t downstream_level = downstream_level_sensor_take_reading();
+    level_sensor_t upstream_level = level_sensor_take_reading();
+    
+    // divide by 1000 to convert from mm to m
+    float32 differential_head = (downstream_level.level_reading - upstream_level.level_reading)/1000;
+    // the cones measure distance to water, so there's a sign reversal
+    
+    // the area of the orifice of the valve should probably come down from malcom
+    // as should the discharge coefficient C_d 
+    // because these are both properties of the site / valve we're deployed at
+    // for now just make up some values
+    float32 area = 2;
+    float32 C_d = 0.4;
+    
+    
+    float32 gravity = 9.81; // m/s^2
+    float32 discharge = C_d*area*sqrt(2*gravity*differential_head);
+    return discharge;
+    
+    
+}
+

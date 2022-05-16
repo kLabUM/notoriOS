@@ -667,6 +667,41 @@ uint8 makeMeasurements(){
         SD_write(Data_fileName, "a+", value);
         SD_write(Data_fileName, "a+", " ");
         
+        
+        
+        // downstream level sensing
+                // Take level sensor readings and save them to m_level_sensor
+        level_sensor_t downstream_level_sensor = downstream_level_sensor_take_reading();
+    
+        // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+        if(downstream_level_sensor.num_valid_readings > 0){
+            snprintf(value,sizeof(value),"%d",downstream_level_sensor.level_reading);
+            printNotif(NOTIF_TYPE_EVENT,"downstream_maxbotix_depth=%s",value);
+            pushData("downstream_maxbotix_depth",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " maxbotix_depth: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
+            //pushData("maxbotix_depth","error",timeStamp);
+        }
+        
+        // discharge estimate
+        float32 discharge_estimate = calculate_discharge();
+        snprintf(value,sizeof(value),"%f",discharge_estimate);
+        printNotif(NOTIF_TYPE_EVENT,"estimated_discharge=%s",value);
+        pushData("estimated_discharge",value,timeStamp);
+        
+        // Print measurement to SD card to file called data.txt
+        SD_write(Data_fileName, "a+", c_timeStamp);
+        SD_write(Data_fileName, "a+", " maxbotix_depth: ");
+        SD_write(Data_fileName, "a+", value);
+        SD_write(Data_fileName, "a+", " ");
+        
+        
     }
     
     return 0u;

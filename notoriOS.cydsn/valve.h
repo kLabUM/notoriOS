@@ -7,6 +7,7 @@
 
 #include <project.h>
 #include "testing.h"
+#include "downstream_level_sensor.h"
 
 // TODO:
 // define valve_t struct
@@ -31,3 +32,7 @@ uint8 move_valve(float32 position_desired);
 
 // fallback control strategy for when cell modem goes dark
 void valve_level_controller(int16 level_reading);
+
+float32 calculate_discharge();
+
+
