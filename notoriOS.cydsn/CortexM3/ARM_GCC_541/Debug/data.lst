@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 1
 
 
    1              		.syntax unified
@@ -32,41 +32,44 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 1
   29              		.comm	dataPointsInStack,2,2
   30              		.comm	dataPointsInStackDesired,2,2
   31              		.comm	data,6600,4
-  32              		.comm	http_request,10000,4
-  33              		.comm	http_body,10000,4
-  34              		.comm	http_route,200,4
-  35              		.comm	system_info,28,4
-  36              		.comm	system_settings,104,4
-  37              		.comm	alarmMeasure,6,4
-  38              		.comm	timeToMeasure,1,1
-  39              		.comm	alarmSync,6,4
-  40              		.comm	timeToSync,1,1
-  41              		.comm	timeToSycnRemoteParams,1,1
-  42              		.comm	hey,1,1
-  43              		.section	.rodata
-  44              		.align	2
-  45              	.LC0:
-  46 0000 257300   		.ascii	"%s\000"
-  47 0003 00       		.align	2
-  48              	.LC1:
-  49 0004 44617461 		.ascii	"Data stack full. Begin overwrite of circular buffer"
-  49      20737461 
-  49      636B2066 
-  49      756C6C2E 
-  49      20426567 
-  50 0037 2E00     		.ascii	".\000"
-  51              		.section	.text.pushData,"ax",%progbits
-  52              		.align	2
-  53              		.global	pushData
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 2
+  32              		.comm	inbox,100,4
+  33              		.comm	http_request,10000,4
+  34              		.comm	http_body,10000,4
+  35              		.comm	http_route,200,4
+  36              		.comm	system_info,28,4
+  37              		.comm	system_settings,104,4
+  38              		.comm	alarmMeasure,6,4
+  39              		.comm	timeToMeasure,1,1
+  40              		.comm	alarmSync,6,4
+  41              		.comm	timeToSync,1,1
+  42              		.comm	timeToSycnRemoteParams,1,1
+  43              		.comm	hey,1,1
+  44              		.comm	alarmAppLED,6,4
+  45              		.comm	timeToAppLED,1,1
+  46              		.section	.rodata
+  47              		.align	2
+  48              	.LC0:
+  49 0000 257300   		.ascii	"%s\000"
+  50 0003 00       		.align	2
+  51              	.LC1:
+  52 0004 44617461 		.ascii	"Data stack full. Begin overwrite of circular buffer"
+  52      20737461 
+  52      636B2066 
+  52      756C6C2E 
+  52      20426567 
+  53 0037 2E00     		.ascii	".\000"
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 2
 
 
-  54              		.thumb
-  55              		.thumb_func
-  56              		.type	pushData, %function
-  57              	pushData:
-  58              	.LFB64:
-  59              		.file 1 "data.c"
+  54              		.section	.text.pushData,"ax",%progbits
+  55              		.align	2
+  56              		.global	pushData
+  57              		.thumb
+  58              		.thumb_func
+  59              		.type	pushData, %function
+  60              	pushData:
+  61              	.LFB64:
+  62              		.file 1 "data.c"
    1:data.c        **** // ==============================================
    2:data.c        **** //  I got stacks on stacks (on stacks)
    3:data.c        **** //      - Soulja Boy (2011)
@@ -84,83 +87,83 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 1
   15:data.c        **** // This pushes data onto the stack
   16:data.c        **** // ==============================================
   17:data.c        **** uint8 pushData(char * key, char *value, int32 timestamp){
-  60              		.loc 1 17 0
-  61              		.cfi_startproc
-  62              		@ args = 0, pretend = 0, frame = 16
-  63              		@ frame_needed = 1, uses_anonymous_args = 0
-  64 0000 80B5     		push	{r7, lr}
-  65              		.cfi_def_cfa_offset 8
-  66              		.cfi_offset 7, -8
-  67              		.cfi_offset 14, -4
-  68 0002 84B0     		sub	sp, sp, #16
-  69              		.cfi_def_cfa_offset 24
-  70 0004 00AF     		add	r7, sp, #0
-  71              		.cfi_def_cfa_register 7
-  72 0006 F860     		str	r0, [r7, #12]
-  73 0008 B960     		str	r1, [r7, #8]
-  74 000a 7A60     		str	r2, [r7, #4]
+  63              		.loc 1 17 0
+  64              		.cfi_startproc
+  65              		@ args = 0, pretend = 0, frame = 16
+  66              		@ frame_needed = 1, uses_anonymous_args = 0
+  67 0000 80B5     		push	{r7, lr}
+  68              		.cfi_def_cfa_offset 8
+  69              		.cfi_offset 7, -8
+  70              		.cfi_offset 14, -4
+  71 0002 84B0     		sub	sp, sp, #16
+  72              		.cfi_def_cfa_offset 24
+  73 0004 00AF     		add	r7, sp, #0
+  74              		.cfi_def_cfa_register 7
+  75 0006 F860     		str	r0, [r7, #12]
+  76 0008 B960     		str	r1, [r7, #8]
+  77 000a 7A60     		str	r2, [r7, #4]
   18:data.c        ****     // Print data key, value and timestamp
   19:data.c        ****     snprintf(data[dataPointsInStack].key,sizeof(data[dataPointsInStack].key), "%s", key);
-  75              		.loc 1 19 0
-  76 000c 234B     		ldr	r3, .L4
-  77 000e 1B88     		ldrh	r3, [r3]
-  78 0010 1A46     		mov	r2, r3
-  79 0012 2C23     		movs	r3, #44
-  80 0014 03FB02F3 		mul	r3, r3, r2
-  81 0018 214A     		ldr	r2, .L4+4
-  82 001a 9818     		adds	r0, r3, r2
-  83 001c FB68     		ldr	r3, [r7, #12]
-  84 001e 214A     		ldr	r2, .L4+8
-  85 0020 1421     		movs	r1, #20
-  86 0022 FFF7FEFF 		bl	snprintf
+  78              		.loc 1 19 0
+  79 000c 234B     		ldr	r3, .L4
+  80 000e 1B88     		ldrh	r3, [r3]
+  81 0010 1A46     		mov	r2, r3
+  82 0012 2C23     		movs	r3, #44
+  83 0014 03FB02F3 		mul	r3, r3, r2
+  84 0018 214A     		ldr	r2, .L4+4
+  85 001a 9818     		adds	r0, r3, r2
+  86 001c FB68     		ldr	r3, [r7, #12]
+  87 001e 214A     		ldr	r2, .L4+8
+  88 0020 1421     		movs	r1, #20
+  89 0022 FFF7FEFF 		bl	snprintf
   20:data.c        ****     snprintf(data[dataPointsInStack].value,sizeof(data[dataPointsInStack].value), "%s", value);
-  87              		.loc 1 20 0
-  88 0026 1D4B     		ldr	r3, .L4
-  89 0028 1B88     		ldrh	r3, [r3]
-  90 002a 1A46     		mov	r2, r3
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 3
+  90              		.loc 1 20 0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 3
 
 
-  91 002c 2C23     		movs	r3, #44
-  92 002e 03FB02F3 		mul	r3, r3, r2
-  93 0032 1033     		adds	r3, r3, #16
-  94 0034 1A4A     		ldr	r2, .L4+4
-  95 0036 1344     		add	r3, r3, r2
-  96 0038 181D     		adds	r0, r3, #4
-  97 003a BB68     		ldr	r3, [r7, #8]
-  98 003c 194A     		ldr	r2, .L4+8
-  99 003e 1421     		movs	r1, #20
- 100 0040 FFF7FEFF 		bl	snprintf
+  91 0026 1D4B     		ldr	r3, .L4
+  92 0028 1B88     		ldrh	r3, [r3]
+  93 002a 1A46     		mov	r2, r3
+  94 002c 2C23     		movs	r3, #44
+  95 002e 03FB02F3 		mul	r3, r3, r2
+  96 0032 1033     		adds	r3, r3, #16
+  97 0034 1A4A     		ldr	r2, .L4+4
+  98 0036 1344     		add	r3, r3, r2
+  99 0038 181D     		adds	r0, r3, #4
+ 100 003a BB68     		ldr	r3, [r7, #8]
+ 101 003c 194A     		ldr	r2, .L4+8
+ 102 003e 1421     		movs	r1, #20
+ 103 0040 FFF7FEFF 		bl	snprintf
   21:data.c        ****     data[dataPointsInStack].timeStamp = timestamp;
- 101              		.loc 1 21 0
- 102 0044 154B     		ldr	r3, .L4
- 103 0046 1B88     		ldrh	r3, [r3]
- 104 0048 1946     		mov	r1, r3
- 105 004a 154A     		ldr	r2, .L4+4
- 106 004c 2C23     		movs	r3, #44
- 107 004e 03FB01F3 		mul	r3, r3, r1
- 108 0052 1344     		add	r3, r3, r2
- 109 0054 2833     		adds	r3, r3, #40
- 110 0056 7A68     		ldr	r2, [r7, #4]
- 111 0058 1A60     		str	r2, [r3]
+ 104              		.loc 1 21 0
+ 105 0044 154B     		ldr	r3, .L4
+ 106 0046 1B88     		ldrh	r3, [r3]
+ 107 0048 1946     		mov	r1, r3
+ 108 004a 154A     		ldr	r2, .L4+4
+ 109 004c 2C23     		movs	r3, #44
+ 110 004e 03FB01F3 		mul	r3, r3, r1
+ 111 0052 1344     		add	r3, r3, r2
+ 112 0054 2833     		adds	r3, r3, #40
+ 113 0056 7A68     		ldr	r2, [r7, #4]
+ 114 0058 1A60     		str	r2, [r3]
   22:data.c        ****     
   23:data.c        ****     // Track the number of actual (dataPointsInStack) and desired (dataPointsInStackPointer) data p
   24:data.c        ****     dataPointsInStack++;
- 112              		.loc 1 24 0
- 113 005a 104B     		ldr	r3, .L4
- 114 005c 1B88     		ldrh	r3, [r3]
- 115 005e 0133     		adds	r3, r3, #1
- 116 0060 9AB2     		uxth	r2, r3
- 117 0062 0E4B     		ldr	r3, .L4
- 118 0064 1A80     		strh	r2, [r3]	@ movhi
+ 115              		.loc 1 24 0
+ 116 005a 104B     		ldr	r3, .L4
+ 117 005c 1B88     		ldrh	r3, [r3]
+ 118 005e 0133     		adds	r3, r3, #1
+ 119 0060 9AB2     		uxth	r2, r3
+ 120 0062 0E4B     		ldr	r3, .L4
+ 121 0064 1A80     		strh	r2, [r3]	@ movhi
   25:data.c        ****     dataPointsInStackDesired++;
- 119              		.loc 1 25 0
- 120 0066 104B     		ldr	r3, .L4+12
- 121 0068 1B88     		ldrh	r3, [r3]
- 122 006a 0133     		adds	r3, r3, #1
- 123 006c 9AB2     		uxth	r2, r3
- 124 006e 0E4B     		ldr	r3, .L4+12
- 125 0070 1A80     		strh	r2, [r3]	@ movhi
+ 122              		.loc 1 25 0
+ 123 0066 104B     		ldr	r3, .L4+12
+ 124 0068 1B88     		ldrh	r3, [r3]
+ 125 006a 0133     		adds	r3, r3, #1
+ 126 006c 9AB2     		uxth	r2, r3
+ 127 006e 0E4B     		ldr	r3, .L4+12
+ 128 0070 1A80     		strh	r2, [r3]	@ movhi
   26:data.c        ****     
   27:data.c        ****     // Circular buffer
   28:data.c        ****     // If stack is full, loop around and rewrite over the first point.
@@ -168,2633 +171,2668 @@ ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 1
   30:data.c        ****     // Both reset to zero once buffer is flushed ( see Clear_Data_Stack() ).
   31:data.c        ****     
   32:data.c        ****     if(dataPointsInStack >= DATA_MAX_VALUES){    
- 126              		.loc 1 32 0
- 127 0072 0A4B     		ldr	r3, .L4
- 128 0074 1B88     		ldrh	r3, [r3]
- 129 0076 952B     		cmp	r3, #149
- 130 0078 0BD9     		bls	.L2
+ 129              		.loc 1 32 0
+ 130 0072 0A4B     		ldr	r3, .L4
+ 131 0074 1B88     		ldrh	r3, [r3]
+ 132 0076 952B     		cmp	r3, #149
+ 133 0078 0BD9     		bls	.L2
   33:data.c        ****         dataPointsInStack = 0;
- 131              		.loc 1 33 0
- 132 007a 084B     		ldr	r3, .L4
- 133 007c 0022     		movs	r2, #0
- 134 007e 1A80     		strh	r2, [r3]	@ movhi
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 4
+ 134              		.loc 1 33 0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 4
 
 
+ 135 007a 084B     		ldr	r3, .L4
+ 136 007c 0022     		movs	r2, #0
+ 137 007e 1A80     		strh	r2, [r3]	@ movhi
   34:data.c        ****         buffer_overflow = true;
- 135              		.loc 1 34 0
- 136 0080 0A4B     		ldr	r3, .L4+16
- 137 0082 0122     		movs	r2, #1
- 138 0084 1A70     		strb	r2, [r3]
+ 138              		.loc 1 34 0
+ 139 0080 0A4B     		ldr	r3, .L4+16
+ 140 0082 0122     		movs	r2, #1
+ 141 0084 1A70     		strb	r2, [r3]
   35:data.c        ****         printNotif(NOTIF_TYPE_ERROR,"Data stack full. Begin overwrite of circular buffer.");
- 139              		.loc 1 35 0
- 140 0086 0A49     		ldr	r1, .L4+20
- 141 0088 0220     		movs	r0, #2
- 142 008a FFF7FEFF 		bl	printNotif
+ 142              		.loc 1 35 0
+ 143 0086 0A49     		ldr	r1, .L4+20
+ 144 0088 0220     		movs	r0, #2
+ 145 008a FFF7FEFF 		bl	printNotif
   36:data.c        ****         return 0; // If stack full, and points need to be deleted, return 0 
- 143              		.loc 1 36 0
- 144 008e 0023     		movs	r3, #0
- 145 0090 00E0     		b	.L3
- 146              	.L2:
+ 146              		.loc 1 36 0
+ 147 008e 0023     		movs	r3, #0
+ 148 0090 00E0     		b	.L3
+ 149              	.L2:
   37:data.c        ****     }
   38:data.c        ****     
   39:data.c        ****     return 1; // If data pushed succesfully, return 1
- 147              		.loc 1 39 0
- 148 0092 0123     		movs	r3, #1
- 149              	.L3:
+ 150              		.loc 1 39 0
+ 151 0092 0123     		movs	r3, #1
+ 152              	.L3:
   40:data.c        ****     
   41:data.c        **** }
- 150              		.loc 1 41 0
- 151 0094 1846     		mov	r0, r3
- 152 0096 1037     		adds	r7, r7, #16
- 153              		.cfi_def_cfa_offset 8
- 154 0098 BD46     		mov	sp, r7
- 155              		.cfi_def_cfa_register 13
- 156              		@ sp needed
- 157 009a 80BD     		pop	{r7, pc}
- 158              	.L5:
- 159              		.align	2
- 160              	.L4:
- 161 009c 00000000 		.word	dataPointsInStack
- 162 00a0 00000000 		.word	data
- 163 00a4 00000000 		.word	.LC0
- 164 00a8 00000000 		.word	dataPointsInStackDesired
- 165 00ac 00000000 		.word	buffer_overflow
- 166 00b0 04000000 		.word	.LC1
- 167              		.cfi_endproc
- 168              	.LFE64:
- 169              		.size	pushData, .-pushData
- 170              		.section	.text.Initialize_Data_Stack,"ax",%progbits
- 171              		.align	2
- 172              		.global	Initialize_Data_Stack
- 173              		.thumb
- 174              		.thumb_func
- 175              		.type	Initialize_Data_Stack, %function
- 176              	Initialize_Data_Stack:
- 177              	.LFB65:
+ 153              		.loc 1 41 0
+ 154 0094 1846     		mov	r0, r3
+ 155 0096 1037     		adds	r7, r7, #16
+ 156              		.cfi_def_cfa_offset 8
+ 157 0098 BD46     		mov	sp, r7
+ 158              		.cfi_def_cfa_register 13
+ 159              		@ sp needed
+ 160 009a 80BD     		pop	{r7, pc}
+ 161              	.L5:
+ 162              		.align	2
+ 163              	.L4:
+ 164 009c 00000000 		.word	dataPointsInStack
+ 165 00a0 00000000 		.word	data
+ 166 00a4 00000000 		.word	.LC0
+ 167 00a8 00000000 		.word	dataPointsInStackDesired
+ 168 00ac 00000000 		.word	buffer_overflow
+ 169 00b0 04000000 		.word	.LC1
+ 170              		.cfi_endproc
+ 171              	.LFE64:
+ 172              		.size	pushData, .-pushData
+ 173              		.section	.text.Initialize_Data_Stack,"ax",%progbits
+ 174              		.align	2
+ 175              		.global	Initialize_Data_Stack
+ 176              		.thumb
+ 177              		.thumb_func
+ 178              		.type	Initialize_Data_Stack, %function
+ 179              	Initialize_Data_Stack:
+ 180              	.LFB65:
   42:data.c        **** 
   43:data.c        **** // Initalize Data Stack -- sets counter and pointer to zero
   44:data.c        **** void Initialize_Data_Stack(){
- 178              		.loc 1 44 0
- 179              		.cfi_startproc
- 180              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 5
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 5
 
 
- 181              		@ frame_needed = 1, uses_anonymous_args = 0
- 182 0000 80B5     		push	{r7, lr}
- 183              		.cfi_def_cfa_offset 8
- 184              		.cfi_offset 7, -8
- 185              		.cfi_offset 14, -4
- 186 0002 00AF     		add	r7, sp, #0
- 187              		.cfi_def_cfa_register 7
+ 181              		.loc 1 44 0
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 0
+ 184              		@ frame_needed = 1, uses_anonymous_args = 0
+ 185 0000 80B5     		push	{r7, lr}
+ 186              		.cfi_def_cfa_offset 8
+ 187              		.cfi_offset 7, -8
+ 188              		.cfi_offset 14, -4
+ 189 0002 00AF     		add	r7, sp, #0
+ 190              		.cfi_def_cfa_register 7
   45:data.c        ****     Clear_Data_Stack(); // Clear out whatever data was in the stack.
- 188              		.loc 1 45 0
- 189 0004 FFF7FEFF 		bl	Clear_Data_Stack
+ 191              		.loc 1 45 0
+ 192 0004 FFF7FEFF 		bl	Clear_Data_Stack
   46:data.c        **** }
- 190              		.loc 1 46 0
- 191 0008 00BF     		nop
- 192 000a 80BD     		pop	{r7, pc}
- 193              		.cfi_endproc
- 194              	.LFE65:
- 195              		.size	Initialize_Data_Stack, .-Initialize_Data_Stack
- 196              		.section	.text.Clear_Data_Stack,"ax",%progbits
- 197              		.align	2
- 198              		.global	Clear_Data_Stack
- 199              		.thumb
- 200              		.thumb_func
- 201              		.type	Clear_Data_Stack, %function
- 202              	Clear_Data_Stack:
- 203              	.LFB66:
+ 193              		.loc 1 46 0
+ 194 0008 00BF     		nop
+ 195 000a 80BD     		pop	{r7, pc}
+ 196              		.cfi_endproc
+ 197              	.LFE65:
+ 198              		.size	Initialize_Data_Stack, .-Initialize_Data_Stack
+ 199              		.section	.text.Clear_Data_Stack,"ax",%progbits
+ 200              		.align	2
+ 201              		.global	Clear_Data_Stack
+ 202              		.thumb
+ 203              		.thumb_func
+ 204              		.type	Clear_Data_Stack, %function
+ 205              	Clear_Data_Stack:
+ 206              	.LFB66:
   47:data.c        **** 
   48:data.c        **** // Clear the data stack
   49:data.c        **** void Clear_Data_Stack(){
- 204              		.loc 1 49 0
- 205              		.cfi_startproc
- 206              		@ args = 0, pretend = 0, frame = 8
- 207              		@ frame_needed = 1, uses_anonymous_args = 0
- 208              		@ link register save eliminated.
- 209 0000 80B4     		push	{r7}
- 210              		.cfi_def_cfa_offset 4
- 211              		.cfi_offset 7, -4
- 212 0002 83B0     		sub	sp, sp, #12
- 213              		.cfi_def_cfa_offset 16
- 214 0004 00AF     		add	r7, sp, #0
- 215              		.cfi_def_cfa_register 7
- 216              	.LBB2:
+ 207              		.loc 1 49 0
+ 208              		.cfi_startproc
+ 209              		@ args = 0, pretend = 0, frame = 8
+ 210              		@ frame_needed = 1, uses_anonymous_args = 0
+ 211              		@ link register save eliminated.
+ 212 0000 80B4     		push	{r7}
+ 213              		.cfi_def_cfa_offset 4
+ 214              		.cfi_offset 7, -4
+ 215 0002 83B0     		sub	sp, sp, #12
+ 216              		.cfi_def_cfa_offset 16
+ 217 0004 00AF     		add	r7, sp, #0
+ 218              		.cfi_def_cfa_register 7
+ 219              	.LBB2:
   50:data.c        ****     for(uint16 i;i<DATA_MAX_VALUES;i++){
- 217              		.loc 1 50 0
- 218 0006 1CE0     		b	.L8
- 219              	.L9:
+ 220              		.loc 1 50 0
+ 221 0006 1CE0     		b	.L8
+ 222              	.L9:
   51:data.c        ****         data[i].key[0] = '\0';
- 220              		.loc 1 51 0 discriminator 2
- 221 0008 FB88     		ldrh	r3, [r7, #6]
- 222 000a 164A     		ldr	r2, .L10
- 223 000c 2C21     		movs	r1, #44
- 224 000e 01FB03F3 		mul	r3, r1, r3
- 225 0012 1344     		add	r3, r3, r2
- 226 0014 0022     		movs	r2, #0
- 227 0016 1A70     		strb	r2, [r3]
+ 223              		.loc 1 51 0 discriminator 2
+ 224 0008 FB88     		ldrh	r3, [r7, #6]
+ 225 000a 164A     		ldr	r2, .L10
+ 226 000c 2C21     		movs	r1, #44
+ 227 000e 01FB03F3 		mul	r3, r1, r3
+ 228 0012 1344     		add	r3, r3, r2
+ 229 0014 0022     		movs	r2, #0
+ 230 0016 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 6
+
+
   52:data.c        ****         data[i].value[0] = '\0';
- 228              		.loc 1 52 0 discriminator 2
- 229 0018 FB88     		ldrh	r3, [r7, #6]
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 6
-
-
- 230 001a 124A     		ldr	r2, .L10
- 231 001c 2C21     		movs	r1, #44
- 232 001e 01FB03F3 		mul	r3, r1, r3
- 233 0022 1344     		add	r3, r3, r2
- 234 0024 1433     		adds	r3, r3, #20
- 235 0026 0022     		movs	r2, #0
- 236 0028 1A70     		strb	r2, [r3]
+ 231              		.loc 1 52 0 discriminator 2
+ 232 0018 FB88     		ldrh	r3, [r7, #6]
+ 233 001a 124A     		ldr	r2, .L10
+ 234 001c 2C21     		movs	r1, #44
+ 235 001e 01FB03F3 		mul	r3, r1, r3
+ 236 0022 1344     		add	r3, r3, r2
+ 237 0024 1433     		adds	r3, r3, #20
+ 238 0026 0022     		movs	r2, #0
+ 239 0028 1A70     		strb	r2, [r3]
   53:data.c        ****         data[i].timeStamp = 0;
- 237              		.loc 1 53 0 discriminator 2
- 238 002a FB88     		ldrh	r3, [r7, #6]
- 239 002c 0D4A     		ldr	r2, .L10
- 240 002e 2C21     		movs	r1, #44
- 241 0030 01FB03F3 		mul	r3, r1, r3
- 242 0034 1344     		add	r3, r3, r2
- 243 0036 2833     		adds	r3, r3, #40
- 244 0038 0022     		movs	r2, #0
- 245 003a 1A60     		str	r2, [r3]
+ 240              		.loc 1 53 0 discriminator 2
+ 241 002a FB88     		ldrh	r3, [r7, #6]
+ 242 002c 0D4A     		ldr	r2, .L10
+ 243 002e 2C21     		movs	r1, #44
+ 244 0030 01FB03F3 		mul	r3, r1, r3
+ 245 0034 1344     		add	r3, r3, r2
+ 246 0036 2833     		adds	r3, r3, #40
+ 247 0038 0022     		movs	r2, #0
+ 248 003a 1A60     		str	r2, [r3]
   50:data.c        ****         data[i].key[0] = '\0';
- 246              		.loc 1 50 0 discriminator 2
- 247 003c FB88     		ldrh	r3, [r7, #6]
- 248 003e 0133     		adds	r3, r3, #1
- 249 0040 FB80     		strh	r3, [r7, #6]	@ movhi
- 250              	.L8:
+ 249              		.loc 1 50 0 discriminator 2
+ 250 003c FB88     		ldrh	r3, [r7, #6]
+ 251 003e 0133     		adds	r3, r3, #1
+ 252 0040 FB80     		strh	r3, [r7, #6]	@ movhi
+ 253              	.L8:
   50:data.c        ****         data[i].key[0] = '\0';
- 251              		.loc 1 50 0 is_stmt 0 discriminator 1
- 252 0042 FB88     		ldrh	r3, [r7, #6]
- 253 0044 952B     		cmp	r3, #149
- 254 0046 DFD9     		bls	.L9
- 255              	.LBE2:
+ 254              		.loc 1 50 0 is_stmt 0 discriminator 1
+ 255 0042 FB88     		ldrh	r3, [r7, #6]
+ 256 0044 952B     		cmp	r3, #149
+ 257 0046 DFD9     		bls	.L9
+ 258              	.LBE2:
   54:data.c        ****     }
   55:data.c        ****     dataPointsInStack = 0;
- 256              		.loc 1 55 0 is_stmt 1
- 257 0048 074B     		ldr	r3, .L10+4
- 258 004a 0022     		movs	r2, #0
- 259 004c 1A80     		strh	r2, [r3]	@ movhi
+ 259              		.loc 1 55 0 is_stmt 1
+ 260 0048 074B     		ldr	r3, .L10+4
+ 261 004a 0022     		movs	r2, #0
+ 262 004c 1A80     		strh	r2, [r3]	@ movhi
   56:data.c        ****     dataPointsInStackDesired = 0;
- 260              		.loc 1 56 0
- 261 004e 074B     		ldr	r3, .L10+8
- 262 0050 0022     		movs	r2, #0
- 263 0052 1A80     		strh	r2, [r3]	@ movhi
+ 263              		.loc 1 56 0
+ 264 004e 074B     		ldr	r3, .L10+8
+ 265 0050 0022     		movs	r2, #0
+ 266 0052 1A80     		strh	r2, [r3]	@ movhi
   57:data.c        ****     buffer_overflow = false;
- 264              		.loc 1 57 0
- 265 0054 064B     		ldr	r3, .L10+12
- 266 0056 0022     		movs	r2, #0
- 267 0058 1A70     		strb	r2, [r3]
+ 267              		.loc 1 57 0
+ 268 0054 064B     		ldr	r3, .L10+12
+ 269 0056 0022     		movs	r2, #0
+ 270 0058 1A70     		strb	r2, [r3]
   58:data.c        ****    
   59:data.c        **** }
- 268              		.loc 1 59 0
- 269 005a 00BF     		nop
- 270 005c 0C37     		adds	r7, r7, #12
- 271              		.cfi_def_cfa_offset 4
- 272 005e BD46     		mov	sp, r7
- 273              		.cfi_def_cfa_register 13
- 274              		@ sp needed
- 275 0060 80BC     		pop	{r7}
- 276              		.cfi_restore 7
- 277              		.cfi_def_cfa_offset 0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 7
+ 271              		.loc 1 59 0
+ 272 005a 00BF     		nop
+ 273 005c 0C37     		adds	r7, r7, #12
+ 274              		.cfi_def_cfa_offset 4
+ 275 005e BD46     		mov	sp, r7
+ 276              		.cfi_def_cfa_register 13
+ 277              		@ sp needed
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 7
 
 
- 278 0062 7047     		bx	lr
- 279              	.L11:
- 280              		.align	2
- 281              	.L10:
- 282 0064 00000000 		.word	data
- 283 0068 00000000 		.word	dataPointsInStack
- 284 006c 00000000 		.word	dataPointsInStackDesired
- 285 0070 00000000 		.word	buffer_overflow
- 286              		.cfi_endproc
- 287              	.LFE66:
- 288              		.size	Clear_Data_Stack, .-Clear_Data_Stack
- 289              		.section	.text.sizeOfDataStackDesired,"ax",%progbits
- 290              		.align	2
- 291              		.global	sizeOfDataStackDesired
- 292              		.thumb
- 293              		.thumb_func
- 294              		.type	sizeOfDataStackDesired, %function
- 295              	sizeOfDataStackDesired:
- 296              	.LFB67:
+ 278 0060 80BC     		pop	{r7}
+ 279              		.cfi_restore 7
+ 280              		.cfi_def_cfa_offset 0
+ 281 0062 7047     		bx	lr
+ 282              	.L11:
+ 283              		.align	2
+ 284              	.L10:
+ 285 0064 00000000 		.word	data
+ 286 0068 00000000 		.word	dataPointsInStack
+ 287 006c 00000000 		.word	dataPointsInStackDesired
+ 288 0070 00000000 		.word	buffer_overflow
+ 289              		.cfi_endproc
+ 290              	.LFE66:
+ 291              		.size	Clear_Data_Stack, .-Clear_Data_Stack
+ 292              		.section	.text.sizeOfDataStackDesired,"ax",%progbits
+ 293              		.align	2
+ 294              		.global	sizeOfDataStackDesired
+ 295              		.thumb
+ 296              		.thumb_func
+ 297              		.type	sizeOfDataStackDesired, %function
+ 298              	sizeOfDataStackDesired:
+ 299              	.LFB67:
   60:data.c        **** 
   61:data.c        **** // Return the desired number of points in the stack
   62:data.c        **** uint16 sizeOfDataStackDesired(){
- 297              		.loc 1 62 0
- 298              		.cfi_startproc
- 299              		@ args = 0, pretend = 0, frame = 0
- 300              		@ frame_needed = 1, uses_anonymous_args = 0
- 301              		@ link register save eliminated.
- 302 0000 80B4     		push	{r7}
- 303              		.cfi_def_cfa_offset 4
- 304              		.cfi_offset 7, -4
- 305 0002 00AF     		add	r7, sp, #0
- 306              		.cfi_def_cfa_register 7
+ 300              		.loc 1 62 0
+ 301              		.cfi_startproc
+ 302              		@ args = 0, pretend = 0, frame = 0
+ 303              		@ frame_needed = 1, uses_anonymous_args = 0
+ 304              		@ link register save eliminated.
+ 305 0000 80B4     		push	{r7}
+ 306              		.cfi_def_cfa_offset 4
+ 307              		.cfi_offset 7, -4
+ 308 0002 00AF     		add	r7, sp, #0
+ 309              		.cfi_def_cfa_register 7
   63:data.c        ****     return dataPointsInStackDesired;
- 307              		.loc 1 63 0
- 308 0004 024B     		ldr	r3, .L14
- 309 0006 1B88     		ldrh	r3, [r3]
+ 310              		.loc 1 63 0
+ 311 0004 024B     		ldr	r3, .L14
+ 312 0006 1B88     		ldrh	r3, [r3]
   64:data.c        **** }
- 310              		.loc 1 64 0
- 311 0008 1846     		mov	r0, r3
- 312 000a BD46     		mov	sp, r7
- 313              		.cfi_def_cfa_register 13
- 314              		@ sp needed
- 315 000c 80BC     		pop	{r7}
- 316              		.cfi_restore 7
- 317              		.cfi_def_cfa_offset 0
- 318 000e 7047     		bx	lr
- 319              	.L15:
- 320              		.align	2
- 321              	.L14:
- 322 0010 00000000 		.word	dataPointsInStackDesired
- 323              		.cfi_endproc
- 324              	.LFE67:
- 325              		.size	sizeOfDataStackDesired, .-sizeOfDataStackDesired
- 326              		.section	.text.sizeOfDataStack,"ax",%progbits
- 327              		.align	2
- 328              		.global	sizeOfDataStack
- 329              		.thumb
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 8
+ 313              		.loc 1 64 0
+ 314 0008 1846     		mov	r0, r3
+ 315 000a BD46     		mov	sp, r7
+ 316              		.cfi_def_cfa_register 13
+ 317              		@ sp needed
+ 318 000c 80BC     		pop	{r7}
+ 319              		.cfi_restore 7
+ 320              		.cfi_def_cfa_offset 0
+ 321 000e 7047     		bx	lr
+ 322              	.L15:
+ 323              		.align	2
+ 324              	.L14:
+ 325 0010 00000000 		.word	dataPointsInStackDesired
+ 326              		.cfi_endproc
+ 327              	.LFE67:
+ 328              		.size	sizeOfDataStackDesired, .-sizeOfDataStackDesired
+ 329              		.section	.text.sizeOfDataStack,"ax",%progbits
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 8
 
 
- 330              		.thumb_func
- 331              		.type	sizeOfDataStack, %function
- 332              	sizeOfDataStack:
- 333              	.LFB68:
+ 330              		.align	2
+ 331              		.global	sizeOfDataStack
+ 332              		.thumb
+ 333              		.thumb_func
+ 334              		.type	sizeOfDataStack, %function
+ 335              	sizeOfDataStack:
+ 336              	.LFB68:
   65:data.c        **** 
   66:data.c        **** // Return the actual number of points in the stack 
   67:data.c        **** uint16 sizeOfDataStack(){
- 334              		.loc 1 67 0
- 335              		.cfi_startproc
- 336              		@ args = 0, pretend = 0, frame = 0
- 337              		@ frame_needed = 1, uses_anonymous_args = 0
- 338              		@ link register save eliminated.
- 339 0000 80B4     		push	{r7}
- 340              		.cfi_def_cfa_offset 4
- 341              		.cfi_offset 7, -4
- 342 0002 00AF     		add	r7, sp, #0
- 343              		.cfi_def_cfa_register 7
+ 337              		.loc 1 67 0
+ 338              		.cfi_startproc
+ 339              		@ args = 0, pretend = 0, frame = 0
+ 340              		@ frame_needed = 1, uses_anonymous_args = 0
+ 341              		@ link register save eliminated.
+ 342 0000 80B4     		push	{r7}
+ 343              		.cfi_def_cfa_offset 4
+ 344              		.cfi_offset 7, -4
+ 345 0002 00AF     		add	r7, sp, #0
+ 346              		.cfi_def_cfa_register 7
   68:data.c        ****     return dataPointsInStack;
- 344              		.loc 1 68 0
- 345 0004 024B     		ldr	r3, .L18
- 346 0006 1B88     		ldrh	r3, [r3]
+ 347              		.loc 1 68 0
+ 348 0004 024B     		ldr	r3, .L18
+ 349 0006 1B88     		ldrh	r3, [r3]
   69:data.c        **** }
- 347              		.loc 1 69 0
- 348 0008 1846     		mov	r0, r3
- 349 000a BD46     		mov	sp, r7
- 350              		.cfi_def_cfa_register 13
- 351              		@ sp needed
- 352 000c 80BC     		pop	{r7}
- 353              		.cfi_restore 7
- 354              		.cfi_def_cfa_offset 0
- 355 000e 7047     		bx	lr
- 356              	.L19:
- 357              		.align	2
- 358              	.L18:
- 359 0010 00000000 		.word	dataPointsInStack
- 360              		.cfi_endproc
- 361              	.LFE68:
- 362              		.size	sizeOfDataStack, .-sizeOfDataStack
- 363              		.section	.rodata
- 364 0039 000000   		.align	2
- 365              	.LC2:
- 366 003c 2573202F 		.ascii	"%s /%s HTTP/%s\015\012\000"
- 366      25732048 
- 366      5454502F 
- 366      25730D0A 
- 366      00
- 367 004d 000000   		.align	2
- 368              	.LC3:
- 369 0050 25732573 		.ascii	"%s%s%s%s%d%s%s%s%s\000"
- 369      25732573 
- 369      25642573 
- 369      25732573 
- 369      257300
- 370 0063 00       		.align	2
- 371              	.LC4:
- 372 0064 0D0A00   		.ascii	"\015\012\000"
- 373 0067 00       		.align	2
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 9
+ 350              		.loc 1 69 0
+ 351 0008 1846     		mov	r0, r3
+ 352 000a BD46     		mov	sp, r7
+ 353              		.cfi_def_cfa_register 13
+ 354              		@ sp needed
+ 355 000c 80BC     		pop	{r7}
+ 356              		.cfi_restore 7
+ 357              		.cfi_def_cfa_offset 0
+ 358 000e 7047     		bx	lr
+ 359              	.L19:
+ 360              		.align	2
+ 361              	.L18:
+ 362 0010 00000000 		.word	dataPointsInStack
+ 363              		.cfi_endproc
+ 364              	.LFE68:
+ 365              		.size	sizeOfDataStack, .-sizeOfDataStack
+ 366              		.section	.rodata
+ 367 0039 000000   		.align	2
+ 368              	.LC2:
+ 369 003c 2573202F 		.ascii	"%s /%s HTTP/%s\015\012\000"
+ 369      25732048 
+ 369      5454502F 
+ 369      25730D0A 
+ 369      00
+ 370 004d 000000   		.align	2
+ 371              	.LC3:
+ 372 0050 25732573 		.ascii	"%s%s%s%s%d%s%s%s%s\000"
+ 372      25732573 
+ 372      25642573 
+ 372      25732573 
+ 372      257300
+ 373 0063 00       		.align	2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 9
 
 
- 374              	.LC5:
- 375 0068 436F6E6E 		.ascii	"Connection: \000"
- 375      65637469 
- 375      6F6E3A20 
- 375      00
- 376 0075 000000   		.align	2
- 377              	.LC6:
- 378 0078 3A00     		.ascii	":\000"
- 379 007a 0000     		.align	2
- 380              	.LC7:
- 381 007c 486F7374 		.ascii	"Host: \000"
- 381      3A2000
- 382 0083 00       		.align	2
- 383              	.LC8:
- 384 0084 25732573 		.ascii	"%s%s\000"
- 384      00
- 385 0089 000000   		.align	2
- 386              	.LC9:
- 387 008c 47455400 		.ascii	"GET\000"
- 388              		.align	2
- 389              	.LC10:
- 390 0090 25732573 		.ascii	"%s%s%s%d%s\000"
- 390      25732564 
- 390      257300
- 391 009b 00       		.align	2
- 392              	.LC11:
- 393 009c 0D0A0D0A 		.ascii	"\015\012\015\012\000"
- 393      00
- 394 00a1 000000   		.align	2
- 395              	.LC12:
- 396 00a4 436F6E74 		.ascii	"Content-Length: \000"
- 396      656E742D 
- 396      4C656E67 
- 396      74683A20 
+ 374              	.LC4:
+ 375 0064 0D0A00   		.ascii	"\015\012\000"
+ 376 0067 00       		.align	2
+ 377              	.LC5:
+ 378 0068 436F6E6E 		.ascii	"Connection: \000"
+ 378      65637469 
+ 378      6F6E3A20 
+ 378      00
+ 379 0075 000000   		.align	2
+ 380              	.LC6:
+ 381 0078 3A00     		.ascii	":\000"
+ 382 007a 0000     		.align	2
+ 383              	.LC7:
+ 384 007c 486F7374 		.ascii	"Host: \000"
+ 384      3A2000
+ 385 0083 00       		.align	2
+ 386              	.LC8:
+ 387 0084 25732573 		.ascii	"%s%s\000"
+ 387      00
+ 388 0089 000000   		.align	2
+ 389              	.LC9:
+ 390 008c 47455400 		.ascii	"GET\000"
+ 391              		.align	2
+ 392              	.LC10:
+ 393 0090 25732573 		.ascii	"%s%s%s%d%s\000"
+ 393      25732564 
+ 393      257300
+ 394 009b 00       		.align	2
+ 395              	.LC11:
+ 396 009c 0D0A0D0A 		.ascii	"\015\012\015\012\000"
  396      00
- 397 00b5 000000   		.align	2
- 398              	.LC13:
- 399 00b8 436F6E74 		.ascii	"Content-Type: text/plain\015\012\000"
+ 397 00a1 000000   		.align	2
+ 398              	.LC12:
+ 399 00a4 436F6E74 		.ascii	"Content-Length: \000"
  399      656E742D 
- 399      54797065 
- 399      3A207465 
- 399      78742F70 
- 400 00d3 00       		.align	2
- 401              	.LC14:
- 402 00d4 25732573 		.ascii	"%s%s\015\012\000"
- 402      0D0A00
- 403              		.section	.text.construct_generic_HTTP_request,"ax",%progbits
- 404              		.align	2
- 405              		.global	construct_generic_HTTP_request
- 406              		.thumb
- 407              		.thumb_func
- 408              		.type	construct_generic_HTTP_request, %function
- 409              	construct_generic_HTTP_request:
- 410              	.LFB69:
+ 399      4C656E67 
+ 399      74683A20 
+ 399      00
+ 400 00b5 000000   		.align	2
+ 401              	.LC13:
+ 402 00b8 436F6E74 		.ascii	"Content-Type: text/plain\015\012\000"
+ 402      656E742D 
+ 402      54797065 
+ 402      3A207465 
+ 402      78742F70 
+ 403 00d3 00       		.align	2
+ 404              	.LC14:
+ 405 00d4 25732573 		.ascii	"%s%s\015\012\000"
+ 405      0D0A00
+ 406              		.section	.text.construct_generic_HTTP_request,"ax",%progbits
+ 407              		.align	2
+ 408              		.global	construct_generic_HTTP_request
+ 409              		.thumb
+ 410              		.thumb_func
+ 411              		.type	construct_generic_HTTP_request, %function
+ 412              	construct_generic_HTTP_request:
+ 413              	.LFB69:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 10
+
+
   70:data.c        **** 
   71:data.c        **** // This function could really use a test
   72:data.c        **** void construct_generic_HTTP_request(char* request, char* body, char* host, char* route,
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 10
-
-
   73:data.c        ****                                int port, char* method, char* connection_type,
   74:data.c        **** 	                           char *extra_headers, int extra_len, char* http_protocol){
- 411              		.loc 1 74 0
- 412              		.cfi_startproc
- 413              		@ args = 24, pretend = 0, frame = 16
- 414              		@ frame_needed = 1, uses_anonymous_args = 0
- 415 0000 80B5     		push	{r7, lr}
- 416              		.cfi_def_cfa_offset 8
- 417              		.cfi_offset 7, -8
- 418              		.cfi_offset 14, -4
- 419 0002 8CB0     		sub	sp, sp, #48
- 420              		.cfi_def_cfa_offset 56
- 421 0004 08AF     		add	r7, sp, #32
- 422              		.cfi_def_cfa 7, 24
- 423 0006 F860     		str	r0, [r7, #12]
- 424 0008 B960     		str	r1, [r7, #8]
- 425 000a 7A60     		str	r2, [r7, #4]
- 426 000c 3B60     		str	r3, [r7]
+ 414              		.loc 1 74 0
+ 415              		.cfi_startproc
+ 416              		@ args = 24, pretend = 0, frame = 16
+ 417              		@ frame_needed = 1, uses_anonymous_args = 0
+ 418 0000 80B5     		push	{r7, lr}
+ 419              		.cfi_def_cfa_offset 8
+ 420              		.cfi_offset 7, -8
+ 421              		.cfi_offset 14, -4
+ 422 0002 8CB0     		sub	sp, sp, #48
+ 423              		.cfi_def_cfa_offset 56
+ 424 0004 08AF     		add	r7, sp, #32
+ 425              		.cfi_def_cfa 7, 24
+ 426 0006 F860     		str	r0, [r7, #12]
+ 427 0008 B960     		str	r1, [r7, #8]
+ 428 000a 7A60     		str	r2, [r7, #4]
+ 429 000c 3B60     		str	r3, [r7]
   75:data.c        **** 
   76:data.c        ****     snprintf(request,sizeof(http_request),"%s /%s HTTP/%s\r\n", method, route, http_protocol);
- 427              		.loc 1 76 0
- 428 000e FB6A     		ldr	r3, [r7, #44]
- 429 0010 0193     		str	r3, [sp, #4]
- 430 0012 3B68     		ldr	r3, [r7]
- 431 0014 0093     		str	r3, [sp]
- 432 0016 FB69     		ldr	r3, [r7, #28]
- 433 0018 2A4A     		ldr	r2, .L23
- 434 001a 42F21071 		movw	r1, #10000
- 435 001e F868     		ldr	r0, [r7, #12]
- 436 0020 FFF7FEFF 		bl	snprintf
+ 430              		.loc 1 76 0
+ 431 000e FB6A     		ldr	r3, [r7, #44]
+ 432 0010 0193     		str	r3, [sp, #4]
+ 433 0012 3B68     		ldr	r3, [r7]
+ 434 0014 0093     		str	r3, [sp]
+ 435 0016 FB69     		ldr	r3, [r7, #28]
+ 436 0018 2A4A     		ldr	r2, .L23
+ 437 001a 42F21071 		movw	r1, #10000
+ 438 001e F868     		ldr	r0, [r7, #12]
+ 439 0020 FFF7FEFF 		bl	snprintf
   77:data.c        ****     snprintf(request,sizeof(http_request),"%s%s%s%s%d%s%s%s%s",
- 437              		.loc 1 77 0
- 438 0024 284B     		ldr	r3, .L23+4
- 439 0026 0793     		str	r3, [sp, #28]
- 440 0028 3B6A     		ldr	r3, [r7, #32]
- 441 002a 0693     		str	r3, [sp, #24]
- 442 002c 274B     		ldr	r3, .L23+8
- 443 002e 0593     		str	r3, [sp, #20]
- 444 0030 254B     		ldr	r3, .L23+4
- 445 0032 0493     		str	r3, [sp, #16]
- 446 0034 BB69     		ldr	r3, [r7, #24]
- 447 0036 0393     		str	r3, [sp, #12]
- 448 0038 254B     		ldr	r3, .L23+12
- 449 003a 0293     		str	r3, [sp, #8]
- 450 003c 7B68     		ldr	r3, [r7, #4]
- 451 003e 0193     		str	r3, [sp, #4]
- 452 0040 244B     		ldr	r3, .L23+16
- 453 0042 0093     		str	r3, [sp]
- 454 0044 FB68     		ldr	r3, [r7, #12]
- 455 0046 244A     		ldr	r2, .L23+20
- 456 0048 42F21071 		movw	r1, #10000
- 457 004c F868     		ldr	r0, [r7, #12]
- 458 004e FFF7FEFF 		bl	snprintf
+ 440              		.loc 1 77 0
+ 441 0024 284B     		ldr	r3, .L23+4
+ 442 0026 0793     		str	r3, [sp, #28]
+ 443 0028 3B6A     		ldr	r3, [r7, #32]
+ 444 002a 0693     		str	r3, [sp, #24]
+ 445 002c 274B     		ldr	r3, .L23+8
+ 446 002e 0593     		str	r3, [sp, #20]
+ 447 0030 254B     		ldr	r3, .L23+4
+ 448 0032 0493     		str	r3, [sp, #16]
+ 449 0034 BB69     		ldr	r3, [r7, #24]
+ 450 0036 0393     		str	r3, [sp, #12]
+ 451 0038 254B     		ldr	r3, .L23+12
+ 452 003a 0293     		str	r3, [sp, #8]
+ 453 003c 7B68     		ldr	r3, [r7, #4]
+ 454 003e 0193     		str	r3, [sp, #4]
+ 455 0040 244B     		ldr	r3, .L23+16
+ 456 0042 0093     		str	r3, [sp]
+ 457 0044 FB68     		ldr	r3, [r7, #12]
+ 458 0046 244A     		ldr	r2, .L23+20
+ 459 0048 42F21071 		movw	r1, #10000
+ 460 004c F868     		ldr	r0, [r7, #12]
+ 461 004e FFF7FEFF 		bl	snprintf
   78:data.c        ****             request, // 1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 11
+
+
   79:data.c        ****             "Host: ", host, ":", port, "\r\n", // 2 3 4 5 6
   80:data.c        ****             "Connection: ", connection_type, "\r\n"); // 7 8 9
   81:data.c        **** 	if (extra_headers && strlen(extra_headers) > 0){
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 11
-
-
- 459              		.loc 1 81 0
- 460 0052 7B6A     		ldr	r3, [r7, #36]
- 461 0054 002B     		cmp	r3, #0
- 462 0056 0CD0     		beq	.L21
- 463              		.loc 1 81 0 is_stmt 0 discriminator 1
- 464 0058 7B6A     		ldr	r3, [r7, #36]
- 465 005a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 466 005c 002B     		cmp	r3, #0
- 467 005e 08D0     		beq	.L21
+ 462              		.loc 1 81 0
+ 463 0052 7B6A     		ldr	r3, [r7, #36]
+ 464 0054 002B     		cmp	r3, #0
+ 465 0056 0CD0     		beq	.L21
+ 466              		.loc 1 81 0 is_stmt 0 discriminator 1
+ 467 0058 7B6A     		ldr	r3, [r7, #36]
+ 468 005a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 469 005c 002B     		cmp	r3, #0
+ 470 005e 08D0     		beq	.L21
   82:data.c        **** 		snprintf(request,sizeof(http_request), "%s%s", request, extra_headers);
- 468              		.loc 1 82 0 is_stmt 1
- 469 0060 7B6A     		ldr	r3, [r7, #36]
- 470 0062 0093     		str	r3, [sp]
- 471 0064 FB68     		ldr	r3, [r7, #12]
- 472 0066 1D4A     		ldr	r2, .L23+24
- 473 0068 42F21071 		movw	r1, #10000
- 474 006c F868     		ldr	r0, [r7, #12]
- 475 006e FFF7FEFF 		bl	snprintf
- 476              	.L21:
+ 471              		.loc 1 82 0 is_stmt 1
+ 472 0060 7B6A     		ldr	r3, [r7, #36]
+ 473 0062 0093     		str	r3, [sp]
+ 474 0064 FB68     		ldr	r3, [r7, #12]
+ 475 0066 1D4A     		ldr	r2, .L23+24
+ 476 0068 42F21071 		movw	r1, #10000
+ 477 006c F868     		ldr	r0, [r7, #12]
+ 478 006e FFF7FEFF 		bl	snprintf
+ 479              	.L21:
   83:data.c        **** 	}
   84:data.c        **** 	if (strcmp(method, "GET") != 0){
- 477              		.loc 1 84 0
- 478 0072 1B49     		ldr	r1, .L23+28
- 479 0074 F869     		ldr	r0, [r7, #28]
- 480 0076 FFF7FEFF 		bl	strcmp
- 481 007a 0346     		mov	r3, r0
- 482 007c 002B     		cmp	r3, #0
- 483 007e 13D0     		beq	.L22
+ 480              		.loc 1 84 0
+ 481 0072 1B49     		ldr	r1, .L23+28
+ 482 0074 F869     		ldr	r0, [r7, #28]
+ 483 0076 FFF7FEFF 		bl	strcmp
+ 484 007a 0346     		mov	r3, r0
+ 485 007c 002B     		cmp	r3, #0
+ 486 007e 13D0     		beq	.L22
   85:data.c        **** 		snprintf(request,sizeof(http_request), "%s%s%s%d%s",
   86:data.c        **** 			request,
   87:data.c        ****             "Content-Type: text/plain\r\n", // 10
   88:data.c        ****             "Content-Length: ", (extra_len + strlen(body)), //11 12 (Extra len should be 2 for flas
- 484              		.loc 1 88 0
- 485 0080 B868     		ldr	r0, [r7, #8]
- 486 0082 FFF7FEFF 		bl	strlen
- 487 0086 0246     		mov	r2, r0
+ 487              		.loc 1 88 0
+ 488 0080 B868     		ldr	r0, [r7, #8]
+ 489 0082 FFF7FEFF 		bl	strlen
+ 490 0086 0246     		mov	r2, r0
   85:data.c        **** 		snprintf(request,sizeof(http_request), "%s%s%s%d%s",
- 488              		.loc 1 85 0
- 489 0088 BB6A     		ldr	r3, [r7, #40]
- 490 008a 1344     		add	r3, r3, r2
- 491 008c 154A     		ldr	r2, .L23+32
- 492 008e 0392     		str	r2, [sp, #12]
- 493 0090 0293     		str	r3, [sp, #8]
- 494 0092 154B     		ldr	r3, .L23+36
- 495 0094 0193     		str	r3, [sp, #4]
- 496 0096 154B     		ldr	r3, .L23+40
- 497 0098 0093     		str	r3, [sp]
- 498 009a FB68     		ldr	r3, [r7, #12]
- 499 009c 144A     		ldr	r2, .L23+44
- 500 009e 42F21071 		movw	r1, #10000
- 501 00a2 F868     		ldr	r0, [r7, #12]
- 502 00a4 FFF7FEFF 		bl	snprintf
- 503              	.L22:
+ 491              		.loc 1 85 0
+ 492 0088 BB6A     		ldr	r3, [r7, #40]
+ 493 008a 1344     		add	r3, r3, r2
+ 494 008c 154A     		ldr	r2, .L23+32
+ 495 008e 0392     		str	r2, [sp, #12]
+ 496 0090 0293     		str	r3, [sp, #8]
+ 497 0092 154B     		ldr	r3, .L23+36
+ 498 0094 0193     		str	r3, [sp, #4]
+ 499 0096 154B     		ldr	r3, .L23+40
+ 500 0098 0093     		str	r3, [sp]
+ 501 009a FB68     		ldr	r3, [r7, #12]
+ 502 009c 144A     		ldr	r2, .L23+44
+ 503 009e 42F21071 		movw	r1, #10000
+ 504 00a2 F868     		ldr	r0, [r7, #12]
+ 505 00a4 FFF7FEFF 		bl	snprintf
+ 506              	.L22:
   89:data.c        ****             "\r\n\r\n"); // 13 14 15
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 12
+
+
   90:data.c        **** 	}
   91:data.c        **** 	snprintf(request,sizeof(http_request), "%s%s\r\n", request, body); 
- 504              		.loc 1 91 0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 12
-
-
- 505 00a8 BB68     		ldr	r3, [r7, #8]
- 506 00aa 0093     		str	r3, [sp]
- 507 00ac FB68     		ldr	r3, [r7, #12]
- 508 00ae 114A     		ldr	r2, .L23+48
- 509 00b0 42F21071 		movw	r1, #10000
- 510 00b4 F868     		ldr	r0, [r7, #12]
- 511 00b6 FFF7FEFF 		bl	snprintf
+ 507              		.loc 1 91 0
+ 508 00a8 BB68     		ldr	r3, [r7, #8]
+ 509 00aa 0093     		str	r3, [sp]
+ 510 00ac FB68     		ldr	r3, [r7, #12]
+ 511 00ae 114A     		ldr	r2, .L23+48
+ 512 00b0 42F21071 		movw	r1, #10000
+ 513 00b4 F868     		ldr	r0, [r7, #12]
+ 514 00b6 FFF7FEFF 		bl	snprintf
   92:data.c        ****     
   93:data.c        **** }
- 512              		.loc 1 93 0
- 513 00ba 00BF     		nop
- 514 00bc 1037     		adds	r7, r7, #16
- 515              		.cfi_def_cfa_offset 8
- 516 00be BD46     		mov	sp, r7
- 517              		.cfi_def_cfa_register 13
- 518              		@ sp needed
- 519 00c0 80BD     		pop	{r7, pc}
- 520              	.L24:
- 521 00c2 00BF     		.align	2
- 522              	.L23:
- 523 00c4 3C000000 		.word	.LC2
- 524 00c8 64000000 		.word	.LC4
- 525 00cc 68000000 		.word	.LC5
- 526 00d0 78000000 		.word	.LC6
- 527 00d4 7C000000 		.word	.LC7
- 528 00d8 50000000 		.word	.LC3
- 529 00dc 84000000 		.word	.LC8
- 530 00e0 8C000000 		.word	.LC9
- 531 00e4 9C000000 		.word	.LC11
- 532 00e8 A4000000 		.word	.LC12
- 533 00ec B8000000 		.word	.LC13
- 534 00f0 90000000 		.word	.LC10
- 535 00f4 D4000000 		.word	.LC14
- 536              		.cfi_endproc
- 537              	.LFE69:
- 538              		.size	construct_generic_HTTP_request, .-construct_generic_HTTP_request
- 539              		.section	.rodata
- 540 00db 00       		.align	2
- 541              	.LC15:
- 542 00dc 25732573 		.ascii	"%s%s, value=%s %ld000000000\012\000"
- 542      2C207661 
- 542      6C75653D 
- 542      25732025 
- 542      6C643030 
- 543              		.section	.text.construct_malcom_body,"ax",%progbits
- 544              		.align	2
- 545              		.global	construct_malcom_body
- 546              		.thumb
- 547              		.thumb_func
- 548              		.type	construct_malcom_body, %function
- 549              	construct_malcom_body:
- 550              	.LFB70:
+ 515              		.loc 1 93 0
+ 516 00ba 00BF     		nop
+ 517 00bc 1037     		adds	r7, r7, #16
+ 518              		.cfi_def_cfa_offset 8
+ 519 00be BD46     		mov	sp, r7
+ 520              		.cfi_def_cfa_register 13
+ 521              		@ sp needed
+ 522 00c0 80BD     		pop	{r7, pc}
+ 523              	.L24:
+ 524 00c2 00BF     		.align	2
+ 525              	.L23:
+ 526 00c4 3C000000 		.word	.LC2
+ 527 00c8 64000000 		.word	.LC4
+ 528 00cc 68000000 		.word	.LC5
+ 529 00d0 78000000 		.word	.LC6
+ 530 00d4 7C000000 		.word	.LC7
+ 531 00d8 50000000 		.word	.LC3
+ 532 00dc 84000000 		.word	.LC8
+ 533 00e0 8C000000 		.word	.LC9
+ 534 00e4 9C000000 		.word	.LC11
+ 535 00e8 A4000000 		.word	.LC12
+ 536 00ec B8000000 		.word	.LC13
+ 537 00f0 90000000 		.word	.LC10
+ 538 00f4 D4000000 		.word	.LC14
+ 539              		.cfi_endproc
+ 540              	.LFE69:
+ 541              		.size	construct_generic_HTTP_request, .-construct_generic_HTTP_request
+ 542              		.section	.rodata
+ 543 00db 00       		.align	2
+ 544              	.LC15:
+ 545 00dc 25732573 		.ascii	"%s%s, value=%s %ld000000000\012\000"
+ 545      2C207661 
+ 545      6C75653D 
+ 545      25732025 
+ 545      6C643030 
+ 546              		.section	.text.construct_malcom_body,"ax",%progbits
+ 547              		.align	2
+ 548              		.global	construct_malcom_body
+ 549              		.thumb
+ 550              		.thumb_func
+ 551              		.type	construct_malcom_body, %function
+ 552              	construct_malcom_body:
+ 553              	.LFB70:
   94:data.c        ****                             
   95:data.c        **** // Construct middle layer called Malcom (aka Malcom in the Middle)                                 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 13
+
+
   96:data.c        **** unsigned int construct_malcom_body(char* body){
- 551              		.loc 1 96 0
- 552              		.cfi_startproc
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 13
-
-
- 553              		@ args = 0, pretend = 0, frame = 16
- 554              		@ frame_needed = 1, uses_anonymous_args = 0
- 555 0000 90B5     		push	{r4, r7, lr}
- 556              		.cfi_def_cfa_offset 12
- 557              		.cfi_offset 4, -12
- 558              		.cfi_offset 7, -8
- 559              		.cfi_offset 14, -4
- 560 0002 89B0     		sub	sp, sp, #36
- 561              		.cfi_def_cfa_offset 48
- 562 0004 04AF     		add	r7, sp, #16
- 563              		.cfi_def_cfa 7, 32
- 564 0006 7860     		str	r0, [r7, #4]
+ 554              		.loc 1 96 0
+ 555              		.cfi_startproc
+ 556              		@ args = 0, pretend = 0, frame = 16
+ 557              		@ frame_needed = 1, uses_anonymous_args = 0
+ 558 0000 90B5     		push	{r4, r7, lr}
+ 559              		.cfi_def_cfa_offset 12
+ 560              		.cfi_offset 4, -12
+ 561              		.cfi_offset 7, -8
+ 562              		.cfi_offset 14, -4
+ 563 0002 89B0     		sub	sp, sp, #36
+ 564              		.cfi_def_cfa_offset 48
+ 565 0004 04AF     		add	r7, sp, #16
+ 566              		.cfi_def_cfa 7, 32
+ 567 0006 7860     		str	r0, [r7, #4]
   97:data.c        ****    
   98:data.c        ****     body[0] = '\0';
- 565              		.loc 1 98 0
- 566 0008 7B68     		ldr	r3, [r7, #4]
- 567 000a 0022     		movs	r2, #0
- 568 000c 1A70     		strb	r2, [r3]
+ 568              		.loc 1 98 0
+ 569 0008 7B68     		ldr	r3, [r7, #4]
+ 570 000a 0022     		movs	r2, #0
+ 571 000c 1A70     		strb	r2, [r3]
   99:data.c        ****     
  100:data.c        ****     // Construct influx body
  101:data.c        ****     // if the buffer didn't overflow, send however many data points we have in the buffer
  102:data.c        ****     if (buffer_overflow == false){
- 569              		.loc 1 102 0
- 570 000e 334B     		ldr	r3, .L33
- 571 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 572 0012 83F00103 		eor	r3, r3, #1
- 573 0016 DBB2     		uxtb	r3, r3
- 574 0018 002B     		cmp	r3, #0
- 575 001a 2DD0     		beq	.L26
- 576              	.LBB3:
+ 572              		.loc 1 102 0
+ 573 000e 334B     		ldr	r3, .L33
+ 574 0010 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 575 0012 83F00103 		eor	r3, r3, #1
+ 576 0016 DBB2     		uxtb	r3, r3
+ 577 0018 002B     		cmp	r3, #0
+ 578 001a 2DD0     		beq	.L26
+ 579              	.LBB3:
  103:data.c        ****         for(uint16 i = 0;i < sizeOfDataStack();i++){
- 577              		.loc 1 103 0
- 578 001c 0023     		movs	r3, #0
- 579 001e FB81     		strh	r3, [r7, #14]	@ movhi
- 580 0020 22E0     		b	.L27
- 581              	.L28:
+ 580              		.loc 1 103 0
+ 581 001c 0023     		movs	r3, #0
+ 582 001e FB81     		strh	r3, [r7, #14]	@ movhi
+ 583 0020 22E0     		b	.L27
+ 584              	.L28:
  104:data.c        ****             // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
  105:data.c        ****             snprintf(body,sizeof(http_body), "%s%s, value=%s %ld000000000\n", body, data[i].key, da
- 582              		.loc 1 105 0 discriminator 3
- 583 0022 FB89     		ldrh	r3, [r7, #14]
- 584 0024 2C22     		movs	r2, #44
- 585 0026 02FB03F3 		mul	r3, r2, r3
- 586 002a 2D4A     		ldr	r2, .L33+4
- 587 002c 1344     		add	r3, r3, r2
- 588 002e FA89     		ldrh	r2, [r7, #14]
- 589 0030 2C21     		movs	r1, #44
- 590 0032 01FB02F2 		mul	r2, r1, r2
- 591 0036 1032     		adds	r2, r2, #16
- 592 0038 2949     		ldr	r1, .L33+4
- 593 003a 0A44     		add	r2, r2, r1
- 594 003c 0432     		adds	r2, r2, #4
- 595 003e F989     		ldrh	r1, [r7, #14]
- 596 0040 2748     		ldr	r0, .L33+4
- 597 0042 2C24     		movs	r4, #44
- 598 0044 04FB01F1 		mul	r1, r4, r1
- 599 0048 0144     		add	r1, r1, r0
- 600 004a 2831     		adds	r1, r1, #40
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 14
+ 585              		.loc 1 105 0 discriminator 3
+ 586 0022 FB89     		ldrh	r3, [r7, #14]
+ 587 0024 2C22     		movs	r2, #44
+ 588 0026 02FB03F3 		mul	r3, r2, r3
+ 589 002a 2D4A     		ldr	r2, .L33+4
+ 590 002c 1344     		add	r3, r3, r2
+ 591 002e FA89     		ldrh	r2, [r7, #14]
+ 592 0030 2C21     		movs	r1, #44
+ 593 0032 01FB02F2 		mul	r2, r1, r2
+ 594 0036 1032     		adds	r2, r2, #16
+ 595 0038 2949     		ldr	r1, .L33+4
+ 596 003a 0A44     		add	r2, r2, r1
+ 597 003c 0432     		adds	r2, r2, #4
+ 598 003e F989     		ldrh	r1, [r7, #14]
+ 599 0040 2748     		ldr	r0, .L33+4
+ 600 0042 2C24     		movs	r4, #44
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 14
 
 
- 601 004c 0968     		ldr	r1, [r1]
- 602 004e 0291     		str	r1, [sp, #8]
- 603 0050 0192     		str	r2, [sp, #4]
- 604 0052 0093     		str	r3, [sp]
- 605 0054 7B68     		ldr	r3, [r7, #4]
- 606 0056 234A     		ldr	r2, .L33+8
- 607 0058 42F21071 		movw	r1, #10000
- 608 005c 7868     		ldr	r0, [r7, #4]
- 609 005e FFF7FEFF 		bl	snprintf
+ 601 0044 04FB01F1 		mul	r1, r4, r1
+ 602 0048 0144     		add	r1, r1, r0
+ 603 004a 2831     		adds	r1, r1, #40
+ 604 004c 0968     		ldr	r1, [r1]
+ 605 004e 0291     		str	r1, [sp, #8]
+ 606 0050 0192     		str	r2, [sp, #4]
+ 607 0052 0093     		str	r3, [sp]
+ 608 0054 7B68     		ldr	r3, [r7, #4]
+ 609 0056 234A     		ldr	r2, .L33+8
+ 610 0058 42F21071 		movw	r1, #10000
+ 611 005c 7868     		ldr	r0, [r7, #4]
+ 612 005e FFF7FEFF 		bl	snprintf
  103:data.c        ****         for(uint16 i = 0;i < sizeOfDataStack();i++){
- 610              		.loc 1 103 0 discriminator 3
- 611 0062 FB89     		ldrh	r3, [r7, #14]
- 612 0064 0133     		adds	r3, r3, #1
- 613 0066 FB81     		strh	r3, [r7, #14]	@ movhi
- 614              	.L27:
+ 613              		.loc 1 103 0 discriminator 3
+ 614 0062 FB89     		ldrh	r3, [r7, #14]
+ 615 0064 0133     		adds	r3, r3, #1
+ 616 0066 FB81     		strh	r3, [r7, #14]	@ movhi
+ 617              	.L27:
  103:data.c        ****         for(uint16 i = 0;i < sizeOfDataStack();i++){
- 615              		.loc 1 103 0 is_stmt 0 discriminator 1
- 616 0068 FFF7FEFF 		bl	sizeOfDataStack
- 617 006c 0346     		mov	r3, r0
- 618 006e 1A46     		mov	r2, r3
- 619 0070 FB89     		ldrh	r3, [r7, #14]
- 620 0072 9342     		cmp	r3, r2
- 621 0074 D5D3     		bcc	.L28
- 622 0076 28E0     		b	.L29
- 623              	.L26:
- 624              	.LBE3:
- 625              	.LBB4:
+ 618              		.loc 1 103 0 is_stmt 0 discriminator 1
+ 619 0068 FFF7FEFF 		bl	sizeOfDataStack
+ 620 006c 0346     		mov	r3, r0
+ 621 006e 1A46     		mov	r2, r3
+ 622 0070 FB89     		ldrh	r3, [r7, #14]
+ 623 0072 9342     		cmp	r3, r2
+ 624 0074 D5D3     		bcc	.L28
+ 625 0076 28E0     		b	.L29
+ 626              	.L26:
+ 627              	.LBE3:
+ 628              	.LBB4:
  106:data.c        ****         }
  107:data.c        ****     }else{
  108:data.c        ****         // if buffer did overflow, then send the max number of values allowed in the buffer
  109:data.c        ****         for(uint16 i = 0;i < DATA_MAX_VALUES;i++){
- 626              		.loc 1 109 0 is_stmt 1
- 627 0078 0023     		movs	r3, #0
- 628 007a BB81     		strh	r3, [r7, #12]	@ movhi
- 629 007c 22E0     		b	.L30
- 630              	.L31:
+ 629              		.loc 1 109 0 is_stmt 1
+ 630 0078 0023     		movs	r3, #0
+ 631 007a BB81     		strh	r3, [r7, #12]	@ movhi
+ 632 007c 22E0     		b	.L30
+ 633              	.L31:
  110:data.c        ****             // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
  111:data.c        ****             snprintf(body,sizeof(http_body), "%s%s, value=%s %ld000000000\n", body, data[i].key, da
- 631              		.loc 1 111 0 discriminator 3
- 632 007e BB89     		ldrh	r3, [r7, #12]
- 633 0080 2C22     		movs	r2, #44
- 634 0082 02FB03F3 		mul	r3, r2, r3
- 635 0086 164A     		ldr	r2, .L33+4
- 636 0088 1344     		add	r3, r3, r2
- 637 008a BA89     		ldrh	r2, [r7, #12]
- 638 008c 2C21     		movs	r1, #44
- 639 008e 01FB02F2 		mul	r2, r1, r2
- 640 0092 1032     		adds	r2, r2, #16
- 641 0094 1249     		ldr	r1, .L33+4
- 642 0096 0A44     		add	r2, r2, r1
- 643 0098 0432     		adds	r2, r2, #4
- 644 009a B989     		ldrh	r1, [r7, #12]
- 645 009c 1048     		ldr	r0, .L33+4
- 646 009e 2C24     		movs	r4, #44
- 647 00a0 04FB01F1 		mul	r1, r4, r1
- 648 00a4 0144     		add	r1, r1, r0
- 649 00a6 2831     		adds	r1, r1, #40
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 15
+ 634              		.loc 1 111 0 discriminator 3
+ 635 007e BB89     		ldrh	r3, [r7, #12]
+ 636 0080 2C22     		movs	r2, #44
+ 637 0082 02FB03F3 		mul	r3, r2, r3
+ 638 0086 164A     		ldr	r2, .L33+4
+ 639 0088 1344     		add	r3, r3, r2
+ 640 008a BA89     		ldrh	r2, [r7, #12]
+ 641 008c 2C21     		movs	r1, #44
+ 642 008e 01FB02F2 		mul	r2, r1, r2
+ 643 0092 1032     		adds	r2, r2, #16
+ 644 0094 1249     		ldr	r1, .L33+4
+ 645 0096 0A44     		add	r2, r2, r1
+ 646 0098 0432     		adds	r2, r2, #4
+ 647 009a B989     		ldrh	r1, [r7, #12]
+ 648 009c 1048     		ldr	r0, .L33+4
+ 649 009e 2C24     		movs	r4, #44
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 15
 
 
- 650 00a8 0968     		ldr	r1, [r1]
- 651 00aa 0291     		str	r1, [sp, #8]
- 652 00ac 0192     		str	r2, [sp, #4]
- 653 00ae 0093     		str	r3, [sp]
- 654 00b0 7B68     		ldr	r3, [r7, #4]
- 655 00b2 0C4A     		ldr	r2, .L33+8
- 656 00b4 42F21071 		movw	r1, #10000
- 657 00b8 7868     		ldr	r0, [r7, #4]
- 658 00ba FFF7FEFF 		bl	snprintf
+ 650 00a0 04FB01F1 		mul	r1, r4, r1
+ 651 00a4 0144     		add	r1, r1, r0
+ 652 00a6 2831     		adds	r1, r1, #40
+ 653 00a8 0968     		ldr	r1, [r1]
+ 654 00aa 0291     		str	r1, [sp, #8]
+ 655 00ac 0192     		str	r2, [sp, #4]
+ 656 00ae 0093     		str	r3, [sp]
+ 657 00b0 7B68     		ldr	r3, [r7, #4]
+ 658 00b2 0C4A     		ldr	r2, .L33+8
+ 659 00b4 42F21071 		movw	r1, #10000
+ 660 00b8 7868     		ldr	r0, [r7, #4]
+ 661 00ba FFF7FEFF 		bl	snprintf
  109:data.c        ****             // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
- 659              		.loc 1 109 0 discriminator 3
- 660 00be BB89     		ldrh	r3, [r7, #12]
- 661 00c0 0133     		adds	r3, r3, #1
- 662 00c2 BB81     		strh	r3, [r7, #12]	@ movhi
- 663              	.L30:
+ 662              		.loc 1 109 0 discriminator 3
+ 663 00be BB89     		ldrh	r3, [r7, #12]
+ 664 00c0 0133     		adds	r3, r3, #1
+ 665 00c2 BB81     		strh	r3, [r7, #12]	@ movhi
+ 666              	.L30:
  109:data.c        ****             // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
- 664              		.loc 1 109 0 is_stmt 0 discriminator 1
- 665 00c4 BB89     		ldrh	r3, [r7, #12]
- 666 00c6 952B     		cmp	r3, #149
- 667 00c8 D9D9     		bls	.L31
- 668              	.L29:
- 669              	.LBE4:
+ 667              		.loc 1 109 0 is_stmt 0 discriminator 1
+ 668 00c4 BB89     		ldrh	r3, [r7, #12]
+ 669 00c6 952B     		cmp	r3, #149
+ 670 00c8 D9D9     		bls	.L31
+ 671              	.L29:
+ 672              	.LBE4:
  112:data.c        ****         }
  113:data.c        ****     }
  114:data.c        ****         
  115:data.c        ****         
  116:data.c        ****     // Get the length of the influx body and save to request_len
  117:data.c        ****     unsigned int request_len = strlen(body);
- 670              		.loc 1 117 0 is_stmt 1
- 671 00ca 7868     		ldr	r0, [r7, #4]
- 672 00cc FFF7FEFF 		bl	strlen
- 673 00d0 B860     		str	r0, [r7, #8]
+ 673              		.loc 1 117 0 is_stmt 1
+ 674 00ca 7868     		ldr	r0, [r7, #4]
+ 675 00cc FFF7FEFF 		bl	strlen
+ 676 00d0 B860     		str	r0, [r7, #8]
  118:data.c        ****    
  119:data.c        ****     return request_len; // Return the length of the influx body
- 674              		.loc 1 119 0
- 675 00d2 BB68     		ldr	r3, [r7, #8]
+ 677              		.loc 1 119 0
+ 678 00d2 BB68     		ldr	r3, [r7, #8]
  120:data.c        **** }
- 676              		.loc 1 120 0
- 677 00d4 1846     		mov	r0, r3
- 678 00d6 1437     		adds	r7, r7, #20
- 679              		.cfi_def_cfa_offset 12
- 680 00d8 BD46     		mov	sp, r7
- 681              		.cfi_def_cfa_register 13
- 682              		@ sp needed
- 683 00da 90BD     		pop	{r4, r7, pc}
- 684              	.L34:
- 685              		.align	2
- 686              	.L33:
- 687 00dc 00000000 		.word	buffer_overflow
- 688 00e0 00000000 		.word	data
- 689 00e4 DC000000 		.word	.LC15
- 690              		.cfi_endproc
- 691              	.LFE70:
- 692              		.size	construct_malcom_body, .-construct_malcom_body
- 693              		.section	.rodata
- 694 00f9 000000   		.align	2
- 695              	.LC16:
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 16
+ 679              		.loc 1 120 0
+ 680 00d4 1846     		mov	r0, r3
+ 681 00d6 1437     		adds	r7, r7, #20
+ 682              		.cfi_def_cfa_offset 12
+ 683 00d8 BD46     		mov	sp, r7
+ 684              		.cfi_def_cfa_register 13
+ 685              		@ sp needed
+ 686 00da 90BD     		pop	{r4, r7, pc}
+ 687              	.L34:
+ 688              		.align	2
+ 689              	.L33:
+ 690 00dc 00000000 		.word	buffer_overflow
+ 691 00e0 00000000 		.word	data
+ 692 00e4 DC000000 		.word	.LC15
+ 693              		.cfi_endproc
+ 694              	.LFE70:
+ 695              		.size	construct_malcom_body, .-construct_malcom_body
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 16
 
 
- 696 00fc 25732573 		.ascii	"%s%s?d=%s&h=%s\000"
- 696      3F643D25 
- 696      7326683D 
- 696      257300
- 697              		.section	.text.construct_malcom_route,"ax",%progbits
- 698              		.align	2
- 699              		.global	construct_malcom_route
- 700              		.thumb
- 701              		.thumb_func
- 702              		.type	construct_malcom_route, %function
- 703              	construct_malcom_route:
- 704              	.LFB71:
+ 696              		.section	.rodata
+ 697 00f9 000000   		.align	2
+ 698              	.LC16:
+ 699 00fc 25732573 		.ascii	"%s%s?d=%s&h=%s\000"
+ 699      3F643D25 
+ 699      7326683D 
+ 699      257300
+ 700              		.section	.text.construct_malcom_route,"ax",%progbits
+ 701              		.align	2
+ 702              		.global	construct_malcom_route
+ 703              		.thumb
+ 704              		.thumb_func
+ 705              		.type	construct_malcom_route, %function
+ 706              	construct_malcom_route:
+ 707              	.LFB71:
  121:data.c        **** 
  122:data.c        **** // Construct the route to the Malcom middle layer
  123:data.c        **** void construct_malcom_route(char* route, char* base, char* device, char* hash){
- 705              		.loc 1 123 0
- 706              		.cfi_startproc
- 707              		@ args = 0, pretend = 0, frame = 16
- 708              		@ frame_needed = 1, uses_anonymous_args = 0
- 709 0000 80B5     		push	{r7, lr}
- 710              		.cfi_def_cfa_offset 8
- 711              		.cfi_offset 7, -8
- 712              		.cfi_offset 14, -4
- 713 0002 88B0     		sub	sp, sp, #32
- 714              		.cfi_def_cfa_offset 40
- 715 0004 04AF     		add	r7, sp, #16
- 716              		.cfi_def_cfa 7, 24
- 717 0006 F860     		str	r0, [r7, #12]
- 718 0008 B960     		str	r1, [r7, #8]
- 719 000a 7A60     		str	r2, [r7, #4]
- 720 000c 3B60     		str	r3, [r7]
+ 708              		.loc 1 123 0
+ 709              		.cfi_startproc
+ 710              		@ args = 0, pretend = 0, frame = 16
+ 711              		@ frame_needed = 1, uses_anonymous_args = 0
+ 712 0000 80B5     		push	{r7, lr}
+ 713              		.cfi_def_cfa_offset 8
+ 714              		.cfi_offset 7, -8
+ 715              		.cfi_offset 14, -4
+ 716 0002 88B0     		sub	sp, sp, #32
+ 717              		.cfi_def_cfa_offset 40
+ 718 0004 04AF     		add	r7, sp, #16
+ 719              		.cfi_def_cfa 7, 24
+ 720 0006 F860     		str	r0, [r7, #12]
+ 721 0008 B960     		str	r1, [r7, #8]
+ 722 000a 7A60     		str	r2, [r7, #4]
+ 723 000c 3B60     		str	r3, [r7]
  124:data.c        ****     route[0] = '\0';
- 721              		.loc 1 124 0
- 722 000e FB68     		ldr	r3, [r7, #12]
- 723 0010 0022     		movs	r2, #0
- 724 0012 1A70     		strb	r2, [r3]
+ 724              		.loc 1 124 0
+ 725 000e FB68     		ldr	r3, [r7, #12]
+ 726 0010 0022     		movs	r2, #0
+ 727 0012 1A70     		strb	r2, [r3]
  125:data.c        ****     snprintf(route,sizeof(http_route), "%s%s?d=%s&h=%s", route, base, device, hash); 
- 725              		.loc 1 125 0
- 726 0014 3B68     		ldr	r3, [r7]
- 727 0016 0293     		str	r3, [sp, #8]
- 728 0018 7B68     		ldr	r3, [r7, #4]
- 729 001a 0193     		str	r3, [sp, #4]
- 730 001c BB68     		ldr	r3, [r7, #8]
- 731 001e 0093     		str	r3, [sp]
- 732 0020 FB68     		ldr	r3, [r7, #12]
- 733 0022 044A     		ldr	r2, .L36
- 734 0024 C821     		movs	r1, #200
- 735 0026 F868     		ldr	r0, [r7, #12]
- 736 0028 FFF7FEFF 		bl	snprintf
+ 728              		.loc 1 125 0
+ 729 0014 3B68     		ldr	r3, [r7]
+ 730 0016 0293     		str	r3, [sp, #8]
+ 731 0018 7B68     		ldr	r3, [r7, #4]
+ 732 001a 0193     		str	r3, [sp, #4]
+ 733 001c BB68     		ldr	r3, [r7, #8]
+ 734 001e 0093     		str	r3, [sp]
+ 735 0020 FB68     		ldr	r3, [r7, #12]
+ 736 0022 044A     		ldr	r2, .L36
+ 737 0024 C821     		movs	r1, #200
+ 738 0026 F868     		ldr	r0, [r7, #12]
+ 739 0028 FFF7FEFF 		bl	snprintf
  126:data.c        **** }
- 737              		.loc 1 126 0
- 738 002c 00BF     		nop
- 739 002e 1037     		adds	r7, r7, #16
- 740              		.cfi_def_cfa_offset 8
- 741 0030 BD46     		mov	sp, r7
- 742              		.cfi_def_cfa_register 13
- 743              		@ sp needed
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 17
+ 740              		.loc 1 126 0
+ 741 002c 00BF     		nop
+ 742 002e 1037     		adds	r7, r7, #16
+ 743              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 17
 
 
- 744 0032 80BD     		pop	{r7, pc}
- 745              	.L37:
- 746              		.align	2
- 747              	.L36:
- 748 0034 FC000000 		.word	.LC16
- 749              		.cfi_endproc
- 750              	.LFE71:
- 751              		.size	construct_malcom_route, .-construct_malcom_route
- 752              		.text
- 753              	.Letext0:
- 754              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 755              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 756              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 757              		.file 5 "modem.h"
- 758              		.file 6 "data.h"
- 759              		.file 7 "notoriOS.h"
- 760              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
- 761              		.section	.debug_info,"",%progbits
- 762              	.Ldebug_info0:
- 763 0000 80060000 		.4byte	0x680
- 764 0004 0400     		.2byte	0x4
- 765 0006 00000000 		.4byte	.Ldebug_abbrev0
- 766 000a 04       		.byte	0x4
- 767 000b 01       		.uleb128 0x1
- 768 000c 91000000 		.4byte	.LASF93
- 769 0010 0C       		.byte	0xc
- 770 0011 1F010000 		.4byte	.LASF94
- 771 0015 DF020000 		.4byte	.LASF95
- 772 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 773 001d 00000000 		.4byte	0
- 774 0021 00000000 		.4byte	.Ldebug_line0
- 775 0025 02       		.uleb128 0x2
- 776 0026 04       		.byte	0x4
- 777 0027 05       		.byte	0x5
- 778 0028 696E7400 		.ascii	"int\000"
- 779 002c 03       		.uleb128 0x3
- 780 002d 04       		.byte	0x4
- 781 002e 07       		.byte	0x7
- 782 002f B6020000 		.4byte	.LASF0
- 783 0033 03       		.uleb128 0x3
- 784 0034 08       		.byte	0x8
- 785 0035 05       		.byte	0x5
- 786 0036 9F010000 		.4byte	.LASF1
- 787 003a 03       		.uleb128 0x3
- 788 003b 08       		.byte	0x8
- 789 003c 04       		.byte	0x4
- 790 003d 0B020000 		.4byte	.LASF2
- 791 0041 03       		.uleb128 0x3
- 792 0042 01       		.byte	0x1
- 793 0043 06       		.byte	0x6
- 794 0044 75020000 		.4byte	.LASF3
- 795 0048 03       		.uleb128 0x3
- 796 0049 01       		.byte	0x1
- 797 004a 08       		.byte	0x8
- 798 004b 17020000 		.4byte	.LASF4
- 799 004f 03       		.uleb128 0x3
- 800 0050 02       		.byte	0x2
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 18
+ 744 0030 BD46     		mov	sp, r7
+ 745              		.cfi_def_cfa_register 13
+ 746              		@ sp needed
+ 747 0032 80BD     		pop	{r7, pc}
+ 748              	.L37:
+ 749              		.align	2
+ 750              	.L36:
+ 751 0034 FC000000 		.word	.LC16
+ 752              		.cfi_endproc
+ 753              	.LFE71:
+ 754              		.size	construct_malcom_route, .-construct_malcom_route
+ 755              		.text
+ 756              	.Letext0:
+ 757              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 758              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 759              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 760              		.file 5 "modem.h"
+ 761              		.file 6 "data.h"
+ 762              		.file 7 "notoriOS.h"
+ 763              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 764              		.file 9 "App_LED.h"
+ 765              		.section	.debug_info,"",%progbits
+ 766              	.Ldebug_info0:
+ 767 0000 B3060000 		.4byte	0x6b3
+ 768 0004 0400     		.2byte	0x4
+ 769 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 770 000a 04       		.byte	0x4
+ 771 000b 01       		.uleb128 0x1
+ 772 000c 97000000 		.4byte	.LASF96
+ 773 0010 0C       		.byte	0xc
+ 774 0011 25010000 		.4byte	.LASF97
+ 775 0015 34040000 		.4byte	.LASF98
+ 776 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 777 001d 00000000 		.4byte	0
+ 778 0021 00000000 		.4byte	.Ldebug_line0
+ 779 0025 02       		.uleb128 0x2
+ 780 0026 04       		.byte	0x4
+ 781 0027 05       		.byte	0x5
+ 782 0028 696E7400 		.ascii	"int\000"
+ 783 002c 03       		.uleb128 0x3
+ 784 002d 04       		.byte	0x4
+ 785 002e 07       		.byte	0x7
+ 786 002f C8020000 		.4byte	.LASF0
+ 787 0033 03       		.uleb128 0x3
+ 788 0034 08       		.byte	0x8
+ 789 0035 05       		.byte	0x5
+ 790 0036 B1010000 		.4byte	.LASF1
+ 791 003a 03       		.uleb128 0x3
+ 792 003b 08       		.byte	0x8
+ 793 003c 04       		.byte	0x4
+ 794 003d 1D020000 		.4byte	.LASF2
+ 795 0041 03       		.uleb128 0x3
+ 796 0042 01       		.byte	0x1
+ 797 0043 06       		.byte	0x6
+ 798 0044 87020000 		.4byte	.LASF3
+ 799 0048 03       		.uleb128 0x3
+ 800 0049 01       		.byte	0x1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 18
 
 
- 801 0051 05       		.byte	0x5
- 802 0052 6C000000 		.4byte	.LASF5
- 803 0056 03       		.uleb128 0x3
- 804 0057 02       		.byte	0x2
- 805 0058 07       		.byte	0x7
- 806 0059 65030000 		.4byte	.LASF6
- 807 005d 04       		.uleb128 0x4
- 808 005e 90040000 		.4byte	.LASF12
- 809 0062 02       		.byte	0x2
- 810 0063 3F       		.byte	0x3f
- 811 0064 68000000 		.4byte	0x68
- 812 0068 03       		.uleb128 0x3
- 813 0069 04       		.byte	0x4
- 814 006a 05       		.byte	0x5
- 815 006b B2010000 		.4byte	.LASF7
- 816 006f 03       		.uleb128 0x3
- 817 0070 04       		.byte	0x4
- 818 0071 07       		.byte	0x7
- 819 0072 10040000 		.4byte	.LASF8
- 820 0076 03       		.uleb128 0x3
- 821 0077 08       		.byte	0x8
- 822 0078 07       		.byte	0x7
- 823 0079 81020000 		.4byte	.LASF9
- 824 007d 03       		.uleb128 0x3
- 825 007e 04       		.byte	0x4
- 826 007f 07       		.byte	0x7
- 827 0080 80000000 		.4byte	.LASF10
- 828 0084 05       		.uleb128 0x5
- 829 0085 04       		.byte	0x4
- 830 0086 8A000000 		.4byte	0x8a
- 831 008a 03       		.uleb128 0x3
- 832 008b 01       		.byte	0x1
- 833 008c 08       		.byte	0x8
- 834 008d AD010000 		.4byte	.LASF11
- 835 0091 06       		.uleb128 0x6
- 836 0092 8A000000 		.4byte	0x8a
- 837 0096 A1000000 		.4byte	0xa1
- 838 009a 07       		.uleb128 0x7
- 839 009b 7D000000 		.4byte	0x7d
- 840 009f 17       		.byte	0x17
- 841 00a0 00       		.byte	0
- 842 00a1 04       		.uleb128 0x4
- 843 00a2 B4030000 		.4byte	.LASF13
- 844 00a6 03       		.byte	0x3
- 845 00a7 2C       		.byte	0x2c
- 846 00a8 5D000000 		.4byte	0x5d
- 847 00ac 03       		.uleb128 0x3
- 848 00ad 08       		.byte	0x8
- 849 00ae 04       		.byte	0x4
- 850 00af 28040000 		.4byte	.LASF14
- 851 00b3 03       		.uleb128 0x3
- 852 00b4 04       		.byte	0x4
- 853 00b5 04       		.byte	0x4
- 854 00b6 99010000 		.4byte	.LASF15
- 855 00ba 08       		.uleb128 0x8
- 856 00bb 6E010000 		.4byte	.LASF16
- 857 00bf 04       		.byte	0x4
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 19
+ 801 004a 08       		.byte	0x8
+ 802 004b 29020000 		.4byte	.LASF4
+ 803 004f 03       		.uleb128 0x3
+ 804 0050 02       		.byte	0x2
+ 805 0051 05       		.byte	0x5
+ 806 0052 6C000000 		.4byte	.LASF5
+ 807 0056 03       		.uleb128 0x3
+ 808 0057 02       		.byte	0x2
+ 809 0058 07       		.byte	0x7
+ 810 0059 30030000 		.4byte	.LASF6
+ 811 005d 04       		.uleb128 0x4
+ 812 005e 76040000 		.4byte	.LASF12
+ 813 0062 02       		.byte	0x2
+ 814 0063 3F       		.byte	0x3f
+ 815 0064 68000000 		.4byte	0x68
+ 816 0068 03       		.uleb128 0x3
+ 817 0069 04       		.byte	0x4
+ 818 006a 05       		.byte	0x5
+ 819 006b C4010000 		.4byte	.LASF7
+ 820 006f 03       		.uleb128 0x3
+ 821 0070 04       		.byte	0x4
+ 822 0071 07       		.byte	0x7
+ 823 0072 DB030000 		.4byte	.LASF8
+ 824 0076 03       		.uleb128 0x3
+ 825 0077 08       		.byte	0x8
+ 826 0078 07       		.byte	0x7
+ 827 0079 93020000 		.4byte	.LASF9
+ 828 007d 03       		.uleb128 0x3
+ 829 007e 04       		.byte	0x4
+ 830 007f 07       		.byte	0x7
+ 831 0080 80000000 		.4byte	.LASF10
+ 832 0084 05       		.uleb128 0x5
+ 833 0085 04       		.byte	0x4
+ 834 0086 8A000000 		.4byte	0x8a
+ 835 008a 03       		.uleb128 0x3
+ 836 008b 01       		.byte	0x1
+ 837 008c 08       		.byte	0x8
+ 838 008d BF010000 		.4byte	.LASF11
+ 839 0091 06       		.uleb128 0x6
+ 840 0092 8A000000 		.4byte	0x8a
+ 841 0096 A1000000 		.4byte	0xa1
+ 842 009a 07       		.uleb128 0x7
+ 843 009b 7D000000 		.4byte	0x7d
+ 844 009f 17       		.byte	0x17
+ 845 00a0 00       		.byte	0
+ 846 00a1 04       		.uleb128 0x4
+ 847 00a2 7F030000 		.4byte	.LASF13
+ 848 00a6 03       		.byte	0x3
+ 849 00a7 2C       		.byte	0x2c
+ 850 00a8 5D000000 		.4byte	0x5d
+ 851 00ac 03       		.uleb128 0x3
+ 852 00ad 08       		.byte	0x8
+ 853 00ae 04       		.byte	0x4
+ 854 00af F3030000 		.4byte	.LASF14
+ 855 00b3 03       		.uleb128 0x3
+ 856 00b4 04       		.byte	0x4
+ 857 00b5 04       		.byte	0x4
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 19
 
 
- 858 00c0 9201     		.2byte	0x192
- 859 00c2 48000000 		.4byte	0x48
- 860 00c6 08       		.uleb128 0x8
- 861 00c7 50010000 		.4byte	.LASF17
- 862 00cb 04       		.byte	0x4
- 863 00cc 9301     		.2byte	0x193
- 864 00ce 56000000 		.4byte	0x56
- 865 00d2 08       		.uleb128 0x8
- 866 00d3 87010000 		.4byte	.LASF18
- 867 00d7 04       		.byte	0x4
- 868 00d8 9601     		.2byte	0x196
- 869 00da 4F000000 		.4byte	0x4f
- 870 00de 08       		.uleb128 0x8
- 871 00df 22040000 		.4byte	.LASF19
- 872 00e3 04       		.byte	0x4
- 873 00e4 9701     		.2byte	0x197
- 874 00e6 68000000 		.4byte	0x68
- 875 00ea 09       		.uleb128 0x9
- 876 00eb 3C       		.byte	0x3c
- 877 00ec 05       		.byte	0x5
- 878 00ed 35       		.byte	0x35
- 879 00ee 17010000 		.4byte	0x117
- 880 00f2 0A       		.uleb128 0xa
- 881 00f3 13000000 		.4byte	.LASF20
- 882 00f7 05       		.byte	0x5
- 883 00f8 36       		.byte	0x36
- 884 00f9 17010000 		.4byte	0x117
- 885 00fd 00       		.byte	0
- 886 00fe 0A       		.uleb128 0xa
- 887 00ff 00000000 		.4byte	.LASF21
- 888 0103 05       		.byte	0x5
- 889 0104 37       		.byte	0x37
- 890 0105 17010000 		.4byte	0x117
- 891 0109 14       		.byte	0x14
- 892 010a 0A       		.uleb128 0xa
- 893 010b AF030000 		.4byte	.LASF22
- 894 010f 05       		.byte	0x5
- 895 0110 38       		.byte	0x38
- 896 0111 17010000 		.4byte	0x117
- 897 0115 28       		.byte	0x28
- 898 0116 00       		.byte	0
- 899 0117 06       		.uleb128 0x6
- 900 0118 8A000000 		.4byte	0x8a
- 901 011c 27010000 		.4byte	0x127
- 902 0120 07       		.uleb128 0x7
- 903 0121 7D000000 		.4byte	0x7d
- 904 0125 13       		.byte	0x13
- 905 0126 00       		.byte	0
- 906 0127 04       		.uleb128 0x4
- 907 0128 75040000 		.4byte	.LASF23
- 908 012c 05       		.byte	0x5
- 909 012d 3A       		.byte	0x3a
- 910 012e EA000000 		.4byte	0xea
- 911 0132 09       		.uleb128 0x9
- 912 0133 20       		.byte	0x20
- 913 0134 05       		.byte	0x5
- 914 0135 3C       		.byte	0x3c
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 20
+ 858 00b6 AB010000 		.4byte	.LASF15
+ 859 00ba 08       		.uleb128 0x8
+ 860 00bb 80010000 		.4byte	.LASF16
+ 861 00bf 04       		.byte	0x4
+ 862 00c0 9201     		.2byte	0x192
+ 863 00c2 48000000 		.4byte	0x48
+ 864 00c6 08       		.uleb128 0x8
+ 865 00c7 62010000 		.4byte	.LASF17
+ 866 00cb 04       		.byte	0x4
+ 867 00cc 9301     		.2byte	0x193
+ 868 00ce 56000000 		.4byte	0x56
+ 869 00d2 08       		.uleb128 0x8
+ 870 00d3 99010000 		.4byte	.LASF18
+ 871 00d7 04       		.byte	0x4
+ 872 00d8 9601     		.2byte	0x196
+ 873 00da 4F000000 		.4byte	0x4f
+ 874 00de 08       		.uleb128 0x8
+ 875 00df ED030000 		.4byte	.LASF19
+ 876 00e3 04       		.byte	0x4
+ 877 00e4 9701     		.2byte	0x197
+ 878 00e6 68000000 		.4byte	0x68
+ 879 00ea 09       		.uleb128 0x9
+ 880 00eb 3C       		.byte	0x3c
+ 881 00ec 05       		.byte	0x5
+ 882 00ed 35       		.byte	0x35
+ 883 00ee 17010000 		.4byte	0x117
+ 884 00f2 0A       		.uleb128 0xa
+ 885 00f3 13000000 		.4byte	.LASF20
+ 886 00f7 05       		.byte	0x5
+ 887 00f8 36       		.byte	0x36
+ 888 00f9 17010000 		.4byte	0x117
+ 889 00fd 00       		.byte	0
+ 890 00fe 0A       		.uleb128 0xa
+ 891 00ff 00000000 		.4byte	.LASF21
+ 892 0103 05       		.byte	0x5
+ 893 0104 37       		.byte	0x37
+ 894 0105 17010000 		.4byte	0x117
+ 895 0109 14       		.byte	0x14
+ 896 010a 0A       		.uleb128 0xa
+ 897 010b 7A030000 		.4byte	.LASF22
+ 898 010f 05       		.byte	0x5
+ 899 0110 38       		.byte	0x38
+ 900 0111 17010000 		.4byte	0x117
+ 901 0115 28       		.byte	0x28
+ 902 0116 00       		.byte	0
+ 903 0117 06       		.uleb128 0x6
+ 904 0118 8A000000 		.4byte	0x8a
+ 905 011c 27010000 		.4byte	0x127
+ 906 0120 07       		.uleb128 0x7
+ 907 0121 7D000000 		.4byte	0x7d
+ 908 0125 13       		.byte	0x13
+ 909 0126 00       		.byte	0
+ 910 0127 04       		.uleb128 0x4
+ 911 0128 5B040000 		.4byte	.LASF23
+ 912 012c 05       		.byte	0x5
+ 913 012d 3A       		.byte	0x3a
+ 914 012e EA000000 		.4byte	0xea
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 20
 
 
- 915 0136 9B010000 		.4byte	0x19b
- 916 013a 0A       		.uleb128 0xa
- 917 013b CF020000 		.4byte	.LASF24
- 918 013f 05       		.byte	0x5
- 919 0140 3D       		.byte	0x3d
- 920 0141 25000000 		.4byte	0x25
- 921 0145 00       		.byte	0
- 922 0146 0B       		.uleb128 0xb
- 923 0147 62657200 		.ascii	"ber\000"
- 924 014b 05       		.byte	0x5
- 925 014c 3E       		.byte	0x3e
- 926 014d 25000000 		.4byte	0x25
- 927 0151 04       		.byte	0x4
- 928 0152 0A       		.uleb128 0xa
- 929 0153 82010000 		.4byte	.LASF25
- 930 0157 05       		.byte	0x5
- 931 0158 3F       		.byte	0x3f
- 932 0159 25000000 		.4byte	0x25
- 933 015d 08       		.byte	0x8
- 934 015e 0A       		.uleb128 0xa
- 935 015f 45010000 		.4byte	.LASF26
- 936 0163 05       		.byte	0x5
- 937 0164 40       		.byte	0x40
- 938 0165 25000000 		.4byte	0x25
- 939 0169 0C       		.byte	0xc
- 940 016a 0A       		.uleb128 0xa
- 941 016b 8D010000 		.4byte	.LASF27
- 942 016f 05       		.byte	0x5
- 943 0170 41       		.byte	0x41
- 944 0171 25000000 		.4byte	0x25
- 945 0175 10       		.byte	0x10
- 946 0176 0A       		.uleb128 0xa
- 947 0177 25020000 		.4byte	.LASF28
- 948 017b 05       		.byte	0x5
- 949 017c 42       		.byte	0x42
- 950 017d 25000000 		.4byte	0x25
- 951 0181 14       		.byte	0x14
- 952 0182 0A       		.uleb128 0xa
- 953 0183 78030000 		.4byte	.LASF29
- 954 0187 05       		.byte	0x5
- 955 0188 43       		.byte	0x43
- 956 0189 25000000 		.4byte	0x25
- 957 018d 18       		.byte	0x18
- 958 018e 0A       		.uleb128 0xa
- 959 018f 9C030000 		.4byte	.LASF30
- 960 0193 05       		.byte	0x5
- 961 0194 44       		.byte	0x44
- 962 0195 25000000 		.4byte	0x25
- 963 0199 1C       		.byte	0x1c
- 964 019a 00       		.byte	0
- 965 019b 04       		.uleb128 0x4
- 966 019c BC030000 		.4byte	.LASF31
- 967 01a0 05       		.byte	0x5
- 968 01a1 46       		.byte	0x46
- 969 01a2 32010000 		.4byte	0x132
- 970 01a6 09       		.uleb128 0x9
- 971 01a7 05       		.byte	0x5
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 21
+ 915 0132 09       		.uleb128 0x9
+ 916 0133 20       		.byte	0x20
+ 917 0134 05       		.byte	0x5
+ 918 0135 3C       		.byte	0x3c
+ 919 0136 9B010000 		.4byte	0x19b
+ 920 013a 0A       		.uleb128 0xa
+ 921 013b E1020000 		.4byte	.LASF24
+ 922 013f 05       		.byte	0x5
+ 923 0140 3D       		.byte	0x3d
+ 924 0141 25000000 		.4byte	0x25
+ 925 0145 00       		.byte	0
+ 926 0146 0B       		.uleb128 0xb
+ 927 0147 62657200 		.ascii	"ber\000"
+ 928 014b 05       		.byte	0x5
+ 929 014c 3E       		.byte	0x3e
+ 930 014d 25000000 		.4byte	0x25
+ 931 0151 04       		.byte	0x4
+ 932 0152 0A       		.uleb128 0xa
+ 933 0153 94010000 		.4byte	.LASF25
+ 934 0157 05       		.byte	0x5
+ 935 0158 3F       		.byte	0x3f
+ 936 0159 25000000 		.4byte	0x25
+ 937 015d 08       		.byte	0x8
+ 938 015e 0A       		.uleb128 0xa
+ 939 015f 4B010000 		.4byte	.LASF26
+ 940 0163 05       		.byte	0x5
+ 941 0164 40       		.byte	0x40
+ 942 0165 25000000 		.4byte	0x25
+ 943 0169 0C       		.byte	0xc
+ 944 016a 0A       		.uleb128 0xa
+ 945 016b 9F010000 		.4byte	.LASF27
+ 946 016f 05       		.byte	0x5
+ 947 0170 41       		.byte	0x41
+ 948 0171 25000000 		.4byte	0x25
+ 949 0175 10       		.byte	0x10
+ 950 0176 0A       		.uleb128 0xa
+ 951 0177 37020000 		.4byte	.LASF28
+ 952 017b 05       		.byte	0x5
+ 953 017c 42       		.byte	0x42
+ 954 017d 25000000 		.4byte	0x25
+ 955 0181 14       		.byte	0x14
+ 956 0182 0A       		.uleb128 0xa
+ 957 0183 43030000 		.4byte	.LASF29
+ 958 0187 05       		.byte	0x5
+ 959 0188 43       		.byte	0x43
+ 960 0189 25000000 		.4byte	0x25
+ 961 018d 18       		.byte	0x18
+ 962 018e 0A       		.uleb128 0xa
+ 963 018f 67030000 		.4byte	.LASF30
+ 964 0193 05       		.byte	0x5
+ 965 0194 44       		.byte	0x44
+ 966 0195 25000000 		.4byte	0x25
+ 967 0199 1C       		.byte	0x1c
+ 968 019a 00       		.byte	0
+ 969 019b 04       		.uleb128 0x4
+ 970 019c 87030000 		.4byte	.LASF31
+ 971 01a0 05       		.byte	0x5
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 21
 
 
- 972 01a8 05       		.byte	0x5
- 973 01a9 52       		.byte	0x52
- 974 01aa EB010000 		.4byte	0x1eb
- 975 01ae 0A       		.uleb128 0xa
- 976 01af 32050000 		.4byte	.LASF32
- 977 01b3 05       		.byte	0x5
- 978 01b4 54       		.byte	0x54
- 979 01b5 BA000000 		.4byte	0xba
- 980 01b9 00       		.byte	0
- 981 01ba 0A       		.uleb128 0xa
- 982 01bb 51030000 		.4byte	.LASF33
- 983 01bf 05       		.byte	0x5
- 984 01c0 56       		.byte	0x56
- 985 01c1 EB010000 		.4byte	0x1eb
- 986 01c5 01       		.byte	0x1
- 987 01c6 0A       		.uleb128 0xa
- 988 01c7 F4010000 		.4byte	.LASF34
- 989 01cb 05       		.byte	0x5
- 990 01cc 58       		.byte	0x58
- 991 01cd BA000000 		.4byte	0xba
- 992 01d1 02       		.byte	0x2
- 993 01d2 0A       		.uleb128 0xa
- 994 01d3 D5020000 		.4byte	.LASF35
- 995 01d7 05       		.byte	0x5
- 996 01d8 5A       		.byte	0x5a
- 997 01d9 BA000000 		.4byte	0xba
- 998 01dd 03       		.byte	0x3
- 999 01de 0A       		.uleb128 0xa
- 1000 01df 69040000 		.4byte	.LASF36
- 1001 01e3 05       		.byte	0x5
- 1002 01e4 5D       		.byte	0x5d
- 1003 01e5 BA000000 		.4byte	0xba
- 1004 01e9 04       		.byte	0x4
- 1005 01ea 00       		.byte	0
- 1006 01eb 03       		.uleb128 0x3
- 1007 01ec 01       		.byte	0x1
- 1008 01ed 02       		.byte	0x2
- 1009 01ee CA030000 		.4byte	.LASF37
- 1010 01f2 04       		.uleb128 0x4
- 1011 01f3 52020000 		.4byte	.LASF38
- 1012 01f7 05       		.byte	0x5
- 1013 01f8 5F       		.byte	0x5f
- 1014 01f9 A6010000 		.4byte	0x1a6
- 1015 01fd 09       		.uleb128 0x9
- 1016 01fe 2C       		.byte	0x2c
- 1017 01ff 06       		.byte	0x6
- 1018 0200 14       		.byte	0x14
- 1019 0201 2A020000 		.4byte	0x22a
- 1020 0205 0B       		.uleb128 0xb
- 1021 0206 6B657900 		.ascii	"key\000"
- 1022 020a 06       		.byte	0x6
- 1023 020b 15       		.byte	0x15
- 1024 020c 17010000 		.4byte	0x117
- 1025 0210 00       		.byte	0
- 1026 0211 0A       		.uleb128 0xa
- 1027 0212 4A010000 		.4byte	.LASF39
- 1028 0216 06       		.byte	0x6
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 22
+ 972 01a1 46       		.byte	0x46
+ 973 01a2 32010000 		.4byte	0x132
+ 974 01a6 09       		.uleb128 0x9
+ 975 01a7 05       		.byte	0x5
+ 976 01a8 05       		.byte	0x5
+ 977 01a9 52       		.byte	0x52
+ 978 01aa EB010000 		.4byte	0x1eb
+ 979 01ae 0A       		.uleb128 0xa
+ 980 01af 0D050000 		.4byte	.LASF32
+ 981 01b3 05       		.byte	0x5
+ 982 01b4 54       		.byte	0x54
+ 983 01b5 BA000000 		.4byte	0xba
+ 984 01b9 00       		.byte	0
+ 985 01ba 0A       		.uleb128 0xa
+ 986 01bb 1C030000 		.4byte	.LASF33
+ 987 01bf 05       		.byte	0x5
+ 988 01c0 56       		.byte	0x56
+ 989 01c1 EB010000 		.4byte	0x1eb
+ 990 01c5 01       		.byte	0x1
+ 991 01c6 0A       		.uleb128 0xa
+ 992 01c7 06020000 		.4byte	.LASF34
+ 993 01cb 05       		.byte	0x5
+ 994 01cc 58       		.byte	0x58
+ 995 01cd BA000000 		.4byte	0xba
+ 996 01d1 02       		.byte	0x2
+ 997 01d2 0A       		.uleb128 0xa
+ 998 01d3 E7020000 		.4byte	.LASF35
+ 999 01d7 05       		.byte	0x5
+ 1000 01d8 5A       		.byte	0x5a
+ 1001 01d9 BA000000 		.4byte	0xba
+ 1002 01dd 03       		.byte	0x3
+ 1003 01de 0A       		.uleb128 0xa
+ 1004 01df 4F040000 		.4byte	.LASF36
+ 1005 01e3 05       		.byte	0x5
+ 1006 01e4 5D       		.byte	0x5d
+ 1007 01e5 BA000000 		.4byte	0xba
+ 1008 01e9 04       		.byte	0x4
+ 1009 01ea 00       		.byte	0
+ 1010 01eb 03       		.uleb128 0x3
+ 1011 01ec 01       		.byte	0x1
+ 1012 01ed 02       		.byte	0x2
+ 1013 01ee 95030000 		.4byte	.LASF37
+ 1014 01f2 04       		.uleb128 0x4
+ 1015 01f3 64020000 		.4byte	.LASF38
+ 1016 01f7 05       		.byte	0x5
+ 1017 01f8 5F       		.byte	0x5f
+ 1018 01f9 A6010000 		.4byte	0x1a6
+ 1019 01fd 09       		.uleb128 0x9
+ 1020 01fe 2C       		.byte	0x2c
+ 1021 01ff 06       		.byte	0x6
+ 1022 0200 14       		.byte	0x14
+ 1023 0201 2A020000 		.4byte	0x22a
+ 1024 0205 0B       		.uleb128 0xb
+ 1025 0206 6B657900 		.ascii	"key\000"
+ 1026 020a 06       		.byte	0x6
+ 1027 020b 15       		.byte	0x15
+ 1028 020c 17010000 		.4byte	0x117
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 22
 
 
- 1029 0217 16       		.byte	0x16
- 1030 0218 17010000 		.4byte	0x117
- 1031 021c 14       		.byte	0x14
- 1032 021d 0A       		.uleb128 0xa
- 1033 021e 76000000 		.4byte	.LASF40
- 1034 0222 06       		.byte	0x6
- 1035 0223 17       		.byte	0x17
- 1036 0224 DE000000 		.4byte	0xde
- 1037 0228 28       		.byte	0x28
- 1038 0229 00       		.byte	0
- 1039 022a 04       		.uleb128 0x4
- 1040 022b C3020000 		.4byte	.LASF41
- 1041 022f 06       		.byte	0x6
- 1042 0230 19       		.byte	0x19
- 1043 0231 FD010000 		.4byte	0x1fd
- 1044 0235 09       		.uleb128 0x9
- 1045 0236 06       		.byte	0x6
- 1046 0237 07       		.byte	0x7
- 1047 0238 2D       		.byte	0x2d
- 1048 0239 6E020000 		.4byte	0x26e
- 1049 023d 0A       		.uleb128 0xa
- 1050 023e 5D000000 		.4byte	.LASF42
- 1051 0242 07       		.byte	0x7
- 1052 0243 2F       		.byte	0x2f
- 1053 0244 C6000000 		.4byte	0xc6
- 1054 0248 00       		.byte	0
- 1055 0249 0A       		.uleb128 0xa
- 1056 024a 30000000 		.4byte	.LASF43
- 1057 024e 07       		.byte	0x7
- 1058 024f 30       		.byte	0x30
- 1059 0250 D2000000 		.4byte	0xd2
- 1060 0254 02       		.byte	0x2
- 1061 0255 0A       		.uleb128 0xa
- 1062 0256 82040000 		.4byte	.LASF44
- 1063 025a 07       		.byte	0x7
- 1064 025b 31       		.byte	0x31
- 1065 025c BA000000 		.4byte	0xba
- 1066 0260 04       		.byte	0x4
- 1067 0261 0A       		.uleb128 0xa
- 1068 0262 9A040000 		.4byte	.LASF45
- 1069 0266 07       		.byte	0x7
- 1070 0267 32       		.byte	0x32
- 1071 0268 BA000000 		.4byte	0xba
- 1072 026c 05       		.byte	0x5
- 1073 026d 00       		.byte	0
- 1074 026e 04       		.uleb128 0x4
- 1075 026f EE010000 		.4byte	.LASF46
- 1076 0273 07       		.byte	0x7
- 1077 0274 35       		.byte	0x35
- 1078 0275 79020000 		.4byte	0x279
- 1079 0279 0C       		.uleb128 0xc
- 1080 027a 35020000 		.4byte	0x235
- 1081 027e 09       		.uleb128 0x9
- 1082 027f 1C       		.byte	0x1c
- 1083 0280 07       		.byte	0x7
- 1084 0281 38       		.byte	0x38
- 1085 0282 9F020000 		.4byte	0x29f
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 23
+ 1029 0210 00       		.byte	0
+ 1030 0211 0A       		.uleb128 0xa
+ 1031 0212 5C010000 		.4byte	.LASF39
+ 1032 0216 06       		.byte	0x6
+ 1033 0217 16       		.byte	0x16
+ 1034 0218 17010000 		.4byte	0x117
+ 1035 021c 14       		.byte	0x14
+ 1036 021d 0A       		.uleb128 0xa
+ 1037 021e 76000000 		.4byte	.LASF40
+ 1038 0222 06       		.byte	0x6
+ 1039 0223 17       		.byte	0x17
+ 1040 0224 DE000000 		.4byte	0xde
+ 1041 0228 28       		.byte	0x28
+ 1042 0229 00       		.byte	0
+ 1043 022a 04       		.uleb128 0x4
+ 1044 022b D5020000 		.4byte	.LASF41
+ 1045 022f 06       		.byte	0x6
+ 1046 0230 19       		.byte	0x19
+ 1047 0231 FD010000 		.4byte	0x1fd
+ 1048 0235 09       		.uleb128 0x9
+ 1049 0236 06       		.byte	0x6
+ 1050 0237 07       		.byte	0x7
+ 1051 0238 2E       		.byte	0x2e
+ 1052 0239 6E020000 		.4byte	0x26e
+ 1053 023d 0A       		.uleb128 0xa
+ 1054 023e 5D000000 		.4byte	.LASF42
+ 1055 0242 07       		.byte	0x7
+ 1056 0243 30       		.byte	0x30
+ 1057 0244 C6000000 		.4byte	0xc6
+ 1058 0248 00       		.byte	0
+ 1059 0249 0A       		.uleb128 0xa
+ 1060 024a 30000000 		.4byte	.LASF43
+ 1061 024e 07       		.byte	0x7
+ 1062 024f 31       		.byte	0x31
+ 1063 0250 D2000000 		.4byte	0xd2
+ 1064 0254 02       		.byte	0x2
+ 1065 0255 0A       		.uleb128 0xa
+ 1066 0256 68040000 		.4byte	.LASF44
+ 1067 025a 07       		.byte	0x7
+ 1068 025b 32       		.byte	0x32
+ 1069 025c BA000000 		.4byte	0xba
+ 1070 0260 04       		.byte	0x4
+ 1071 0261 0A       		.uleb128 0xa
+ 1072 0262 2F050000 		.4byte	.LASF45
+ 1073 0266 07       		.byte	0x7
+ 1074 0267 33       		.byte	0x33
+ 1075 0268 BA000000 		.4byte	0xba
+ 1076 026c 05       		.byte	0x5
+ 1077 026d 00       		.byte	0
+ 1078 026e 04       		.uleb128 0x4
+ 1079 026f 00020000 		.4byte	.LASF46
+ 1080 0273 07       		.byte	0x7
+ 1081 0274 36       		.byte	0x36
+ 1082 0275 79020000 		.4byte	0x279
+ 1083 0279 0C       		.uleb128 0xc
+ 1084 027a 35020000 		.4byte	0x235
+ 1085 027e 09       		.uleb128 0x9
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 23
 
 
- 1086 0286 0A       		.uleb128 0xa
- 1087 0287 CB010000 		.4byte	.LASF47
- 1088 028b 07       		.byte	0x7
- 1089 028c 3A       		.byte	0x3a
- 1090 028d 9F020000 		.4byte	0x29f
- 1091 0291 00       		.byte	0
- 1092 0292 0A       		.uleb128 0xa
- 1093 0293 A8020000 		.4byte	.LASF48
- 1094 0297 07       		.byte	0x7
- 1095 0298 3B       		.byte	0x3b
- 1096 0299 91000000 		.4byte	0x91
- 1097 029d 04       		.byte	0x4
- 1098 029e 00       		.byte	0
- 1099 029f 05       		.uleb128 0x5
- 1100 02a0 04       		.byte	0x4
- 1101 02a1 27010000 		.4byte	0x127
- 1102 02a5 04       		.uleb128 0x4
- 1103 02a6 5A030000 		.4byte	.LASF49
- 1104 02aa 07       		.byte	0x7
- 1105 02ab 3D       		.byte	0x3d
- 1106 02ac 7E020000 		.4byte	0x27e
- 1107 02b0 09       		.uleb128 0x9
- 1108 02b1 68       		.byte	0x68
- 1109 02b2 07       		.byte	0x7
- 1110 02b3 43       		.byte	0x43
- 1111 02b4 D1020000 		.4byte	0x2d1
- 1112 02b8 0A       		.uleb128 0xa
- 1113 02b9 89000000 		.4byte	.LASF50
- 1114 02bd 07       		.byte	0x7
- 1115 02be 48       		.byte	0x48
- 1116 02bf D1020000 		.4byte	0x2d1
- 1117 02c3 00       		.byte	0
- 1118 02c4 0A       		.uleb128 0xa
- 1119 02c5 0C050000 		.4byte	.LASF51
- 1120 02c9 07       		.byte	0x7
- 1121 02ca 49       		.byte	0x49
- 1122 02cb 25000000 		.4byte	0x25
- 1123 02cf 64       		.byte	0x64
- 1124 02d0 00       		.byte	0
- 1125 02d1 06       		.uleb128 0x6
- 1126 02d2 8A000000 		.4byte	0x8a
- 1127 02d6 E1020000 		.4byte	0x2e1
- 1128 02da 07       		.uleb128 0x7
- 1129 02db 7D000000 		.4byte	0x7d
- 1130 02df 63       		.byte	0x63
- 1131 02e0 00       		.byte	0
- 1132 02e1 04       		.uleb128 0x4
- 1133 02e2 21000000 		.4byte	.LASF52
- 1134 02e6 07       		.byte	0x7
- 1135 02e7 4F       		.byte	0x4f
- 1136 02e8 B0020000 		.4byte	0x2b0
- 1137 02ec 0D       		.uleb128 0xd
- 1138 02ed 32030000 		.4byte	.LASF66
- 1139 02f1 01       		.byte	0x1
- 1140 02f2 11       		.byte	0x11
- 1141 02f3 BA000000 		.4byte	0xba
- 1142 02f7 00000000 		.4byte	.LFB64
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 24
+ 1086 027f 1C       		.byte	0x1c
+ 1087 0280 07       		.byte	0x7
+ 1088 0281 39       		.byte	0x39
+ 1089 0282 9F020000 		.4byte	0x29f
+ 1090 0286 0A       		.uleb128 0xa
+ 1091 0287 DD010000 		.4byte	.LASF47
+ 1092 028b 07       		.byte	0x7
+ 1093 028c 3B       		.byte	0x3b
+ 1094 028d 9F020000 		.4byte	0x29f
+ 1095 0291 00       		.byte	0
+ 1096 0292 0A       		.uleb128 0xa
+ 1097 0293 BA020000 		.4byte	.LASF48
+ 1098 0297 07       		.byte	0x7
+ 1099 0298 3C       		.byte	0x3c
+ 1100 0299 91000000 		.4byte	0x91
+ 1101 029d 04       		.byte	0x4
+ 1102 029e 00       		.byte	0
+ 1103 029f 05       		.uleb128 0x5
+ 1104 02a0 04       		.byte	0x4
+ 1105 02a1 27010000 		.4byte	0x127
+ 1106 02a5 04       		.uleb128 0x4
+ 1107 02a6 25030000 		.4byte	.LASF49
+ 1108 02aa 07       		.byte	0x7
+ 1109 02ab 3E       		.byte	0x3e
+ 1110 02ac 7E020000 		.4byte	0x27e
+ 1111 02b0 09       		.uleb128 0x9
+ 1112 02b1 68       		.byte	0x68
+ 1113 02b2 07       		.byte	0x7
+ 1114 02b3 44       		.byte	0x44
+ 1115 02b4 D1020000 		.4byte	0x2d1
+ 1116 02b8 0A       		.uleb128 0xa
+ 1117 02b9 89000000 		.4byte	.LASF50
+ 1118 02bd 07       		.byte	0x7
+ 1119 02be 49       		.byte	0x49
+ 1120 02bf D1020000 		.4byte	0x2d1
+ 1121 02c3 00       		.byte	0
+ 1122 02c4 0A       		.uleb128 0xa
+ 1123 02c5 E7040000 		.4byte	.LASF51
+ 1124 02c9 07       		.byte	0x7
+ 1125 02ca 4A       		.byte	0x4a
+ 1126 02cb 25000000 		.4byte	0x25
+ 1127 02cf 64       		.byte	0x64
+ 1128 02d0 00       		.byte	0
+ 1129 02d1 06       		.uleb128 0x6
+ 1130 02d2 8A000000 		.4byte	0x8a
+ 1131 02d6 E1020000 		.4byte	0x2e1
+ 1132 02da 07       		.uleb128 0x7
+ 1133 02db 7D000000 		.4byte	0x7d
+ 1134 02df 63       		.byte	0x63
+ 1135 02e0 00       		.byte	0
+ 1136 02e1 04       		.uleb128 0x4
+ 1137 02e2 21000000 		.4byte	.LASF52
+ 1138 02e6 07       		.byte	0x7
+ 1139 02e7 50       		.byte	0x50
+ 1140 02e8 B0020000 		.4byte	0x2b0
+ 1141 02ec 0D       		.uleb128 0xd
+ 1142 02ed FD020000 		.4byte	.LASF66
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 24
 
 
- 1143 02fb B4000000 		.4byte	.LFE64-.LFB64
- 1144 02ff 01       		.uleb128 0x1
- 1145 0300 9C       		.byte	0x9c
- 1146 0301 30030000 		.4byte	0x330
- 1147 0305 0E       		.uleb128 0xe
- 1148 0306 6B657900 		.ascii	"key\000"
- 1149 030a 01       		.byte	0x1
- 1150 030b 11       		.byte	0x11
- 1151 030c 84000000 		.4byte	0x84
- 1152 0310 02       		.uleb128 0x2
- 1153 0311 91       		.byte	0x91
- 1154 0312 74       		.sleb128 -12
- 1155 0313 0F       		.uleb128 0xf
- 1156 0314 4A010000 		.4byte	.LASF39
- 1157 0318 01       		.byte	0x1
- 1158 0319 11       		.byte	0x11
- 1159 031a 84000000 		.4byte	0x84
- 1160 031e 02       		.uleb128 0x2
- 1161 031f 91       		.byte	0x91
- 1162 0320 70       		.sleb128 -16
- 1163 0321 0F       		.uleb128 0xf
- 1164 0322 09000000 		.4byte	.LASF53
- 1165 0326 01       		.byte	0x1
- 1166 0327 11       		.byte	0x11
- 1167 0328 DE000000 		.4byte	0xde
- 1168 032c 02       		.uleb128 0x2
- 1169 032d 91       		.byte	0x91
- 1170 032e 6C       		.sleb128 -20
- 1171 032f 00       		.byte	0
- 1172 0330 10       		.uleb128 0x10
- 1173 0331 C2040000 		.4byte	.LASF96
- 1174 0335 01       		.byte	0x1
- 1175 0336 2C       		.byte	0x2c
- 1176 0337 00000000 		.4byte	.LFB65
- 1177 033b 0C000000 		.4byte	.LFE65-.LFB65
- 1178 033f 01       		.uleb128 0x1
- 1179 0340 9C       		.byte	0x9c
- 1180 0341 11       		.uleb128 0x11
- 1181 0342 2A020000 		.4byte	.LASF97
- 1182 0346 01       		.byte	0x1
- 1183 0347 31       		.byte	0x31
- 1184 0348 00000000 		.4byte	.LFB66
- 1185 034c 74000000 		.4byte	.LFE66-.LFB66
- 1186 0350 01       		.uleb128 0x1
- 1187 0351 9C       		.byte	0x9c
- 1188 0352 6D030000 		.4byte	0x36d
- 1189 0356 12       		.uleb128 0x12
- 1190 0357 06000000 		.4byte	.LBB2
- 1191 035b 42000000 		.4byte	.LBE2-.LBB2
- 1192 035f 13       		.uleb128 0x13
- 1193 0360 6900     		.ascii	"i\000"
- 1194 0362 01       		.byte	0x1
- 1195 0363 32       		.byte	0x32
- 1196 0364 C6000000 		.4byte	0xc6
- 1197 0368 02       		.uleb128 0x2
- 1198 0369 91       		.byte	0x91
- 1199 036a 76       		.sleb128 -10
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 25
+ 1143 02f1 01       		.byte	0x1
+ 1144 02f2 11       		.byte	0x11
+ 1145 02f3 BA000000 		.4byte	0xba
+ 1146 02f7 00000000 		.4byte	.LFB64
+ 1147 02fb B4000000 		.4byte	.LFE64-.LFB64
+ 1148 02ff 01       		.uleb128 0x1
+ 1149 0300 9C       		.byte	0x9c
+ 1150 0301 30030000 		.4byte	0x330
+ 1151 0305 0E       		.uleb128 0xe
+ 1152 0306 6B657900 		.ascii	"key\000"
+ 1153 030a 01       		.byte	0x1
+ 1154 030b 11       		.byte	0x11
+ 1155 030c 84000000 		.4byte	0x84
+ 1156 0310 02       		.uleb128 0x2
+ 1157 0311 91       		.byte	0x91
+ 1158 0312 74       		.sleb128 -12
+ 1159 0313 0F       		.uleb128 0xf
+ 1160 0314 5C010000 		.4byte	.LASF39
+ 1161 0318 01       		.byte	0x1
+ 1162 0319 11       		.byte	0x11
+ 1163 031a 84000000 		.4byte	0x84
+ 1164 031e 02       		.uleb128 0x2
+ 1165 031f 91       		.byte	0x91
+ 1166 0320 70       		.sleb128 -16
+ 1167 0321 0F       		.uleb128 0xf
+ 1168 0322 09000000 		.4byte	.LASF53
+ 1169 0326 01       		.byte	0x1
+ 1170 0327 11       		.byte	0x11
+ 1171 0328 DE000000 		.4byte	0xde
+ 1172 032c 02       		.uleb128 0x2
+ 1173 032d 91       		.byte	0x91
+ 1174 032e 6C       		.sleb128 -20
+ 1175 032f 00       		.byte	0
+ 1176 0330 10       		.uleb128 0x10
+ 1177 0331 9D040000 		.4byte	.LASF99
+ 1178 0335 01       		.byte	0x1
+ 1179 0336 2C       		.byte	0x2c
+ 1180 0337 00000000 		.4byte	.LFB65
+ 1181 033b 0C000000 		.4byte	.LFE65-.LFB65
+ 1182 033f 01       		.uleb128 0x1
+ 1183 0340 9C       		.byte	0x9c
+ 1184 0341 11       		.uleb128 0x11
+ 1185 0342 3C020000 		.4byte	.LASF100
+ 1186 0346 01       		.byte	0x1
+ 1187 0347 31       		.byte	0x31
+ 1188 0348 00000000 		.4byte	.LFB66
+ 1189 034c 74000000 		.4byte	.LFE66-.LFB66
+ 1190 0350 01       		.uleb128 0x1
+ 1191 0351 9C       		.byte	0x9c
+ 1192 0352 6D030000 		.4byte	0x36d
+ 1193 0356 12       		.uleb128 0x12
+ 1194 0357 06000000 		.4byte	.LBB2
+ 1195 035b 42000000 		.4byte	.LBE2-.LBB2
+ 1196 035f 13       		.uleb128 0x13
+ 1197 0360 6900     		.ascii	"i\000"
+ 1198 0362 01       		.byte	0x1
+ 1199 0363 32       		.byte	0x32
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 25
 
 
- 1200 036b 00       		.byte	0
- 1201 036c 00       		.byte	0
- 1202 036d 14       		.uleb128 0x14
- 1203 036e 46000000 		.4byte	.LASF54
- 1204 0372 01       		.byte	0x1
- 1205 0373 3E       		.byte	0x3e
- 1206 0374 C6000000 		.4byte	0xc6
- 1207 0378 00000000 		.4byte	.LFB67
- 1208 037c 14000000 		.4byte	.LFE67-.LFB67
- 1209 0380 01       		.uleb128 0x1
- 1210 0381 9C       		.byte	0x9c
- 1211 0382 14       		.uleb128 0x14
- 1212 0383 54050000 		.4byte	.LASF55
- 1213 0387 01       		.byte	0x1
- 1214 0388 43       		.byte	0x43
- 1215 0389 C6000000 		.4byte	0xc6
- 1216 038d 00000000 		.4byte	.LFB68
- 1217 0391 14000000 		.4byte	.LFE68-.LFB68
- 1218 0395 01       		.uleb128 0x1
- 1219 0396 9C       		.byte	0x9c
- 1220 0397 15       		.uleb128 0x15
- 1221 0398 ED040000 		.4byte	.LASF69
- 1222 039c 01       		.byte	0x1
- 1223 039d 48       		.byte	0x48
- 1224 039e 00000000 		.4byte	.LFB69
- 1225 03a2 F8000000 		.4byte	.LFE69-.LFB69
- 1226 03a6 01       		.uleb128 0x1
- 1227 03a7 9C       		.byte	0x9c
- 1228 03a8 39040000 		.4byte	0x439
- 1229 03ac 0F       		.uleb128 0xf
- 1230 03ad 49030000 		.4byte	.LASF56
- 1231 03b1 01       		.byte	0x1
- 1232 03b2 48       		.byte	0x48
- 1233 03b3 84000000 		.4byte	0x84
- 1234 03b7 02       		.uleb128 0x2
- 1235 03b8 91       		.byte	0x91
- 1236 03b9 74       		.sleb128 -12
- 1237 03ba 0F       		.uleb128 0xf
- 1238 03bb E3010000 		.4byte	.LASF57
- 1239 03bf 01       		.byte	0x1
- 1240 03c0 48       		.byte	0x48
- 1241 03c1 84000000 		.4byte	0x84
- 1242 03c5 02       		.uleb128 0x2
- 1243 03c6 91       		.byte	0x91
- 1244 03c7 70       		.sleb128 -16
- 1245 03c8 0F       		.uleb128 0xf
- 1246 03c9 1E050000 		.4byte	.LASF58
- 1247 03cd 01       		.byte	0x1
- 1248 03ce 48       		.byte	0x48
- 1249 03cf 84000000 		.4byte	0x84
- 1250 03d3 02       		.uleb128 0x2
- 1251 03d4 91       		.byte	0x91
- 1252 03d5 6C       		.sleb128 -20
- 1253 03d6 0F       		.uleb128 0xf
- 1254 03d7 E8010000 		.4byte	.LASF59
- 1255 03db 01       		.byte	0x1
- 1256 03dc 48       		.byte	0x48
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 26
+ 1200 0364 C6000000 		.4byte	0xc6
+ 1201 0368 02       		.uleb128 0x2
+ 1202 0369 91       		.byte	0x91
+ 1203 036a 76       		.sleb128 -10
+ 1204 036b 00       		.byte	0
+ 1205 036c 00       		.byte	0
+ 1206 036d 14       		.uleb128 0x14
+ 1207 036e 46000000 		.4byte	.LASF54
+ 1208 0372 01       		.byte	0x1
+ 1209 0373 3E       		.byte	0x3e
+ 1210 0374 C6000000 		.4byte	0xc6
+ 1211 0378 00000000 		.4byte	.LFB67
+ 1212 037c 14000000 		.4byte	.LFE67-.LFB67
+ 1213 0380 01       		.uleb128 0x1
+ 1214 0381 9C       		.byte	0x9c
+ 1215 0382 14       		.uleb128 0x14
+ 1216 0383 47050000 		.4byte	.LASF55
+ 1217 0387 01       		.byte	0x1
+ 1218 0388 43       		.byte	0x43
+ 1219 0389 C6000000 		.4byte	0xc6
+ 1220 038d 00000000 		.4byte	.LFB68
+ 1221 0391 14000000 		.4byte	.LFE68-.LFB68
+ 1222 0395 01       		.uleb128 0x1
+ 1223 0396 9C       		.byte	0x9c
+ 1224 0397 15       		.uleb128 0x15
+ 1225 0398 C8040000 		.4byte	.LASF69
+ 1226 039c 01       		.byte	0x1
+ 1227 039d 48       		.byte	0x48
+ 1228 039e 00000000 		.4byte	.LFB69
+ 1229 03a2 F8000000 		.4byte	.LFE69-.LFB69
+ 1230 03a6 01       		.uleb128 0x1
+ 1231 03a7 9C       		.byte	0x9c
+ 1232 03a8 39040000 		.4byte	0x439
+ 1233 03ac 0F       		.uleb128 0xf
+ 1234 03ad 14030000 		.4byte	.LASF56
+ 1235 03b1 01       		.byte	0x1
+ 1236 03b2 48       		.byte	0x48
+ 1237 03b3 84000000 		.4byte	0x84
+ 1238 03b7 02       		.uleb128 0x2
+ 1239 03b8 91       		.byte	0x91
+ 1240 03b9 74       		.sleb128 -12
+ 1241 03ba 0F       		.uleb128 0xf
+ 1242 03bb F5010000 		.4byte	.LASF57
+ 1243 03bf 01       		.byte	0x1
+ 1244 03c0 48       		.byte	0x48
+ 1245 03c1 84000000 		.4byte	0x84
+ 1246 03c5 02       		.uleb128 0x2
+ 1247 03c6 91       		.byte	0x91
+ 1248 03c7 70       		.sleb128 -16
+ 1249 03c8 0F       		.uleb128 0xf
+ 1250 03c9 F9040000 		.4byte	.LASF58
+ 1251 03cd 01       		.byte	0x1
+ 1252 03ce 48       		.byte	0x48
+ 1253 03cf 84000000 		.4byte	0x84
+ 1254 03d3 02       		.uleb128 0x2
+ 1255 03d4 91       		.byte	0x91
+ 1256 03d5 6C       		.sleb128 -20
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 26
 
 
- 1257 03dd 84000000 		.4byte	0x84
- 1258 03e1 02       		.uleb128 0x2
- 1259 03e2 91       		.byte	0x91
- 1260 03e3 68       		.sleb128 -24
- 1261 03e4 0F       		.uleb128 0xf
- 1262 03e5 0B040000 		.4byte	.LASF60
- 1263 03e9 01       		.byte	0x1
- 1264 03ea 49       		.byte	0x49
- 1265 03eb 25000000 		.4byte	0x25
- 1266 03ef 02       		.uleb128 0x2
- 1267 03f0 91       		.byte	0x91
- 1268 03f1 00       		.sleb128 0
- 1269 03f2 0F       		.uleb128 0xf
- 1270 03f3 1A000000 		.4byte	.LASF61
- 1271 03f7 01       		.byte	0x1
- 1272 03f8 49       		.byte	0x49
- 1273 03f9 84000000 		.4byte	0x84
- 1274 03fd 02       		.uleb128 0x2
- 1275 03fe 91       		.byte	0x91
- 1276 03ff 04       		.sleb128 4
- 1277 0400 0F       		.uleb128 0xf
- 1278 0401 B2040000 		.4byte	.LASF62
- 1279 0405 01       		.byte	0x1
- 1280 0406 49       		.byte	0x49
- 1281 0407 84000000 		.4byte	0x84
- 1282 040b 02       		.uleb128 0x2
- 1283 040c 91       		.byte	0x91
- 1284 040d 08       		.sleb128 8
- 1285 040e 0F       		.uleb128 0xf
- 1286 040f 74010000 		.4byte	.LASF63
- 1287 0413 01       		.byte	0x1
- 1288 0414 4A       		.byte	0x4a
- 1289 0415 84000000 		.4byte	0x84
- 1290 0419 02       		.uleb128 0x2
- 1291 041a 91       		.byte	0x91
- 1292 041b 0C       		.sleb128 12
- 1293 041c 0F       		.uleb128 0xf
- 1294 041d 14050000 		.4byte	.LASF64
- 1295 0421 01       		.byte	0x1
- 1296 0422 4A       		.byte	0x4a
- 1297 0423 25000000 		.4byte	0x25
- 1298 0427 02       		.uleb128 0x2
- 1299 0428 91       		.byte	0x91
- 1300 0429 10       		.sleb128 16
- 1301 042a 0F       		.uleb128 0xf
- 1302 042b 2B010000 		.4byte	.LASF65
- 1303 042f 01       		.byte	0x1
- 1304 0430 4A       		.byte	0x4a
- 1305 0431 84000000 		.4byte	0x84
- 1306 0435 02       		.uleb128 0x2
- 1307 0436 91       		.byte	0x91
- 1308 0437 14       		.sleb128 20
- 1309 0438 00       		.byte	0
- 1310 0439 0D       		.uleb128 0xd
- 1311 043a 53040000 		.4byte	.LASF67
- 1312 043e 01       		.byte	0x1
- 1313 043f 60       		.byte	0x60
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 27
+ 1257 03d6 0F       		.uleb128 0xf
+ 1258 03d7 FA010000 		.4byte	.LASF59
+ 1259 03db 01       		.byte	0x1
+ 1260 03dc 48       		.byte	0x48
+ 1261 03dd 84000000 		.4byte	0x84
+ 1262 03e1 02       		.uleb128 0x2
+ 1263 03e2 91       		.byte	0x91
+ 1264 03e3 68       		.sleb128 -24
+ 1265 03e4 0F       		.uleb128 0xf
+ 1266 03e5 D6030000 		.4byte	.LASF60
+ 1267 03e9 01       		.byte	0x1
+ 1268 03ea 49       		.byte	0x49
+ 1269 03eb 25000000 		.4byte	0x25
+ 1270 03ef 02       		.uleb128 0x2
+ 1271 03f0 91       		.byte	0x91
+ 1272 03f1 00       		.sleb128 0
+ 1273 03f2 0F       		.uleb128 0xf
+ 1274 03f3 1A000000 		.4byte	.LASF61
+ 1275 03f7 01       		.byte	0x1
+ 1276 03f8 49       		.byte	0x49
+ 1277 03f9 84000000 		.4byte	0x84
+ 1278 03fd 02       		.uleb128 0x2
+ 1279 03fe 91       		.byte	0x91
+ 1280 03ff 04       		.sleb128 4
+ 1281 0400 0F       		.uleb128 0xf
+ 1282 0401 8D040000 		.4byte	.LASF62
+ 1283 0405 01       		.byte	0x1
+ 1284 0406 49       		.byte	0x49
+ 1285 0407 84000000 		.4byte	0x84
+ 1286 040b 02       		.uleb128 0x2
+ 1287 040c 91       		.byte	0x91
+ 1288 040d 08       		.sleb128 8
+ 1289 040e 0F       		.uleb128 0xf
+ 1290 040f 86010000 		.4byte	.LASF63
+ 1291 0413 01       		.byte	0x1
+ 1292 0414 4A       		.byte	0x4a
+ 1293 0415 84000000 		.4byte	0x84
+ 1294 0419 02       		.uleb128 0x2
+ 1295 041a 91       		.byte	0x91
+ 1296 041b 0C       		.sleb128 12
+ 1297 041c 0F       		.uleb128 0xf
+ 1298 041d EF040000 		.4byte	.LASF64
+ 1299 0421 01       		.byte	0x1
+ 1300 0422 4A       		.byte	0x4a
+ 1301 0423 25000000 		.4byte	0x25
+ 1302 0427 02       		.uleb128 0x2
+ 1303 0428 91       		.byte	0x91
+ 1304 0429 10       		.sleb128 16
+ 1305 042a 0F       		.uleb128 0xf
+ 1306 042b 31010000 		.4byte	.LASF65
+ 1307 042f 01       		.byte	0x1
+ 1308 0430 4A       		.byte	0x4a
+ 1309 0431 84000000 		.4byte	0x84
+ 1310 0435 02       		.uleb128 0x2
+ 1311 0436 91       		.byte	0x91
+ 1312 0437 14       		.sleb128 20
+ 1313 0438 00       		.byte	0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 27
 
 
- 1314 0440 2C000000 		.4byte	0x2c
- 1315 0444 00000000 		.4byte	.LFB70
- 1316 0448 E8000000 		.4byte	.LFE70-.LFB70
- 1317 044c 01       		.uleb128 0x1
- 1318 044d 9C       		.byte	0x9c
- 1319 044e 9F040000 		.4byte	0x49f
- 1320 0452 0F       		.uleb128 0xf
- 1321 0453 E3010000 		.4byte	.LASF57
- 1322 0457 01       		.byte	0x1
- 1323 0458 60       		.byte	0x60
- 1324 0459 84000000 		.4byte	0x84
- 1325 045d 02       		.uleb128 0x2
- 1326 045e 91       		.byte	0x91
- 1327 045f 64       		.sleb128 -28
- 1328 0460 16       		.uleb128 0x16
- 1329 0461 39010000 		.4byte	.LASF68
- 1330 0465 01       		.byte	0x1
- 1331 0466 75       		.byte	0x75
- 1332 0467 2C000000 		.4byte	0x2c
- 1333 046b 02       		.uleb128 0x2
- 1334 046c 91       		.byte	0x91
- 1335 046d 68       		.sleb128 -24
- 1336 046e 17       		.uleb128 0x17
- 1337 046f 1C000000 		.4byte	.LBB3
- 1338 0473 5C000000 		.4byte	.LBE3-.LBB3
- 1339 0477 88040000 		.4byte	0x488
- 1340 047b 13       		.uleb128 0x13
- 1341 047c 6900     		.ascii	"i\000"
- 1342 047e 01       		.byte	0x1
- 1343 047f 67       		.byte	0x67
- 1344 0480 C6000000 		.4byte	0xc6
- 1345 0484 02       		.uleb128 0x2
- 1346 0485 91       		.byte	0x91
- 1347 0486 6E       		.sleb128 -18
- 1348 0487 00       		.byte	0
- 1349 0488 12       		.uleb128 0x12
- 1350 0489 78000000 		.4byte	.LBB4
- 1351 048d 52000000 		.4byte	.LBE4-.LBB4
- 1352 0491 13       		.uleb128 0x13
- 1353 0492 6900     		.ascii	"i\000"
- 1354 0494 01       		.byte	0x1
- 1355 0495 6D       		.byte	0x6d
- 1356 0496 C6000000 		.4byte	0xc6
- 1357 049a 02       		.uleb128 0x2
- 1358 049b 91       		.byte	0x91
- 1359 049c 6C       		.sleb128 -20
- 1360 049d 00       		.byte	0
- 1361 049e 00       		.byte	0
- 1362 049f 15       		.uleb128 0x15
- 1363 04a0 2F040000 		.4byte	.LASF70
- 1364 04a4 01       		.byte	0x1
- 1365 04a5 7B       		.byte	0x7b
- 1366 04a6 00000000 		.4byte	.LFB71
- 1367 04aa 38000000 		.4byte	.LFE71-.LFB71
- 1368 04ae 01       		.uleb128 0x1
- 1369 04af 9C       		.byte	0x9c
- 1370 04b0 ED040000 		.4byte	0x4ed
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 28
+ 1314 0439 0D       		.uleb128 0xd
+ 1315 043a 1E040000 		.4byte	.LASF67
+ 1316 043e 01       		.byte	0x1
+ 1317 043f 60       		.byte	0x60
+ 1318 0440 2C000000 		.4byte	0x2c
+ 1319 0444 00000000 		.4byte	.LFB70
+ 1320 0448 E8000000 		.4byte	.LFE70-.LFB70
+ 1321 044c 01       		.uleb128 0x1
+ 1322 044d 9C       		.byte	0x9c
+ 1323 044e 9F040000 		.4byte	0x49f
+ 1324 0452 0F       		.uleb128 0xf
+ 1325 0453 F5010000 		.4byte	.LASF57
+ 1326 0457 01       		.byte	0x1
+ 1327 0458 60       		.byte	0x60
+ 1328 0459 84000000 		.4byte	0x84
+ 1329 045d 02       		.uleb128 0x2
+ 1330 045e 91       		.byte	0x91
+ 1331 045f 64       		.sleb128 -28
+ 1332 0460 16       		.uleb128 0x16
+ 1333 0461 3F010000 		.4byte	.LASF68
+ 1334 0465 01       		.byte	0x1
+ 1335 0466 75       		.byte	0x75
+ 1336 0467 2C000000 		.4byte	0x2c
+ 1337 046b 02       		.uleb128 0x2
+ 1338 046c 91       		.byte	0x91
+ 1339 046d 68       		.sleb128 -24
+ 1340 046e 17       		.uleb128 0x17
+ 1341 046f 1C000000 		.4byte	.LBB3
+ 1342 0473 5C000000 		.4byte	.LBE3-.LBB3
+ 1343 0477 88040000 		.4byte	0x488
+ 1344 047b 13       		.uleb128 0x13
+ 1345 047c 6900     		.ascii	"i\000"
+ 1346 047e 01       		.byte	0x1
+ 1347 047f 67       		.byte	0x67
+ 1348 0480 C6000000 		.4byte	0xc6
+ 1349 0484 02       		.uleb128 0x2
+ 1350 0485 91       		.byte	0x91
+ 1351 0486 6E       		.sleb128 -18
+ 1352 0487 00       		.byte	0
+ 1353 0488 12       		.uleb128 0x12
+ 1354 0489 78000000 		.4byte	.LBB4
+ 1355 048d 52000000 		.4byte	.LBE4-.LBB4
+ 1356 0491 13       		.uleb128 0x13
+ 1357 0492 6900     		.ascii	"i\000"
+ 1358 0494 01       		.byte	0x1
+ 1359 0495 6D       		.byte	0x6d
+ 1360 0496 C6000000 		.4byte	0xc6
+ 1361 049a 02       		.uleb128 0x2
+ 1362 049b 91       		.byte	0x91
+ 1363 049c 6C       		.sleb128 -20
+ 1364 049d 00       		.byte	0
+ 1365 049e 00       		.byte	0
+ 1366 049f 15       		.uleb128 0x15
+ 1367 04a0 FA030000 		.4byte	.LASF70
+ 1368 04a4 01       		.byte	0x1
+ 1369 04a5 7B       		.byte	0x7b
+ 1370 04a6 00000000 		.4byte	.LFB71
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 28
 
 
- 1371 04b4 0F       		.uleb128 0xf
- 1372 04b5 E8010000 		.4byte	.LASF59
- 1373 04b9 01       		.byte	0x1
- 1374 04ba 7B       		.byte	0x7b
- 1375 04bb 84000000 		.4byte	0x84
- 1376 04bf 02       		.uleb128 0x2
- 1377 04c0 91       		.byte	0x91
- 1378 04c1 74       		.sleb128 -12
- 1379 04c2 0F       		.uleb128 0xf
- 1380 04c3 23050000 		.4byte	.LASF71
- 1381 04c7 01       		.byte	0x1
- 1382 04c8 7B       		.byte	0x7b
- 1383 04c9 84000000 		.4byte	0x84
- 1384 04cd 02       		.uleb128 0x2
- 1385 04ce 91       		.byte	0x91
- 1386 04cf 70       		.sleb128 -16
- 1387 04d0 0F       		.uleb128 0xf
- 1388 04d1 92010000 		.4byte	.LASF72
- 1389 04d5 01       		.byte	0x1
- 1390 04d6 7B       		.byte	0x7b
- 1391 04d7 84000000 		.4byte	0x84
- 1392 04db 02       		.uleb128 0x2
- 1393 04dc 91       		.byte	0x91
- 1394 04dd 6C       		.sleb128 -20
- 1395 04de 0F       		.uleb128 0xf
- 1396 04df 69010000 		.4byte	.LASF73
- 1397 04e3 01       		.byte	0x1
- 1398 04e4 7B       		.byte	0x7b
- 1399 04e5 84000000 		.4byte	0x84
- 1400 04e9 02       		.uleb128 0x2
- 1401 04ea 91       		.byte	0x91
- 1402 04eb 68       		.sleb128 -24
- 1403 04ec 00       		.byte	0
- 1404 04ed 18       		.uleb128 0x18
- 1405 04ee 46040000 		.4byte	.LASF74
- 1406 04f2 08       		.byte	0x8
- 1407 04f3 1207     		.2byte	0x712
- 1408 04f5 F9040000 		.4byte	0x4f9
- 1409 04f9 0C       		.uleb128 0xc
- 1410 04fa A1000000 		.4byte	0xa1
- 1411 04fe 19       		.uleb128 0x19
- 1412 04ff 69020000 		.4byte	.LASF75
- 1413 0503 05       		.byte	0x5
- 1414 0504 1F       		.byte	0x1f
- 1415 0505 BA000000 		.4byte	0xba
- 1416 0509 05       		.uleb128 0x5
- 1417 050a 03       		.byte	0x3
- 1418 050b 00000000 		.4byte	modem_state
- 1419 050f 19       		.uleb128 0x19
- 1420 0510 3B020000 		.4byte	.LASF76
- 1421 0514 05       		.byte	0x5
- 1422 0515 62       		.byte	0x62
- 1423 0516 DE000000 		.4byte	0xde
- 1424 051a 05       		.uleb128 0x5
- 1425 051b 03       		.byte	0x3
- 1426 051c 00000000 		.4byte	modem_start_time_stamp
- 1427 0520 19       		.uleb128 0x19
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 29
+ 1371 04aa 38000000 		.4byte	.LFE71-.LFB71
+ 1372 04ae 01       		.uleb128 0x1
+ 1373 04af 9C       		.byte	0x9c
+ 1374 04b0 ED040000 		.4byte	0x4ed
+ 1375 04b4 0F       		.uleb128 0xf
+ 1376 04b5 FA010000 		.4byte	.LASF59
+ 1377 04b9 01       		.byte	0x1
+ 1378 04ba 7B       		.byte	0x7b
+ 1379 04bb 84000000 		.4byte	0x84
+ 1380 04bf 02       		.uleb128 0x2
+ 1381 04c0 91       		.byte	0x91
+ 1382 04c1 74       		.sleb128 -12
+ 1383 04c2 0F       		.uleb128 0xf
+ 1384 04c3 FE040000 		.4byte	.LASF71
+ 1385 04c7 01       		.byte	0x1
+ 1386 04c8 7B       		.byte	0x7b
+ 1387 04c9 84000000 		.4byte	0x84
+ 1388 04cd 02       		.uleb128 0x2
+ 1389 04ce 91       		.byte	0x91
+ 1390 04cf 70       		.sleb128 -16
+ 1391 04d0 0F       		.uleb128 0xf
+ 1392 04d1 A4010000 		.4byte	.LASF72
+ 1393 04d5 01       		.byte	0x1
+ 1394 04d6 7B       		.byte	0x7b
+ 1395 04d7 84000000 		.4byte	0x84
+ 1396 04db 02       		.uleb128 0x2
+ 1397 04dc 91       		.byte	0x91
+ 1398 04dd 6C       		.sleb128 -20
+ 1399 04de 0F       		.uleb128 0xf
+ 1400 04df 7B010000 		.4byte	.LASF73
+ 1401 04e3 01       		.byte	0x1
+ 1402 04e4 7B       		.byte	0x7b
+ 1403 04e5 84000000 		.4byte	0x84
+ 1404 04e9 02       		.uleb128 0x2
+ 1405 04ea 91       		.byte	0x91
+ 1406 04eb 68       		.sleb128 -24
+ 1407 04ec 00       		.byte	0
+ 1408 04ed 18       		.uleb128 0x18
+ 1409 04ee 11040000 		.4byte	.LASF74
+ 1410 04f2 08       		.byte	0x8
+ 1411 04f3 1207     		.2byte	0x712
+ 1412 04f5 F9040000 		.4byte	0x4f9
+ 1413 04f9 0C       		.uleb128 0xc
+ 1414 04fa A1000000 		.4byte	0xa1
+ 1415 04fe 19       		.uleb128 0x19
+ 1416 04ff 7B020000 		.4byte	.LASF75
+ 1417 0503 05       		.byte	0x5
+ 1418 0504 1F       		.byte	0x1f
+ 1419 0505 BA000000 		.4byte	0xba
+ 1420 0509 05       		.uleb128 0x5
+ 1421 050a 03       		.byte	0x3
+ 1422 050b 00000000 		.4byte	modem_state
+ 1423 050f 19       		.uleb128 0x19
+ 1424 0510 4D020000 		.4byte	.LASF76
+ 1425 0514 05       		.byte	0x5
+ 1426 0515 62       		.byte	0x62
+ 1427 0516 DE000000 		.4byte	0xde
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 29
 
 
- 1428 0521 CB010000 		.4byte	.LASF47
- 1429 0525 05       		.byte	0x5
- 1430 0526 63       		.byte	0x63
- 1431 0527 27010000 		.4byte	0x127
- 1432 052b 05       		.uleb128 0x5
- 1433 052c 03       		.byte	0x3
- 1434 052d 00000000 		.4byte	modem_info
- 1435 0531 19       		.uleb128 0x19
- 1436 0532 26030000 		.4byte	.LASF77
- 1437 0536 05       		.byte	0x5
- 1438 0537 64       		.byte	0x64
- 1439 0538 9B010000 		.4byte	0x19b
- 1440 053c 05       		.uleb128 0x5
- 1441 053d 03       		.byte	0x3
- 1442 053e 00000000 		.4byte	modem_stats
- 1443 0542 19       		.uleb128 0x19
- 1444 0543 D8040000 		.4byte	.LASF78
- 1445 0547 05       		.byte	0x5
- 1446 0548 65       		.byte	0x65
- 1447 0549 F2010000 		.4byte	0x1f2
- 1448 054d 05       		.uleb128 0x5
- 1449 054e 03       		.byte	0x3
- 1450 054f 00000000 		.4byte	updatable_parameters
- 1451 0553 19       		.uleb128 0x19
- 1452 0554 BB010000 		.4byte	.LASF79
- 1453 0558 06       		.byte	0x6
- 1454 0559 11       		.byte	0x11
- 1455 055a EB010000 		.4byte	0x1eb
- 1456 055e 05       		.uleb128 0x5
- 1457 055f 03       		.byte	0x3
- 1458 0560 00000000 		.4byte	buffer_overflow
- 1459 0564 19       		.uleb128 0x19
- 1460 0565 57010000 		.4byte	.LASF80
- 1461 0569 06       		.byte	0x6
- 1462 056a 22       		.byte	0x22
- 1463 056b C6000000 		.4byte	0xc6
- 1464 056f 05       		.uleb128 0x5
- 1465 0570 03       		.byte	0x3
- 1466 0571 00000000 		.4byte	dataPointsInStack
- 1467 0575 19       		.uleb128 0x19
- 1468 0576 E7030000 		.4byte	.LASF81
- 1469 057a 06       		.byte	0x6
- 1470 057b 23       		.byte	0x23
- 1471 057c C6000000 		.4byte	0xc6
- 1472 0580 05       		.uleb128 0x5
- 1473 0581 03       		.byte	0x3
- 1474 0582 00000000 		.4byte	dataPointsInStackDesired
- 1475 0586 06       		.uleb128 0x6
- 1476 0587 2A020000 		.4byte	0x22a
- 1477 058b 96050000 		.4byte	0x596
- 1478 058f 07       		.uleb128 0x7
- 1479 0590 7D000000 		.4byte	0x7d
- 1480 0594 95       		.byte	0x95
- 1481 0595 00       		.byte	0
- 1482 0596 19       		.uleb128 0x19
- 1483 0597 26010000 		.4byte	.LASF82
- 1484 059b 06       		.byte	0x6
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 30
+ 1428 051a 05       		.uleb128 0x5
+ 1429 051b 03       		.byte	0x3
+ 1430 051c 00000000 		.4byte	modem_start_time_stamp
+ 1431 0520 19       		.uleb128 0x19
+ 1432 0521 DD010000 		.4byte	.LASF47
+ 1433 0525 05       		.byte	0x5
+ 1434 0526 63       		.byte	0x63
+ 1435 0527 27010000 		.4byte	0x127
+ 1436 052b 05       		.uleb128 0x5
+ 1437 052c 03       		.byte	0x3
+ 1438 052d 00000000 		.4byte	modem_info
+ 1439 0531 19       		.uleb128 0x19
+ 1440 0532 F1020000 		.4byte	.LASF77
+ 1441 0536 05       		.byte	0x5
+ 1442 0537 64       		.byte	0x64
+ 1443 0538 9B010000 		.4byte	0x19b
+ 1444 053c 05       		.uleb128 0x5
+ 1445 053d 03       		.byte	0x3
+ 1446 053e 00000000 		.4byte	modem_stats
+ 1447 0542 19       		.uleb128 0x19
+ 1448 0543 B3040000 		.4byte	.LASF78
+ 1449 0547 05       		.byte	0x5
+ 1450 0548 65       		.byte	0x65
+ 1451 0549 F2010000 		.4byte	0x1f2
+ 1452 054d 05       		.uleb128 0x5
+ 1453 054e 03       		.byte	0x3
+ 1454 054f 00000000 		.4byte	updatable_parameters
+ 1455 0553 19       		.uleb128 0x19
+ 1456 0554 CD010000 		.4byte	.LASF79
+ 1457 0558 06       		.byte	0x6
+ 1458 0559 11       		.byte	0x11
+ 1459 055a EB010000 		.4byte	0x1eb
+ 1460 055e 05       		.uleb128 0x5
+ 1461 055f 03       		.byte	0x3
+ 1462 0560 00000000 		.4byte	buffer_overflow
+ 1463 0564 19       		.uleb128 0x19
+ 1464 0565 69010000 		.4byte	.LASF80
+ 1465 0569 06       		.byte	0x6
+ 1466 056a 22       		.byte	0x22
+ 1467 056b C6000000 		.4byte	0xc6
+ 1468 056f 05       		.uleb128 0x5
+ 1469 0570 03       		.byte	0x3
+ 1470 0571 00000000 		.4byte	dataPointsInStack
+ 1471 0575 19       		.uleb128 0x19
+ 1472 0576 B2030000 		.4byte	.LASF81
+ 1473 057a 06       		.byte	0x6
+ 1474 057b 23       		.byte	0x23
+ 1475 057c C6000000 		.4byte	0xc6
+ 1476 0580 05       		.uleb128 0x5
+ 1477 0581 03       		.byte	0x3
+ 1478 0582 00000000 		.4byte	dataPointsInStackDesired
+ 1479 0586 06       		.uleb128 0x6
+ 1480 0587 2A020000 		.4byte	0x22a
+ 1481 058b 96050000 		.4byte	0x596
+ 1482 058f 07       		.uleb128 0x7
+ 1483 0590 7D000000 		.4byte	0x7d
+ 1484 0594 95       		.byte	0x95
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 30
 
 
- 1485 059c 24       		.byte	0x24
- 1486 059d 86050000 		.4byte	0x586
- 1487 05a1 05       		.uleb128 0x5
- 1488 05a2 03       		.byte	0x3
- 1489 05a3 00000000 		.4byte	data
- 1490 05a7 06       		.uleb128 0x6
- 1491 05a8 8A000000 		.4byte	0x8a
- 1492 05ac B8050000 		.4byte	0x5b8
- 1493 05b0 1A       		.uleb128 0x1a
- 1494 05b1 7D000000 		.4byte	0x7d
- 1495 05b5 0F27     		.2byte	0x270f
- 1496 05b7 00       		.byte	0
- 1497 05b8 19       		.uleb128 0x19
- 1498 05b9 3C050000 		.4byte	.LASF83
- 1499 05bd 07       		.byte	0x7
- 1500 05be 17       		.byte	0x17
- 1501 05bf A7050000 		.4byte	0x5a7
- 1502 05c3 05       		.uleb128 0x5
- 1503 05c4 03       		.byte	0x3
- 1504 05c5 00000000 		.4byte	http_request
- 1505 05c9 19       		.uleb128 0x19
- 1506 05ca 28050000 		.4byte	.LASF84
- 1507 05ce 07       		.byte	0x7
- 1508 05cf 18       		.byte	0x18
- 1509 05d0 A7050000 		.4byte	0x5a7
- 1510 05d4 05       		.uleb128 0x5
- 1511 05d5 03       		.byte	0x3
- 1512 05d6 00000000 		.4byte	http_body
- 1513 05da 06       		.uleb128 0x6
- 1514 05db 8A000000 		.4byte	0x8a
- 1515 05df EA050000 		.4byte	0x5ea
- 1516 05e3 07       		.uleb128 0x7
- 1517 05e4 7D000000 		.4byte	0x7d
- 1518 05e8 C7       		.byte	0xc7
- 1519 05e9 00       		.byte	0
- 1520 05ea 19       		.uleb128 0x19
- 1521 05eb 00040000 		.4byte	.LASF85
- 1522 05ef 07       		.byte	0x7
- 1523 05f0 19       		.byte	0x19
- 1524 05f1 DA050000 		.4byte	0x5da
- 1525 05f5 05       		.uleb128 0x5
- 1526 05f6 03       		.byte	0x3
- 1527 05f7 00000000 		.4byte	http_route
- 1528 05fb 19       		.uleb128 0x19
- 1529 05fc 90030000 		.4byte	.LASF86
- 1530 0600 07       		.byte	0x7
- 1531 0601 40       		.byte	0x40
- 1532 0602 A5020000 		.4byte	0x2a5
- 1533 0606 05       		.uleb128 0x5
- 1534 0607 03       		.byte	0x3
- 1535 0608 00000000 		.4byte	system_info
- 1536 060c 19       		.uleb128 0x19
- 1537 060d 98020000 		.4byte	.LASF87
- 1538 0611 07       		.byte	0x7
- 1539 0612 52       		.byte	0x52
- 1540 0613 E1020000 		.4byte	0x2e1
- 1541 0617 05       		.uleb128 0x5
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 31
+ 1485 0595 00       		.byte	0
+ 1486 0596 19       		.uleb128 0x19
+ 1487 0597 2C010000 		.4byte	.LASF82
+ 1488 059b 06       		.byte	0x6
+ 1489 059c 24       		.byte	0x24
+ 1490 059d 86050000 		.4byte	0x586
+ 1491 05a1 05       		.uleb128 0x5
+ 1492 05a2 03       		.byte	0x3
+ 1493 05a3 00000000 		.4byte	data
+ 1494 05a7 19       		.uleb128 0x19
+ 1495 05a8 91000000 		.4byte	.LASF83
+ 1496 05ac 09       		.byte	0x9
+ 1497 05ad 12       		.byte	0x12
+ 1498 05ae D1020000 		.4byte	0x2d1
+ 1499 05b2 05       		.uleb128 0x5
+ 1500 05b3 03       		.byte	0x3
+ 1501 05b4 00000000 		.4byte	inbox
+ 1502 05b8 06       		.uleb128 0x6
+ 1503 05b9 8A000000 		.4byte	0x8a
+ 1504 05bd C9050000 		.4byte	0x5c9
+ 1505 05c1 1A       		.uleb128 0x1a
+ 1506 05c2 7D000000 		.4byte	0x7d
+ 1507 05c6 0F27     		.2byte	0x270f
+ 1508 05c8 00       		.byte	0
+ 1509 05c9 19       		.uleb128 0x19
+ 1510 05ca 17050000 		.4byte	.LASF84
+ 1511 05ce 07       		.byte	0x7
+ 1512 05cf 18       		.byte	0x18
+ 1513 05d0 B8050000 		.4byte	0x5b8
+ 1514 05d4 05       		.uleb128 0x5
+ 1515 05d5 03       		.byte	0x3
+ 1516 05d6 00000000 		.4byte	http_request
+ 1517 05da 19       		.uleb128 0x19
+ 1518 05db 03050000 		.4byte	.LASF85
+ 1519 05df 07       		.byte	0x7
+ 1520 05e0 19       		.byte	0x19
+ 1521 05e1 B8050000 		.4byte	0x5b8
+ 1522 05e5 05       		.uleb128 0x5
+ 1523 05e6 03       		.byte	0x3
+ 1524 05e7 00000000 		.4byte	http_body
+ 1525 05eb 06       		.uleb128 0x6
+ 1526 05ec 8A000000 		.4byte	0x8a
+ 1527 05f0 FB050000 		.4byte	0x5fb
+ 1528 05f4 07       		.uleb128 0x7
+ 1529 05f5 7D000000 		.4byte	0x7d
+ 1530 05f9 C7       		.byte	0xc7
+ 1531 05fa 00       		.byte	0
+ 1532 05fb 19       		.uleb128 0x19
+ 1533 05fc CB030000 		.4byte	.LASF86
+ 1534 0600 07       		.byte	0x7
+ 1535 0601 1A       		.byte	0x1a
+ 1536 0602 EB050000 		.4byte	0x5eb
+ 1537 0606 05       		.uleb128 0x5
+ 1538 0607 03       		.byte	0x3
+ 1539 0608 00000000 		.4byte	http_route
+ 1540 060c 19       		.uleb128 0x19
+ 1541 060d 5B030000 		.4byte	.LASF87
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 31
 
 
- 1542 0618 03       		.byte	0x3
- 1543 0619 00000000 		.4byte	system_settings
- 1544 061d 19       		.uleb128 0x19
- 1545 061e D6010000 		.4byte	.LASF88
- 1546 0622 07       		.byte	0x7
- 1547 0623 6E       		.byte	0x6e
- 1548 0624 6E020000 		.4byte	0x26e
- 1549 0628 05       		.uleb128 0x5
- 1550 0629 03       		.byte	0x3
- 1551 062a 00000000 		.4byte	alarmMeasure
- 1552 062e 19       		.uleb128 0x19
- 1553 062f 3B030000 		.4byte	.LASF89
- 1554 0633 07       		.byte	0x7
- 1555 0634 6F       		.byte	0x6f
- 1556 0635 BA000000 		.4byte	0xba
- 1557 0639 05       		.uleb128 0x5
- 1558 063a 03       		.byte	0x3
- 1559 063b 00000000 		.4byte	timeToMeasure
- 1560 063f 19       		.uleb128 0x19
- 1561 0640 01020000 		.4byte	.LASF90
- 1562 0644 07       		.byte	0x7
- 1563 0645 70       		.byte	0x70
- 1564 0646 6E020000 		.4byte	0x26e
- 1565 064a 05       		.uleb128 0x5
- 1566 064b 03       		.byte	0x3
- 1567 064c 00000000 		.4byte	alarmSync
- 1568 0650 19       		.uleb128 0x19
- 1569 0651 49050000 		.4byte	.LASF91
- 1570 0655 07       		.byte	0x7
- 1571 0656 71       		.byte	0x71
- 1572 0657 BA000000 		.4byte	0xba
- 1573 065b 05       		.uleb128 0x5
- 1574 065c 03       		.byte	0x3
- 1575 065d 00000000 		.4byte	timeToSync
- 1576 0661 19       		.uleb128 0x19
- 1577 0662 D0030000 		.4byte	.LASF92
- 1578 0666 07       		.byte	0x7
- 1579 0667 72       		.byte	0x72
- 1580 0668 BA000000 		.4byte	0xba
- 1581 066c 05       		.uleb128 0x5
- 1582 066d 03       		.byte	0x3
- 1583 066e 00000000 		.4byte	timeToSycnRemoteParams
- 1584 0672 1B       		.uleb128 0x1b
- 1585 0673 68657900 		.ascii	"hey\000"
- 1586 0677 07       		.byte	0x7
- 1587 0678 73       		.byte	0x73
- 1588 0679 BA000000 		.4byte	0xba
- 1589 067d 05       		.uleb128 0x5
- 1590 067e 03       		.byte	0x3
- 1591 067f 00000000 		.4byte	hey
- 1592 0683 00       		.byte	0
- 1593              		.section	.debug_abbrev,"",%progbits
- 1594              	.Ldebug_abbrev0:
- 1595 0000 01       		.uleb128 0x1
- 1596 0001 11       		.uleb128 0x11
- 1597 0002 01       		.byte	0x1
- 1598 0003 25       		.uleb128 0x25
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 32
+ 1542 0611 07       		.byte	0x7
+ 1543 0612 41       		.byte	0x41
+ 1544 0613 A5020000 		.4byte	0x2a5
+ 1545 0617 05       		.uleb128 0x5
+ 1546 0618 03       		.byte	0x3
+ 1547 0619 00000000 		.4byte	system_info
+ 1548 061d 19       		.uleb128 0x19
+ 1549 061e AA020000 		.4byte	.LASF88
+ 1550 0622 07       		.byte	0x7
+ 1551 0623 53       		.byte	0x53
+ 1552 0624 E1020000 		.4byte	0x2e1
+ 1553 0628 05       		.uleb128 0x5
+ 1554 0629 03       		.byte	0x3
+ 1555 062a 00000000 		.4byte	system_settings
+ 1556 062e 19       		.uleb128 0x19
+ 1557 062f E8010000 		.4byte	.LASF89
+ 1558 0633 07       		.byte	0x7
+ 1559 0634 6F       		.byte	0x6f
+ 1560 0635 6E020000 		.4byte	0x26e
+ 1561 0639 05       		.uleb128 0x5
+ 1562 063a 03       		.byte	0x3
+ 1563 063b 00000000 		.4byte	alarmMeasure
+ 1564 063f 19       		.uleb128 0x19
+ 1565 0640 06030000 		.4byte	.LASF90
+ 1566 0644 07       		.byte	0x7
+ 1567 0645 70       		.byte	0x70
+ 1568 0646 BA000000 		.4byte	0xba
+ 1569 064a 05       		.uleb128 0x5
+ 1570 064b 03       		.byte	0x3
+ 1571 064c 00000000 		.4byte	timeToMeasure
+ 1572 0650 19       		.uleb128 0x19
+ 1573 0651 13020000 		.4byte	.LASF91
+ 1574 0655 07       		.byte	0x7
+ 1575 0656 71       		.byte	0x71
+ 1576 0657 6E020000 		.4byte	0x26e
+ 1577 065b 05       		.uleb128 0x5
+ 1578 065c 03       		.byte	0x3
+ 1579 065d 00000000 		.4byte	alarmSync
+ 1580 0661 19       		.uleb128 0x19
+ 1581 0662 24050000 		.4byte	.LASF92
+ 1582 0666 07       		.byte	0x7
+ 1583 0667 72       		.byte	0x72
+ 1584 0668 BA000000 		.4byte	0xba
+ 1585 066c 05       		.uleb128 0x5
+ 1586 066d 03       		.byte	0x3
+ 1587 066e 00000000 		.4byte	timeToSync
+ 1588 0672 19       		.uleb128 0x19
+ 1589 0673 9B030000 		.4byte	.LASF93
+ 1590 0677 07       		.byte	0x7
+ 1591 0678 73       		.byte	0x73
+ 1592 0679 BA000000 		.4byte	0xba
+ 1593 067d 05       		.uleb128 0x5
+ 1594 067e 03       		.byte	0x3
+ 1595 067f 00000000 		.4byte	timeToSycnRemoteParams
+ 1596 0683 1B       		.uleb128 0x1b
+ 1597 0684 68657900 		.ascii	"hey\000"
+ 1598 0688 07       		.byte	0x7
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 32
 
 
- 1599 0004 0E       		.uleb128 0xe
- 1600 0005 13       		.uleb128 0x13
- 1601 0006 0B       		.uleb128 0xb
- 1602 0007 03       		.uleb128 0x3
- 1603 0008 0E       		.uleb128 0xe
- 1604 0009 1B       		.uleb128 0x1b
- 1605 000a 0E       		.uleb128 0xe
- 1606 000b 55       		.uleb128 0x55
- 1607 000c 17       		.uleb128 0x17
- 1608 000d 11       		.uleb128 0x11
- 1609 000e 01       		.uleb128 0x1
- 1610 000f 10       		.uleb128 0x10
- 1611 0010 17       		.uleb128 0x17
- 1612 0011 00       		.byte	0
- 1613 0012 00       		.byte	0
- 1614 0013 02       		.uleb128 0x2
- 1615 0014 24       		.uleb128 0x24
- 1616 0015 00       		.byte	0
- 1617 0016 0B       		.uleb128 0xb
- 1618 0017 0B       		.uleb128 0xb
- 1619 0018 3E       		.uleb128 0x3e
- 1620 0019 0B       		.uleb128 0xb
- 1621 001a 03       		.uleb128 0x3
- 1622 001b 08       		.uleb128 0x8
- 1623 001c 00       		.byte	0
- 1624 001d 00       		.byte	0
- 1625 001e 03       		.uleb128 0x3
- 1626 001f 24       		.uleb128 0x24
- 1627 0020 00       		.byte	0
- 1628 0021 0B       		.uleb128 0xb
- 1629 0022 0B       		.uleb128 0xb
- 1630 0023 3E       		.uleb128 0x3e
- 1631 0024 0B       		.uleb128 0xb
- 1632 0025 03       		.uleb128 0x3
- 1633 0026 0E       		.uleb128 0xe
- 1634 0027 00       		.byte	0
- 1635 0028 00       		.byte	0
- 1636 0029 04       		.uleb128 0x4
- 1637 002a 16       		.uleb128 0x16
- 1638 002b 00       		.byte	0
- 1639 002c 03       		.uleb128 0x3
- 1640 002d 0E       		.uleb128 0xe
- 1641 002e 3A       		.uleb128 0x3a
- 1642 002f 0B       		.uleb128 0xb
- 1643 0030 3B       		.uleb128 0x3b
- 1644 0031 0B       		.uleb128 0xb
- 1645 0032 49       		.uleb128 0x49
- 1646 0033 13       		.uleb128 0x13
- 1647 0034 00       		.byte	0
- 1648 0035 00       		.byte	0
- 1649 0036 05       		.uleb128 0x5
- 1650 0037 0F       		.uleb128 0xf
- 1651 0038 00       		.byte	0
- 1652 0039 0B       		.uleb128 0xb
- 1653 003a 0B       		.uleb128 0xb
- 1654 003b 49       		.uleb128 0x49
- 1655 003c 13       		.uleb128 0x13
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 33
+ 1599 0689 74       		.byte	0x74
+ 1600 068a BA000000 		.4byte	0xba
+ 1601 068e 05       		.uleb128 0x5
+ 1602 068f 03       		.byte	0x3
+ 1603 0690 00000000 		.4byte	hey
+ 1604 0694 19       		.uleb128 0x19
+ 1605 0695 50010000 		.4byte	.LASF94
+ 1606 0699 07       		.byte	0x7
+ 1607 069a 77       		.byte	0x77
+ 1608 069b 6E020000 		.4byte	0x26e
+ 1609 069f 05       		.uleb128 0x5
+ 1610 06a0 03       		.byte	0x3
+ 1611 06a1 00000000 		.4byte	alarmAppLED
+ 1612 06a5 19       		.uleb128 0x19
+ 1613 06a6 80040000 		.4byte	.LASF95
+ 1614 06aa 07       		.byte	0x7
+ 1615 06ab 78       		.byte	0x78
+ 1616 06ac BA000000 		.4byte	0xba
+ 1617 06b0 05       		.uleb128 0x5
+ 1618 06b1 03       		.byte	0x3
+ 1619 06b2 00000000 		.4byte	timeToAppLED
+ 1620 06b6 00       		.byte	0
+ 1621              		.section	.debug_abbrev,"",%progbits
+ 1622              	.Ldebug_abbrev0:
+ 1623 0000 01       		.uleb128 0x1
+ 1624 0001 11       		.uleb128 0x11
+ 1625 0002 01       		.byte	0x1
+ 1626 0003 25       		.uleb128 0x25
+ 1627 0004 0E       		.uleb128 0xe
+ 1628 0005 13       		.uleb128 0x13
+ 1629 0006 0B       		.uleb128 0xb
+ 1630 0007 03       		.uleb128 0x3
+ 1631 0008 0E       		.uleb128 0xe
+ 1632 0009 1B       		.uleb128 0x1b
+ 1633 000a 0E       		.uleb128 0xe
+ 1634 000b 55       		.uleb128 0x55
+ 1635 000c 17       		.uleb128 0x17
+ 1636 000d 11       		.uleb128 0x11
+ 1637 000e 01       		.uleb128 0x1
+ 1638 000f 10       		.uleb128 0x10
+ 1639 0010 17       		.uleb128 0x17
+ 1640 0011 00       		.byte	0
+ 1641 0012 00       		.byte	0
+ 1642 0013 02       		.uleb128 0x2
+ 1643 0014 24       		.uleb128 0x24
+ 1644 0015 00       		.byte	0
+ 1645 0016 0B       		.uleb128 0xb
+ 1646 0017 0B       		.uleb128 0xb
+ 1647 0018 3E       		.uleb128 0x3e
+ 1648 0019 0B       		.uleb128 0xb
+ 1649 001a 03       		.uleb128 0x3
+ 1650 001b 08       		.uleb128 0x8
+ 1651 001c 00       		.byte	0
+ 1652 001d 00       		.byte	0
+ 1653 001e 03       		.uleb128 0x3
+ 1654 001f 24       		.uleb128 0x24
+ 1655 0020 00       		.byte	0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 33
 
 
- 1656 003d 00       		.byte	0
- 1657 003e 00       		.byte	0
- 1658 003f 06       		.uleb128 0x6
- 1659 0040 01       		.uleb128 0x1
- 1660 0041 01       		.byte	0x1
- 1661 0042 49       		.uleb128 0x49
- 1662 0043 13       		.uleb128 0x13
- 1663 0044 01       		.uleb128 0x1
- 1664 0045 13       		.uleb128 0x13
- 1665 0046 00       		.byte	0
- 1666 0047 00       		.byte	0
- 1667 0048 07       		.uleb128 0x7
- 1668 0049 21       		.uleb128 0x21
- 1669 004a 00       		.byte	0
- 1670 004b 49       		.uleb128 0x49
- 1671 004c 13       		.uleb128 0x13
- 1672 004d 2F       		.uleb128 0x2f
- 1673 004e 0B       		.uleb128 0xb
- 1674 004f 00       		.byte	0
- 1675 0050 00       		.byte	0
- 1676 0051 08       		.uleb128 0x8
- 1677 0052 16       		.uleb128 0x16
- 1678 0053 00       		.byte	0
- 1679 0054 03       		.uleb128 0x3
- 1680 0055 0E       		.uleb128 0xe
- 1681 0056 3A       		.uleb128 0x3a
- 1682 0057 0B       		.uleb128 0xb
- 1683 0058 3B       		.uleb128 0x3b
- 1684 0059 05       		.uleb128 0x5
- 1685 005a 49       		.uleb128 0x49
- 1686 005b 13       		.uleb128 0x13
- 1687 005c 00       		.byte	0
- 1688 005d 00       		.byte	0
- 1689 005e 09       		.uleb128 0x9
- 1690 005f 13       		.uleb128 0x13
- 1691 0060 01       		.byte	0x1
- 1692 0061 0B       		.uleb128 0xb
- 1693 0062 0B       		.uleb128 0xb
- 1694 0063 3A       		.uleb128 0x3a
- 1695 0064 0B       		.uleb128 0xb
- 1696 0065 3B       		.uleb128 0x3b
- 1697 0066 0B       		.uleb128 0xb
- 1698 0067 01       		.uleb128 0x1
- 1699 0068 13       		.uleb128 0x13
- 1700 0069 00       		.byte	0
- 1701 006a 00       		.byte	0
- 1702 006b 0A       		.uleb128 0xa
- 1703 006c 0D       		.uleb128 0xd
- 1704 006d 00       		.byte	0
- 1705 006e 03       		.uleb128 0x3
- 1706 006f 0E       		.uleb128 0xe
- 1707 0070 3A       		.uleb128 0x3a
- 1708 0071 0B       		.uleb128 0xb
- 1709 0072 3B       		.uleb128 0x3b
- 1710 0073 0B       		.uleb128 0xb
- 1711 0074 49       		.uleb128 0x49
- 1712 0075 13       		.uleb128 0x13
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 34
+ 1656 0021 0B       		.uleb128 0xb
+ 1657 0022 0B       		.uleb128 0xb
+ 1658 0023 3E       		.uleb128 0x3e
+ 1659 0024 0B       		.uleb128 0xb
+ 1660 0025 03       		.uleb128 0x3
+ 1661 0026 0E       		.uleb128 0xe
+ 1662 0027 00       		.byte	0
+ 1663 0028 00       		.byte	0
+ 1664 0029 04       		.uleb128 0x4
+ 1665 002a 16       		.uleb128 0x16
+ 1666 002b 00       		.byte	0
+ 1667 002c 03       		.uleb128 0x3
+ 1668 002d 0E       		.uleb128 0xe
+ 1669 002e 3A       		.uleb128 0x3a
+ 1670 002f 0B       		.uleb128 0xb
+ 1671 0030 3B       		.uleb128 0x3b
+ 1672 0031 0B       		.uleb128 0xb
+ 1673 0032 49       		.uleb128 0x49
+ 1674 0033 13       		.uleb128 0x13
+ 1675 0034 00       		.byte	0
+ 1676 0035 00       		.byte	0
+ 1677 0036 05       		.uleb128 0x5
+ 1678 0037 0F       		.uleb128 0xf
+ 1679 0038 00       		.byte	0
+ 1680 0039 0B       		.uleb128 0xb
+ 1681 003a 0B       		.uleb128 0xb
+ 1682 003b 49       		.uleb128 0x49
+ 1683 003c 13       		.uleb128 0x13
+ 1684 003d 00       		.byte	0
+ 1685 003e 00       		.byte	0
+ 1686 003f 06       		.uleb128 0x6
+ 1687 0040 01       		.uleb128 0x1
+ 1688 0041 01       		.byte	0x1
+ 1689 0042 49       		.uleb128 0x49
+ 1690 0043 13       		.uleb128 0x13
+ 1691 0044 01       		.uleb128 0x1
+ 1692 0045 13       		.uleb128 0x13
+ 1693 0046 00       		.byte	0
+ 1694 0047 00       		.byte	0
+ 1695 0048 07       		.uleb128 0x7
+ 1696 0049 21       		.uleb128 0x21
+ 1697 004a 00       		.byte	0
+ 1698 004b 49       		.uleb128 0x49
+ 1699 004c 13       		.uleb128 0x13
+ 1700 004d 2F       		.uleb128 0x2f
+ 1701 004e 0B       		.uleb128 0xb
+ 1702 004f 00       		.byte	0
+ 1703 0050 00       		.byte	0
+ 1704 0051 08       		.uleb128 0x8
+ 1705 0052 16       		.uleb128 0x16
+ 1706 0053 00       		.byte	0
+ 1707 0054 03       		.uleb128 0x3
+ 1708 0055 0E       		.uleb128 0xe
+ 1709 0056 3A       		.uleb128 0x3a
+ 1710 0057 0B       		.uleb128 0xb
+ 1711 0058 3B       		.uleb128 0x3b
+ 1712 0059 05       		.uleb128 0x5
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 34
 
 
- 1713 0076 38       		.uleb128 0x38
- 1714 0077 0B       		.uleb128 0xb
- 1715 0078 00       		.byte	0
- 1716 0079 00       		.byte	0
- 1717 007a 0B       		.uleb128 0xb
- 1718 007b 0D       		.uleb128 0xd
- 1719 007c 00       		.byte	0
- 1720 007d 03       		.uleb128 0x3
- 1721 007e 08       		.uleb128 0x8
- 1722 007f 3A       		.uleb128 0x3a
- 1723 0080 0B       		.uleb128 0xb
- 1724 0081 3B       		.uleb128 0x3b
- 1725 0082 0B       		.uleb128 0xb
- 1726 0083 49       		.uleb128 0x49
- 1727 0084 13       		.uleb128 0x13
- 1728 0085 38       		.uleb128 0x38
- 1729 0086 0B       		.uleb128 0xb
- 1730 0087 00       		.byte	0
- 1731 0088 00       		.byte	0
- 1732 0089 0C       		.uleb128 0xc
- 1733 008a 35       		.uleb128 0x35
- 1734 008b 00       		.byte	0
- 1735 008c 49       		.uleb128 0x49
- 1736 008d 13       		.uleb128 0x13
- 1737 008e 00       		.byte	0
- 1738 008f 00       		.byte	0
- 1739 0090 0D       		.uleb128 0xd
- 1740 0091 2E       		.uleb128 0x2e
- 1741 0092 01       		.byte	0x1
- 1742 0093 3F       		.uleb128 0x3f
- 1743 0094 19       		.uleb128 0x19
- 1744 0095 03       		.uleb128 0x3
- 1745 0096 0E       		.uleb128 0xe
- 1746 0097 3A       		.uleb128 0x3a
- 1747 0098 0B       		.uleb128 0xb
- 1748 0099 3B       		.uleb128 0x3b
- 1749 009a 0B       		.uleb128 0xb
- 1750 009b 27       		.uleb128 0x27
- 1751 009c 19       		.uleb128 0x19
- 1752 009d 49       		.uleb128 0x49
- 1753 009e 13       		.uleb128 0x13
- 1754 009f 11       		.uleb128 0x11
- 1755 00a0 01       		.uleb128 0x1
- 1756 00a1 12       		.uleb128 0x12
- 1757 00a2 06       		.uleb128 0x6
- 1758 00a3 40       		.uleb128 0x40
- 1759 00a4 18       		.uleb128 0x18
- 1760 00a5 9642     		.uleb128 0x2116
- 1761 00a7 19       		.uleb128 0x19
- 1762 00a8 01       		.uleb128 0x1
- 1763 00a9 13       		.uleb128 0x13
- 1764 00aa 00       		.byte	0
- 1765 00ab 00       		.byte	0
- 1766 00ac 0E       		.uleb128 0xe
- 1767 00ad 05       		.uleb128 0x5
- 1768 00ae 00       		.byte	0
- 1769 00af 03       		.uleb128 0x3
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 35
+ 1713 005a 49       		.uleb128 0x49
+ 1714 005b 13       		.uleb128 0x13
+ 1715 005c 00       		.byte	0
+ 1716 005d 00       		.byte	0
+ 1717 005e 09       		.uleb128 0x9
+ 1718 005f 13       		.uleb128 0x13
+ 1719 0060 01       		.byte	0x1
+ 1720 0061 0B       		.uleb128 0xb
+ 1721 0062 0B       		.uleb128 0xb
+ 1722 0063 3A       		.uleb128 0x3a
+ 1723 0064 0B       		.uleb128 0xb
+ 1724 0065 3B       		.uleb128 0x3b
+ 1725 0066 0B       		.uleb128 0xb
+ 1726 0067 01       		.uleb128 0x1
+ 1727 0068 13       		.uleb128 0x13
+ 1728 0069 00       		.byte	0
+ 1729 006a 00       		.byte	0
+ 1730 006b 0A       		.uleb128 0xa
+ 1731 006c 0D       		.uleb128 0xd
+ 1732 006d 00       		.byte	0
+ 1733 006e 03       		.uleb128 0x3
+ 1734 006f 0E       		.uleb128 0xe
+ 1735 0070 3A       		.uleb128 0x3a
+ 1736 0071 0B       		.uleb128 0xb
+ 1737 0072 3B       		.uleb128 0x3b
+ 1738 0073 0B       		.uleb128 0xb
+ 1739 0074 49       		.uleb128 0x49
+ 1740 0075 13       		.uleb128 0x13
+ 1741 0076 38       		.uleb128 0x38
+ 1742 0077 0B       		.uleb128 0xb
+ 1743 0078 00       		.byte	0
+ 1744 0079 00       		.byte	0
+ 1745 007a 0B       		.uleb128 0xb
+ 1746 007b 0D       		.uleb128 0xd
+ 1747 007c 00       		.byte	0
+ 1748 007d 03       		.uleb128 0x3
+ 1749 007e 08       		.uleb128 0x8
+ 1750 007f 3A       		.uleb128 0x3a
+ 1751 0080 0B       		.uleb128 0xb
+ 1752 0081 3B       		.uleb128 0x3b
+ 1753 0082 0B       		.uleb128 0xb
+ 1754 0083 49       		.uleb128 0x49
+ 1755 0084 13       		.uleb128 0x13
+ 1756 0085 38       		.uleb128 0x38
+ 1757 0086 0B       		.uleb128 0xb
+ 1758 0087 00       		.byte	0
+ 1759 0088 00       		.byte	0
+ 1760 0089 0C       		.uleb128 0xc
+ 1761 008a 35       		.uleb128 0x35
+ 1762 008b 00       		.byte	0
+ 1763 008c 49       		.uleb128 0x49
+ 1764 008d 13       		.uleb128 0x13
+ 1765 008e 00       		.byte	0
+ 1766 008f 00       		.byte	0
+ 1767 0090 0D       		.uleb128 0xd
+ 1768 0091 2E       		.uleb128 0x2e
+ 1769 0092 01       		.byte	0x1
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 35
 
 
- 1770 00b0 08       		.uleb128 0x8
- 1771 00b1 3A       		.uleb128 0x3a
- 1772 00b2 0B       		.uleb128 0xb
- 1773 00b3 3B       		.uleb128 0x3b
- 1774 00b4 0B       		.uleb128 0xb
- 1775 00b5 49       		.uleb128 0x49
- 1776 00b6 13       		.uleb128 0x13
- 1777 00b7 02       		.uleb128 0x2
- 1778 00b8 18       		.uleb128 0x18
- 1779 00b9 00       		.byte	0
- 1780 00ba 00       		.byte	0
- 1781 00bb 0F       		.uleb128 0xf
- 1782 00bc 05       		.uleb128 0x5
- 1783 00bd 00       		.byte	0
- 1784 00be 03       		.uleb128 0x3
- 1785 00bf 0E       		.uleb128 0xe
- 1786 00c0 3A       		.uleb128 0x3a
- 1787 00c1 0B       		.uleb128 0xb
- 1788 00c2 3B       		.uleb128 0x3b
- 1789 00c3 0B       		.uleb128 0xb
- 1790 00c4 49       		.uleb128 0x49
- 1791 00c5 13       		.uleb128 0x13
- 1792 00c6 02       		.uleb128 0x2
- 1793 00c7 18       		.uleb128 0x18
- 1794 00c8 00       		.byte	0
- 1795 00c9 00       		.byte	0
- 1796 00ca 10       		.uleb128 0x10
- 1797 00cb 2E       		.uleb128 0x2e
- 1798 00cc 00       		.byte	0
- 1799 00cd 3F       		.uleb128 0x3f
- 1800 00ce 19       		.uleb128 0x19
- 1801 00cf 03       		.uleb128 0x3
- 1802 00d0 0E       		.uleb128 0xe
- 1803 00d1 3A       		.uleb128 0x3a
- 1804 00d2 0B       		.uleb128 0xb
- 1805 00d3 3B       		.uleb128 0x3b
- 1806 00d4 0B       		.uleb128 0xb
- 1807 00d5 11       		.uleb128 0x11
- 1808 00d6 01       		.uleb128 0x1
- 1809 00d7 12       		.uleb128 0x12
- 1810 00d8 06       		.uleb128 0x6
- 1811 00d9 40       		.uleb128 0x40
- 1812 00da 18       		.uleb128 0x18
- 1813 00db 9642     		.uleb128 0x2116
- 1814 00dd 19       		.uleb128 0x19
- 1815 00de 00       		.byte	0
- 1816 00df 00       		.byte	0
- 1817 00e0 11       		.uleb128 0x11
- 1818 00e1 2E       		.uleb128 0x2e
- 1819 00e2 01       		.byte	0x1
- 1820 00e3 3F       		.uleb128 0x3f
- 1821 00e4 19       		.uleb128 0x19
- 1822 00e5 03       		.uleb128 0x3
- 1823 00e6 0E       		.uleb128 0xe
- 1824 00e7 3A       		.uleb128 0x3a
- 1825 00e8 0B       		.uleb128 0xb
- 1826 00e9 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 36
+ 1770 0093 3F       		.uleb128 0x3f
+ 1771 0094 19       		.uleb128 0x19
+ 1772 0095 03       		.uleb128 0x3
+ 1773 0096 0E       		.uleb128 0xe
+ 1774 0097 3A       		.uleb128 0x3a
+ 1775 0098 0B       		.uleb128 0xb
+ 1776 0099 3B       		.uleb128 0x3b
+ 1777 009a 0B       		.uleb128 0xb
+ 1778 009b 27       		.uleb128 0x27
+ 1779 009c 19       		.uleb128 0x19
+ 1780 009d 49       		.uleb128 0x49
+ 1781 009e 13       		.uleb128 0x13
+ 1782 009f 11       		.uleb128 0x11
+ 1783 00a0 01       		.uleb128 0x1
+ 1784 00a1 12       		.uleb128 0x12
+ 1785 00a2 06       		.uleb128 0x6
+ 1786 00a3 40       		.uleb128 0x40
+ 1787 00a4 18       		.uleb128 0x18
+ 1788 00a5 9642     		.uleb128 0x2116
+ 1789 00a7 19       		.uleb128 0x19
+ 1790 00a8 01       		.uleb128 0x1
+ 1791 00a9 13       		.uleb128 0x13
+ 1792 00aa 00       		.byte	0
+ 1793 00ab 00       		.byte	0
+ 1794 00ac 0E       		.uleb128 0xe
+ 1795 00ad 05       		.uleb128 0x5
+ 1796 00ae 00       		.byte	0
+ 1797 00af 03       		.uleb128 0x3
+ 1798 00b0 08       		.uleb128 0x8
+ 1799 00b1 3A       		.uleb128 0x3a
+ 1800 00b2 0B       		.uleb128 0xb
+ 1801 00b3 3B       		.uleb128 0x3b
+ 1802 00b4 0B       		.uleb128 0xb
+ 1803 00b5 49       		.uleb128 0x49
+ 1804 00b6 13       		.uleb128 0x13
+ 1805 00b7 02       		.uleb128 0x2
+ 1806 00b8 18       		.uleb128 0x18
+ 1807 00b9 00       		.byte	0
+ 1808 00ba 00       		.byte	0
+ 1809 00bb 0F       		.uleb128 0xf
+ 1810 00bc 05       		.uleb128 0x5
+ 1811 00bd 00       		.byte	0
+ 1812 00be 03       		.uleb128 0x3
+ 1813 00bf 0E       		.uleb128 0xe
+ 1814 00c0 3A       		.uleb128 0x3a
+ 1815 00c1 0B       		.uleb128 0xb
+ 1816 00c2 3B       		.uleb128 0x3b
+ 1817 00c3 0B       		.uleb128 0xb
+ 1818 00c4 49       		.uleb128 0x49
+ 1819 00c5 13       		.uleb128 0x13
+ 1820 00c6 02       		.uleb128 0x2
+ 1821 00c7 18       		.uleb128 0x18
+ 1822 00c8 00       		.byte	0
+ 1823 00c9 00       		.byte	0
+ 1824 00ca 10       		.uleb128 0x10
+ 1825 00cb 2E       		.uleb128 0x2e
+ 1826 00cc 00       		.byte	0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 36
 
 
- 1827 00ea 0B       		.uleb128 0xb
- 1828 00eb 11       		.uleb128 0x11
- 1829 00ec 01       		.uleb128 0x1
- 1830 00ed 12       		.uleb128 0x12
- 1831 00ee 06       		.uleb128 0x6
- 1832 00ef 40       		.uleb128 0x40
- 1833 00f0 18       		.uleb128 0x18
- 1834 00f1 9742     		.uleb128 0x2117
- 1835 00f3 19       		.uleb128 0x19
- 1836 00f4 01       		.uleb128 0x1
- 1837 00f5 13       		.uleb128 0x13
- 1838 00f6 00       		.byte	0
- 1839 00f7 00       		.byte	0
- 1840 00f8 12       		.uleb128 0x12
- 1841 00f9 0B       		.uleb128 0xb
- 1842 00fa 01       		.byte	0x1
- 1843 00fb 11       		.uleb128 0x11
- 1844 00fc 01       		.uleb128 0x1
- 1845 00fd 12       		.uleb128 0x12
- 1846 00fe 06       		.uleb128 0x6
- 1847 00ff 00       		.byte	0
- 1848 0100 00       		.byte	0
- 1849 0101 13       		.uleb128 0x13
- 1850 0102 34       		.uleb128 0x34
- 1851 0103 00       		.byte	0
- 1852 0104 03       		.uleb128 0x3
- 1853 0105 08       		.uleb128 0x8
- 1854 0106 3A       		.uleb128 0x3a
- 1855 0107 0B       		.uleb128 0xb
- 1856 0108 3B       		.uleb128 0x3b
- 1857 0109 0B       		.uleb128 0xb
- 1858 010a 49       		.uleb128 0x49
- 1859 010b 13       		.uleb128 0x13
- 1860 010c 02       		.uleb128 0x2
- 1861 010d 18       		.uleb128 0x18
- 1862 010e 00       		.byte	0
- 1863 010f 00       		.byte	0
- 1864 0110 14       		.uleb128 0x14
- 1865 0111 2E       		.uleb128 0x2e
- 1866 0112 00       		.byte	0
- 1867 0113 3F       		.uleb128 0x3f
- 1868 0114 19       		.uleb128 0x19
- 1869 0115 03       		.uleb128 0x3
- 1870 0116 0E       		.uleb128 0xe
- 1871 0117 3A       		.uleb128 0x3a
- 1872 0118 0B       		.uleb128 0xb
- 1873 0119 3B       		.uleb128 0x3b
- 1874 011a 0B       		.uleb128 0xb
- 1875 011b 49       		.uleb128 0x49
- 1876 011c 13       		.uleb128 0x13
- 1877 011d 11       		.uleb128 0x11
- 1878 011e 01       		.uleb128 0x1
- 1879 011f 12       		.uleb128 0x12
- 1880 0120 06       		.uleb128 0x6
- 1881 0121 40       		.uleb128 0x40
- 1882 0122 18       		.uleb128 0x18
- 1883 0123 9742     		.uleb128 0x2117
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 37
+ 1827 00cd 3F       		.uleb128 0x3f
+ 1828 00ce 19       		.uleb128 0x19
+ 1829 00cf 03       		.uleb128 0x3
+ 1830 00d0 0E       		.uleb128 0xe
+ 1831 00d1 3A       		.uleb128 0x3a
+ 1832 00d2 0B       		.uleb128 0xb
+ 1833 00d3 3B       		.uleb128 0x3b
+ 1834 00d4 0B       		.uleb128 0xb
+ 1835 00d5 11       		.uleb128 0x11
+ 1836 00d6 01       		.uleb128 0x1
+ 1837 00d7 12       		.uleb128 0x12
+ 1838 00d8 06       		.uleb128 0x6
+ 1839 00d9 40       		.uleb128 0x40
+ 1840 00da 18       		.uleb128 0x18
+ 1841 00db 9642     		.uleb128 0x2116
+ 1842 00dd 19       		.uleb128 0x19
+ 1843 00de 00       		.byte	0
+ 1844 00df 00       		.byte	0
+ 1845 00e0 11       		.uleb128 0x11
+ 1846 00e1 2E       		.uleb128 0x2e
+ 1847 00e2 01       		.byte	0x1
+ 1848 00e3 3F       		.uleb128 0x3f
+ 1849 00e4 19       		.uleb128 0x19
+ 1850 00e5 03       		.uleb128 0x3
+ 1851 00e6 0E       		.uleb128 0xe
+ 1852 00e7 3A       		.uleb128 0x3a
+ 1853 00e8 0B       		.uleb128 0xb
+ 1854 00e9 3B       		.uleb128 0x3b
+ 1855 00ea 0B       		.uleb128 0xb
+ 1856 00eb 11       		.uleb128 0x11
+ 1857 00ec 01       		.uleb128 0x1
+ 1858 00ed 12       		.uleb128 0x12
+ 1859 00ee 06       		.uleb128 0x6
+ 1860 00ef 40       		.uleb128 0x40
+ 1861 00f0 18       		.uleb128 0x18
+ 1862 00f1 9742     		.uleb128 0x2117
+ 1863 00f3 19       		.uleb128 0x19
+ 1864 00f4 01       		.uleb128 0x1
+ 1865 00f5 13       		.uleb128 0x13
+ 1866 00f6 00       		.byte	0
+ 1867 00f7 00       		.byte	0
+ 1868 00f8 12       		.uleb128 0x12
+ 1869 00f9 0B       		.uleb128 0xb
+ 1870 00fa 01       		.byte	0x1
+ 1871 00fb 11       		.uleb128 0x11
+ 1872 00fc 01       		.uleb128 0x1
+ 1873 00fd 12       		.uleb128 0x12
+ 1874 00fe 06       		.uleb128 0x6
+ 1875 00ff 00       		.byte	0
+ 1876 0100 00       		.byte	0
+ 1877 0101 13       		.uleb128 0x13
+ 1878 0102 34       		.uleb128 0x34
+ 1879 0103 00       		.byte	0
+ 1880 0104 03       		.uleb128 0x3
+ 1881 0105 08       		.uleb128 0x8
+ 1882 0106 3A       		.uleb128 0x3a
+ 1883 0107 0B       		.uleb128 0xb
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 37
 
 
- 1884 0125 19       		.uleb128 0x19
- 1885 0126 00       		.byte	0
- 1886 0127 00       		.byte	0
- 1887 0128 15       		.uleb128 0x15
- 1888 0129 2E       		.uleb128 0x2e
- 1889 012a 01       		.byte	0x1
- 1890 012b 3F       		.uleb128 0x3f
- 1891 012c 19       		.uleb128 0x19
- 1892 012d 03       		.uleb128 0x3
- 1893 012e 0E       		.uleb128 0xe
- 1894 012f 3A       		.uleb128 0x3a
- 1895 0130 0B       		.uleb128 0xb
- 1896 0131 3B       		.uleb128 0x3b
- 1897 0132 0B       		.uleb128 0xb
- 1898 0133 27       		.uleb128 0x27
- 1899 0134 19       		.uleb128 0x19
- 1900 0135 11       		.uleb128 0x11
- 1901 0136 01       		.uleb128 0x1
- 1902 0137 12       		.uleb128 0x12
- 1903 0138 06       		.uleb128 0x6
- 1904 0139 40       		.uleb128 0x40
- 1905 013a 18       		.uleb128 0x18
- 1906 013b 9642     		.uleb128 0x2116
- 1907 013d 19       		.uleb128 0x19
- 1908 013e 01       		.uleb128 0x1
- 1909 013f 13       		.uleb128 0x13
- 1910 0140 00       		.byte	0
- 1911 0141 00       		.byte	0
- 1912 0142 16       		.uleb128 0x16
- 1913 0143 34       		.uleb128 0x34
- 1914 0144 00       		.byte	0
- 1915 0145 03       		.uleb128 0x3
- 1916 0146 0E       		.uleb128 0xe
- 1917 0147 3A       		.uleb128 0x3a
- 1918 0148 0B       		.uleb128 0xb
- 1919 0149 3B       		.uleb128 0x3b
- 1920 014a 0B       		.uleb128 0xb
- 1921 014b 49       		.uleb128 0x49
- 1922 014c 13       		.uleb128 0x13
- 1923 014d 02       		.uleb128 0x2
- 1924 014e 18       		.uleb128 0x18
- 1925 014f 00       		.byte	0
- 1926 0150 00       		.byte	0
- 1927 0151 17       		.uleb128 0x17
- 1928 0152 0B       		.uleb128 0xb
- 1929 0153 01       		.byte	0x1
- 1930 0154 11       		.uleb128 0x11
- 1931 0155 01       		.uleb128 0x1
- 1932 0156 12       		.uleb128 0x12
- 1933 0157 06       		.uleb128 0x6
- 1934 0158 01       		.uleb128 0x1
- 1935 0159 13       		.uleb128 0x13
- 1936 015a 00       		.byte	0
- 1937 015b 00       		.byte	0
- 1938 015c 18       		.uleb128 0x18
- 1939 015d 34       		.uleb128 0x34
- 1940 015e 00       		.byte	0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 38
+ 1884 0108 3B       		.uleb128 0x3b
+ 1885 0109 0B       		.uleb128 0xb
+ 1886 010a 49       		.uleb128 0x49
+ 1887 010b 13       		.uleb128 0x13
+ 1888 010c 02       		.uleb128 0x2
+ 1889 010d 18       		.uleb128 0x18
+ 1890 010e 00       		.byte	0
+ 1891 010f 00       		.byte	0
+ 1892 0110 14       		.uleb128 0x14
+ 1893 0111 2E       		.uleb128 0x2e
+ 1894 0112 00       		.byte	0
+ 1895 0113 3F       		.uleb128 0x3f
+ 1896 0114 19       		.uleb128 0x19
+ 1897 0115 03       		.uleb128 0x3
+ 1898 0116 0E       		.uleb128 0xe
+ 1899 0117 3A       		.uleb128 0x3a
+ 1900 0118 0B       		.uleb128 0xb
+ 1901 0119 3B       		.uleb128 0x3b
+ 1902 011a 0B       		.uleb128 0xb
+ 1903 011b 49       		.uleb128 0x49
+ 1904 011c 13       		.uleb128 0x13
+ 1905 011d 11       		.uleb128 0x11
+ 1906 011e 01       		.uleb128 0x1
+ 1907 011f 12       		.uleb128 0x12
+ 1908 0120 06       		.uleb128 0x6
+ 1909 0121 40       		.uleb128 0x40
+ 1910 0122 18       		.uleb128 0x18
+ 1911 0123 9742     		.uleb128 0x2117
+ 1912 0125 19       		.uleb128 0x19
+ 1913 0126 00       		.byte	0
+ 1914 0127 00       		.byte	0
+ 1915 0128 15       		.uleb128 0x15
+ 1916 0129 2E       		.uleb128 0x2e
+ 1917 012a 01       		.byte	0x1
+ 1918 012b 3F       		.uleb128 0x3f
+ 1919 012c 19       		.uleb128 0x19
+ 1920 012d 03       		.uleb128 0x3
+ 1921 012e 0E       		.uleb128 0xe
+ 1922 012f 3A       		.uleb128 0x3a
+ 1923 0130 0B       		.uleb128 0xb
+ 1924 0131 3B       		.uleb128 0x3b
+ 1925 0132 0B       		.uleb128 0xb
+ 1926 0133 27       		.uleb128 0x27
+ 1927 0134 19       		.uleb128 0x19
+ 1928 0135 11       		.uleb128 0x11
+ 1929 0136 01       		.uleb128 0x1
+ 1930 0137 12       		.uleb128 0x12
+ 1931 0138 06       		.uleb128 0x6
+ 1932 0139 40       		.uleb128 0x40
+ 1933 013a 18       		.uleb128 0x18
+ 1934 013b 9642     		.uleb128 0x2116
+ 1935 013d 19       		.uleb128 0x19
+ 1936 013e 01       		.uleb128 0x1
+ 1937 013f 13       		.uleb128 0x13
+ 1938 0140 00       		.byte	0
+ 1939 0141 00       		.byte	0
+ 1940 0142 16       		.uleb128 0x16
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 38
 
 
- 1941 015f 03       		.uleb128 0x3
- 1942 0160 0E       		.uleb128 0xe
- 1943 0161 3A       		.uleb128 0x3a
- 1944 0162 0B       		.uleb128 0xb
- 1945 0163 3B       		.uleb128 0x3b
- 1946 0164 05       		.uleb128 0x5
- 1947 0165 49       		.uleb128 0x49
- 1948 0166 13       		.uleb128 0x13
- 1949 0167 3F       		.uleb128 0x3f
- 1950 0168 19       		.uleb128 0x19
- 1951 0169 3C       		.uleb128 0x3c
- 1952 016a 19       		.uleb128 0x19
- 1953 016b 00       		.byte	0
- 1954 016c 00       		.byte	0
- 1955 016d 19       		.uleb128 0x19
- 1956 016e 34       		.uleb128 0x34
- 1957 016f 00       		.byte	0
- 1958 0170 03       		.uleb128 0x3
- 1959 0171 0E       		.uleb128 0xe
- 1960 0172 3A       		.uleb128 0x3a
- 1961 0173 0B       		.uleb128 0xb
- 1962 0174 3B       		.uleb128 0x3b
- 1963 0175 0B       		.uleb128 0xb
- 1964 0176 49       		.uleb128 0x49
- 1965 0177 13       		.uleb128 0x13
- 1966 0178 3F       		.uleb128 0x3f
- 1967 0179 19       		.uleb128 0x19
- 1968 017a 02       		.uleb128 0x2
- 1969 017b 18       		.uleb128 0x18
- 1970 017c 00       		.byte	0
- 1971 017d 00       		.byte	0
- 1972 017e 1A       		.uleb128 0x1a
- 1973 017f 21       		.uleb128 0x21
- 1974 0180 00       		.byte	0
- 1975 0181 49       		.uleb128 0x49
- 1976 0182 13       		.uleb128 0x13
- 1977 0183 2F       		.uleb128 0x2f
- 1978 0184 05       		.uleb128 0x5
- 1979 0185 00       		.byte	0
- 1980 0186 00       		.byte	0
- 1981 0187 1B       		.uleb128 0x1b
- 1982 0188 34       		.uleb128 0x34
- 1983 0189 00       		.byte	0
- 1984 018a 03       		.uleb128 0x3
- 1985 018b 08       		.uleb128 0x8
- 1986 018c 3A       		.uleb128 0x3a
- 1987 018d 0B       		.uleb128 0xb
- 1988 018e 3B       		.uleb128 0x3b
- 1989 018f 0B       		.uleb128 0xb
- 1990 0190 49       		.uleb128 0x49
- 1991 0191 13       		.uleb128 0x13
- 1992 0192 3F       		.uleb128 0x3f
- 1993 0193 19       		.uleb128 0x19
- 1994 0194 02       		.uleb128 0x2
- 1995 0195 18       		.uleb128 0x18
- 1996 0196 00       		.byte	0
- 1997 0197 00       		.byte	0
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 39
+ 1941 0143 34       		.uleb128 0x34
+ 1942 0144 00       		.byte	0
+ 1943 0145 03       		.uleb128 0x3
+ 1944 0146 0E       		.uleb128 0xe
+ 1945 0147 3A       		.uleb128 0x3a
+ 1946 0148 0B       		.uleb128 0xb
+ 1947 0149 3B       		.uleb128 0x3b
+ 1948 014a 0B       		.uleb128 0xb
+ 1949 014b 49       		.uleb128 0x49
+ 1950 014c 13       		.uleb128 0x13
+ 1951 014d 02       		.uleb128 0x2
+ 1952 014e 18       		.uleb128 0x18
+ 1953 014f 00       		.byte	0
+ 1954 0150 00       		.byte	0
+ 1955 0151 17       		.uleb128 0x17
+ 1956 0152 0B       		.uleb128 0xb
+ 1957 0153 01       		.byte	0x1
+ 1958 0154 11       		.uleb128 0x11
+ 1959 0155 01       		.uleb128 0x1
+ 1960 0156 12       		.uleb128 0x12
+ 1961 0157 06       		.uleb128 0x6
+ 1962 0158 01       		.uleb128 0x1
+ 1963 0159 13       		.uleb128 0x13
+ 1964 015a 00       		.byte	0
+ 1965 015b 00       		.byte	0
+ 1966 015c 18       		.uleb128 0x18
+ 1967 015d 34       		.uleb128 0x34
+ 1968 015e 00       		.byte	0
+ 1969 015f 03       		.uleb128 0x3
+ 1970 0160 0E       		.uleb128 0xe
+ 1971 0161 3A       		.uleb128 0x3a
+ 1972 0162 0B       		.uleb128 0xb
+ 1973 0163 3B       		.uleb128 0x3b
+ 1974 0164 05       		.uleb128 0x5
+ 1975 0165 49       		.uleb128 0x49
+ 1976 0166 13       		.uleb128 0x13
+ 1977 0167 3F       		.uleb128 0x3f
+ 1978 0168 19       		.uleb128 0x19
+ 1979 0169 3C       		.uleb128 0x3c
+ 1980 016a 19       		.uleb128 0x19
+ 1981 016b 00       		.byte	0
+ 1982 016c 00       		.byte	0
+ 1983 016d 19       		.uleb128 0x19
+ 1984 016e 34       		.uleb128 0x34
+ 1985 016f 00       		.byte	0
+ 1986 0170 03       		.uleb128 0x3
+ 1987 0171 0E       		.uleb128 0xe
+ 1988 0172 3A       		.uleb128 0x3a
+ 1989 0173 0B       		.uleb128 0xb
+ 1990 0174 3B       		.uleb128 0x3b
+ 1991 0175 0B       		.uleb128 0xb
+ 1992 0176 49       		.uleb128 0x49
+ 1993 0177 13       		.uleb128 0x13
+ 1994 0178 3F       		.uleb128 0x3f
+ 1995 0179 19       		.uleb128 0x19
+ 1996 017a 02       		.uleb128 0x2
+ 1997 017b 18       		.uleb128 0x18
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 39
 
 
- 1998 0198 00       		.byte	0
- 1999              		.section	.debug_aranges,"",%progbits
- 2000 0000 54000000 		.4byte	0x54
- 2001 0004 0200     		.2byte	0x2
- 2002 0006 00000000 		.4byte	.Ldebug_info0
- 2003 000a 04       		.byte	0x4
- 2004 000b 00       		.byte	0
- 2005 000c 0000     		.2byte	0
- 2006 000e 0000     		.2byte	0
- 2007 0010 00000000 		.4byte	.LFB64
- 2008 0014 B4000000 		.4byte	.LFE64-.LFB64
- 2009 0018 00000000 		.4byte	.LFB65
- 2010 001c 0C000000 		.4byte	.LFE65-.LFB65
- 2011 0020 00000000 		.4byte	.LFB66
- 2012 0024 74000000 		.4byte	.LFE66-.LFB66
- 2013 0028 00000000 		.4byte	.LFB67
- 2014 002c 14000000 		.4byte	.LFE67-.LFB67
- 2015 0030 00000000 		.4byte	.LFB68
- 2016 0034 14000000 		.4byte	.LFE68-.LFB68
- 2017 0038 00000000 		.4byte	.LFB69
- 2018 003c F8000000 		.4byte	.LFE69-.LFB69
- 2019 0040 00000000 		.4byte	.LFB70
- 2020 0044 E8000000 		.4byte	.LFE70-.LFB70
- 2021 0048 00000000 		.4byte	.LFB71
- 2022 004c 38000000 		.4byte	.LFE71-.LFB71
- 2023 0050 00000000 		.4byte	0
- 2024 0054 00000000 		.4byte	0
- 2025              		.section	.debug_ranges,"",%progbits
- 2026              	.Ldebug_ranges0:
- 2027 0000 00000000 		.4byte	.LFB64
- 2028 0004 B4000000 		.4byte	.LFE64
- 2029 0008 00000000 		.4byte	.LFB65
- 2030 000c 0C000000 		.4byte	.LFE65
- 2031 0010 00000000 		.4byte	.LFB66
- 2032 0014 74000000 		.4byte	.LFE66
- 2033 0018 00000000 		.4byte	.LFB67
- 2034 001c 14000000 		.4byte	.LFE67
- 2035 0020 00000000 		.4byte	.LFB68
- 2036 0024 14000000 		.4byte	.LFE68
- 2037 0028 00000000 		.4byte	.LFB69
- 2038 002c F8000000 		.4byte	.LFE69
- 2039 0030 00000000 		.4byte	.LFB70
- 2040 0034 E8000000 		.4byte	.LFE70
- 2041 0038 00000000 		.4byte	.LFB71
- 2042 003c 38000000 		.4byte	.LFE71
- 2043 0040 00000000 		.4byte	0
- 2044 0044 00000000 		.4byte	0
- 2045              		.section	.debug_line,"",%progbits
- 2046              	.Ldebug_line0:
- 2047 0000 62020000 		.section	.debug_str,"MS",%progbits,1
- 2047      02006F01 
- 2047      00000201 
- 2047      FB0E0D00 
- 2047      01010101 
- 2048              	.LASF21:
- 2049 0000 6D6F6465 		.ascii	"model_id\000"
- 2049      6C5F6964 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 40
+ 1998 017c 00       		.byte	0
+ 1999 017d 00       		.byte	0
+ 2000 017e 1A       		.uleb128 0x1a
+ 2001 017f 21       		.uleb128 0x21
+ 2002 0180 00       		.byte	0
+ 2003 0181 49       		.uleb128 0x49
+ 2004 0182 13       		.uleb128 0x13
+ 2005 0183 2F       		.uleb128 0x2f
+ 2006 0184 05       		.uleb128 0x5
+ 2007 0185 00       		.byte	0
+ 2008 0186 00       		.byte	0
+ 2009 0187 1B       		.uleb128 0x1b
+ 2010 0188 34       		.uleb128 0x34
+ 2011 0189 00       		.byte	0
+ 2012 018a 03       		.uleb128 0x3
+ 2013 018b 08       		.uleb128 0x8
+ 2014 018c 3A       		.uleb128 0x3a
+ 2015 018d 0B       		.uleb128 0xb
+ 2016 018e 3B       		.uleb128 0x3b
+ 2017 018f 0B       		.uleb128 0xb
+ 2018 0190 49       		.uleb128 0x49
+ 2019 0191 13       		.uleb128 0x13
+ 2020 0192 3F       		.uleb128 0x3f
+ 2021 0193 19       		.uleb128 0x19
+ 2022 0194 02       		.uleb128 0x2
+ 2023 0195 18       		.uleb128 0x18
+ 2024 0196 00       		.byte	0
+ 2025 0197 00       		.byte	0
+ 2026 0198 00       		.byte	0
+ 2027              		.section	.debug_aranges,"",%progbits
+ 2028 0000 54000000 		.4byte	0x54
+ 2029 0004 0200     		.2byte	0x2
+ 2030 0006 00000000 		.4byte	.Ldebug_info0
+ 2031 000a 04       		.byte	0x4
+ 2032 000b 00       		.byte	0
+ 2033 000c 0000     		.2byte	0
+ 2034 000e 0000     		.2byte	0
+ 2035 0010 00000000 		.4byte	.LFB64
+ 2036 0014 B4000000 		.4byte	.LFE64-.LFB64
+ 2037 0018 00000000 		.4byte	.LFB65
+ 2038 001c 0C000000 		.4byte	.LFE65-.LFB65
+ 2039 0020 00000000 		.4byte	.LFB66
+ 2040 0024 74000000 		.4byte	.LFE66-.LFB66
+ 2041 0028 00000000 		.4byte	.LFB67
+ 2042 002c 14000000 		.4byte	.LFE67-.LFB67
+ 2043 0030 00000000 		.4byte	.LFB68
+ 2044 0034 14000000 		.4byte	.LFE68-.LFB68
+ 2045 0038 00000000 		.4byte	.LFB69
+ 2046 003c F8000000 		.4byte	.LFE69-.LFB69
+ 2047 0040 00000000 		.4byte	.LFB70
+ 2048 0044 E8000000 		.4byte	.LFE70-.LFB70
+ 2049 0048 00000000 		.4byte	.LFB71
+ 2050 004c 38000000 		.4byte	.LFE71-.LFB71
+ 2051 0050 00000000 		.4byte	0
+ 2052 0054 00000000 		.4byte	0
+ 2053              		.section	.debug_ranges,"",%progbits
+ 2054              	.Ldebug_ranges0:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 40
 
 
- 2049      00
- 2050              	.LASF53:
- 2051 0009 74696D65 		.ascii	"timestamp\000"
- 2051      7374616D 
- 2051      7000
- 2052              	.LASF20:
- 2053 0013 73696D5F 		.ascii	"sim_id\000"
- 2053      696400
- 2054              	.LASF61:
- 2055 001a 6D657468 		.ascii	"method\000"
- 2055      6F6400
- 2056              	.LASF52:
- 2057 0021 7379735F 		.ascii	"sys_settings_t\000"
- 2057      73657474 
- 2057      696E6773 
- 2057      5F7400
- 2058              	.LASF43:
- 2059 0030 63757272 		.ascii	"currentCountDownValue\000"
- 2059      656E7443 
- 2059      6F756E74 
- 2059      446F776E 
- 2059      56616C75 
- 2060              	.LASF54:
- 2061 0046 73697A65 		.ascii	"sizeOfDataStackDesired\000"
- 2061      4F664461 
- 2061      74615374 
- 2061      61636B44 
- 2061      65736972 
- 2062              	.LASF42:
- 2063 005d 636F756E 		.ascii	"countDownValue\000"
- 2063      74446F77 
- 2063      6E56616C 
- 2063      756500
- 2064              	.LASF5:
- 2065 006c 73686F72 		.ascii	"short int\000"
- 2065      7420696E 
- 2065      7400
- 2066              	.LASF40:
- 2067 0076 74696D65 		.ascii	"timeStamp\000"
- 2067      5374616D 
- 2067      7000
- 2068              	.LASF10:
- 2069 0080 73697A65 		.ascii	"sizetype\000"
- 2069      74797065 
- 2069      00
- 2070              	.LASF50:
- 2071 0089 65705F68 		.ascii	"ep_host\000"
- 2071      6F737400 
- 2072              	.LASF93:
- 2073 0091 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 2073      43313120 
- 2073      352E342E 
- 2073      31203230 
- 2073      31363036 
- 2074 00c4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 2074      20726576 
- 2074      6973696F 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 41
+ 2055 0000 00000000 		.4byte	.LFB64
+ 2056 0004 B4000000 		.4byte	.LFE64
+ 2057 0008 00000000 		.4byte	.LFB65
+ 2058 000c 0C000000 		.4byte	.LFE65
+ 2059 0010 00000000 		.4byte	.LFB66
+ 2060 0014 74000000 		.4byte	.LFE66
+ 2061 0018 00000000 		.4byte	.LFB67
+ 2062 001c 14000000 		.4byte	.LFE67
+ 2063 0020 00000000 		.4byte	.LFB68
+ 2064 0024 14000000 		.4byte	.LFE68
+ 2065 0028 00000000 		.4byte	.LFB69
+ 2066 002c F8000000 		.4byte	.LFE69
+ 2067 0030 00000000 		.4byte	.LFB70
+ 2068 0034 E8000000 		.4byte	.LFE70
+ 2069 0038 00000000 		.4byte	.LFB71
+ 2070 003c 38000000 		.4byte	.LFE71
+ 2071 0040 00000000 		.4byte	0
+ 2072 0044 00000000 		.4byte	0
+ 2073              		.section	.debug_line,"",%progbits
+ 2074              	.Ldebug_line0:
+ 2075 0000 6F020000 		.section	.debug_str,"MS",%progbits,1
+ 2075      02007C01 
+ 2075      00000201 
+ 2075      FB0E0D00 
+ 2075      01010101 
+ 2076              	.LASF21:
+ 2077 0000 6D6F6465 		.ascii	"model_id\000"
+ 2077      6C5F6964 
+ 2077      00
+ 2078              	.LASF53:
+ 2079 0009 74696D65 		.ascii	"timestamp\000"
+ 2079      7374616D 
+ 2079      7000
+ 2080              	.LASF20:
+ 2081 0013 73696D5F 		.ascii	"sim_id\000"
+ 2081      696400
+ 2082              	.LASF61:
+ 2083 001a 6D657468 		.ascii	"method\000"
+ 2083      6F6400
+ 2084              	.LASF52:
+ 2085 0021 7379735F 		.ascii	"sys_settings_t\000"
+ 2085      73657474 
+ 2085      696E6773 
+ 2085      5F7400
+ 2086              	.LASF43:
+ 2087 0030 63757272 		.ascii	"currentCountDownValue\000"
+ 2087      656E7443 
+ 2087      6F756E74 
+ 2087      446F776E 
+ 2087      56616C75 
+ 2088              	.LASF54:
+ 2089 0046 73697A65 		.ascii	"sizeOfDataStackDesired\000"
+ 2089      4F664461 
+ 2089      74615374 
+ 2089      61636B44 
+ 2089      65736972 
+ 2090              	.LASF42:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 41
 
 
- 2074      6E203233 
- 2074      37373135 
- 2075 00f7 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 2075      66756E63 
- 2075      74696F6E 
- 2075      2D736563 
- 2075      74696F6E 
- 2076              	.LASF94:
- 2077 011f 64617461 		.ascii	"data.c\000"
- 2077      2E6300
- 2078              	.LASF82:
- 2079 0126 64617461 		.ascii	"data\000"
- 2079      00
- 2080              	.LASF65:
- 2081 012b 68747470 		.ascii	"http_protocol\000"
- 2081      5F70726F 
- 2081      746F636F 
- 2081      6C00
- 2082              	.LASF68:
- 2083 0139 72657175 		.ascii	"request_len\000"
- 2083      6573745F 
- 2083      6C656E00 
- 2084              	.LASF26:
- 2085 0145 65636E6F 		.ascii	"ecno\000"
- 2085      00
- 2086              	.LASF39:
- 2087 014a 76616C75 		.ascii	"value\000"
- 2087      6500
- 2088              	.LASF17:
- 2089 0150 75696E74 		.ascii	"uint16\000"
- 2089      313600
- 2090              	.LASF80:
- 2091 0157 64617461 		.ascii	"dataPointsInStack\000"
- 2091      506F696E 
- 2091      7473496E 
- 2091      53746163 
- 2091      6B00
- 2092              	.LASF73:
- 2093 0169 68617368 		.ascii	"hash\000"
- 2093      00
- 2094              	.LASF16:
- 2095 016e 75696E74 		.ascii	"uint8\000"
- 2095      3800
- 2096              	.LASF63:
- 2097 0174 65787472 		.ascii	"extra_headers\000"
- 2097      615F6865 
- 2097      61646572 
- 2097      7300
- 2098              	.LASF25:
- 2099 0182 72736370 		.ascii	"rscp\000"
- 2099      00
- 2100              	.LASF18:
- 2101 0187 696E7431 		.ascii	"int16\000"
- 2101      3600
- 2102              	.LASF27:
- 2103 018d 72737271 		.ascii	"rsrq\000"
- 2103      00
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 42
+ 2091 005d 636F756E 		.ascii	"countDownValue\000"
+ 2091      74446F77 
+ 2091      6E56616C 
+ 2091      756500
+ 2092              	.LASF5:
+ 2093 006c 73686F72 		.ascii	"short int\000"
+ 2093      7420696E 
+ 2093      7400
+ 2094              	.LASF40:
+ 2095 0076 74696D65 		.ascii	"timeStamp\000"
+ 2095      5374616D 
+ 2095      7000
+ 2096              	.LASF10:
+ 2097 0080 73697A65 		.ascii	"sizetype\000"
+ 2097      74797065 
+ 2097      00
+ 2098              	.LASF50:
+ 2099 0089 65705F68 		.ascii	"ep_host\000"
+ 2099      6F737400 
+ 2100              	.LASF83:
+ 2101 0091 696E626F 		.ascii	"inbox\000"
+ 2101      7800
+ 2102              	.LASF96:
+ 2103 0097 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2103      43313120 
+ 2103      352E342E 
+ 2103      31203230 
+ 2103      31363036 
+ 2104 00ca 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2104      20726576 
+ 2104      6973696F 
+ 2104      6E203233 
+ 2104      37373135 
+ 2105 00fd 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2105      66756E63 
+ 2105      74696F6E 
+ 2105      2D736563 
+ 2105      74696F6E 
+ 2106              	.LASF97:
+ 2107 0125 64617461 		.ascii	"data.c\000"
+ 2107      2E6300
+ 2108              	.LASF82:
+ 2109 012c 64617461 		.ascii	"data\000"
+ 2109      00
+ 2110              	.LASF65:
+ 2111 0131 68747470 		.ascii	"http_protocol\000"
+ 2111      5F70726F 
+ 2111      746F636F 
+ 2111      6C00
+ 2112              	.LASF68:
+ 2113 013f 72657175 		.ascii	"request_len\000"
+ 2113      6573745F 
+ 2113      6C656E00 
+ 2114              	.LASF26:
+ 2115 014b 65636E6F 		.ascii	"ecno\000"
+ 2115      00
+ 2116              	.LASF94:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 42
 
 
- 2104              	.LASF72:
- 2105 0192 64657669 		.ascii	"device\000"
- 2105      636500
- 2106              	.LASF15:
- 2107 0199 666C6F61 		.ascii	"float\000"
- 2107      7400
- 2108              	.LASF1:
- 2109 019f 6C6F6E67 		.ascii	"long long int\000"
- 2109      206C6F6E 
- 2109      6720696E 
- 2109      7400
- 2110              	.LASF11:
- 2111 01ad 63686172 		.ascii	"char\000"
- 2111      00
- 2112              	.LASF7:
- 2113 01b2 6C6F6E67 		.ascii	"long int\000"
- 2113      20696E74 
- 2113      00
- 2114              	.LASF79:
- 2115 01bb 62756666 		.ascii	"buffer_overflow\000"
- 2115      65725F6F 
- 2115      76657266 
- 2115      6C6F7700 
- 2116              	.LASF47:
- 2117 01cb 6D6F6465 		.ascii	"modem_info\000"
- 2117      6D5F696E 
- 2117      666F00
- 2118              	.LASF88:
- 2119 01d6 616C6172 		.ascii	"alarmMeasure\000"
- 2119      6D4D6561 
- 2119      73757265 
- 2119      00
- 2120              	.LASF57:
- 2121 01e3 626F6479 		.ascii	"body\000"
- 2121      00
- 2122              	.LASF59:
- 2123 01e8 726F7574 		.ascii	"route\000"
- 2123      6500
- 2124              	.LASF46:
- 2125 01ee 616C6172 		.ascii	"alarm\000"
- 2125      6D00
- 2126              	.LASF34:
- 2127 01f4 6D656173 		.ascii	"measure_time\000"
- 2127      7572655F 
- 2127      74696D65 
- 2127      00
- 2128              	.LASF90:
- 2129 0201 616C6172 		.ascii	"alarmSync\000"
- 2129      6D53796E 
- 2129      6300
- 2130              	.LASF2:
- 2131 020b 6C6F6E67 		.ascii	"long double\000"
- 2131      20646F75 
- 2131      626C6500 
- 2132              	.LASF4:
- 2133 0217 756E7369 		.ascii	"unsigned char\000"
- 2133      676E6564 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 43
-
-
- 2133      20636861 
- 2133      7200
- 2134              	.LASF28:
- 2135 0225 72737270 		.ascii	"rsrp\000"
+ 2117 0150 616C6172 		.ascii	"alarmAppLED\000"
+ 2117      6D417070 
+ 2117      4C454400 
+ 2118              	.LASF39:
+ 2119 015c 76616C75 		.ascii	"value\000"
+ 2119      6500
+ 2120              	.LASF17:
+ 2121 0162 75696E74 		.ascii	"uint16\000"
+ 2121      313600
+ 2122              	.LASF80:
+ 2123 0169 64617461 		.ascii	"dataPointsInStack\000"
+ 2123      506F696E 
+ 2123      7473496E 
+ 2123      53746163 
+ 2123      6B00
+ 2124              	.LASF73:
+ 2125 017b 68617368 		.ascii	"hash\000"
+ 2125      00
+ 2126              	.LASF16:
+ 2127 0180 75696E74 		.ascii	"uint8\000"
+ 2127      3800
+ 2128              	.LASF63:
+ 2129 0186 65787472 		.ascii	"extra_headers\000"
+ 2129      615F6865 
+ 2129      61646572 
+ 2129      7300
+ 2130              	.LASF25:
+ 2131 0194 72736370 		.ascii	"rscp\000"
+ 2131      00
+ 2132              	.LASF18:
+ 2133 0199 696E7431 		.ascii	"int16\000"
+ 2133      3600
+ 2134              	.LASF27:
+ 2135 019f 72737271 		.ascii	"rsrq\000"
  2135      00
- 2136              	.LASF97:
- 2137 022a 436C6561 		.ascii	"Clear_Data_Stack\000"
- 2137      725F4461 
- 2137      74615F53 
- 2137      7461636B 
- 2137      00
- 2138              	.LASF76:
- 2139 023b 6D6F6465 		.ascii	"modem_start_time_stamp\000"
- 2139      6D5F7374 
- 2139      6172745F 
- 2139      74696D65 
- 2139      5F737461 
- 2140              	.LASF38:
- 2141 0252 75706461 		.ascii	"updatable_parameters_t\000"
- 2141      7461626C 
- 2141      655F7061 
- 2141      72616D65 
- 2141      74657273 
- 2142              	.LASF75:
- 2143 0269 6D6F6465 		.ascii	"modem_state\000"
- 2143      6D5F7374 
- 2143      61746500 
- 2144              	.LASF3:
- 2145 0275 7369676E 		.ascii	"signed char\000"
- 2145      65642063 
- 2145      68617200 
- 2146              	.LASF9:
- 2147 0281 6C6F6E67 		.ascii	"long long unsigned int\000"
- 2147      206C6F6E 
- 2147      6720756E 
- 2147      7369676E 
- 2147      65642069 
- 2148              	.LASF87:
- 2149 0298 73797374 		.ascii	"system_settings\000"
- 2149      656D5F73 
- 2149      65747469 
- 2149      6E677300 
- 2150              	.LASF48:
- 2151 02a8 63686970 		.ascii	"chip_uniqueId\000"
- 2151      5F756E69 
- 2151      71756549 
- 2151      6400
- 2152              	.LASF0:
- 2153 02b6 756E7369 		.ascii	"unsigned int\000"
- 2153      676E6564 
- 2153      20696E74 
+ 2136              	.LASF72:
+ 2137 01a4 64657669 		.ascii	"device\000"
+ 2137      636500
+ 2138              	.LASF15:
+ 2139 01ab 666C6F61 		.ascii	"float\000"
+ 2139      7400
+ 2140              	.LASF1:
+ 2141 01b1 6C6F6E67 		.ascii	"long long int\000"
+ 2141      206C6F6E 
+ 2141      6720696E 
+ 2141      7400
+ 2142              	.LASF11:
+ 2143 01bf 63686172 		.ascii	"char\000"
+ 2143      00
+ 2144              	.LASF7:
+ 2145 01c4 6C6F6E67 		.ascii	"long int\000"
+ 2145      20696E74 
+ 2145      00
+ 2146              	.LASF79:
+ 2147 01cd 62756666 		.ascii	"buffer_overflow\000"
+ 2147      65725F6F 
+ 2147      76657266 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 43
+
+
+ 2147      6C6F7700 
+ 2148              	.LASF47:
+ 2149 01dd 6D6F6465 		.ascii	"modem_info\000"
+ 2149      6D5F696E 
+ 2149      666F00
+ 2150              	.LASF89:
+ 2151 01e8 616C6172 		.ascii	"alarmMeasure\000"
+ 2151      6D4D6561 
+ 2151      73757265 
+ 2151      00
+ 2152              	.LASF57:
+ 2153 01f5 626F6479 		.ascii	"body\000"
  2153      00
- 2154              	.LASF41:
- 2155 02c3 6B65795F 		.ascii	"key_value_t\000"
- 2155      76616C75 
- 2155      655F7400 
- 2156              	.LASF24:
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 44
+ 2154              	.LASF59:
+ 2155 01fa 726F7574 		.ascii	"route\000"
+ 2155      6500
+ 2156              	.LASF46:
+ 2157 0200 616C6172 		.ascii	"alarm\000"
+ 2157      6D00
+ 2158              	.LASF34:
+ 2159 0206 6D656173 		.ascii	"measure_time\000"
+ 2159      7572655F 
+ 2159      74696D65 
+ 2159      00
+ 2160              	.LASF91:
+ 2161 0213 616C6172 		.ascii	"alarmSync\000"
+ 2161      6D53796E 
+ 2161      6300
+ 2162              	.LASF2:
+ 2163 021d 6C6F6E67 		.ascii	"long double\000"
+ 2163      20646F75 
+ 2163      626C6500 
+ 2164              	.LASF4:
+ 2165 0229 756E7369 		.ascii	"unsigned char\000"
+ 2165      676E6564 
+ 2165      20636861 
+ 2165      7200
+ 2166              	.LASF28:
+ 2167 0237 72737270 		.ascii	"rsrp\000"
+ 2167      00
+ 2168              	.LASF100:
+ 2169 023c 436C6561 		.ascii	"Clear_Data_Stack\000"
+ 2169      725F4461 
+ 2169      74615F53 
+ 2169      7461636B 
+ 2169      00
+ 2170              	.LASF76:
+ 2171 024d 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 2171      6D5F7374 
+ 2171      6172745F 
+ 2171      74696D65 
+ 2171      5F737461 
+ 2172              	.LASF38:
+ 2173 0264 75706461 		.ascii	"updatable_parameters_t\000"
+ 2173      7461626C 
+ 2173      655F7061 
+ 2173      72616D65 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 44
 
 
- 2157 02cf 72786C65 		.ascii	"rxlev\000"
- 2157      7600
- 2158              	.LASF35:
- 2159 02d5 73796E63 		.ascii	"sync_time\000"
- 2159      5F74696D 
- 2159      6500
- 2160              	.LASF95:
- 2161 02df 433A5C55 		.ascii	"C:\\Users\\hail\\Desktop\\Brooke Research\\notoriOS"
- 2161      73657273 
- 2161      5C686169 
- 2161      6C5C4465 
- 2161      736B746F 
- 2162 030d 5C6E6F74 		.ascii	"\\notoriOS\\notoriOS.cydsn\000"
- 2162      6F72694F 
- 2162      535C6E6F 
- 2162      746F7269 
- 2162      4F532E63 
- 2163              	.LASF77:
- 2164 0326 6D6F6465 		.ascii	"modem_stats\000"
- 2164      6D5F7374 
- 2164      61747300 
- 2165              	.LASF66:
- 2166 0332 70757368 		.ascii	"pushData\000"
- 2166      44617461 
- 2166      00
- 2167              	.LASF89:
- 2168 033b 74696D65 		.ascii	"timeToMeasure\000"
- 2168      546F4D65 
- 2168      61737572 
- 2168      6500
- 2169              	.LASF56:
- 2170 0349 72657175 		.ascii	"request\000"
- 2170      65737400 
- 2171              	.LASF33:
- 2172 0351 73696D5F 		.ascii	"sim_type\000"
- 2172      74797065 
- 2172      00
- 2173              	.LASF49:
- 2174 035a 7379735F 		.ascii	"sys_info_t\000"
- 2174      696E666F 
- 2174      5F7400
- 2175              	.LASF6:
- 2176 0365 73686F72 		.ascii	"short unsigned int\000"
- 2176      7420756E 
- 2176      7369676E 
- 2176      65642069 
- 2176      6E7400
- 2177              	.LASF29:
- 2178 0378 74696D65 		.ascii	"time_to_network_connect\000"
- 2178      5F746F5F 
- 2178      6E657477 
- 2178      6F726B5F 
- 2178      636F6E6E 
- 2179              	.LASF86:
- 2180 0390 73797374 		.ascii	"system_info\000"
- 2180      656D5F69 
- 2180      6E666F00 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 45
+ 2173      74657273 
+ 2174              	.LASF75:
+ 2175 027b 6D6F6465 		.ascii	"modem_state\000"
+ 2175      6D5F7374 
+ 2175      61746500 
+ 2176              	.LASF3:
+ 2177 0287 7369676E 		.ascii	"signed char\000"
+ 2177      65642063 
+ 2177      68617200 
+ 2178              	.LASF9:
+ 2179 0293 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2179      206C6F6E 
+ 2179      6720756E 
+ 2179      7369676E 
+ 2179      65642069 
+ 2180              	.LASF88:
+ 2181 02aa 73797374 		.ascii	"system_settings\000"
+ 2181      656D5F73 
+ 2181      65747469 
+ 2181      6E677300 
+ 2182              	.LASF48:
+ 2183 02ba 63686970 		.ascii	"chip_uniqueId\000"
+ 2183      5F756E69 
+ 2183      71756549 
+ 2183      6400
+ 2184              	.LASF0:
+ 2185 02c8 756E7369 		.ascii	"unsigned int\000"
+ 2185      676E6564 
+ 2185      20696E74 
+ 2185      00
+ 2186              	.LASF41:
+ 2187 02d5 6B65795F 		.ascii	"key_value_t\000"
+ 2187      76616C75 
+ 2187      655F7400 
+ 2188              	.LASF24:
+ 2189 02e1 72786C65 		.ascii	"rxlev\000"
+ 2189      7600
+ 2190              	.LASF35:
+ 2191 02e7 73796E63 		.ascii	"sync_time\000"
+ 2191      5F74696D 
+ 2191      6500
+ 2192              	.LASF77:
+ 2193 02f1 6D6F6465 		.ascii	"modem_stats\000"
+ 2193      6D5F7374 
+ 2193      61747300 
+ 2194              	.LASF66:
+ 2195 02fd 70757368 		.ascii	"pushData\000"
+ 2195      44617461 
+ 2195      00
+ 2196              	.LASF90:
+ 2197 0306 74696D65 		.ascii	"timeToMeasure\000"
+ 2197      546F4D65 
+ 2197      61737572 
+ 2197      6500
+ 2198              	.LASF56:
+ 2199 0314 72657175 		.ascii	"request\000"
+ 2199      65737400 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 45
 
 
- 2181              	.LASF30:
- 2182 039c 74696D65 		.ascii	"time_to_acquire_ip\000"
- 2182      5F746F5F 
- 2182      61637175 
- 2182      6972655F 
- 2182      697000
- 2183              	.LASF22:
- 2184 03af 696D6569 		.ascii	"imei\000"
- 2184      00
- 2185              	.LASF13:
- 2186 03b4 696E7433 		.ascii	"int32_t\000"
- 2186      325F7400 
- 2187              	.LASF31:
- 2188 03bc 6D6F6465 		.ascii	"modem_stats_t\000"
- 2188      6D5F7374 
- 2188      6174735F 
- 2188      7400
- 2189              	.LASF37:
- 2190 03ca 5F426F6F 		.ascii	"_Bool\000"
- 2190      6C00
- 2191              	.LASF92:
- 2192 03d0 74696D65 		.ascii	"timeToSycnRemoteParams\000"
- 2192      546F5379 
- 2192      636E5265 
- 2192      6D6F7465 
- 2192      50617261 
- 2193              	.LASF81:
- 2194 03e7 64617461 		.ascii	"dataPointsInStackDesired\000"
- 2194      506F696E 
- 2194      7473496E 
- 2194      53746163 
- 2194      6B446573 
- 2195              	.LASF85:
- 2196 0400 68747470 		.ascii	"http_route\000"
- 2196      5F726F75 
- 2196      746500
- 2197              	.LASF60:
- 2198 040b 706F7274 		.ascii	"port\000"
- 2198      00
- 2199              	.LASF8:
- 2200 0410 6C6F6E67 		.ascii	"long unsigned int\000"
- 2200      20756E73 
- 2200      69676E65 
- 2200      6420696E 
- 2200      7400
- 2201              	.LASF19:
- 2202 0422 696E7433 		.ascii	"int32\000"
- 2202      3200
- 2203              	.LASF14:
- 2204 0428 646F7562 		.ascii	"double\000"
- 2204      6C6500
- 2205              	.LASF70:
- 2206 042f 636F6E73 		.ascii	"construct_malcom_route\000"
- 2206      74727563 
- 2206      745F6D61 
- 2206      6C636F6D 
- 2206      5F726F75 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 46
+ 2200              	.LASF33:
+ 2201 031c 73696D5F 		.ascii	"sim_type\000"
+ 2201      74797065 
+ 2201      00
+ 2202              	.LASF49:
+ 2203 0325 7379735F 		.ascii	"sys_info_t\000"
+ 2203      696E666F 
+ 2203      5F7400
+ 2204              	.LASF6:
+ 2205 0330 73686F72 		.ascii	"short unsigned int\000"
+ 2205      7420756E 
+ 2205      7369676E 
+ 2205      65642069 
+ 2205      6E7400
+ 2206              	.LASF29:
+ 2207 0343 74696D65 		.ascii	"time_to_network_connect\000"
+ 2207      5F746F5F 
+ 2207      6E657477 
+ 2207      6F726B5F 
+ 2207      636F6E6E 
+ 2208              	.LASF87:
+ 2209 035b 73797374 		.ascii	"system_info\000"
+ 2209      656D5F69 
+ 2209      6E666F00 
+ 2210              	.LASF30:
+ 2211 0367 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 2211      5F746F5F 
+ 2211      61637175 
+ 2211      6972655F 
+ 2211      697000
+ 2212              	.LASF22:
+ 2213 037a 696D6569 		.ascii	"imei\000"
+ 2213      00
+ 2214              	.LASF13:
+ 2215 037f 696E7433 		.ascii	"int32_t\000"
+ 2215      325F7400 
+ 2216              	.LASF31:
+ 2217 0387 6D6F6465 		.ascii	"modem_stats_t\000"
+ 2217      6D5F7374 
+ 2217      6174735F 
+ 2217      7400
+ 2218              	.LASF37:
+ 2219 0395 5F426F6F 		.ascii	"_Bool\000"
+ 2219      6C00
+ 2220              	.LASF93:
+ 2221 039b 74696D65 		.ascii	"timeToSycnRemoteParams\000"
+ 2221      546F5379 
+ 2221      636E5265 
+ 2221      6D6F7465 
+ 2221      50617261 
+ 2222              	.LASF81:
+ 2223 03b2 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 2223      506F696E 
+ 2223      7473496E 
+ 2223      53746163 
+ 2223      6B446573 
+ 2224              	.LASF86:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 46
 
 
- 2207              	.LASF74:
- 2208 0446 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 2208      52784275 
- 2208      66666572 
- 2208      00
- 2209              	.LASF67:
- 2210 0453 636F6E73 		.ascii	"construct_malcom_body\000"
- 2210      74727563 
- 2210      745F6D61 
- 2210      6C636F6D 
- 2210      5F626F64 
- 2211              	.LASF36:
- 2212 0469 64656275 		.ascii	"debug_level\000"
- 2212      675F6C65 
- 2212      76656C00 
- 2213              	.LASF23:
- 2214 0475 6D6F6465 		.ascii	"modem_info_t\000"
- 2214      6D5F696E 
- 2214      666F5F74 
- 2214      00
- 2215              	.LASF44:
- 2216 0482 636F756E 		.ascii	"countDownType\000"
- 2216      74446F77 
- 2216      6E547970 
- 2216      6500
- 2217              	.LASF12:
- 2218 0490 5F5F696E 		.ascii	"__int32_t\000"
- 2218      7433325F 
- 2218      7400
- 2219              	.LASF45:
- 2220 049a 636F756E 		.ascii	"countDownResetCondition\000"
- 2220      74446F77 
- 2220      6E526573 
- 2220      6574436F 
- 2220      6E646974 
- 2221              	.LASF62:
- 2222 04b2 636F6E6E 		.ascii	"connection_type\000"
- 2222      65637469 
- 2222      6F6E5F74 
- 2222      79706500 
- 2223              	.LASF96:
- 2224 04c2 496E6974 		.ascii	"Initialize_Data_Stack\000"
- 2224      69616C69 
- 2224      7A655F44 
- 2224      6174615F 
- 2224      53746163 
- 2225              	.LASF78:
- 2226 04d8 75706461 		.ascii	"updatable_parameters\000"
- 2226      7461626C 
- 2226      655F7061 
- 2226      72616D65 
- 2226      74657273 
- 2227              	.LASF69:
- 2228 04ed 636F6E73 		.ascii	"construct_generic_HTTP_request\000"
- 2228      74727563 
- 2228      745F6765 
- 2228      6E657269 
-ARM GAS  C:\Users\hail\AppData\Local\Temp\cc1hSLKz.s 			page 47
+ 2225 03cb 68747470 		.ascii	"http_route\000"
+ 2225      5F726F75 
+ 2225      746500
+ 2226              	.LASF60:
+ 2227 03d6 706F7274 		.ascii	"port\000"
+ 2227      00
+ 2228              	.LASF8:
+ 2229 03db 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2229      20756E73 
+ 2229      69676E65 
+ 2229      6420696E 
+ 2229      7400
+ 2230              	.LASF19:
+ 2231 03ed 696E7433 		.ascii	"int32\000"
+ 2231      3200
+ 2232              	.LASF14:
+ 2233 03f3 646F7562 		.ascii	"double\000"
+ 2233      6C6500
+ 2234              	.LASF70:
+ 2235 03fa 636F6E73 		.ascii	"construct_malcom_route\000"
+ 2235      74727563 
+ 2235      745F6D61 
+ 2235      6C636F6D 
+ 2235      5F726F75 
+ 2236              	.LASF74:
+ 2237 0411 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2237      52784275 
+ 2237      66666572 
+ 2237      00
+ 2238              	.LASF67:
+ 2239 041e 636F6E73 		.ascii	"construct_malcom_body\000"
+ 2239      74727563 
+ 2239      745F6D61 
+ 2239      6C636F6D 
+ 2239      5F626F64 
+ 2240              	.LASF98:
+ 2241 0434 433A5C6E 		.ascii	"C:\\notoriOS\\notoriOS.cydsn\000"
+ 2241      6F746F72 
+ 2241      694F535C 
+ 2241      6E6F746F 
+ 2241      72694F53 
+ 2242              	.LASF36:
+ 2243 044f 64656275 		.ascii	"debug_level\000"
+ 2243      675F6C65 
+ 2243      76656C00 
+ 2244              	.LASF23:
+ 2245 045b 6D6F6465 		.ascii	"modem_info_t\000"
+ 2245      6D5F696E 
+ 2245      666F5F74 
+ 2245      00
+ 2246              	.LASF44:
+ 2247 0468 636F756E 		.ascii	"countDownType\000"
+ 2247      74446F77 
+ 2247      6E547970 
+ 2247      6500
+ 2248              	.LASF12:
+ 2249 0476 5F5F696E 		.ascii	"__int32_t\000"
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 47
 
 
- 2228      635F4854 
- 2229              	.LASF51:
- 2230 050c 65705F70 		.ascii	"ep_port\000"
- 2230      6F727400 
- 2231              	.LASF64:
- 2232 0514 65787472 		.ascii	"extra_len\000"
- 2232      615F6C65 
- 2232      6E00
- 2233              	.LASF58:
- 2234 051e 686F7374 		.ascii	"host\000"
- 2234      00
- 2235              	.LASF71:
- 2236 0523 62617365 		.ascii	"base\000"
- 2236      00
- 2237              	.LASF84:
- 2238 0528 68747470 		.ascii	"http_body\000"
- 2238      5F626F64 
- 2238      7900
- 2239              	.LASF32:
- 2240 0532 6E6F6465 		.ascii	"node_type\000"
- 2240      5F747970 
- 2240      6500
- 2241              	.LASF83:
- 2242 053c 68747470 		.ascii	"http_request\000"
- 2242      5F726571 
- 2242      75657374 
- 2242      00
- 2243              	.LASF91:
- 2244 0549 74696D65 		.ascii	"timeToSync\000"
- 2244      546F5379 
- 2244      6E6300
- 2245              	.LASF55:
- 2246 0554 73697A65 		.ascii	"sizeOfDataStack\000"
- 2246      4F664461 
- 2246      74615374 
- 2246      61636B00 
- 2247              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 2249      7433325F 
+ 2249      7400
+ 2250              	.LASF95:
+ 2251 0480 74696D65 		.ascii	"timeToAppLED\000"
+ 2251      546F4170 
+ 2251      704C4544 
+ 2251      00
+ 2252              	.LASF62:
+ 2253 048d 636F6E6E 		.ascii	"connection_type\000"
+ 2253      65637469 
+ 2253      6F6E5F74 
+ 2253      79706500 
+ 2254              	.LASF99:
+ 2255 049d 496E6974 		.ascii	"Initialize_Data_Stack\000"
+ 2255      69616C69 
+ 2255      7A655F44 
+ 2255      6174615F 
+ 2255      53746163 
+ 2256              	.LASF78:
+ 2257 04b3 75706461 		.ascii	"updatable_parameters\000"
+ 2257      7461626C 
+ 2257      655F7061 
+ 2257      72616D65 
+ 2257      74657273 
+ 2258              	.LASF69:
+ 2259 04c8 636F6E73 		.ascii	"construct_generic_HTTP_request\000"
+ 2259      74727563 
+ 2259      745F6765 
+ 2259      6E657269 
+ 2259      635F4854 
+ 2260              	.LASF51:
+ 2261 04e7 65705F70 		.ascii	"ep_port\000"
+ 2261      6F727400 
+ 2262              	.LASF64:
+ 2263 04ef 65787472 		.ascii	"extra_len\000"
+ 2263      615F6C65 
+ 2263      6E00
+ 2264              	.LASF58:
+ 2265 04f9 686F7374 		.ascii	"host\000"
+ 2265      00
+ 2266              	.LASF71:
+ 2267 04fe 62617365 		.ascii	"base\000"
+ 2267      00
+ 2268              	.LASF85:
+ 2269 0503 68747470 		.ascii	"http_body\000"
+ 2269      5F626F64 
+ 2269      7900
+ 2270              	.LASF32:
+ 2271 050d 6E6F6465 		.ascii	"node_type\000"
+ 2271      5F747970 
+ 2271      6500
+ 2272              	.LASF84:
+ 2273 0517 68747470 		.ascii	"http_request\000"
+ 2273      5F726571 
+ 2273      75657374 
+ 2273      00
+ 2274              	.LASF92:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\ccdNyPdW.s 			page 48
+
+
+ 2275 0524 74696D65 		.ascii	"timeToSync\000"
+ 2275      546F5379 
+ 2275      6E6300
+ 2276              	.LASF45:
+ 2277 052f 636F756E 		.ascii	"countDownResetCondition\000"
+ 2277      74446F77 
+ 2277      6E526573 
+ 2277      6574436F 
+ 2277      6E646974 
+ 2278              	.LASF55:
+ 2279 0547 73697A65 		.ascii	"sizeOfDataStack\000"
+ 2279      4F664461 
+ 2279      74615374 
+ 2279      61636B00 
+ 2280              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

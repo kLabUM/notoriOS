@@ -476,6 +476,10 @@ void get_updated_parameters_from_malcom(){
     char s_report_freq[10];
     char s_debug_freq[10];
     
+    //apps
+    char s_app_led[100];
+    s_app_led[0] = '\0';
+    
     s_node_type[0] = '\0';
     s_sim_type[0] = '\0';
     s_sample_freq[0] = '\0';
@@ -488,6 +492,10 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
+    
+    //app features
+    extract_string(uart_received_string,"App_LED: ","\r",s_app_led);
+    App_LED_Update(s_app_led);
     
     // Create variables for what is sent back from the server
     int node_type, sim_type, sample_freq, report_freq, debug_freq;

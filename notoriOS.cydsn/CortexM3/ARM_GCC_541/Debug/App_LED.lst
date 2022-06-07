@@ -1,0 +1,1685 @@
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"App_LED.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	buffer_overflow,1,1
+  20              		.comm	dataPointsInStack,2,2
+  21              		.comm	dataPointsInStackDesired,2,2
+  22              		.comm	data,6600,4
+  23              		.comm	modem_state,1,1
+  24              		.comm	modem_start_time_stamp,4,4
+  25              		.comm	modem_info,60,4
+  26              		.comm	modem_stats,32,4
+  27              		.comm	updatable_parameters,5,4
+  28              		.syntax unified
+  29              		.global _printf_float
+  30              		.thumb
+  31              		.syntax unified
+  32              		.comm	inbox,100,4
+  33              		.comm	http_request,10000,4
+  34              		.comm	http_body,10000,4
+  35              		.comm	http_route,200,4
+  36              		.comm	system_info,28,4
+  37              		.comm	system_settings,104,4
+  38              		.comm	alarmMeasure,6,4
+  39              		.comm	timeToMeasure,1,1
+  40              		.comm	alarmSync,6,4
+  41              		.comm	timeToSync,1,1
+  42              		.comm	timeToSycnRemoteParams,1,1
+  43              		.comm	hey,1,1
+  44              		.comm	alarmAppLED,6,4
+  45              		.comm	timeToAppLED,1,1
+  46              		.section	.rodata
+  47              		.align	2
+  48              	.LC0:
+  49 0000 0A0A2D2D 		.ascii	"\012\012------------  BLINK ---------------\012\012"
+  49      2D2D2D2D 
+  49      2D2D2D2D 
+  49      2D2D2020 
+  49      424C494E 
+  50 0027 00       		.ascii	"\000"
+  51              		.align	2
+  52              	.LC1:
+  53 0028 4F4E00   		.ascii	"ON\000"
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 2
+
+
+  54 002b 00       		.align	2
+  55              	.LC2:
+  56 002c 3100     		.ascii	"1\000"
+  57 002e 0000     		.align	2
+  58              	.LC3:
+  59 0030 4170705F 		.ascii	"App_LED_State\000"
+  59      4C45445F 
+  59      53746174 
+  59      6500
+  60 003e 0000     		.align	2
+  61              	.LC4:
+  62 0040 0A0A2D2D 		.ascii	"\012\012------------  BLINK ON ---------------\012\012"
+  62      2D2D2D2D 
+  62      2D2D2D2D 
+  62      2D2D2020 
+  62      424C494E 
+  63 006a 00       		.ascii	"\000"
+  64 006b 00       		.align	2
+  65              	.LC5:
+  66 006c 4F464600 		.ascii	"OFF\000"
+  67              		.align	2
+  68              	.LC6:
+  69 0070 3000     		.ascii	"0\000"
+  70 0072 0000     		.align	2
+  71              	.LC7:
+  72 0074 0A0A2D2D 		.ascii	"\012\012------------  BLINK OFF ---------------\012"
+  72      2D2D2D2D 
+  72      2D2D2D2D 
+  72      2D2D2020 
+  72      424C494E 
+  73 009e 0A00     		.ascii	"\012\000"
+  74              		.section	.text.App_LED,"ax",%progbits
+  75              		.align	2
+  76              		.global	App_LED
+  77              		.thumb
+  78              		.thumb_func
+  79              		.type	App_LED, %function
+  80              	App_LED:
+  81              	.LFB64:
+  82              		.file 1 "App_LED.c"
+   1:App_LED.c     **** /* ========================================
+   2:App_LED.c     ****  *
+   3:App_LED.c     ****  * Copyright YOUR COMPANY, THE YEAR
+   4:App_LED.c     ****  * All Rights Reserved
+   5:App_LED.c     ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:App_LED.c     ****  *
+   7:App_LED.c     ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:App_LED.c     ****  * WHICH IS THE PROPERTY OF your company.
+   9:App_LED.c     ****  *
+  10:App_LED.c     ****  * ========================================
+  11:App_LED.c     **** */
+  12:App_LED.c     **** 
+  13:App_LED.c     **** /* [] END OF FILE */
+  14:App_LED.c     **** #include "LED.h"
+  15:App_LED.c     **** #include "notoriOS.h"
+  16:App_LED.c     **** #include "debug.h"
+  17:App_LED.c     **** 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 3
+
+
+  18:App_LED.c     **** uint8 App_LED(){
+  83              		.loc 1 18 0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 8
+  86              		@ frame_needed = 1, uses_anonymous_args = 0
+  87 0000 80B5     		push	{r7, lr}
+  88              		.cfi_def_cfa_offset 8
+  89              		.cfi_offset 7, -8
+  90              		.cfi_offset 14, -4
+  91 0002 82B0     		sub	sp, sp, #8
+  92              		.cfi_def_cfa_offset 16
+  93 0004 00AF     		add	r7, sp, #0
+  94              		.cfi_def_cfa_register 7
+  19:App_LED.c     ****     
+  20:App_LED.c     ****     //LED_Write(!LED_Read());
+  21:App_LED.c     ****     printNotif(NOTIF_TYPE_EVENT,"\n\n------------  BLINK ---------------\n\n");
+  95              		.loc 1 21 0
+  96 0006 1E49     		ldr	r1, .L5
+  97 0008 0020     		movs	r0, #0
+  98 000a FFF7FEFF 		bl	printNotif
+  22:App_LED.c     ****     
+  23:App_LED.c     ****     char * compare_location;
+  24:App_LED.c     ****     
+  25:App_LED.c     ****     compare_location = strstr(inbox,"ON");        
+  99              		.loc 1 25 0
+ 100 000e 1D49     		ldr	r1, .L5+4
+ 101 0010 1D48     		ldr	r0, .L5+8
+ 102 0012 FFF7FEFF 		bl	strstr
+ 103 0016 7860     		str	r0, [r7, #4]
+  26:App_LED.c     ****     if(compare_location!=NULL){
+ 104              		.loc 1 26 0
+ 105 0018 7B68     		ldr	r3, [r7, #4]
+ 106 001a 002B     		cmp	r3, #0
+ 107 001c 11D0     		beq	.L2
+  27:App_LED.c     ****         LED_Write(1u);
+ 108              		.loc 1 27 0
+ 109 001e 0120     		movs	r0, #1
+ 110 0020 FFF7FEFF 		bl	LED_Write
+  28:App_LED.c     ****         inbox[0] = '\0';
+ 111              		.loc 1 28 0
+ 112 0024 184B     		ldr	r3, .L5+8
+ 113 0026 0022     		movs	r2, #0
+ 114 0028 1A70     		strb	r2, [r3]
+  29:App_LED.c     ****         pushData("App_LED_State", "1", getTimeStamp());
+ 115              		.loc 1 29 0
+ 116 002a FFF7FEFF 		bl	getTimeStamp
+ 117 002e 0346     		mov	r3, r0
+ 118 0030 1A46     		mov	r2, r3
+ 119 0032 1649     		ldr	r1, .L5+12
+ 120 0034 1648     		ldr	r0, .L5+16
+ 121 0036 FFF7FEFF 		bl	pushData
+  30:App_LED.c     ****         printNotif(NOTIF_TYPE_EVENT,"\n\n------------  BLINK ON ---------------\n\n");
+ 122              		.loc 1 30 0
+ 123 003a 1649     		ldr	r1, .L5+20
+ 124 003c 0020     		movs	r0, #0
+ 125 003e FFF7FEFF 		bl	printNotif
+ 126              	.L2:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 4
+
+
+  31:App_LED.c     ****         
+  32:App_LED.c     ****     }
+  33:App_LED.c     ****     
+  34:App_LED.c     ****     compare_location = strstr(inbox,"OFF");        
+ 127              		.loc 1 34 0
+ 128 0042 1549     		ldr	r1, .L5+24
+ 129 0044 1048     		ldr	r0, .L5+8
+ 130 0046 FFF7FEFF 		bl	strstr
+ 131 004a 7860     		str	r0, [r7, #4]
+  35:App_LED.c     ****     if(compare_location!=NULL){
+ 132              		.loc 1 35 0
+ 133 004c 7B68     		ldr	r3, [r7, #4]
+ 134 004e 002B     		cmp	r3, #0
+ 135 0050 11D0     		beq	.L3
+  36:App_LED.c     ****         LED_Write(0u);
+ 136              		.loc 1 36 0
+ 137 0052 0020     		movs	r0, #0
+ 138 0054 FFF7FEFF 		bl	LED_Write
+  37:App_LED.c     ****         inbox[0] = '\0';
+ 139              		.loc 1 37 0
+ 140 0058 0B4B     		ldr	r3, .L5+8
+ 141 005a 0022     		movs	r2, #0
+ 142 005c 1A70     		strb	r2, [r3]
+  38:App_LED.c     ****         pushData("App_LED_State", "0", getTimeStamp());
+ 143              		.loc 1 38 0
+ 144 005e FFF7FEFF 		bl	getTimeStamp
+ 145 0062 0346     		mov	r3, r0
+ 146 0064 1A46     		mov	r2, r3
+ 147 0066 0D49     		ldr	r1, .L5+28
+ 148 0068 0948     		ldr	r0, .L5+16
+ 149 006a FFF7FEFF 		bl	pushData
+  39:App_LED.c     ****         printNotif(NOTIF_TYPE_EVENT,"\n\n------------  BLINK OFF ---------------\n\n");
+ 150              		.loc 1 39 0
+ 151 006e 0C49     		ldr	r1, .L5+32
+ 152 0070 0020     		movs	r0, #0
+ 153 0072 FFF7FEFF 		bl	printNotif
+ 154              	.L3:
+  40:App_LED.c     ****     }
+  41:App_LED.c     ****     
+  42:App_LED.c     ****     return 0u;
+ 155              		.loc 1 42 0
+ 156 0076 0023     		movs	r3, #0
+  43:App_LED.c     **** }
+ 157              		.loc 1 43 0
+ 158 0078 1846     		mov	r0, r3
+ 159 007a 0837     		adds	r7, r7, #8
+ 160              		.cfi_def_cfa_offset 8
+ 161 007c BD46     		mov	sp, r7
+ 162              		.cfi_def_cfa_register 13
+ 163              		@ sp needed
+ 164 007e 80BD     		pop	{r7, pc}
+ 165              	.L6:
+ 166              		.align	2
+ 167              	.L5:
+ 168 0080 00000000 		.word	.LC0
+ 169 0084 28000000 		.word	.LC1
+ 170 0088 00000000 		.word	inbox
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 5
+
+
+ 171 008c 2C000000 		.word	.LC2
+ 172 0090 30000000 		.word	.LC3
+ 173 0094 40000000 		.word	.LC4
+ 174 0098 6C000000 		.word	.LC5
+ 175 009c 70000000 		.word	.LC6
+ 176 00a0 74000000 		.word	.LC7
+ 177              		.cfi_endproc
+ 178              	.LFE64:
+ 179              		.size	App_LED, .-App_LED
+ 180              		.section	.text.App_LED_Update,"ax",%progbits
+ 181              		.align	2
+ 182              		.global	App_LED_Update
+ 183              		.thumb
+ 184              		.thumb_func
+ 185              		.type	App_LED_Update, %function
+ 186              	App_LED_Update:
+ 187              	.LFB65:
+  44:App_LED.c     **** 
+  45:App_LED.c     **** void App_LED_Update(char * message){
+ 188              		.loc 1 45 0
+ 189              		.cfi_startproc
+ 190              		@ args = 0, pretend = 0, frame = 8
+ 191              		@ frame_needed = 1, uses_anonymous_args = 0
+ 192 0000 80B5     		push	{r7, lr}
+ 193              		.cfi_def_cfa_offset 8
+ 194              		.cfi_offset 7, -8
+ 195              		.cfi_offset 14, -4
+ 196 0002 82B0     		sub	sp, sp, #8
+ 197              		.cfi_def_cfa_offset 16
+ 198 0004 00AF     		add	r7, sp, #0
+ 199              		.cfi_def_cfa_register 7
+ 200 0006 7860     		str	r0, [r7, #4]
+  46:App_LED.c     ****     strcpy(inbox, message);
+ 201              		.loc 1 46 0
+ 202 0008 7968     		ldr	r1, [r7, #4]
+ 203 000a 0348     		ldr	r0, .L8
+ 204 000c FFF7FEFF 		bl	strcpy
+  47:App_LED.c     **** }
+ 205              		.loc 1 47 0
+ 206 0010 00BF     		nop
+ 207 0012 0837     		adds	r7, r7, #8
+ 208              		.cfi_def_cfa_offset 8
+ 209 0014 BD46     		mov	sp, r7
+ 210              		.cfi_def_cfa_register 13
+ 211              		@ sp needed
+ 212 0016 80BD     		pop	{r7, pc}
+ 213              	.L9:
+ 214              		.align	2
+ 215              	.L8:
+ 216 0018 00000000 		.word	inbox
+ 217              		.cfi_endproc
+ 218              	.LFE65:
+ 219              		.size	App_LED_Update, .-App_LED_Update
+ 220              		.text
+ 221              	.Letext0:
+ 222              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 223              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 6
+
+
+ 224              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 225              		.file 5 "data.h"
+ 226              		.file 6 "modem.h"
+ 227              		.file 7 "notoriOS.h"
+ 228              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 229              		.file 9 "App_LED.h"
+ 230              		.section	.debug_info,"",%progbits
+ 231              	.Ldebug_info0:
+ 232 0000 FE040000 		.4byte	0x4fe
+ 233 0004 0400     		.2byte	0x4
+ 234 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 235 000a 04       		.byte	0x4
+ 236 000b 01       		.uleb128 0x1
+ 237 000c 65000000 		.4byte	.LASF77
+ 238 0010 0C       		.byte	0xc
+ 239 0011 D7010000 		.4byte	.LASF78
+ 240 0015 AC030000 		.4byte	.LASF79
+ 241 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 242 001d 00000000 		.4byte	0
+ 243 0021 00000000 		.4byte	.Ldebug_line0
+ 244 0025 02       		.uleb128 0x2
+ 245 0026 01       		.byte	0x1
+ 246 0027 06       		.byte	0x6
+ 247 0028 48020000 		.4byte	.LASF0
+ 248 002c 02       		.uleb128 0x2
+ 249 002d 01       		.byte	0x1
+ 250 002e 08       		.byte	0x8
+ 251 002f 12020000 		.4byte	.LASF1
+ 252 0033 02       		.uleb128 0x2
+ 253 0034 02       		.byte	0x2
+ 254 0035 05       		.byte	0x5
+ 255 0036 44000000 		.4byte	.LASF2
+ 256 003a 02       		.uleb128 0x2
+ 257 003b 02       		.byte	0x2
+ 258 003c 07       		.byte	0x7
+ 259 003d E9020000 		.4byte	.LASF3
+ 260 0041 03       		.uleb128 0x3
+ 261 0042 EE030000 		.4byte	.LASF9
+ 262 0046 02       		.byte	0x2
+ 263 0047 3F       		.byte	0x3f
+ 264 0048 4C000000 		.4byte	0x4c
+ 265 004c 02       		.uleb128 0x2
+ 266 004d 04       		.byte	0x4
+ 267 004e 05       		.byte	0x5
+ 268 004f A6010000 		.4byte	.LASF4
+ 269 0053 02       		.uleb128 0x2
+ 270 0054 04       		.byte	0x4
+ 271 0055 07       		.byte	0x7
+ 272 0056 80030000 		.4byte	.LASF5
+ 273 005a 02       		.uleb128 0x2
+ 274 005b 08       		.byte	0x8
+ 275 005c 05       		.byte	0x5
+ 276 005d 93010000 		.4byte	.LASF6
+ 277 0061 02       		.uleb128 0x2
+ 278 0062 08       		.byte	0x8
+ 279 0063 07       		.byte	0x7
+ 280 0064 54020000 		.4byte	.LASF7
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 7
+
+
+ 281 0068 04       		.uleb128 0x4
+ 282 0069 04       		.byte	0x4
+ 283 006a 05       		.byte	0x5
+ 284 006b 696E7400 		.ascii	"int\000"
+ 285 006f 02       		.uleb128 0x2
+ 286 0070 04       		.byte	0x4
+ 287 0071 07       		.byte	0x7
+ 288 0072 7B020000 		.4byte	.LASF8
+ 289 0076 03       		.uleb128 0x3
+ 290 0077 38030000 		.4byte	.LASF10
+ 291 007b 03       		.byte	0x3
+ 292 007c 2C       		.byte	0x2c
+ 293 007d 41000000 		.4byte	0x41
+ 294 0081 05       		.uleb128 0x5
+ 295 0082 39010000 		.4byte	.LASF11
+ 296 0086 04       		.byte	0x4
+ 297 0087 9201     		.2byte	0x192
+ 298 0089 2C000000 		.4byte	0x2c
+ 299 008d 05       		.uleb128 0x5
+ 300 008e 20010000 		.4byte	.LASF12
+ 301 0092 04       		.byte	0x4
+ 302 0093 9301     		.2byte	0x193
+ 303 0095 3A000000 		.4byte	0x3a
+ 304 0099 05       		.uleb128 0x5
+ 305 009a 55010000 		.4byte	.LASF13
+ 306 009e 04       		.byte	0x4
+ 307 009f 9601     		.2byte	0x196
+ 308 00a1 33000000 		.4byte	0x33
+ 309 00a5 05       		.uleb128 0x5
+ 310 00a6 92030000 		.4byte	.LASF14
+ 311 00aa 04       		.byte	0x4
+ 312 00ab 9701     		.2byte	0x197
+ 313 00ad 4C000000 		.4byte	0x4c
+ 314 00b1 02       		.uleb128 0x2
+ 315 00b2 04       		.byte	0x4
+ 316 00b3 04       		.byte	0x4
+ 317 00b4 7E010000 		.4byte	.LASF15
+ 318 00b8 02       		.uleb128 0x2
+ 319 00b9 08       		.byte	0x8
+ 320 00ba 04       		.byte	0x4
+ 321 00bb 98030000 		.4byte	.LASF16
+ 322 00bf 02       		.uleb128 0x2
+ 323 00c0 01       		.byte	0x1
+ 324 00c1 08       		.byte	0x8
+ 325 00c2 A1010000 		.4byte	.LASF17
+ 326 00c6 02       		.uleb128 0x2
+ 327 00c7 08       		.byte	0x8
+ 328 00c8 04       		.byte	0x4
+ 329 00c9 06020000 		.4byte	.LASF18
+ 330 00cd 02       		.uleb128 0x2
+ 331 00ce 04       		.byte	0x4
+ 332 00cf 07       		.byte	0x7
+ 333 00d0 4E000000 		.4byte	.LASF19
+ 334 00d4 06       		.uleb128 0x6
+ 335 00d5 04       		.byte	0x4
+ 336 00d6 BF000000 		.4byte	0xbf
+ 337 00da 07       		.uleb128 0x7
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 8
+
+
+ 338 00db BF000000 		.4byte	0xbf
+ 339 00df EA000000 		.4byte	0xea
+ 340 00e3 08       		.uleb128 0x8
+ 341 00e4 CD000000 		.4byte	0xcd
+ 342 00e8 17       		.byte	0x17
+ 343 00e9 00       		.byte	0
+ 344 00ea 09       		.uleb128 0x9
+ 345 00eb 2C       		.byte	0x2c
+ 346 00ec 05       		.byte	0x5
+ 347 00ed 14       		.byte	0x14
+ 348 00ee 17010000 		.4byte	0x117
+ 349 00f2 0A       		.uleb128 0xa
+ 350 00f3 6B657900 		.ascii	"key\000"
+ 351 00f7 05       		.byte	0x5
+ 352 00f8 15       		.byte	0x15
+ 353 00f9 17010000 		.4byte	0x117
+ 354 00fd 00       		.byte	0
+ 355 00fe 0B       		.uleb128 0xb
+ 356 00ff 1A010000 		.4byte	.LASF20
+ 357 0103 05       		.byte	0x5
+ 358 0104 16       		.byte	0x16
+ 359 0105 17010000 		.4byte	0x117
+ 360 0109 14       		.byte	0x14
+ 361 010a 0B       		.uleb128 0xb
+ 362 010b 5B010000 		.4byte	.LASF21
+ 363 010f 05       		.byte	0x5
+ 364 0110 17       		.byte	0x17
+ 365 0111 A5000000 		.4byte	0xa5
+ 366 0115 28       		.byte	0x28
+ 367 0116 00       		.byte	0
+ 368 0117 07       		.uleb128 0x7
+ 369 0118 BF000000 		.4byte	0xbf
+ 370 011c 27010000 		.4byte	0x127
+ 371 0120 08       		.uleb128 0x8
+ 372 0121 CD000000 		.4byte	0xcd
+ 373 0125 13       		.byte	0x13
+ 374 0126 00       		.byte	0
+ 375 0127 03       		.uleb128 0x3
+ 376 0128 88020000 		.4byte	.LASF22
+ 377 012c 05       		.byte	0x5
+ 378 012d 19       		.byte	0x19
+ 379 012e EA000000 		.4byte	0xea
+ 380 0132 09       		.uleb128 0x9
+ 381 0133 3C       		.byte	0x3c
+ 382 0134 06       		.byte	0x6
+ 383 0135 35       		.byte	0x35
+ 384 0136 5F010000 		.4byte	0x15f
+ 385 013a 0B       		.uleb128 0xb
+ 386 013b 09000000 		.4byte	.LASF23
+ 387 013f 06       		.byte	0x6
+ 388 0140 36       		.byte	0x36
+ 389 0141 17010000 		.4byte	0x117
+ 390 0145 00       		.byte	0
+ 391 0146 0B       		.uleb128 0xb
+ 392 0147 00000000 		.4byte	.LASF24
+ 393 014b 06       		.byte	0x6
+ 394 014c 37       		.byte	0x37
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 9
+
+
+ 395 014d 17010000 		.4byte	0x117
+ 396 0151 14       		.byte	0x14
+ 397 0152 0B       		.uleb128 0xb
+ 398 0153 33030000 		.4byte	.LASF25
+ 399 0157 06       		.byte	0x6
+ 400 0158 38       		.byte	0x38
+ 401 0159 17010000 		.4byte	0x117
+ 402 015d 28       		.byte	0x28
+ 403 015e 00       		.byte	0
+ 404 015f 03       		.uleb128 0x3
+ 405 0160 D3030000 		.4byte	.LASF26
+ 406 0164 06       		.byte	0x6
+ 407 0165 3A       		.byte	0x3a
+ 408 0166 32010000 		.4byte	0x132
+ 409 016a 09       		.uleb128 0x9
+ 410 016b 20       		.byte	0x20
+ 411 016c 06       		.byte	0x6
+ 412 016d 3C       		.byte	0x3c
+ 413 016e D3010000 		.4byte	0x1d3
+ 414 0172 0B       		.uleb128 0xb
+ 415 0173 94020000 		.4byte	.LASF27
+ 416 0177 06       		.byte	0x6
+ 417 0178 3D       		.byte	0x3d
+ 418 0179 68000000 		.4byte	0x68
+ 419 017d 00       		.byte	0
+ 420 017e 0A       		.uleb128 0xa
+ 421 017f 62657200 		.ascii	"ber\000"
+ 422 0183 06       		.byte	0x6
+ 423 0184 3E       		.byte	0x3e
+ 424 0185 68000000 		.4byte	0x68
+ 425 0189 04       		.byte	0x4
+ 426 018a 0B       		.uleb128 0xb
+ 427 018b 50010000 		.4byte	.LASF28
+ 428 018f 06       		.byte	0x6
+ 429 0190 3F       		.byte	0x3f
+ 430 0191 68000000 		.4byte	0x68
+ 431 0195 08       		.byte	0x8
+ 432 0196 0B       		.uleb128 0xb
+ 433 0197 09010000 		.4byte	.LASF29
+ 434 019b 06       		.byte	0x6
+ 435 019c 40       		.byte	0x40
+ 436 019d 68000000 		.4byte	0x68
+ 437 01a1 0C       		.byte	0xc
+ 438 01a2 0B       		.uleb128 0xb
+ 439 01a3 70030000 		.4byte	.LASF30
+ 440 01a7 06       		.byte	0x6
+ 441 01a8 41       		.byte	0x41
+ 442 01a9 68000000 		.4byte	0x68
+ 443 01ad 10       		.byte	0x10
+ 444 01ae 0B       		.uleb128 0xb
+ 445 01af 20020000 		.4byte	.LASF31
+ 446 01b3 06       		.byte	0x6
+ 447 01b4 42       		.byte	0x42
+ 448 01b5 68000000 		.4byte	0x68
+ 449 01b9 14       		.byte	0x14
+ 450 01ba 0B       		.uleb128 0xb
+ 451 01bb FC020000 		.4byte	.LASF32
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 10
+
+
+ 452 01bf 06       		.byte	0x6
+ 453 01c0 43       		.byte	0x43
+ 454 01c1 68000000 		.4byte	0x68
+ 455 01c5 18       		.byte	0x18
+ 456 01c6 0B       		.uleb128 0xb
+ 457 01c7 20030000 		.4byte	.LASF33
+ 458 01cb 06       		.byte	0x6
+ 459 01cc 44       		.byte	0x44
+ 460 01cd 68000000 		.4byte	0x68
+ 461 01d1 1C       		.byte	0x1c
+ 462 01d2 00       		.byte	0
+ 463 01d3 03       		.uleb128 0x3
+ 464 01d4 40030000 		.4byte	.LASF34
+ 465 01d8 06       		.byte	0x6
+ 466 01d9 46       		.byte	0x46
+ 467 01da 6A010000 		.4byte	0x16a
+ 468 01de 09       		.uleb128 0x9
+ 469 01df 05       		.byte	0x5
+ 470 01e0 06       		.byte	0x6
+ 471 01e1 52       		.byte	0x52
+ 472 01e2 23020000 		.4byte	0x223
+ 473 01e6 0B       		.uleb128 0xb
+ 474 01e7 44040000 		.4byte	.LASF35
+ 475 01eb 06       		.byte	0x6
+ 476 01ec 54       		.byte	0x54
+ 477 01ed 81000000 		.4byte	0x81
+ 478 01f1 00       		.byte	0
+ 479 01f2 0B       		.uleb128 0xb
+ 480 01f3 D5020000 		.4byte	.LASF36
+ 481 01f7 06       		.byte	0x6
+ 482 01f8 56       		.byte	0x56
+ 483 01f9 23020000 		.4byte	0x223
+ 484 01fd 01       		.byte	0x1
+ 485 01fe 0B       		.uleb128 0xb
+ 486 01ff EF010000 		.4byte	.LASF37
+ 487 0203 06       		.byte	0x6
+ 488 0204 58       		.byte	0x58
+ 489 0205 81000000 		.4byte	0x81
+ 490 0209 02       		.byte	0x2
+ 491 020a 0B       		.uleb128 0xb
+ 492 020b 9A020000 		.4byte	.LASF38
+ 493 020f 06       		.byte	0x6
+ 494 0210 5A       		.byte	0x5a
+ 495 0211 81000000 		.4byte	0x81
+ 496 0215 03       		.byte	0x3
+ 497 0216 0B       		.uleb128 0xb
+ 498 0217 C7030000 		.4byte	.LASF39
+ 499 021b 06       		.byte	0x6
+ 500 021c 5D       		.byte	0x5d
+ 501 021d 81000000 		.4byte	0x81
+ 502 0221 04       		.byte	0x4
+ 503 0222 00       		.byte	0
+ 504 0223 02       		.uleb128 0x2
+ 505 0224 01       		.byte	0x1
+ 506 0225 02       		.byte	0x2
+ 507 0226 4E030000 		.4byte	.LASF40
+ 508 022a 03       		.uleb128 0x3
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 11
+
+
+ 509 022b BE020000 		.4byte	.LASF41
+ 510 022f 06       		.byte	0x6
+ 511 0230 5F       		.byte	0x5f
+ 512 0231 DE010000 		.4byte	0x1de
+ 513 0235 09       		.uleb128 0x9
+ 514 0236 06       		.byte	0x6
+ 515 0237 07       		.byte	0x7
+ 516 0238 2E       		.byte	0x2e
+ 517 0239 6E020000 		.4byte	0x26e
+ 518 023d 0B       		.uleb128 0xb
+ 519 023e 35000000 		.4byte	.LASF42
+ 520 0242 07       		.byte	0x7
+ 521 0243 30       		.byte	0x30
+ 522 0244 8D000000 		.4byte	0x8d
+ 523 0248 00       		.byte	0
+ 524 0249 0B       		.uleb128 0xb
+ 525 024a 1F000000 		.4byte	.LASF43
+ 526 024e 07       		.byte	0x7
+ 527 024f 31       		.byte	0x31
+ 528 0250 99000000 		.4byte	0x99
+ 529 0254 02       		.byte	0x2
+ 530 0255 0B       		.uleb128 0xb
+ 531 0256 E0030000 		.4byte	.LASF44
+ 532 025a 07       		.byte	0x7
+ 533 025b 32       		.byte	0x32
+ 534 025c 81000000 		.4byte	0x81
+ 535 0260 04       		.byte	0x4
+ 536 0261 0B       		.uleb128 0xb
+ 537 0262 05040000 		.4byte	.LASF45
+ 538 0266 07       		.byte	0x7
+ 539 0267 33       		.byte	0x33
+ 540 0268 81000000 		.4byte	0x81
+ 541 026c 05       		.byte	0x5
+ 542 026d 00       		.byte	0
+ 543 026e 03       		.uleb128 0x3
+ 544 026f E9010000 		.4byte	.LASF46
+ 545 0273 07       		.byte	0x7
+ 546 0274 36       		.byte	0x36
+ 547 0275 79020000 		.4byte	0x279
+ 548 0279 0C       		.uleb128 0xc
+ 549 027a 35020000 		.4byte	0x235
+ 550 027e 09       		.uleb128 0x9
+ 551 027f 1C       		.byte	0x1c
+ 552 0280 07       		.byte	0x7
+ 553 0281 39       		.byte	0x39
+ 554 0282 9F020000 		.4byte	0x29f
+ 555 0286 0B       		.uleb128 0xb
+ 556 0287 BF010000 		.4byte	.LASF47
+ 557 028b 07       		.byte	0x7
+ 558 028c 3B       		.byte	0x3b
+ 559 028d 9F020000 		.4byte	0x29f
+ 560 0291 00       		.byte	0
+ 561 0292 0B       		.uleb128 0xb
+ 562 0293 F3000000 		.4byte	.LASF48
+ 563 0297 07       		.byte	0x7
+ 564 0298 3C       		.byte	0x3c
+ 565 0299 DA000000 		.4byte	0xda
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 12
+
+
+ 566 029d 04       		.byte	0x4
+ 567 029e 00       		.byte	0
+ 568 029f 06       		.uleb128 0x6
+ 569 02a0 04       		.byte	0x4
+ 570 02a1 5F010000 		.4byte	0x15f
+ 571 02a5 03       		.uleb128 0x3
+ 572 02a6 DE020000 		.4byte	.LASF49
+ 573 02aa 07       		.byte	0x7
+ 574 02ab 3E       		.byte	0x3e
+ 575 02ac 7E020000 		.4byte	0x27e
+ 576 02b0 09       		.uleb128 0x9
+ 577 02b1 68       		.byte	0x68
+ 578 02b2 07       		.byte	0x7
+ 579 02b3 44       		.byte	0x44
+ 580 02b4 D1020000 		.4byte	0x2d1
+ 581 02b8 0B       		.uleb128 0xb
+ 582 02b9 57000000 		.4byte	.LASF50
+ 583 02bd 07       		.byte	0x7
+ 584 02be 49       		.byte	0x49
+ 585 02bf D1020000 		.4byte	0x2d1
+ 586 02c3 00       		.byte	0
+ 587 02c4 0B       		.uleb128 0xb
+ 588 02c5 32040000 		.4byte	.LASF51
+ 589 02c9 07       		.byte	0x7
+ 590 02ca 4A       		.byte	0x4a
+ 591 02cb 68000000 		.4byte	0x68
+ 592 02cf 64       		.byte	0x64
+ 593 02d0 00       		.byte	0
+ 594 02d1 07       		.uleb128 0x7
+ 595 02d2 BF000000 		.4byte	0xbf
+ 596 02d6 E1020000 		.4byte	0x2e1
+ 597 02da 08       		.uleb128 0x8
+ 598 02db CD000000 		.4byte	0xcd
+ 599 02df 63       		.byte	0x63
+ 600 02e0 00       		.byte	0
+ 601 02e1 03       		.uleb128 0x3
+ 602 02e2 10000000 		.4byte	.LASF52
+ 603 02e6 07       		.byte	0x7
+ 604 02e7 50       		.byte	0x50
+ 605 02e8 B0020000 		.4byte	0x2b0
+ 606 02ec 0D       		.uleb128 0xd
+ 607 02ed E1010000 		.4byte	.LASF53
+ 608 02f1 01       		.byte	0x1
+ 609 02f2 12       		.byte	0x12
+ 610 02f3 81000000 		.4byte	0x81
+ 611 02f7 00000000 		.4byte	.LFB64
+ 612 02fb A4000000 		.4byte	.LFE64-.LFB64
+ 613 02ff 01       		.uleb128 0x1
+ 614 0300 9C       		.byte	0x9c
+ 615 0301 14030000 		.4byte	0x314
+ 616 0305 0E       		.uleb128 0xe
+ 617 0306 3F010000 		.4byte	.LASF80
+ 618 030a 01       		.byte	0x1
+ 619 030b 17       		.byte	0x17
+ 620 030c D4000000 		.4byte	0xd4
+ 621 0310 02       		.uleb128 0x2
+ 622 0311 91       		.byte	0x91
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 13
+
+
+ 623 0312 74       		.sleb128 -12
+ 624 0313 00       		.byte	0
+ 625 0314 0F       		.uleb128 0xf
+ 626 0315 84010000 		.4byte	.LASF54
+ 627 0319 01       		.byte	0x1
+ 628 031a 2D       		.byte	0x2d
+ 629 031b 00000000 		.4byte	.LFB65
+ 630 031f 1C000000 		.4byte	.LFE65-.LFB65
+ 631 0323 01       		.uleb128 0x1
+ 632 0324 9C       		.byte	0x9c
+ 633 0325 38030000 		.4byte	0x338
+ 634 0329 10       		.uleb128 0x10
+ 635 032a 01010000 		.4byte	.LASF81
+ 636 032e 01       		.byte	0x1
+ 637 032f 2D       		.byte	0x2d
+ 638 0330 D4000000 		.4byte	0xd4
+ 639 0334 02       		.uleb128 0x2
+ 640 0335 91       		.byte	0x91
+ 641 0336 74       		.sleb128 -12
+ 642 0337 00       		.byte	0
+ 643 0338 11       		.uleb128 0x11
+ 644 0339 9F030000 		.4byte	.LASF55
+ 645 033d 08       		.byte	0x8
+ 646 033e 1207     		.2byte	0x712
+ 647 0340 44030000 		.4byte	0x344
+ 648 0344 0C       		.uleb128 0xc
+ 649 0345 76000000 		.4byte	0x76
+ 650 0349 12       		.uleb128 0x12
+ 651 034a AF010000 		.4byte	.LASF56
+ 652 034e 05       		.byte	0x5
+ 653 034f 11       		.byte	0x11
+ 654 0350 23020000 		.4byte	0x223
+ 655 0354 05       		.uleb128 0x5
+ 656 0355 03       		.byte	0x3
+ 657 0356 00000000 		.4byte	buffer_overflow
+ 658 035a 12       		.uleb128 0x12
+ 659 035b 27010000 		.4byte	.LASF57
+ 660 035f 05       		.byte	0x5
+ 661 0360 22       		.byte	0x22
+ 662 0361 8D000000 		.4byte	0x8d
+ 663 0365 05       		.uleb128 0x5
+ 664 0366 03       		.byte	0x3
+ 665 0367 00000000 		.4byte	dataPointsInStack
+ 666 036b 12       		.uleb128 0x12
+ 667 036c 65010000 		.4byte	.LASF58
+ 668 0370 05       		.byte	0x5
+ 669 0371 23       		.byte	0x23
+ 670 0372 8D000000 		.4byte	0x8d
+ 671 0376 05       		.uleb128 0x5
+ 672 0377 03       		.byte	0x3
+ 673 0378 00000000 		.4byte	dataPointsInStackDesired
+ 674 037c 07       		.uleb128 0x7
+ 675 037d 27010000 		.4byte	0x127
+ 676 0381 8C030000 		.4byte	0x38c
+ 677 0385 08       		.uleb128 0x8
+ 678 0386 CD000000 		.4byte	0xcd
+ 679 038a 95       		.byte	0x95
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 14
+
+
+ 680 038b 00       		.byte	0
+ 681 038c 12       		.uleb128 0x12
+ 682 038d 6B030000 		.4byte	.LASF59
+ 683 0391 05       		.byte	0x5
+ 684 0392 24       		.byte	0x24
+ 685 0393 7C030000 		.4byte	0x37c
+ 686 0397 05       		.uleb128 0x5
+ 687 0398 03       		.byte	0x3
+ 688 0399 00000000 		.4byte	data
+ 689 039d 12       		.uleb128 0x12
+ 690 039e 3C020000 		.4byte	.LASF60
+ 691 03a2 06       		.byte	0x6
+ 692 03a3 1F       		.byte	0x1f
+ 693 03a4 81000000 		.4byte	0x81
+ 694 03a8 05       		.uleb128 0x5
+ 695 03a9 03       		.byte	0x3
+ 696 03aa 00000000 		.4byte	modem_state
+ 697 03ae 12       		.uleb128 0x12
+ 698 03af 25020000 		.4byte	.LASF61
+ 699 03b3 06       		.byte	0x6
+ 700 03b4 62       		.byte	0x62
+ 701 03b5 A5000000 		.4byte	0xa5
+ 702 03b9 05       		.uleb128 0x5
+ 703 03ba 03       		.byte	0x3
+ 704 03bb 00000000 		.4byte	modem_start_time_stamp
+ 705 03bf 12       		.uleb128 0x12
+ 706 03c0 BF010000 		.4byte	.LASF47
+ 707 03c4 06       		.byte	0x6
+ 708 03c5 63       		.byte	0x63
+ 709 03c6 5F010000 		.4byte	0x15f
+ 710 03ca 05       		.uleb128 0x5
+ 711 03cb 03       		.byte	0x3
+ 712 03cc 00000000 		.4byte	modem_info
+ 713 03d0 12       		.uleb128 0x12
+ 714 03d1 A4020000 		.4byte	.LASF62
+ 715 03d5 06       		.byte	0x6
+ 716 03d6 64       		.byte	0x64
+ 717 03d7 D3010000 		.4byte	0x1d3
+ 718 03db 05       		.uleb128 0x5
+ 719 03dc 03       		.byte	0x3
+ 720 03dd 00000000 		.4byte	modem_stats
+ 721 03e1 12       		.uleb128 0x12
+ 722 03e2 1D040000 		.4byte	.LASF63
+ 723 03e6 06       		.byte	0x6
+ 724 03e7 65       		.byte	0x65
+ 725 03e8 2A020000 		.4byte	0x22a
+ 726 03ec 05       		.uleb128 0x5
+ 727 03ed 03       		.byte	0x3
+ 728 03ee 00000000 		.4byte	updatable_parameters
+ 729 03f2 12       		.uleb128 0x12
+ 730 03f3 5F000000 		.4byte	.LASF64
+ 731 03f7 09       		.byte	0x9
+ 732 03f8 12       		.byte	0x12
+ 733 03f9 D1020000 		.4byte	0x2d1
+ 734 03fd 05       		.uleb128 0x5
+ 735 03fe 03       		.byte	0x3
+ 736 03ff 00000000 		.4byte	inbox
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 15
+
+
+ 737 0403 07       		.uleb128 0x7
+ 738 0404 BF000000 		.4byte	0xbf
+ 739 0408 14040000 		.4byte	0x414
+ 740 040c 13       		.uleb128 0x13
+ 741 040d CD000000 		.4byte	0xcd
+ 742 0411 0F27     		.2byte	0x270f
+ 743 0413 00       		.byte	0
+ 744 0414 12       		.uleb128 0x12
+ 745 0415 4E040000 		.4byte	.LASF65
+ 746 0419 07       		.byte	0x7
+ 747 041a 18       		.byte	0x18
+ 748 041b 03040000 		.4byte	0x403
+ 749 041f 05       		.uleb128 0x5
+ 750 0420 03       		.byte	0x3
+ 751 0421 00000000 		.4byte	http_request
+ 752 0425 12       		.uleb128 0x12
+ 753 0426 3A040000 		.4byte	.LASF66
+ 754 042a 07       		.byte	0x7
+ 755 042b 19       		.byte	0x19
+ 756 042c 03040000 		.4byte	0x403
+ 757 0430 05       		.uleb128 0x5
+ 758 0431 03       		.byte	0x3
+ 759 0432 00000000 		.4byte	http_body
+ 760 0436 07       		.uleb128 0x7
+ 761 0437 BF000000 		.4byte	0xbf
+ 762 043b 46040000 		.4byte	0x446
+ 763 043f 08       		.uleb128 0x8
+ 764 0440 CD000000 		.4byte	0xcd
+ 765 0444 C7       		.byte	0xc7
+ 766 0445 00       		.byte	0
+ 767 0446 12       		.uleb128 0x12
+ 768 0447 75030000 		.4byte	.LASF67
+ 769 044b 07       		.byte	0x7
+ 770 044c 1A       		.byte	0x1a
+ 771 044d 36040000 		.4byte	0x436
+ 772 0451 05       		.uleb128 0x5
+ 773 0452 03       		.byte	0x3
+ 774 0453 00000000 		.4byte	http_route
+ 775 0457 12       		.uleb128 0x12
+ 776 0458 14030000 		.4byte	.LASF68
+ 777 045c 07       		.byte	0x7
+ 778 045d 41       		.byte	0x41
+ 779 045e A5020000 		.4byte	0x2a5
+ 780 0462 05       		.uleb128 0x5
+ 781 0463 03       		.byte	0x3
+ 782 0464 00000000 		.4byte	system_info
+ 783 0468 12       		.uleb128 0x12
+ 784 0469 6B020000 		.4byte	.LASF69
+ 785 046d 07       		.byte	0x7
+ 786 046e 53       		.byte	0x53
+ 787 046f E1020000 		.4byte	0x2e1
+ 788 0473 05       		.uleb128 0x5
+ 789 0474 03       		.byte	0x3
+ 790 0475 00000000 		.4byte	system_settings
+ 791 0479 12       		.uleb128 0x12
+ 792 047a CA010000 		.4byte	.LASF70
+ 793 047e 07       		.byte	0x7
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 16
+
+
+ 794 047f 6F       		.byte	0x6f
+ 795 0480 6E020000 		.4byte	0x26e
+ 796 0484 05       		.uleb128 0x5
+ 797 0485 03       		.byte	0x3
+ 798 0486 00000000 		.4byte	alarmMeasure
+ 799 048a 12       		.uleb128 0x12
+ 800 048b B0020000 		.4byte	.LASF71
+ 801 048f 07       		.byte	0x7
+ 802 0490 70       		.byte	0x70
+ 803 0491 81000000 		.4byte	0x81
+ 804 0495 05       		.uleb128 0x5
+ 805 0496 03       		.byte	0x3
+ 806 0497 00000000 		.4byte	timeToMeasure
+ 807 049b 12       		.uleb128 0x12
+ 808 049c FC010000 		.4byte	.LASF72
+ 809 04a0 07       		.byte	0x7
+ 810 04a1 71       		.byte	0x71
+ 811 04a2 6E020000 		.4byte	0x26e
+ 812 04a6 05       		.uleb128 0x5
+ 813 04a7 03       		.byte	0x3
+ 814 04a8 00000000 		.4byte	alarmSync
+ 815 04ac 12       		.uleb128 0x12
+ 816 04ad 5B040000 		.4byte	.LASF73
+ 817 04b1 07       		.byte	0x7
+ 818 04b2 72       		.byte	0x72
+ 819 04b3 81000000 		.4byte	0x81
+ 820 04b7 05       		.uleb128 0x5
+ 821 04b8 03       		.byte	0x3
+ 822 04b9 00000000 		.4byte	timeToSync
+ 823 04bd 12       		.uleb128 0x12
+ 824 04be 54030000 		.4byte	.LASF74
+ 825 04c2 07       		.byte	0x7
+ 826 04c3 73       		.byte	0x73
+ 827 04c4 81000000 		.4byte	0x81
+ 828 04c8 05       		.uleb128 0x5
+ 829 04c9 03       		.byte	0x3
+ 830 04ca 00000000 		.4byte	timeToSycnRemoteParams
+ 831 04ce 14       		.uleb128 0x14
+ 832 04cf 68657900 		.ascii	"hey\000"
+ 833 04d3 07       		.byte	0x7
+ 834 04d4 74       		.byte	0x74
+ 835 04d5 81000000 		.4byte	0x81
+ 836 04d9 05       		.uleb128 0x5
+ 837 04da 03       		.byte	0x3
+ 838 04db 00000000 		.4byte	hey
+ 839 04df 12       		.uleb128 0x12
+ 840 04e0 0E010000 		.4byte	.LASF75
+ 841 04e4 07       		.byte	0x7
+ 842 04e5 77       		.byte	0x77
+ 843 04e6 6E020000 		.4byte	0x26e
+ 844 04ea 05       		.uleb128 0x5
+ 845 04eb 03       		.byte	0x3
+ 846 04ec 00000000 		.4byte	alarmAppLED
+ 847 04f0 12       		.uleb128 0x12
+ 848 04f1 F8030000 		.4byte	.LASF76
+ 849 04f5 07       		.byte	0x7
+ 850 04f6 78       		.byte	0x78
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 17
+
+
+ 851 04f7 81000000 		.4byte	0x81
+ 852 04fb 05       		.uleb128 0x5
+ 853 04fc 03       		.byte	0x3
+ 854 04fd 00000000 		.4byte	timeToAppLED
+ 855 0501 00       		.byte	0
+ 856              		.section	.debug_abbrev,"",%progbits
+ 857              	.Ldebug_abbrev0:
+ 858 0000 01       		.uleb128 0x1
+ 859 0001 11       		.uleb128 0x11
+ 860 0002 01       		.byte	0x1
+ 861 0003 25       		.uleb128 0x25
+ 862 0004 0E       		.uleb128 0xe
+ 863 0005 13       		.uleb128 0x13
+ 864 0006 0B       		.uleb128 0xb
+ 865 0007 03       		.uleb128 0x3
+ 866 0008 0E       		.uleb128 0xe
+ 867 0009 1B       		.uleb128 0x1b
+ 868 000a 0E       		.uleb128 0xe
+ 869 000b 55       		.uleb128 0x55
+ 870 000c 17       		.uleb128 0x17
+ 871 000d 11       		.uleb128 0x11
+ 872 000e 01       		.uleb128 0x1
+ 873 000f 10       		.uleb128 0x10
+ 874 0010 17       		.uleb128 0x17
+ 875 0011 00       		.byte	0
+ 876 0012 00       		.byte	0
+ 877 0013 02       		.uleb128 0x2
+ 878 0014 24       		.uleb128 0x24
+ 879 0015 00       		.byte	0
+ 880 0016 0B       		.uleb128 0xb
+ 881 0017 0B       		.uleb128 0xb
+ 882 0018 3E       		.uleb128 0x3e
+ 883 0019 0B       		.uleb128 0xb
+ 884 001a 03       		.uleb128 0x3
+ 885 001b 0E       		.uleb128 0xe
+ 886 001c 00       		.byte	0
+ 887 001d 00       		.byte	0
+ 888 001e 03       		.uleb128 0x3
+ 889 001f 16       		.uleb128 0x16
+ 890 0020 00       		.byte	0
+ 891 0021 03       		.uleb128 0x3
+ 892 0022 0E       		.uleb128 0xe
+ 893 0023 3A       		.uleb128 0x3a
+ 894 0024 0B       		.uleb128 0xb
+ 895 0025 3B       		.uleb128 0x3b
+ 896 0026 0B       		.uleb128 0xb
+ 897 0027 49       		.uleb128 0x49
+ 898 0028 13       		.uleb128 0x13
+ 899 0029 00       		.byte	0
+ 900 002a 00       		.byte	0
+ 901 002b 04       		.uleb128 0x4
+ 902 002c 24       		.uleb128 0x24
+ 903 002d 00       		.byte	0
+ 904 002e 0B       		.uleb128 0xb
+ 905 002f 0B       		.uleb128 0xb
+ 906 0030 3E       		.uleb128 0x3e
+ 907 0031 0B       		.uleb128 0xb
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 18
+
+
+ 908 0032 03       		.uleb128 0x3
+ 909 0033 08       		.uleb128 0x8
+ 910 0034 00       		.byte	0
+ 911 0035 00       		.byte	0
+ 912 0036 05       		.uleb128 0x5
+ 913 0037 16       		.uleb128 0x16
+ 914 0038 00       		.byte	0
+ 915 0039 03       		.uleb128 0x3
+ 916 003a 0E       		.uleb128 0xe
+ 917 003b 3A       		.uleb128 0x3a
+ 918 003c 0B       		.uleb128 0xb
+ 919 003d 3B       		.uleb128 0x3b
+ 920 003e 05       		.uleb128 0x5
+ 921 003f 49       		.uleb128 0x49
+ 922 0040 13       		.uleb128 0x13
+ 923 0041 00       		.byte	0
+ 924 0042 00       		.byte	0
+ 925 0043 06       		.uleb128 0x6
+ 926 0044 0F       		.uleb128 0xf
+ 927 0045 00       		.byte	0
+ 928 0046 0B       		.uleb128 0xb
+ 929 0047 0B       		.uleb128 0xb
+ 930 0048 49       		.uleb128 0x49
+ 931 0049 13       		.uleb128 0x13
+ 932 004a 00       		.byte	0
+ 933 004b 00       		.byte	0
+ 934 004c 07       		.uleb128 0x7
+ 935 004d 01       		.uleb128 0x1
+ 936 004e 01       		.byte	0x1
+ 937 004f 49       		.uleb128 0x49
+ 938 0050 13       		.uleb128 0x13
+ 939 0051 01       		.uleb128 0x1
+ 940 0052 13       		.uleb128 0x13
+ 941 0053 00       		.byte	0
+ 942 0054 00       		.byte	0
+ 943 0055 08       		.uleb128 0x8
+ 944 0056 21       		.uleb128 0x21
+ 945 0057 00       		.byte	0
+ 946 0058 49       		.uleb128 0x49
+ 947 0059 13       		.uleb128 0x13
+ 948 005a 2F       		.uleb128 0x2f
+ 949 005b 0B       		.uleb128 0xb
+ 950 005c 00       		.byte	0
+ 951 005d 00       		.byte	0
+ 952 005e 09       		.uleb128 0x9
+ 953 005f 13       		.uleb128 0x13
+ 954 0060 01       		.byte	0x1
+ 955 0061 0B       		.uleb128 0xb
+ 956 0062 0B       		.uleb128 0xb
+ 957 0063 3A       		.uleb128 0x3a
+ 958 0064 0B       		.uleb128 0xb
+ 959 0065 3B       		.uleb128 0x3b
+ 960 0066 0B       		.uleb128 0xb
+ 961 0067 01       		.uleb128 0x1
+ 962 0068 13       		.uleb128 0x13
+ 963 0069 00       		.byte	0
+ 964 006a 00       		.byte	0
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 19
+
+
+ 965 006b 0A       		.uleb128 0xa
+ 966 006c 0D       		.uleb128 0xd
+ 967 006d 00       		.byte	0
+ 968 006e 03       		.uleb128 0x3
+ 969 006f 08       		.uleb128 0x8
+ 970 0070 3A       		.uleb128 0x3a
+ 971 0071 0B       		.uleb128 0xb
+ 972 0072 3B       		.uleb128 0x3b
+ 973 0073 0B       		.uleb128 0xb
+ 974 0074 49       		.uleb128 0x49
+ 975 0075 13       		.uleb128 0x13
+ 976 0076 38       		.uleb128 0x38
+ 977 0077 0B       		.uleb128 0xb
+ 978 0078 00       		.byte	0
+ 979 0079 00       		.byte	0
+ 980 007a 0B       		.uleb128 0xb
+ 981 007b 0D       		.uleb128 0xd
+ 982 007c 00       		.byte	0
+ 983 007d 03       		.uleb128 0x3
+ 984 007e 0E       		.uleb128 0xe
+ 985 007f 3A       		.uleb128 0x3a
+ 986 0080 0B       		.uleb128 0xb
+ 987 0081 3B       		.uleb128 0x3b
+ 988 0082 0B       		.uleb128 0xb
+ 989 0083 49       		.uleb128 0x49
+ 990 0084 13       		.uleb128 0x13
+ 991 0085 38       		.uleb128 0x38
+ 992 0086 0B       		.uleb128 0xb
+ 993 0087 00       		.byte	0
+ 994 0088 00       		.byte	0
+ 995 0089 0C       		.uleb128 0xc
+ 996 008a 35       		.uleb128 0x35
+ 997 008b 00       		.byte	0
+ 998 008c 49       		.uleb128 0x49
+ 999 008d 13       		.uleb128 0x13
+ 1000 008e 00       		.byte	0
+ 1001 008f 00       		.byte	0
+ 1002 0090 0D       		.uleb128 0xd
+ 1003 0091 2E       		.uleb128 0x2e
+ 1004 0092 01       		.byte	0x1
+ 1005 0093 3F       		.uleb128 0x3f
+ 1006 0094 19       		.uleb128 0x19
+ 1007 0095 03       		.uleb128 0x3
+ 1008 0096 0E       		.uleb128 0xe
+ 1009 0097 3A       		.uleb128 0x3a
+ 1010 0098 0B       		.uleb128 0xb
+ 1011 0099 3B       		.uleb128 0x3b
+ 1012 009a 0B       		.uleb128 0xb
+ 1013 009b 49       		.uleb128 0x49
+ 1014 009c 13       		.uleb128 0x13
+ 1015 009d 11       		.uleb128 0x11
+ 1016 009e 01       		.uleb128 0x1
+ 1017 009f 12       		.uleb128 0x12
+ 1018 00a0 06       		.uleb128 0x6
+ 1019 00a1 40       		.uleb128 0x40
+ 1020 00a2 18       		.uleb128 0x18
+ 1021 00a3 9642     		.uleb128 0x2116
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 20
+
+
+ 1022 00a5 19       		.uleb128 0x19
+ 1023 00a6 01       		.uleb128 0x1
+ 1024 00a7 13       		.uleb128 0x13
+ 1025 00a8 00       		.byte	0
+ 1026 00a9 00       		.byte	0
+ 1027 00aa 0E       		.uleb128 0xe
+ 1028 00ab 34       		.uleb128 0x34
+ 1029 00ac 00       		.byte	0
+ 1030 00ad 03       		.uleb128 0x3
+ 1031 00ae 0E       		.uleb128 0xe
+ 1032 00af 3A       		.uleb128 0x3a
+ 1033 00b0 0B       		.uleb128 0xb
+ 1034 00b1 3B       		.uleb128 0x3b
+ 1035 00b2 0B       		.uleb128 0xb
+ 1036 00b3 49       		.uleb128 0x49
+ 1037 00b4 13       		.uleb128 0x13
+ 1038 00b5 02       		.uleb128 0x2
+ 1039 00b6 18       		.uleb128 0x18
+ 1040 00b7 00       		.byte	0
+ 1041 00b8 00       		.byte	0
+ 1042 00b9 0F       		.uleb128 0xf
+ 1043 00ba 2E       		.uleb128 0x2e
+ 1044 00bb 01       		.byte	0x1
+ 1045 00bc 3F       		.uleb128 0x3f
+ 1046 00bd 19       		.uleb128 0x19
+ 1047 00be 03       		.uleb128 0x3
+ 1048 00bf 0E       		.uleb128 0xe
+ 1049 00c0 3A       		.uleb128 0x3a
+ 1050 00c1 0B       		.uleb128 0xb
+ 1051 00c2 3B       		.uleb128 0x3b
+ 1052 00c3 0B       		.uleb128 0xb
+ 1053 00c4 27       		.uleb128 0x27
+ 1054 00c5 19       		.uleb128 0x19
+ 1055 00c6 11       		.uleb128 0x11
+ 1056 00c7 01       		.uleb128 0x1
+ 1057 00c8 12       		.uleb128 0x12
+ 1058 00c9 06       		.uleb128 0x6
+ 1059 00ca 40       		.uleb128 0x40
+ 1060 00cb 18       		.uleb128 0x18
+ 1061 00cc 9642     		.uleb128 0x2116
+ 1062 00ce 19       		.uleb128 0x19
+ 1063 00cf 01       		.uleb128 0x1
+ 1064 00d0 13       		.uleb128 0x13
+ 1065 00d1 00       		.byte	0
+ 1066 00d2 00       		.byte	0
+ 1067 00d3 10       		.uleb128 0x10
+ 1068 00d4 05       		.uleb128 0x5
+ 1069 00d5 00       		.byte	0
+ 1070 00d6 03       		.uleb128 0x3
+ 1071 00d7 0E       		.uleb128 0xe
+ 1072 00d8 3A       		.uleb128 0x3a
+ 1073 00d9 0B       		.uleb128 0xb
+ 1074 00da 3B       		.uleb128 0x3b
+ 1075 00db 0B       		.uleb128 0xb
+ 1076 00dc 49       		.uleb128 0x49
+ 1077 00dd 13       		.uleb128 0x13
+ 1078 00de 02       		.uleb128 0x2
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 21
+
+
+ 1079 00df 18       		.uleb128 0x18
+ 1080 00e0 00       		.byte	0
+ 1081 00e1 00       		.byte	0
+ 1082 00e2 11       		.uleb128 0x11
+ 1083 00e3 34       		.uleb128 0x34
+ 1084 00e4 00       		.byte	0
+ 1085 00e5 03       		.uleb128 0x3
+ 1086 00e6 0E       		.uleb128 0xe
+ 1087 00e7 3A       		.uleb128 0x3a
+ 1088 00e8 0B       		.uleb128 0xb
+ 1089 00e9 3B       		.uleb128 0x3b
+ 1090 00ea 05       		.uleb128 0x5
+ 1091 00eb 49       		.uleb128 0x49
+ 1092 00ec 13       		.uleb128 0x13
+ 1093 00ed 3F       		.uleb128 0x3f
+ 1094 00ee 19       		.uleb128 0x19
+ 1095 00ef 3C       		.uleb128 0x3c
+ 1096 00f0 19       		.uleb128 0x19
+ 1097 00f1 00       		.byte	0
+ 1098 00f2 00       		.byte	0
+ 1099 00f3 12       		.uleb128 0x12
+ 1100 00f4 34       		.uleb128 0x34
+ 1101 00f5 00       		.byte	0
+ 1102 00f6 03       		.uleb128 0x3
+ 1103 00f7 0E       		.uleb128 0xe
+ 1104 00f8 3A       		.uleb128 0x3a
+ 1105 00f9 0B       		.uleb128 0xb
+ 1106 00fa 3B       		.uleb128 0x3b
+ 1107 00fb 0B       		.uleb128 0xb
+ 1108 00fc 49       		.uleb128 0x49
+ 1109 00fd 13       		.uleb128 0x13
+ 1110 00fe 3F       		.uleb128 0x3f
+ 1111 00ff 19       		.uleb128 0x19
+ 1112 0100 02       		.uleb128 0x2
+ 1113 0101 18       		.uleb128 0x18
+ 1114 0102 00       		.byte	0
+ 1115 0103 00       		.byte	0
+ 1116 0104 13       		.uleb128 0x13
+ 1117 0105 21       		.uleb128 0x21
+ 1118 0106 00       		.byte	0
+ 1119 0107 49       		.uleb128 0x49
+ 1120 0108 13       		.uleb128 0x13
+ 1121 0109 2F       		.uleb128 0x2f
+ 1122 010a 05       		.uleb128 0x5
+ 1123 010b 00       		.byte	0
+ 1124 010c 00       		.byte	0
+ 1125 010d 14       		.uleb128 0x14
+ 1126 010e 34       		.uleb128 0x34
+ 1127 010f 00       		.byte	0
+ 1128 0110 03       		.uleb128 0x3
+ 1129 0111 08       		.uleb128 0x8
+ 1130 0112 3A       		.uleb128 0x3a
+ 1131 0113 0B       		.uleb128 0xb
+ 1132 0114 3B       		.uleb128 0x3b
+ 1133 0115 0B       		.uleb128 0xb
+ 1134 0116 49       		.uleb128 0x49
+ 1135 0117 13       		.uleb128 0x13
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 22
+
+
+ 1136 0118 3F       		.uleb128 0x3f
+ 1137 0119 19       		.uleb128 0x19
+ 1138 011a 02       		.uleb128 0x2
+ 1139 011b 18       		.uleb128 0x18
+ 1140 011c 00       		.byte	0
+ 1141 011d 00       		.byte	0
+ 1142 011e 00       		.byte	0
+ 1143              		.section	.debug_aranges,"",%progbits
+ 1144 0000 24000000 		.4byte	0x24
+ 1145 0004 0200     		.2byte	0x2
+ 1146 0006 00000000 		.4byte	.Ldebug_info0
+ 1147 000a 04       		.byte	0x4
+ 1148 000b 00       		.byte	0
+ 1149 000c 0000     		.2byte	0
+ 1150 000e 0000     		.2byte	0
+ 1151 0010 00000000 		.4byte	.LFB64
+ 1152 0014 A4000000 		.4byte	.LFE64-.LFB64
+ 1153 0018 00000000 		.4byte	.LFB65
+ 1154 001c 1C000000 		.4byte	.LFE65-.LFB65
+ 1155 0020 00000000 		.4byte	0
+ 1156 0024 00000000 		.4byte	0
+ 1157              		.section	.debug_ranges,"",%progbits
+ 1158              	.Ldebug_ranges0:
+ 1159 0000 00000000 		.4byte	.LFB64
+ 1160 0004 A4000000 		.4byte	.LFE64
+ 1161 0008 00000000 		.4byte	.LFB65
+ 1162 000c 1C000000 		.4byte	.LFE65
+ 1163 0010 00000000 		.4byte	0
+ 1164 0014 00000000 		.4byte	0
+ 1165              		.section	.debug_line,"",%progbits
+ 1166              	.Ldebug_line0:
+ 1167 0000 B4010000 		.section	.debug_str,"MS",%progbits,1
+ 1167      02007F01 
+ 1167      00000201 
+ 1167      FB0E0D00 
+ 1167      01010101 
+ 1168              	.LASF24:
+ 1169 0000 6D6F6465 		.ascii	"model_id\000"
+ 1169      6C5F6964 
+ 1169      00
+ 1170              	.LASF23:
+ 1171 0009 73696D5F 		.ascii	"sim_id\000"
+ 1171      696400
+ 1172              	.LASF52:
+ 1173 0010 7379735F 		.ascii	"sys_settings_t\000"
+ 1173      73657474 
+ 1173      696E6773 
+ 1173      5F7400
+ 1174              	.LASF43:
+ 1175 001f 63757272 		.ascii	"currentCountDownValue\000"
+ 1175      656E7443 
+ 1175      6F756E74 
+ 1175      446F776E 
+ 1175      56616C75 
+ 1176              	.LASF42:
+ 1177 0035 636F756E 		.ascii	"countDownValue\000"
+ 1177      74446F77 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 23
+
+
+ 1177      6E56616C 
+ 1177      756500
+ 1178              	.LASF2:
+ 1179 0044 73686F72 		.ascii	"short int\000"
+ 1179      7420696E 
+ 1179      7400
+ 1180              	.LASF19:
+ 1181 004e 73697A65 		.ascii	"sizetype\000"
+ 1181      74797065 
+ 1181      00
+ 1182              	.LASF50:
+ 1183 0057 65705F68 		.ascii	"ep_host\000"
+ 1183      6F737400 
+ 1184              	.LASF64:
+ 1185 005f 696E626F 		.ascii	"inbox\000"
+ 1185      7800
+ 1186              	.LASF77:
+ 1187 0065 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1187      43313120 
+ 1187      352E342E 
+ 1187      31203230 
+ 1187      31363036 
+ 1188 0098 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1188      20726576 
+ 1188      6973696F 
+ 1188      6E203233 
+ 1188      37373135 
+ 1189 00cb 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1189      66756E63 
+ 1189      74696F6E 
+ 1189      2D736563 
+ 1189      74696F6E 
+ 1190              	.LASF48:
+ 1191 00f3 63686970 		.ascii	"chip_uniqueId\000"
+ 1191      5F756E69 
+ 1191      71756549 
+ 1191      6400
+ 1192              	.LASF81:
+ 1193 0101 6D657373 		.ascii	"message\000"
+ 1193      61676500 
+ 1194              	.LASF29:
+ 1195 0109 65636E6F 		.ascii	"ecno\000"
+ 1195      00
+ 1196              	.LASF75:
+ 1197 010e 616C6172 		.ascii	"alarmAppLED\000"
+ 1197      6D417070 
+ 1197      4C454400 
+ 1198              	.LASF20:
+ 1199 011a 76616C75 		.ascii	"value\000"
+ 1199      6500
+ 1200              	.LASF12:
+ 1201 0120 75696E74 		.ascii	"uint16\000"
+ 1201      313600
+ 1202              	.LASF57:
+ 1203 0127 64617461 		.ascii	"dataPointsInStack\000"
+ 1203      506F696E 
+ 1203      7473496E 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 24
+
+
+ 1203      53746163 
+ 1203      6B00
+ 1204              	.LASF11:
+ 1205 0139 75696E74 		.ascii	"uint8\000"
+ 1205      3800
+ 1206              	.LASF80:
+ 1207 013f 636F6D70 		.ascii	"compare_location\000"
+ 1207      6172655F 
+ 1207      6C6F6361 
+ 1207      74696F6E 
+ 1207      00
+ 1208              	.LASF28:
+ 1209 0150 72736370 		.ascii	"rscp\000"
+ 1209      00
+ 1210              	.LASF13:
+ 1211 0155 696E7431 		.ascii	"int16\000"
+ 1211      3600
+ 1212              	.LASF21:
+ 1213 015b 74696D65 		.ascii	"timeStamp\000"
+ 1213      5374616D 
+ 1213      7000
+ 1214              	.LASF58:
+ 1215 0165 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 1215      506F696E 
+ 1215      7473496E 
+ 1215      53746163 
+ 1215      6B446573 
+ 1216              	.LASF15:
+ 1217 017e 666C6F61 		.ascii	"float\000"
+ 1217      7400
+ 1218              	.LASF54:
+ 1219 0184 4170705F 		.ascii	"App_LED_Update\000"
+ 1219      4C45445F 
+ 1219      55706461 
+ 1219      746500
+ 1220              	.LASF6:
+ 1221 0193 6C6F6E67 		.ascii	"long long int\000"
+ 1221      206C6F6E 
+ 1221      6720696E 
+ 1221      7400
+ 1222              	.LASF17:
+ 1223 01a1 63686172 		.ascii	"char\000"
+ 1223      00
+ 1224              	.LASF4:
+ 1225 01a6 6C6F6E67 		.ascii	"long int\000"
+ 1225      20696E74 
+ 1225      00
+ 1226              	.LASF56:
+ 1227 01af 62756666 		.ascii	"buffer_overflow\000"
+ 1227      65725F6F 
+ 1227      76657266 
+ 1227      6C6F7700 
+ 1228              	.LASF47:
+ 1229 01bf 6D6F6465 		.ascii	"modem_info\000"
+ 1229      6D5F696E 
+ 1229      666F00
+ 1230              	.LASF70:
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 25
+
+
+ 1231 01ca 616C6172 		.ascii	"alarmMeasure\000"
+ 1231      6D4D6561 
+ 1231      73757265 
+ 1231      00
+ 1232              	.LASF78:
+ 1233 01d7 4170705F 		.ascii	"App_LED.c\000"
+ 1233      4C45442E 
+ 1233      6300
+ 1234              	.LASF53:
+ 1235 01e1 4170705F 		.ascii	"App_LED\000"
+ 1235      4C454400 
+ 1236              	.LASF46:
+ 1237 01e9 616C6172 		.ascii	"alarm\000"
+ 1237      6D00
+ 1238              	.LASF37:
+ 1239 01ef 6D656173 		.ascii	"measure_time\000"
+ 1239      7572655F 
+ 1239      74696D65 
+ 1239      00
+ 1240              	.LASF72:
+ 1241 01fc 616C6172 		.ascii	"alarmSync\000"
+ 1241      6D53796E 
+ 1241      6300
+ 1242              	.LASF18:
+ 1243 0206 6C6F6E67 		.ascii	"long double\000"
+ 1243      20646F75 
+ 1243      626C6500 
+ 1244              	.LASF1:
+ 1245 0212 756E7369 		.ascii	"unsigned char\000"
+ 1245      676E6564 
+ 1245      20636861 
+ 1245      7200
+ 1246              	.LASF31:
+ 1247 0220 72737270 		.ascii	"rsrp\000"
+ 1247      00
+ 1248              	.LASF61:
+ 1249 0225 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 1249      6D5F7374 
+ 1249      6172745F 
+ 1249      74696D65 
+ 1249      5F737461 
+ 1250              	.LASF60:
+ 1251 023c 6D6F6465 		.ascii	"modem_state\000"
+ 1251      6D5F7374 
+ 1251      61746500 
+ 1252              	.LASF0:
+ 1253 0248 7369676E 		.ascii	"signed char\000"
+ 1253      65642063 
+ 1253      68617200 
+ 1254              	.LASF7:
+ 1255 0254 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1255      206C6F6E 
+ 1255      6720756E 
+ 1255      7369676E 
+ 1255      65642069 
+ 1256              	.LASF69:
+ 1257 026b 73797374 		.ascii	"system_settings\000"
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 26
+
+
+ 1257      656D5F73 
+ 1257      65747469 
+ 1257      6E677300 
+ 1258              	.LASF8:
+ 1259 027b 756E7369 		.ascii	"unsigned int\000"
+ 1259      676E6564 
+ 1259      20696E74 
+ 1259      00
+ 1260              	.LASF22:
+ 1261 0288 6B65795F 		.ascii	"key_value_t\000"
+ 1261      76616C75 
+ 1261      655F7400 
+ 1262              	.LASF27:
+ 1263 0294 72786C65 		.ascii	"rxlev\000"
+ 1263      7600
+ 1264              	.LASF38:
+ 1265 029a 73796E63 		.ascii	"sync_time\000"
+ 1265      5F74696D 
+ 1265      6500
+ 1266              	.LASF62:
+ 1267 02a4 6D6F6465 		.ascii	"modem_stats\000"
+ 1267      6D5F7374 
+ 1267      61747300 
+ 1268              	.LASF71:
+ 1269 02b0 74696D65 		.ascii	"timeToMeasure\000"
+ 1269      546F4D65 
+ 1269      61737572 
+ 1269      6500
+ 1270              	.LASF41:
+ 1271 02be 75706461 		.ascii	"updatable_parameters_t\000"
+ 1271      7461626C 
+ 1271      655F7061 
+ 1271      72616D65 
+ 1271      74657273 
+ 1272              	.LASF36:
+ 1273 02d5 73696D5F 		.ascii	"sim_type\000"
+ 1273      74797065 
+ 1273      00
+ 1274              	.LASF49:
+ 1275 02de 7379735F 		.ascii	"sys_info_t\000"
+ 1275      696E666F 
+ 1275      5F7400
+ 1276              	.LASF3:
+ 1277 02e9 73686F72 		.ascii	"short unsigned int\000"
+ 1277      7420756E 
+ 1277      7369676E 
+ 1277      65642069 
+ 1277      6E7400
+ 1278              	.LASF32:
+ 1279 02fc 74696D65 		.ascii	"time_to_network_connect\000"
+ 1279      5F746F5F 
+ 1279      6E657477 
+ 1279      6F726B5F 
+ 1279      636F6E6E 
+ 1280              	.LASF68:
+ 1281 0314 73797374 		.ascii	"system_info\000"
+ 1281      656D5F69 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 27
+
+
+ 1281      6E666F00 
+ 1282              	.LASF33:
+ 1283 0320 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1283      5F746F5F 
+ 1283      61637175 
+ 1283      6972655F 
+ 1283      697000
+ 1284              	.LASF25:
+ 1285 0333 696D6569 		.ascii	"imei\000"
+ 1285      00
+ 1286              	.LASF10:
+ 1287 0338 696E7433 		.ascii	"int32_t\000"
+ 1287      325F7400 
+ 1288              	.LASF34:
+ 1289 0340 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1289      6D5F7374 
+ 1289      6174735F 
+ 1289      7400
+ 1290              	.LASF40:
+ 1291 034e 5F426F6F 		.ascii	"_Bool\000"
+ 1291      6C00
+ 1292              	.LASF74:
+ 1293 0354 74696D65 		.ascii	"timeToSycnRemoteParams\000"
+ 1293      546F5379 
+ 1293      636E5265 
+ 1293      6D6F7465 
+ 1293      50617261 
+ 1294              	.LASF59:
+ 1295 036b 64617461 		.ascii	"data\000"
+ 1295      00
+ 1296              	.LASF30:
+ 1297 0370 72737271 		.ascii	"rsrq\000"
+ 1297      00
+ 1298              	.LASF67:
+ 1299 0375 68747470 		.ascii	"http_route\000"
+ 1299      5F726F75 
+ 1299      746500
+ 1300              	.LASF5:
+ 1301 0380 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1301      20756E73 
+ 1301      69676E65 
+ 1301      6420696E 
+ 1301      7400
+ 1302              	.LASF14:
+ 1303 0392 696E7433 		.ascii	"int32\000"
+ 1303      3200
+ 1304              	.LASF16:
+ 1305 0398 646F7562 		.ascii	"double\000"
+ 1305      6C6500
+ 1306              	.LASF55:
+ 1307 039f 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1307      52784275 
+ 1307      66666572 
+ 1307      00
+ 1308              	.LASF79:
+ 1309 03ac 433A5C6E 		.ascii	"C:\\notoriOS\\notoriOS.cydsn\000"
+ 1309      6F746F72 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 28
+
+
+ 1309      694F535C 
+ 1309      6E6F746F 
+ 1309      72694F53 
+ 1310              	.LASF39:
+ 1311 03c7 64656275 		.ascii	"debug_level\000"
+ 1311      675F6C65 
+ 1311      76656C00 
+ 1312              	.LASF26:
+ 1313 03d3 6D6F6465 		.ascii	"modem_info_t\000"
+ 1313      6D5F696E 
+ 1313      666F5F74 
+ 1313      00
+ 1314              	.LASF44:
+ 1315 03e0 636F756E 		.ascii	"countDownType\000"
+ 1315      74446F77 
+ 1315      6E547970 
+ 1315      6500
+ 1316              	.LASF9:
+ 1317 03ee 5F5F696E 		.ascii	"__int32_t\000"
+ 1317      7433325F 
+ 1317      7400
+ 1318              	.LASF76:
+ 1319 03f8 74696D65 		.ascii	"timeToAppLED\000"
+ 1319      546F4170 
+ 1319      704C4544 
+ 1319      00
+ 1320              	.LASF45:
+ 1321 0405 636F756E 		.ascii	"countDownResetCondition\000"
+ 1321      74446F77 
+ 1321      6E526573 
+ 1321      6574436F 
+ 1321      6E646974 
+ 1322              	.LASF63:
+ 1323 041d 75706461 		.ascii	"updatable_parameters\000"
+ 1323      7461626C 
+ 1323      655F7061 
+ 1323      72616D65 
+ 1323      74657273 
+ 1324              	.LASF51:
+ 1325 0432 65705F70 		.ascii	"ep_port\000"
+ 1325      6F727400 
+ 1326              	.LASF66:
+ 1327 043a 68747470 		.ascii	"http_body\000"
+ 1327      5F626F64 
+ 1327      7900
+ 1328              	.LASF35:
+ 1329 0444 6E6F6465 		.ascii	"node_type\000"
+ 1329      5F747970 
+ 1329      6500
+ 1330              	.LASF65:
+ 1331 044e 68747470 		.ascii	"http_request\000"
+ 1331      5F726571 
+ 1331      75657374 
+ 1331      00
+ 1332              	.LASF73:
+ 1333 045b 74696D65 		.ascii	"timeToSync\000"
+ 1333      546F5379 
+ARM GAS  C:\Users\klabu\AppData\Local\Temp\cc3D5Cph.s 			page 29
+
+
+ 1333      6E6300
+ 1334              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

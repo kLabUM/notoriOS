@@ -65,7 +65,7 @@ void ReadyOrNot()
     system_info.modem_info = &modem_info;
     
     // Configure server endpoints -- these should obviosuly be provided  remotely by the meta data-base server
-    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","malcom.open-storm.org");
+    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","ec2-18-222-229-124.us-east-2.compute.amazonaws.com");
    
     system_settings.ep_port = 5000;
     // Don't need the following for new nodes
@@ -83,6 +83,11 @@ void ReadyOrNot()
     timeToSync = 1u;
     
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
+    
+    // App Initializations
+    alarmAppLED = CreateAlarm(3u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    timeToAppLED = 1u;
+    
     
     // Initialize the try counter to 0
     uint8 try_counter = 0;
@@ -110,11 +115,14 @@ int WorkWorkWorkWorkWorkWork()
     // Checks to see if the timetoMeasure flag is set
     else if(timeToMeasure){
         //(int i=0; i<=30; i++){
-        timeToMeasure = makeMeasurements(); // Will return 0 when done sending data
+         timeToMeasure = makeMeasurements(); // Will return 0 when done sending data
         //CyDelay(1000u);
         //}
     }else if(timeToSync){
             timeToSync = syncData();
+    } 
+    if(timeToAppLED){
+        timeToAppLED = App_LED();
     }
     // Print the countdown to the next alarm
     //printNotif(NOTIF_TYPE_EVENT,"Measure CNT %d, Sync CNT %d, Data Wheel CNT %d",alarmMeasure.currentCountDownValue,alarmSync.currentCountDownValue,sizeOfDataStack());
@@ -188,6 +196,12 @@ void AyoItsTime(uint8 alarmType)
     {
         // Create new task and pass off to workworkworkworkwork()
         timeToSync = 1u;
+         //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
+    }
+    if(AlarmReady(&alarmAppLED,alarmType))
+    {
+        // Create new task and pass off to workworkworkworkwork()
+        timeToAppLED = 1u;
          //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
     }
     
