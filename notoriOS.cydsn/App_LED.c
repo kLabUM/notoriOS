@@ -17,8 +17,8 @@
 
 uint8 App_LED(){
     
-    //LED_Write(!LED_Read());
-    printNotif(NOTIF_TYPE_EVENT,"\n\n------------  BLINK ---------------\n\n");
+    //LED_Write(!LED_Read()); <- local blinky
+    // printNotif(NOTIF_TYPE_EVENT,"\n\n------------  BLINK ---------------\n\n");
     
     char * compare_location;
     
