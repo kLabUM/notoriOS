@@ -85,7 +85,7 @@ void ReadyOrNot()
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
     
     // App Initializations
-    alarmAppLED = CreateAlarm(3u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    alarmAppLED = CreateAlarm(10u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
     timeToAppLED = 1u;
     
     
@@ -96,7 +96,7 @@ void ReadyOrNot()
 
 // ==============================================
 // You see me I be work, work, work, work, work, work 
-//      - Rhiana, feat Drake (2016)
+//      - Rihanna, feat Drake (2016)
 //
 // Prorcesses core tasks
 // ==============================================
