@@ -466,8 +466,8 @@ void updatable_parameters_initialize(){
     updatable_parameters.debug_level = 1u;
     
     // App timers
-    updatable_parameters.App_LED_freq = 120u; // if turn on, change to higher frequency
-    updatable_parameters.Level_Sensor_freq = 120u; 
+    updatable_parameters.App_LED_freq = 2u; // if turn on, change to higher frequency
+    updatable_parameters.Level_Sensor_freq = 3u; 
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -550,24 +550,38 @@ void get_updated_parameters_from_malcom(){
     
     // app alarm frequency updates
     char temp[100];
+    temp[0] = '\0';
     
     strcpy(temp,s_app_led);
-    extract_string(temp,"Freq: ","\r",s_app_led);
-    if(sscanf(s_app_led, "%d", &app_led_freq)==1){
-        updatable_parameters.App_LED_freq = app_led_freq;
-        printNotif(NOTIF_TYPE_EVENT, "App_LED frequency changed to: %d\r\n", app_led_freq);
-    } else{
-        printNotif(NOTIF_TYPE_ERROR,"Could not parse new LED frequency value.");
+    if (strstr(s_app_led,"Freq: ")){
+        extract_string(temp,"Freq: ","\r",s_app_led); // grab level app frequency
+        if(sscanf(s_app_led, "%d", &app_led_freq)==1){
+            updatable_parameters.App_LED_freq = app_led_freq;
+            printNotif(NOTIF_TYPE_EVENT, "App_LED frequency changed to: %d\r\n", app_led_freq);
+        } 
+        else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not parse new App_LED frequency value.");
+        }
     }
-        
+    else{
+        printNotif(NOTIF_TYPE_ERROR,"No App_LED frequency value indicated.");
+    }
+       
+    temp[0] = '\0';
     
     strcpy(temp,s_level_sensor);
-    extract_string(temp,"Freq: ","\r",s_level_sensor); // grab level app frequency
-    if(sscanf(s_level_sensor, "%d", &level_sensor_freq)==1){
-        updatable_parameters.Level_Sensor_freq = level_sensor_freq;
-        printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", app_led_freq);
-    } else{
-        printNotif(NOTIF_TYPE_ERROR,"Could not parse new Level_Sensor frequency value.");
+    if (strstr(s_level_sensor,"Freq: ")){
+        extract_string(temp,"Freq: ","\r",s_level_sensor); // grab level app frequency
+        if(sscanf(s_level_sensor, "%d", &level_sensor_freq)==1){
+            updatable_parameters.Level_Sensor_freq = level_sensor_freq;
+            printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", app_led_freq);
+        } 
+        else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not parse new Level_Sensor frequency value.");
+        }
+    }
+    else{
+        printNotif(NOTIF_TYPE_ERROR,"No Level_Sensor frequency value indicated.");
     }
     
 }

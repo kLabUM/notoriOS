@@ -1,5 +1,6 @@
 #include "level_sensor.h"
 #include "notoriOS.h"
+#include "debug.h"
 
 /* === Driver Functions === */
 
