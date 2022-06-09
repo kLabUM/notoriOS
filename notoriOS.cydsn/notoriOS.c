@@ -88,9 +88,11 @@ void ReadyOrNot()
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
     
     // App Initializations
-    alarmAppLED = CreateAlarm(10u,ALARM_TYPE_SECOND,ALARM_TYPE_CONTINUOUS);
+    alarmAppLED = CreateAlarm(updatable_parameters.App_LED_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToAppLED = 1u;
     
+    alarmLevelSensor = CreateAlarm(updatable_parameters.Level_Sensor_freq,ALARM_TYPE_MINUTE, ALARM_TYPE_CONTINUOUS);
+    timetoLevelSensor = 1u;
     
     // Initialize the try counter to 0
     uint8 try_counter = 0;
@@ -106,6 +108,8 @@ void ReadyOrNot()
 int WorkWorkWorkWorkWorkWork()
 {
     
+    
+    
     // The priority of these tasks is determined by the if statements
     // For example, taking measurements should always precede data transmisison, even if both fire
     // Getting meta-DB info and system configs precedes all
@@ -117,16 +121,22 @@ int WorkWorkWorkWorkWorkWork()
     }
     // Checks to see if the timetoMeasure flag is set
     else if(timeToMeasure){
-        //(int i=0; i<=30; i++){
-         timeToMeasure = makeMeasurements(); // Will return 0 when done sending data
-        //CyDelay(1000u);
-        //}
-    }else if(timeToSync){
-            timeToSync = syncData();
-    } 
-    if(timeToAppLED){
+        // just battery voltages now
+        timeToMeasure = makeMeasurements(); // Will return 0 when done sending data
+    }  
+    // peripheral applications
+    else if(timeToAppLED){
         timeToAppLED = App_LED();
     }
+    else if(timetoLevelSensor){
+        timetoLevelSensor = level_sensor();
+    }
+    else if(timeToSync){
+        timeToSync = syncData();
+    } 
+    
+
+    
     // Print the countdown to the next alarm
     //printNotif(NOTIF_TYPE_EVENT,"Measure CNT %d, Sync CNT %d, Data Wheel CNT %d",alarmMeasure.currentCountDownValue,alarmSync.currentCountDownValue,sizeOfDataStack());
     
@@ -206,6 +216,9 @@ void AyoItsTime(uint8 alarmType)
         // Create new task and pass off to workworkworkworkwork()
         timeToAppLED = 1u;
          //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
+    }
+    if(AlarmReady(&alarmLevelSensor, alarmType)){
+        timetoLevelSensor = 1u;
     }
     
 }
@@ -548,6 +561,8 @@ uint8 makeMeasurements(){
     char value[DATA_MAX_KEY_LENGTH];
     
     // If node type is depth node, take level sensor measurements
+    // deprecated in app format
+    /*
     if(updatable_parameters.node_type == NODE_TYPE_DEPTH){
         
         // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
@@ -572,7 +587,7 @@ uint8 makeMeasurements(){
             //pushData("maxbotix_depth","error",timeStamp);
         }
     }
-    
+    */
     
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;
@@ -594,6 +609,7 @@ uint8 makeMeasurements(){
         SD_write(Data_fileName, "a+", value);
         
         // If node type is green infrastructure node, take pressure transducer measurements
+        /* 
         if(updatable_parameters.node_type == NODE_TYPE_GREENINFRASTRUCTURE){
             
             // pressure transducer voltage (V) data
@@ -631,7 +647,9 @@ uint8 makeMeasurements(){
         }    
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
+        */
     }
+        
     
     return 0u;
 }

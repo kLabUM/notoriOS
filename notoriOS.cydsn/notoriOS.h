@@ -119,4 +119,7 @@ uint8 hey;
 alarm alarmAppLED;
 uint8 timeToAppLED;
 
+alarm alarmLevelSensor;
+uint8 timetoLevelSensor;
+
 /* [] END OF FILE */

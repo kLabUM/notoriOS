@@ -22,19 +22,19 @@ uint8 App_LED(){
     
     char * compare_location;
     
-    compare_location = strstr(inbox,"ON");        
+    compare_location = strstr(app_led_inbox,"ON");        
     if(compare_location!=NULL){
         LED_Write(1u);
-        inbox[0] = '\0';
+        app_led_inbox[0] = '\0';
         pushData("App_LED_State", "1", getTimeStamp());
         printNotif(NOTIF_TYPE_EVENT,"\n\n------------  BLINK ON ---------------\n\n");
         
     }
     
-    compare_location = strstr(inbox,"OFF");        
+    compare_location = strstr(app_led_inbox,"OFF");        
     if(compare_location!=NULL){
         LED_Write(0u);
-        inbox[0] = '\0';
+        app_led_inbox[0] = '\0';
         pushData("App_LED_State", "0", getTimeStamp());
         printNotif(NOTIF_TYPE_EVENT,"\n\n------------  BLINK OFF ---------------\n\n");
     }
@@ -43,6 +43,6 @@ uint8 App_LED(){
 }
 
 void App_LED_Update(char * message){
-    strcpy(inbox, message);
+    strcpy(app_led_inbox, message);
 }
 

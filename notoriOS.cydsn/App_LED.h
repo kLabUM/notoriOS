@@ -15,5 +15,5 @@
 
 uint8 App_LED();
 
-char inbox[100];
+char app_led_inbox[100];
 void App_LED_Update(char * message);

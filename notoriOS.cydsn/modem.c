@@ -459,18 +459,22 @@ void get_cell_network_stats(){
 
 // Initialize updatable parameters (sampling, reporting, and debug frequencies)
 void updatable_parameters_initialize(){
-    updatable_parameters.node_type = NODE_TYPE_DEPTH;
+    //updatable_parameters.node_type = NODE_TYPE_DEPTH;
     updatable_parameters.sim_type = SIM_TYPE_SUPER;
-    updatable_parameters.measure_time = 10u;
-    updatable_parameters.sync_time = 60u;
+    //updatable_parameters.measure_time = 1u;
+    updatable_parameters.sync_time = 1u;
     updatable_parameters.debug_level = 1u;
+    
+    // App timers
+    updatable_parameters.App_LED_freq = 120u; // if turn on, change to higher frequency
+    updatable_parameters.Level_Sensor_freq = 120u; 
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
 void get_updated_parameters_from_malcom(){
     
     // Create character array of size 1024 characters to hold the uart received string
-    char s_node_type[10];
+    //char s_node_type[10];
     char s_sim_type[10];
     char s_sample_freq[10];
     char s_report_freq[10];
@@ -480,14 +484,17 @@ void get_updated_parameters_from_malcom(){
     char s_app_led[100];
     s_app_led[0] = '\0';
     
-    s_node_type[0] = '\0';
+    char s_level_sensor[100];
+    s_level_sensor[0] = '\0';
+    
+    //s_node_type[0] = '\0';
     s_sim_type[0] = '\0';
     s_sample_freq[0] = '\0';
     s_report_freq[0] = '\0';
     s_debug_freq[0] = '\0';
     
     // Extract UART string recieved from the modem and save to variables
-    extract_string(uart_received_string,"Node_Type: ","\r",s_node_type);
+    //extract_string(uart_received_string,"Node_Type: ","\r",s_node_type);
     extract_string(uart_received_string,"SIM_Type: ","\r",s_sim_type);
     extract_string(uart_received_string,"Sample_Freq: ","\r",s_sample_freq);
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
@@ -497,16 +504,21 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"App_LED: ","\r",s_app_led);
     App_LED_Update(s_app_led);
     
+    extract_string(uart_received_string,"Level_Sensor: ","\r",s_level_sensor);
+    Level_Sensor_Update(s_level_sensor);
+    
     // Create variables for what is sent back from the server
-    int node_type, sim_type, sample_freq, report_freq, debug_freq;
+    int sim_type, sample_freq, report_freq, debug_freq, app_led_freq, level_sensor_freq;
     
     // Scan character arrays and save values 
+    /*
     if(sscanf(s_node_type, "%d", &node_type)==1){
         updatable_parameters.node_type = node_type;
         printNotif(NOTIF_TYPE_EVENT, "Node type changed to: %d\r\n", node_type);
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not change node type.");
     }
+    */
     if(sscanf(s_sim_type, "%d", &sim_type)==1){
         updatable_parameters.sim_type = sim_type;
         printNotif(NOTIF_TYPE_EVENT, "SIM type changed to: %d\r\n", sim_type);
@@ -514,10 +526,10 @@ void get_updated_parameters_from_malcom(){
         printNotif(NOTIF_TYPE_ERROR,"Could not change SIM type.");
     }
     if(sscanf(s_sample_freq, "%d", &sample_freq)==1){
-        updatable_parameters.measure_time = sample_freq;
+        //updatable_parameters.measure_time = sample_freq;
         // Create a continuous alarm called alarmMeasure that triggers at the required time to take measurements
-        alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
-        printNotif(NOTIF_TYPE_EVENT, "Sampling frequency changed to: %d\r\n", sample_freq);
+        //alarmMeasure = CreateAlarm(updatable_parameters.measure_time,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+        //printNotif(NOTIF_TYPE_EVENT, "Sampling frequency changed to: %d\r\n", sample_freq);
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new sampling frequency value.");
     }
@@ -535,6 +547,29 @@ void get_updated_parameters_from_malcom(){
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new debugging frequency value.");
     }
+    
+    // app alarm frequency updates
+    char temp[100];
+    
+    strcpy(temp,s_app_led);
+    extract_string(temp,"Freq: ","\r",s_app_led);
+    if(sscanf(s_app_led, "%d", &app_led_freq)==1){
+        updatable_parameters.App_LED_freq = app_led_freq;
+        printNotif(NOTIF_TYPE_EVENT, "App_LED frequency changed to: %d\r\n", app_led_freq);
+    } else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not parse new LED frequency value.");
+    }
+        
+    
+    strcpy(temp,s_level_sensor);
+    extract_string(temp,"Freq: ","\r",s_level_sensor); // grab level app frequency
+    if(sscanf(s_level_sensor, "%d", &level_sensor_freq)==1){
+        updatable_parameters.Level_Sensor_freq = level_sensor_freq;
+        printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", app_led_freq);
+    } else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not parse new Level_Sensor frequency value.");
+    }
+    
 }
     
 // Configure the modem settings

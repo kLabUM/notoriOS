@@ -58,6 +58,64 @@ CY_ISR(Level_Sensor_ISR) {
     }
 }
 
+void Level_Sensor_Update(char * message){
+    strcpy(level_sensor_inbox, message);
+}
+
+uint8 level_sensor(){
+    char * compare_location;
+    
+    compare_location = strstr(app_led_inbox,"OFF");        
+    if(compare_location!=NULL){
+        return 0; // this app is disabled, don't do anything
+    }
+    
+    
+    
+    // otherwise, assume it's on and they want our depth measurements
+    
+    // below is copied and adapted from makeMeasurements in modem.c (that function will be deleted once this works)
+    
+    // Get clock time and save to timeStamp
+    long timeStamp = getTimeStamp();
+    char c_timeStamp[32];
+    snprintf(c_timeStamp,sizeof(c_timeStamp),"%ld",timeStamp);
+    
+    // Holds string for value that will be written 
+    char value[DATA_MAX_KEY_LENGTH];
+    
+    // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
+    level_sensor_t m_level_sensor;
+    
+    // Take level sensor readings and save them to m_level_sensor
+    m_level_sensor = level_sensor_take_reading();
+    
+    // JUST FOR TESTING: pushing invalid readings to grafana to check connection
+    snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
+    printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
+    pushData("maxbotix_depth",value,timeStamp);
+
+    // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
+    if(m_level_sensor.num_valid_readings > 0){
+        snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
+        printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
+        pushData("maxbotix_depth",value,timeStamp);
+        
+        // Print measurement to SD card to file called data.txt
+        SD_write("data.txt", "a+", c_timeStamp);
+        SD_write("data.txt", "a+", " maxbotix_depth: ");
+        SD_write("data.txt", "a+", value);
+        SD_write("data.txt", "a+", " ");
+    }else{
+        printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
+        //pushData("maxbotix_depth","error",timeStamp);
+    }
+    
+    
+    
+    return 0;
+}
+
 // takes level sensor measurements and calculates average level sensor reading
 level_sensor_t level_sensor_take_reading(){
     

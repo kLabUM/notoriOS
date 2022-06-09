@@ -21,8 +21,8 @@
 #define MODEM_STATE_READY               4u
     
 // Define node types
-#define NODE_TYPE_DEPTH                 0u
-#define NODE_TYPE_GREENINFRASTRUCTURE   1u  
+//#define NODE_TYPE_DEPTH                 0u
+//#define NODE_TYPE_GREENINFRASTRUCTURE   1u  
     
 // Define sim types
 #define SIM_TYPE_STANDARD               0u
@@ -81,7 +81,7 @@ typedef struct{
 // Create data structure for updatable parameters 
 typedef struct{
     // what type of node is it (depth node, GI node, etc.)
-    uint8 node_type;
+    //uint8 node_type;
     // what type of sim card is it (regular or super)
     bool sim_type;
     // how often the node should take a measurement
@@ -91,6 +91,13 @@ typedef struct{
     // what types of information you want printed to the terminal/ written to the SD card
     // 0u = errors, warnings, startup notifications , 1u = all notifications
     uint8 debug_level;
+    
+    // Application timers
+    
+    // how often should the LED app run?
+    uint8 App_LED_freq;
+    // how often should the level sensor run
+    uint8 Level_Sensor_freq;
     
 } updatable_parameters_t;
 
