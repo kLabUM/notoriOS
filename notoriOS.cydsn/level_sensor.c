@@ -90,11 +90,6 @@ uint8 level_sensor(){
     
     // Take level sensor readings and save them to m_level_sensor
     m_level_sensor = level_sensor_take_reading();
-    
-    // JUST FOR TESTING: pushing invalid readings to grafana to check connection
-    snprintf(value,sizeof(value),"%d",m_level_sensor.level_reading);
-    printNotif(NOTIF_TYPE_EVENT,"maxbotix_depth=%s",value);
-    pushData("maxbotix_depth",value,timeStamp);
 
     // If the number of valid level sensor readings is greater than 0, then print the level sensor reading, and push the data to the data wheel
     if(m_level_sensor.num_valid_readings > 0){
@@ -109,7 +104,7 @@ uint8 level_sensor(){
         SD_write("data.txt", "a+", " ");
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
-        //pushData("maxbotix_depth","error",timeStamp);
+        pushData("maxbotix_depth","-1",timeStamp); // error code, never get this from a sensor
     }
     
     

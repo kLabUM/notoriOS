@@ -121,17 +121,20 @@ int WorkWorkWorkWorkWorkWork()
     }
     // Checks to see if the timetoMeasure flag is set
     else if(timeToMeasure){
-        // just battery voltages now
+        // on custom nodes makeMeasurements will just be battery voltages
         timeToMeasure = makeMeasurements(); // Will return 0 when done sending data
     }  
-    // peripheral applications
-    else if(timeToAppLED){
-        timeToAppLED = App_LED();
+    // custom nodes
+    else if(updatable_parameters.node_type == NODE_TYPE_CUSTOM){
+        if(timeToAppLED){
+            timeToAppLED = App_LED();
+        }
+        if(timetoLevelSensor){
+            timetoLevelSensor = level_sensor();
+        }
+        // add other custom apps below
     }
-    else if(timetoLevelSensor){
-        timetoLevelSensor = level_sensor();
-    }
-    else if(timeToSync){
+    if(timeToSync){
         timeToSync = syncData();
     } 
     
@@ -560,9 +563,14 @@ uint8 makeMeasurements(){
     // Holds string for value that will be written 
     char value[DATA_MAX_KEY_LENGTH];
     
+    // who i am determines what I'm going to do 
+    // this is primarily for interpretability on grafana dashboards when developing custom nodes
+    char c_node_type[5];
+    itoa(updatable_parameters.node_type,c_node_type,10);
+    pushData("Current_Node_Type",c_node_type ,getTimeStamp());
+    
     // If node type is depth node, take level sensor measurements
-    // deprecated in app format
-    /*
+    
     if(updatable_parameters.node_type == NODE_TYPE_DEPTH){
         
         // level_sensor_t is a new data type we defined in level_sensor.h. We then use that data type to define a structure variable m_level_sensor
@@ -587,7 +595,7 @@ uint8 makeMeasurements(){
             //pushData("maxbotix_depth","error",timeStamp);
         }
     }
-    */
+    
     
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;
@@ -609,7 +617,7 @@ uint8 makeMeasurements(){
         SD_write(Data_fileName, "a+", value);
         
         // If node type is green infrastructure node, take pressure transducer measurements
-        /* 
+         
         if(updatable_parameters.node_type == NODE_TYPE_GREENINFRASTRUCTURE){
             
             // pressure transducer voltage (V) data
@@ -647,7 +655,7 @@ uint8 makeMeasurements(){
         }    
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from ADC.");
-        */
+        
     }
         
     
