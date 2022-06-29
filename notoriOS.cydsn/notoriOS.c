@@ -66,8 +66,10 @@ void ReadyOrNot()
     
     // Configure server endpoints -- these should obviosuly be provided  remotely by the meta data-base server
     // testing server - travis and meagan june of 2022
-    //snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","ec2-18-222-229-124.us-east-2.compute.amazonaws.com");
-    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","malcom.open-storm.org");
+    snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","ec2-18-222-229-124.us-east-2.compute.amazonaws.com");
+    
+    // production server
+    //snprintf(system_settings.ep_host,sizeof(system_settings.ep_host),"%s","malcom.open-storm.org");
     
 
     system_settings.ep_port = 5000;
