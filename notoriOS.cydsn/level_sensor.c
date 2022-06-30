@@ -111,6 +111,9 @@ uint8 level_sensor(){
 
         return 0;
     }
+    
+    return 0; // i think this needs to be rewritten to be more like a light switch
+    // i.e. it stays on until you turn it off.
 }
 
 // takes level sensor measurements and calculates average level sensor reading

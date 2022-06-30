@@ -36,7 +36,7 @@ uint8 level_sensor();
 // application interface
 char level_sensor_inbox[100];
 void Level_Sensor_Update(char * message);
-
+bool level_sensor_enabled;
 
 #endif
 

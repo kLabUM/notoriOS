@@ -487,6 +487,9 @@ void get_updated_parameters_from_malcom(){
     char s_level_sensor[100];
     s_level_sensor[0] = '\0';
     
+    char s_apps_enabled[200];
+    s_apps_enabled[0]='\0';
+    
     s_node_type[0] = '\0';
     s_sim_type[0] = '\0';
     s_sample_freq[0] = '\0';
@@ -500,7 +503,31 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
     
-    //app features
+    // which apps are enabled?
+    if (strstr(uart_received_string,"Apps_Enabled: ")){
+        extract_string(uart_received_string,"Apps_Enabled: ","\r",s_apps_enabled);
+        // if an app is in this string, turn it on
+        if (strstr(s_apps_enabled,"Level_Sensor")!=NULL){
+            // if we see level sensor in the enabled list, turn it on
+            level_sensor_enabled = 1;
+        }        
+        // if an app is currently on and not in this string, turn it off  
+        else if (level_sensor_enabled){ 
+            level_sensor_enabled = 0;
+        }
+        
+        if (strstr(s_apps_enabled,"App_LED")!=NULL){
+            // if we this app in the enabled list, turn it on
+            App_LED_enabled = 1;
+        }
+        else if (App_LED_enabled){
+            App_LED_enabled = 0;
+        }
+
+    }
+    
+    
+    // update app parameters (valve open %, measuring freq, etc)
     extract_string(uart_received_string,"App_LED: ","\r",s_app_led);
     App_LED_Update(s_app_led);
     

@@ -128,10 +128,10 @@ int WorkWorkWorkWorkWorkWork()
     }  
     // custom nodes
     else if(updatable_parameters.node_type == NODE_TYPE_CUSTOM){
-        if(timeToAppLED){
+        if(App_LED_enabled && timeToAppLED){
             timeToAppLED = App_LED();
         }
-        if(timetoLevelSensor){
+        if(level_sensor_enabled && timetoLevelSensor){
             timetoLevelSensor = level_sensor();
         }
         // add other custom apps below

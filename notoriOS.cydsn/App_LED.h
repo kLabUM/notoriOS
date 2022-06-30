@@ -1,19 +1,9 @@
-/* ========================================
- *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
- *
- * ========================================
-*/
+#include <stdio.h>      // Defines three variable types, several macros, and various functions for performing input and output.
 
-/* [] END OF FILE */
 #include "project.h"
 
 uint8 App_LED();
 
+bool App_LED_enabled;
 char app_led_inbox[100];
 void App_LED_Update(char * message);
