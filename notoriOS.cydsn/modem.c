@@ -466,8 +466,10 @@ void updatable_parameters_initialize(){
     updatable_parameters.debug_level = 1u;
     
     // App timers
-    updatable_parameters.App_LED_freq = 2u; // if turn on, change to higher frequency
-    updatable_parameters.Level_Sensor_freq = 3u; 
+    // APP_INTERFACE
+    updatable_parameters.App_LED_freq = 120u; 
+    updatable_parameters.Level_Sensor_freq = 120u; 
+    updatable_parameters.Downstream_Level_Sensor_freq = 120u;
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -481,11 +483,15 @@ void get_updated_parameters_from_malcom(){
     char s_debug_freq[10];
     
     //apps
+    // APP_INTERFACE
     char s_app_led[100];
     s_app_led[0] = '\0';
     
     char s_level_sensor[100];
     s_level_sensor[0] = '\0';
+    
+    char s_down_level_sensor[100];
+    s_down_level_sensor[0] = '\0';
     
     char s_apps_enabled[200];
     s_apps_enabled[0]='\0';
@@ -504,6 +510,7 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
     
     // which apps are enabled?
+    // APP_INTERFACE
     if (strstr(uart_received_string,"Apps_Enabled: ")){
         extract_string(uart_received_string,"Apps_Enabled: ","\r",s_apps_enabled);
         // if an app is in this string, turn it on
@@ -523,19 +530,32 @@ void get_updated_parameters_from_malcom(){
         else if (App_LED_enabled){
             App_LED_enabled = 0;
         }
-
+        
+        if (strstr(s_apps_enabled,"Downstream_Level") != NULL){
+            downstream_level_sensor_enabled = 1;
+        }        
+        // if an app is currently on and not in this string, turn it off  
+        else if (downstream_level_sensor_enabled){ 
+            downstream_level_sensor_enabled = 0;
+        }
+        
     }
-    
+
+        
     
     // update app parameters (valve open %, measuring freq, etc)
+    // APP_INTERFACE
     extract_string(uart_received_string,"App_LED: ","\r",s_app_led);
     App_LED_Update(s_app_led);
     
     extract_string(uart_received_string,"Level_Sensor: ","\r",s_level_sensor);
     Level_Sensor_Update(s_level_sensor);
     
+    extract_string(uart_received_string,"Downstream_Level: ","\r",s_down_level_sensor);
+    downstream_Level_Sensor_Update(s_down_level_sensor);
+    
     // Create variables for what is sent back from the server
-    int node_type, sim_type, sample_freq, report_freq, debug_freq, app_led_freq, level_sensor_freq;
+    int node_type, sim_type, sample_freq, report_freq, debug_freq, app_led_freq, level_sensor_freq, down_level_freq;
     
     // Scan character arrays and save values 
     
@@ -576,39 +596,66 @@ void get_updated_parameters_from_malcom(){
     }
     
     // app alarm frequency updates
+    // APP_INTERFACE
     if (updatable_parameters.node_type == NODE_TYPE_CUSTOM){
+        
         char temp[100];
-
-        if (strstr(s_app_led,"Freq: ") && strstr(s_app_led,"\r")){
-            temp[0] = '\0';
-            strcpy(temp,s_app_led);
-            extract_string(temp,"Freq: ","\r",s_app_led); // grab level app frequency
-            if(sscanf(s_app_led, "%d", &app_led_freq)==1){
-                updatable_parameters.App_LED_freq = app_led_freq;
-                printNotif(NOTIF_TYPE_EVENT, "App_LED frequency changed to: %d\r\n", app_led_freq);
-            } 
+        temp[0] = '\0';
+        if(App_LED_enabled){ //if you're not enabled, don't talk
+            if (strstr(s_app_led,"Freq=")!=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_app_led);
+                extract_string(temp,"Freq=","\r",s_app_led); // grab level app frequency
+                if(sscanf(s_app_led, "%d", &app_led_freq)==1){
+                    updatable_parameters.App_LED_freq = app_led_freq;
+                    // update the alarm to the new frequency
+                    alarmAppLED = CreateAlarm(updatable_parameters.App_LED_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "App_LED frequency changed to: %d\r\n", app_led_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new App_LED frequency value.");
+                }
+            }
             else{
-                printNotif(NOTIF_TYPE_ERROR,"Could not parse new App_LED frequency value.");
+                printNotif(NOTIF_TYPE_ERROR,"No App_LED frequency value indicated.");
             }
         }
-        else{
-            printNotif(NOTIF_TYPE_ERROR,"No App_LED frequency value indicated.");
-        }
+        if(level_sensor_enabled){
+            if (strstr(s_level_sensor,"Freq=")!=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_level_sensor);
+                extract_string(temp,"Freq=","\r",s_level_sensor); // grab level app frequency
+                if(sscanf(s_level_sensor, "%d", &level_sensor_freq)==1){
+                    updatable_parameters.Level_Sensor_freq = level_sensor_freq;
+                    alarmLevelSensor = CreateAlarm(updatable_parameters.Level_Sensor_freq,ALARM_TYPE_MINUTE, ALARM_TYPE_CONTINUOUS);
 
-        if (strstr(s_level_sensor,"Freq: ") && strstr(s_level_sensor,"\r")){
-            temp[0] = '\0';
-            strcpy(temp,s_app_led);
-            extract_string(temp,"Freq: ","\r",s_level_sensor); // grab level app frequency
-            if(sscanf(s_level_sensor, "%d", &level_sensor_freq)==1){
-                updatable_parameters.Level_Sensor_freq = level_sensor_freq;
-                printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", app_led_freq);
-            } 
+                    printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", app_led_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Level_Sensor frequency value.");
+                }
+            }
             else{
-                printNotif(NOTIF_TYPE_ERROR,"Could not parse new Level_Sensor frequency value.");
+                printNotif(NOTIF_TYPE_ERROR,"No Level_Sensor frequency value indicated.");
             }
         }
-        else{
-            printNotif(NOTIF_TYPE_ERROR,"No Level_Sensor frequency value indicated.");
+        if(downstream_level_sensor_enabled){ 
+            if (strstr(s_down_level_sensor,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_down_level_sensor);
+                extract_string(temp,"Freq=","\r",s_down_level_sensor); // grab level app frequency
+                if(sscanf(s_down_level_sensor, "%d", &down_level_freq)==1){
+                    updatable_parameters.Downstream_Level_Sensor_freq = down_level_freq;
+                    alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.Downstream_Level_Sensor_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Downstream_Level_Sensor frequency changed to: %d\r\n", app_led_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Downstream_Level_Sensor frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Downstream_Level_Sensor frequency value indicated.");
+            }
         }
     }
         

@@ -31,9 +31,9 @@ test_t level_sensor_test();
 void sort(int16 a[],int16 n);
 void swap(int16 *p,int16 *q);
 uint16 find_median(int16 array[] , uint8 n);
-uint8 level_sensor();
 
 // application interface
+uint8 level_sensor();
 char level_sensor_inbox[100];
 void Level_Sensor_Update(char * message);
 bool level_sensor_enabled;

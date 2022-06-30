@@ -90,11 +90,15 @@ void ReadyOrNot()
     timeToSycnRemoteParams = 0u;//set to 1 if you want to get modem IDs and time -- no need to do this if you run tests first
     
     // App Initializations
+    // APP_INTERFACE
     alarmAppLED = CreateAlarm(updatable_parameters.App_LED_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToAppLED = 1u;
     
     alarmLevelSensor = CreateAlarm(updatable_parameters.Level_Sensor_freq,ALARM_TYPE_MINUTE, ALARM_TYPE_CONTINUOUS);
     timetoLevelSensor = 1u;
+    
+    alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.Downstream_Level_Sensor_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    timetoDownstreamLevelSensor = 1u;
     
     // Initialize the try counter to 0
     uint8 try_counter = 0;
@@ -127,12 +131,16 @@ int WorkWorkWorkWorkWorkWork()
         timeToMeasure = makeMeasurements(); // Will return 0 when done sending data
     }  
     // custom nodes
+    // APP_INTERFACE
     else if(updatable_parameters.node_type == NODE_TYPE_CUSTOM){
         if(App_LED_enabled && timeToAppLED){
             timeToAppLED = App_LED();
         }
         if(level_sensor_enabled && timetoLevelSensor){
             timetoLevelSensor = level_sensor();
+        }
+        if(downstream_level_sensor_enabled && timetoDownstreamLevelSensor){
+            timetoDownstreamLevelSensor = downstream_level_sensor();
         }
         // add other custom apps below
     }
@@ -216,6 +224,8 @@ void AyoItsTime(uint8 alarmType)
         timeToSync = 1u;
          //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
     }
+    
+    // APP_INTERFACE
     if(AlarmReady(&alarmAppLED,alarmType))
     {
         // Create new task and pass off to workworkworkworkwork()
@@ -224,6 +234,9 @@ void AyoItsTime(uint8 alarmType)
     }
     if(AlarmReady(&alarmLevelSensor, alarmType)){
         timetoLevelSensor = 1u;
+    }
+    if(AlarmReady(&alarmDownstreamLevelSensor, alarmType)){
+        timetoDownstreamLevelSensor = 1u;
     }
     
 }
@@ -297,6 +310,10 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     // Test level sensor
     test_t t_level_sensor = level_sensor_test();  
     printTestStatus(t_level_sensor);
+    
+    // Test downstream level sensor
+    test_t t_down_level = downstream_level_sensor_test();
+    printTestStatus(t_down_level);
     
     // Test voltages
     test_t t_voltages = voltages_test();

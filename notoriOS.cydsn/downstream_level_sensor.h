@@ -8,3 +8,10 @@ CY_ISR_PROTO(Downstream_Level_Sensor_ISR);
 
 level_sensor_t downstream_level_sensor_take_reading();
 test_t downstream_level_sensor_test();
+
+
+// application interface
+uint8 downstream_level_sensor();
+char downstream_level_sensor_inbox[100];
+void downstream_Level_Sensor_Update(char * message);
+bool downstream_level_sensor_enabled;
