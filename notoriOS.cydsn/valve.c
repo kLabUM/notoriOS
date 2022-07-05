@@ -4,6 +4,17 @@
 // throughout, the percentages recorded in reference to the valve position ought to be
 // percent open-ness, not percent closed
 
+// app interface
+uint8 App_Valve(){
+    return 0;
+}
+
+
+void valve_Update(char * message){
+    strcpy(valve_inbox, message);
+}
+
+
 test_t valve_test(){
 
         // Test  downstreamlevel sensor

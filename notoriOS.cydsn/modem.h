@@ -100,6 +100,7 @@ typedef struct{
     // how often should the level sensor run
     uint8 Level_Sensor_freq;
     uint8 Downstream_Level_Sensor_freq;
+    uint8 valve_freq;
     
 } updatable_parameters_t;
 

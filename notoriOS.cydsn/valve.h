@@ -35,3 +35,10 @@ void valve_level_controller(int16 level_reading);
 
 float32 calculate_discharge();
 
+// app interface
+uint8 App_Valve();
+
+bool valve_enabled;
+char valve_inbox[100];
+void valve_Update(char * message);
+

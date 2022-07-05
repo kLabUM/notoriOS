@@ -8,6 +8,7 @@
 #include "project.h"
 #include "level_sensor.h"
 #include "downstream_level_sensor.h"
+#include "valve.h"
 #include "sd_card.h"
 #include "voltages.h"
 #include "debug.h"
@@ -126,5 +127,8 @@ uint8 timetoLevelSensor;
 
 alarm alarmDownstreamLevelSensor;
 uint8 timetoDownstreamLevelSensor;
+
+alarm alarmValve;
+uint8 timeToValve;
 
 /* [] END OF FILE */

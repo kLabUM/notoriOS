@@ -470,6 +470,7 @@ void updatable_parameters_initialize(){
     updatable_parameters.App_LED_freq = 120u; 
     updatable_parameters.Level_Sensor_freq = 120u; 
     updatable_parameters.Downstream_Level_Sensor_freq = 120u;
+    updatable_parameters.valve_freq = 120u;
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -492,6 +493,9 @@ void get_updated_parameters_from_malcom(){
     
     char s_down_level_sensor[100];
     s_down_level_sensor[0] = '\0';
+    
+    char s_valve[100];
+    s_valve[0] = '\0';
     
     char s_apps_enabled[200];
     s_apps_enabled[0]='\0';
@@ -539,6 +543,13 @@ void get_updated_parameters_from_malcom(){
             downstream_level_sensor_enabled = 0;
         }
         
+        if (strstr(s_apps_enabled, "Valve") != NULL){
+            valve_enabled = 1u;
+        }
+        else if(valve_enabled){
+            valve_enabled = 0u;
+        }
+        
     }
 
         
@@ -554,8 +565,11 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Downstream_Level: ","\r",s_down_level_sensor);
     downstream_Level_Sensor_Update(s_down_level_sensor);
     
+    extract_string(uart_received_string,"Valve:","\r", s_valve);
+    valve_Update(s_valve);
+    
     // Create variables for what is sent back from the server
-    int node_type, sim_type, sample_freq, report_freq, debug_freq, app_led_freq, level_sensor_freq, down_level_freq;
+    int node_type, sim_type, sample_freq, report_freq, debug_freq, app_led_freq, level_sensor_freq, down_level_freq, valve_freq;
     
     // Scan character arrays and save values 
     
@@ -655,6 +669,24 @@ void get_updated_parameters_from_malcom(){
             }
             else{
                 printNotif(NOTIF_TYPE_ERROR,"No Downstream_Level_Sensor frequency value indicated.");
+            }
+        }
+        if(valve_enabled){ 
+            if (strstr(s_valve,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_valve);
+                extract_string(temp,"Freq=","\r",s_valve); // grab app frequency
+                if(sscanf(s_down_level_sensor, "%d", &valve_freq)==1){
+                    updatable_parameters.valve_freq = valve_freq;
+                    alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.valve_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Valve frequency changed to: %d\r\n", app_led_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Valve frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Valve frequency value indicated.");
             }
         }
     }
