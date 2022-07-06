@@ -46,17 +46,11 @@ void valve_Update(char * message){
 test_t valve_test(){
     
     // use more than just read_pos so we can see the actual voltages and print those
-
-    // Test  downstreamlevel sensor
-    test_t t_level_sensor = downstream_level_sensor_test();  
-    printTestStatus(t_level_sensor);
-    
     
     // activate 12V battery
     Pressure_Voltage_Enable_Write(ON);
 
-    
-     
+         
     test_t test; // test_t is a new data type we defined in test.h. We then use that data type to define a structure variable test
     test.status = 0; // set test status to zero
     snprintf(test.test_name,sizeof(test.test_name),"TEST_VALVE");
@@ -108,10 +102,7 @@ test_t valve_test(){
     // deactivate 12V battery
     Pressure_Voltage_Enable_Write(OFF);
     
-    
-    //just for now since I can't get the modem to error in the way I want it to
-    valve_level_controller(level_sensor_take_reading().level_reading);
-    
+
     return test;
 
 }
@@ -198,9 +189,11 @@ uint8 move_valve(float32 position_desired){
         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
         while(fabs(read_Valve_pos() - position_desired) > 0.03){
             prev_pos = read_Valve_pos();
-            CyDelay(1000u);
-            // are we moving?
-            if (fabs(prev_pos - read_Valve_pos()) < 0.0005){
+            CyDelay(1000u); // the delay should be tuned to be as small as possible
+            // without setting off false "stuck" errors
+            // a shorter delay will mean a more accurate setting
+            // are we moving? - if not at least one percent moved then no
+            if (fabs(prev_pos - read_Valve_pos()) < 0.01){
                 // turn the closing pin low
                 Power_VDD2_Write(0u);
                 // deactivate 12V battery
@@ -236,9 +229,9 @@ uint8 move_valve(float32 position_desired){
         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
         while(fabs(read_Valve_pos() - position_desired) > 0.03){
             prev_pos = read_Valve_pos();
-            CyDelay(1000u);
+            CyDelay(1000u); 
             // are we moving?
-            if (fabs(prev_pos - read_Valve_pos()) < 0.0005){
+            if (fabs(prev_pos - read_Valve_pos()) < 0.01){
                 // turn the opening pin low
                 Power_VDD1_Write(0u);
                 // deactivate 12V battery
@@ -275,7 +268,7 @@ void valve_level_controller(int16 level_reading){
 
     // these controls should be site specific. i.e. if site_id = ARB016 cutoff = 1400 mm
     printNotif(NOTIF_TYPE_EVENT, "level_controller using level_reading:%d", level_reading);
-    if(level_reading > 500){
+    if(level_reading > 1500){ // water level is at least 1.5 meters below the cone
         move_valve(0);
     }
     else {
@@ -283,6 +276,8 @@ void valve_level_controller(int16 level_reading){
     }
 }
 
+// this should only be called if both level_sensor and
+// downstream level sensor are enabled
 float32 calculate_discharge(){
     level_sensor_t downstream_level = downstream_level_sensor_take_reading();
     level_sensor_t upstream_level = level_sensor_take_reading();
