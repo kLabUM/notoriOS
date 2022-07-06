@@ -4,6 +4,6 @@
 
 uint8 App_LED();
 
-bool App_LED_enabled;
+uint8 App_LED_enabled;
 char app_led_inbox[100];
 void App_LED_Update(char * message);

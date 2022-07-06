@@ -11,6 +11,8 @@
 #define ADC_MUX_VBAT 1
 #define ADC_MUX_VSOL 2
 #define ADC_MUX_PRTRANS 3
+#define ADC_MUX_Valve_POS_reading 4
+#define ADC_MUX_Valve_POS_Power 5
 
 #define N_SAMPLES 11
 

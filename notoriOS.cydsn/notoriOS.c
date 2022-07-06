@@ -100,8 +100,8 @@ void ReadyOrNot()
     alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.Downstream_Level_Sensor_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timetoDownstreamLevelSensor = 1u;
     
-    alarmValve = CreateAlarm(updatable_parameters.valve_freq, ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
-    timeToValve = 1u;
+    //alarmValve = CreateAlarm(updatable_parameters.valve_freq, ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    //timeToValve = 1u;
     
     // Initialize the try counter to 0
     uint8 try_counter = 0;
@@ -145,8 +145,8 @@ int WorkWorkWorkWorkWorkWork()
         if(downstream_level_sensor_enabled && timetoDownstreamLevelSensor){
             timetoDownstreamLevelSensor = downstream_level_sensor();
         }
-        if(valve_enabled && timeToValve){
-            timeToValve = App_Valve();
+        if(valve_enabled){
+            valve_enabled = App_Valve();
         }
         // add other custom apps below
     }
@@ -244,10 +244,11 @@ void AyoItsTime(uint8 alarmType)
     if(AlarmReady(&alarmDownstreamLevelSensor, alarmType)){
         timetoDownstreamLevelSensor = 1u;
     }
-    if(AlarmReady(@alarmValve, alarmType)){
+    /*
+    if(AlarmReady(&alarmValve, alarmType)){
         timeToValve = 1u;
     }
-    
+    */
 }
 
 
@@ -323,6 +324,10 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     // Test downstream level sensor
     test_t t_down_level = downstream_level_sensor_test();
     printTestStatus(t_down_level);
+    
+    // Test valve
+    test_t t_valve = valve_test();
+    printTestStatus(t_valve);
     
     // Test voltages
     test_t t_voltages = voltages_test();

@@ -656,7 +656,7 @@ void get_updated_parameters_from_malcom(){
         if(downstream_level_sensor_enabled){ 
             if (strstr(s_down_level_sensor,"Freq=") !=NULL){
                 temp[0] = '\0';
-                strcpy(temp,s_down_level_sensor);
+                strcpy(temp,s_down_level_sensor); // this temp may not actually be used
                 extract_string(temp,"Freq=","\r",s_down_level_sensor); // grab level app frequency
                 if(sscanf(s_down_level_sensor, "%d", &down_level_freq)==1){
                     updatable_parameters.Downstream_Level_Sensor_freq = down_level_freq;
@@ -671,6 +671,7 @@ void get_updated_parameters_from_malcom(){
                 printNotif(NOTIF_TYPE_ERROR,"No Downstream_Level_Sensor frequency value indicated.");
             }
         }
+        /*
         if(valve_enabled){ 
             if (strstr(s_valve,"Freq=") !=NULL){
                 temp[0] = '\0';
@@ -689,6 +690,7 @@ void get_updated_parameters_from_malcom(){
                 printNotif(NOTIF_TYPE_ERROR,"No Valve frequency value indicated.");
             }
         }
+        */
     }
         
 

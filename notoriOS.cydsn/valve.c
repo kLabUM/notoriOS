@@ -1,4 +1,4 @@
-#include "valve.h"
+//#include "valve.h"
 #include "notoriOS.h"
 
 // throughout, the percentages recorded in reference to the valve position ought to be
@@ -6,7 +6,35 @@
 
 // app interface
 uint8 App_Valve(){
-    return 0;
+    long timestamp = getTimeStamp();
+    
+    char * compare_location;
+    compare_location = strstr(valve_inbox, "Open:");
+    float pos_des_float = 1.7;
+    char position_desired[10];
+    if (compare_location != NULL){ // we got a command
+        extract_string(valve_inbox,"Open:","\r",position_desired); // grab level app frequency
+        sscanf(position_desired, "%f", &pos_des_float);
+        uint8 success = move_valve(pos_des_float);
+        char s_success[4];
+        
+        // let the server know whether the move was successful
+        snprintf(s_success, sizeof(s_success), "%u", success);
+        pushData("Valve_move_successful:", s_success, timestamp);
+        
+        // push up the current position
+        float32 current_pos = read_Valve_pos();
+        char s_current_pos[5];
+        snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
+        pushData("Valve_Current_Position:",s_current_pos, timestamp);
+        
+        // and the requested position
+        pushData("Valve_Desired_Position:",position_desired, timestamp);
+        
+    }
+    
+    // the valve is enabled with every connection and turned off after every attempt to move
+    return 0; 
 }
 
 
@@ -16,8 +44,10 @@ void valve_Update(char * message){
 
 
 test_t valve_test(){
+    
+    // use more than just read_pos so we can see the actual voltages and print those
 
-        // Test  downstreamlevel sensor
+    // Test  downstreamlevel sensor
     test_t t_level_sensor = downstream_level_sensor_test();  
     printTestStatus(t_level_sensor);
     
@@ -66,8 +96,7 @@ test_t valve_test(){
     }
 
     // in test reason report the sequence of positions
-    snprintf(test.reason,sizeof(test.reason),"open_voltage:%f:::closed_voltage:%f:::pot_voltage:%f::::positions:%f:%f:%f:%f:%f:%f:%f:%f", 
-        voltages[0].voltage_valve_pos, voltages[1].voltage_valve_pos, voltages[0].voltage_valve_pot_power,
+    snprintf(test.reason,sizeof(test.reason),"positions:%f:%f:%f:%f:%f:%f:%f:%f", 
         positions[0],positions[1],positions[2],positions[3],
         positions[4],positions[5],positions[6],positions[7]
     );
@@ -88,9 +117,55 @@ test_t valve_test(){
 }
 
 float32 read_Valve_pos(){
-    // take analog voltage readings
-    voltage_t readings = voltage_take_readings();
-    return (readings.voltage_valve_pos/readings.voltage_valve_pot_power)/0.94; // divide because of the non-potentiometer resistance
+    
+    // similar flow to voltage_take_readings() in voltages.c
+    
+    valve_position_t readings;
+    
+    Valve_POS_Power_Write(1);
+    
+    CyDelay(10u);	    // 10 seconds delay to give time to flip on ADC pin.
+    
+    AMux_Start();       // Start the Analog Multiplexer
+ 
+    ADC_RestoreConfig();// Have to call this and save (See below). Otherwise ADC won't work through sleep mode
+    
+    ADC_Start();        // Start the ADC
+    
+    float channels[AMux_CHANNELS];
+    // valve stuff starts at the fourth channel
+    for(uint8 c = 4; c< AMux_CHANNELS + 1; c++) // Sweep the MUX Channels
+    {
+        
+        int32 readings[N_SAMPLES];  // Creates new int32 array called readings of size N_SAMPLES = 11
+        
+        AMux_Select(c); // This functions first disconnects all channels then connects the given channel.
+        
+        for(uint16 i=0; i< N_SAMPLES; i++){
+            
+            readings[i] = ADC_Read32(); // When called, it will start ADC conversions, wait for the conversion to be complete, stop ADC conversion and return the result.
+        }
+        
+        // Converts the ADC output to Volts as a floating point number. 
+        // Get the median of readings and return that.
+        channels[c] = ADC_CountsTo_Volts(find_median32(readings,N_SAMPLES));    // Get median of readings and return that  
+    }
+    
+    AMux_Stop();        // Disconnects all Analog Multiplex channels.
+    
+    ADC_SaveConfig();   // Save the register configuration which are not retention.
+    
+    ADC_Stop();         // Stops and powers down the ADC component and the internal clock if the external clock is not selected.
+    
+    // if valve type put voltage across valve potentiometer
+    Valve_POS_Power_Write(0);
+ 
+    readings.valve_pos_reading = channels[ADC_MUX_Valve_POS_reading]; // blue wire reading (opened percentage)
+    readings.valve_pos_power = channels[ADC_MUX_Valve_POS_Power]; // brown wire power supply to potentiometer
+    // same pin as Valve_POS_Power
+
+   
+    return (readings.valve_pos_reading/readings.valve_pos_power)/0.94; // divide because of the non-potentiometer resistance
     // this code is written for the blue rotating dynaquip valve, not the linear actuator
     
 }
@@ -221,7 +296,7 @@ float32 calculate_discharge(){
     // because these are both properties of the site / valve we're deployed at
     // for now just make up some values
     float32 area = 2;
-    float32 C_d = 0.4;
+    float32 C_d = 0.4; // C_d should be a function of open percentage
     
     
     float32 gravity = 9.81; // m/s^2
