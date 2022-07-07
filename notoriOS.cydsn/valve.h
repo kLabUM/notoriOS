@@ -37,7 +37,10 @@ uint8 move_valve(float32 position_desired);
 // fallback control strategy for when cell modem goes dark
 void valve_level_controller(int16 level_reading);
 
-float32 calculate_discharge();
+float32 calculate_discharge(float32 current_position);
+float32 discharge_coefficient(float32 current_position);
+float32 valve_diameter;
+char valve_type[10];
 
 // app interface
 uint8 App_Valve();
@@ -47,5 +50,7 @@ char valve_inbox[100];
 void valve_Update(char * message);
 
 
+
+float32 butterfly_Cv_curve(float32 current_position);
 
 

@@ -12,8 +12,17 @@ uint8 App_Valve(){
     compare_location = strstr(valve_inbox, "Open:");
     float pos_des_float = 1.7;
     char position_desired[10];
+    
+    // even if we didn't get a command, push up the current position
+    float32 current_pos = read_Valve_pos();
+    char s_current_pos[5];
+    snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
+    pushData("Valve_Current_Position:",s_current_pos, timestamp);
+    
+  
+    
     if (compare_location != NULL){ // we got a command
-        extract_string(valve_inbox,"Open:","\r",position_desired); // grab level app frequency
+        extract_string(valve_inbox,"Open:",",",position_desired); // grab level app frequency
         sscanf(position_desired, "%f", &pos_des_float);
         uint8 success = move_valve(pos_des_float);
         char s_success[4];
@@ -22,16 +31,19 @@ uint8 App_Valve(){
         snprintf(s_success, sizeof(s_success), "%u", success);
         pushData("Valve_move_successful:", s_success, timestamp);
         
-        // push up the current position
-        float32 current_pos = read_Valve_pos();
-        char s_current_pos[5];
-        snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
-        pushData("Valve_Current_Position:",s_current_pos, timestamp);
-        
         // and the requested position
         pushData("Valve_Desired_Position:",position_desired, timestamp);
         
     }
+    
+    // calculate and post discharge after moving
+    float32 flow = calculate_discharge(current_pos);
+    char s_flow[10];
+    snprintf(s_flow, sizeof(s_flow), "%f",flow);
+    pushData("Valve_Discharge_CFS:",s_flow, timestamp);
+    
+    
+    
     
     // the valve is enabled with every connection and turned off after every attempt to move
     return 0; 
@@ -278,25 +290,99 @@ void valve_level_controller(int16 level_reading){
 
 // this should only be called if both level_sensor and
 // downstream level sensor are enabled
-float32 calculate_discharge(){
+float32 calculate_discharge(float32 current_position){
     level_sensor_t downstream_level = downstream_level_sensor_take_reading();
     level_sensor_t upstream_level = level_sensor_take_reading();
     
-    // divide by 1000 to convert from mm to m
-    float32 differential_head = (downstream_level.level_reading - upstream_level.level_reading)/1000;
+    // in millimeters
+    float32 differential_head = (downstream_level.level_reading - upstream_level.level_reading);
     // the cones measure distance to water, so there's a sign reversal
     
     // the area of the orifice of the valve should probably come down from malcom
     // as should the discharge coefficient C_d 
     // because these are both properties of the site / valve we're deployed at
     // for now just make up some values
-    float32 area = 2;
-    float32 C_d = 0.4; // C_d should be a function of open percentage
+    float32 area = 3.1415*pow(valve_diameter,2);
+    area = area*645.16; // convert square inches to square mm
+    
+    float32 C_d = discharge_coefficient(current_position); // C_d should be a function of open percentage
     
     
-    float32 gravity = 9.81; // m/s^2
+    float32 gravity = 9810; // mm/s^2
     float32 discharge = C_d*area*sqrt(2*gravity*differential_head);
     return discharge;
     
     
+}
+
+// based on: https://www.mydatabook.org/fluid-mechanics/flow-coefficient-opening-and-closure-curves-of-butterfly-valves/
+// first column is nominal diameter
+// second column is cfs / mm of water
+float32 butterfly_max_Cv[17][2] = {
+    {6,0.003007516137},
+    {8,0.005461016144},
+    {10,0.008864258089},
+    {12,0.01321724197},
+    {14,0.01851996779},
+    {16,0.02485158071},
+    {18,0.03229122589},
+    {20,0.04083890334},
+    {24,0.06133750017},
+    {26,0.07344670988},
+    {28,0.08690138733},
+    {30,0.1016223874},
+    {32,0.1177680003},
+    {36,0.1544913553},
+    {40,0.1973088876},
+    {42,0.2211315812},
+    {48,0.3032051137}
+};
+
+float32 discharge_coefficient(float32 current_position){
+
+    char * compare_location; // for finding stuff
+    
+    // update valve diameter
+    char s_diam[10];
+    float32 diam;
+    compare_location = strstr(valve_inbox, "Valve_Diameter_Inches");
+    if (compare_location != NULL){
+        extract_string(valve_inbox,"Valve_Diameter_Inches:",",",s_diam); // grab level app frequency
+        sscanf(s_diam, "%f", &diam);
+        valve_diameter = diam;
+    }
+    
+    
+    // valve type
+    compare_location = strstr(valve_inbox, "Butterfly");
+    if (compare_location != NULL){
+        // get the max C_v
+        uint8 valve_diam_index = 0;
+        while (butterfly_max_Cv[valve_diam_index][0] + 0.5 < valve_diameter){
+            valve_diam_index+=1;
+        }
+        float32 max_Cv = butterfly_max_Cv[valve_diam_index][1];
+        // portion of that
+        float32 Cv = max_Cv*butterfly_Cv_curve(current_position);
+        return Cv;
+    }
+        
+    
+    
+    // just as an example of another kind of valve
+    compare_location = strstr(valve_inbox, "Sluice_Gate");
+    
+    return current_position;
+}
+
+float32 butterfly_Cv_curve(float32 current_position){
+    float32 portion_of_Cv_max = 0.747*current_position - 3.12*pow(current_position,2) + 7.61*pow(current_position,3) - 4.22*pow(current_position,4);
+    if (portion_of_Cv_max > 1.0){
+        portion_of_Cv_max = 1.0;
+    }
+    else if (portion_of_Cv_max < 0.0){
+        portion_of_Cv_max = 0.0;
+    }
+    return portion_of_Cv_max;
+
 }
