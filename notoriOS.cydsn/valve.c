@@ -188,7 +188,10 @@ uint8 move_valve(float32 position_desired){
     if ( fabs(read_Valve_pos() - position_desired) < 0.05){
         return 1;
     }
+    
 
+    uint8 counter = 0;
+    
     // is the desired position more closed?
     if( read_Valve_pos() > position_desired){
         
@@ -204,8 +207,21 @@ uint8 move_valve(float32 position_desired){
             CyDelay(1000u); // the delay should be tuned to be as small as possible
             // without setting off false "stuck" errors
             // a shorter delay will mean a more accurate setting
-            // are we moving? - if not at least one percent moved then no
-            if (fabs(prev_pos - read_Valve_pos()) < 0.01){
+            // are we moving? - if not at least one percent moved then no            
+            printNotif(NOTIF_TYPE_ERROR,"prev_pos: %f, current: %f", prev_pos,read_Valve_pos());
+            // not moving or moving in the wrong direction (floating pins)
+            
+            // did we move in the right direction? if not, increment a counter
+            if (read_Valve_pos() > prev_pos){
+                counter +=1;
+            }
+            if (counter > 5){
+                printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
+                return 0;   
+            }
+            
+            
+            if (fabs(prev_pos - read_Valve_pos()) < 0.02 || read_Valve_pos() > prev_pos){
                 // turn the closing pin low
                 Power_VDD2_Write(0u);
                 // deactivate 12V battery
@@ -242,8 +258,22 @@ uint8 move_valve(float32 position_desired){
         while(fabs(read_Valve_pos() - position_desired) > 0.03){
             prev_pos = read_Valve_pos();
             CyDelay(1000u); 
-            // are we moving?
-            if (fabs(prev_pos - read_Valve_pos()) < 0.01){
+            
+            printNotif(NOTIF_TYPE_ERROR,"prev_pos: %f, current: %f", prev_pos,read_Valve_pos());
+            
+            // did we move in the right direction? if not, increment a counter
+            if (read_Valve_pos() < prev_pos){
+                counter +=1;
+            }
+            if (counter > 5){
+                printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
+                return 0;   
+            }
+            
+            
+            
+            // are we moving? (staying still or wrong direction)
+            if (fabs(prev_pos - read_Valve_pos()) < 0.02 || read_Valve_pos() < prev_pos){
                 // turn the opening pin low
                 Power_VDD1_Write(0u);
                 // deactivate 12V battery
