@@ -13,5 +13,5 @@ test_t downstream_level_sensor_test();
 // application interface
 uint8 downstream_level_sensor();
 char downstream_level_sensor_inbox[100];
-void downstream_Level_Sensor_Update(char * message);
+void Downstream_Level_Sensor_Update(char * message);
 bool downstream_level_sensor_enabled;

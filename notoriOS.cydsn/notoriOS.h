@@ -4,11 +4,7 @@
  *
  * ========================================
 */
-// APP_INTERFACE
 #include "project.h"
-#include "level_sensor.h"
-#include "downstream_level_sensor.h"
-#include "valve.h"
 #include "sd_card.h"
 #include "voltages.h"
 #include "debug.h"
@@ -16,8 +12,17 @@
 #include "data.h"
 #include "influx.h"
 #include "commit.h"
-#include "App_LED.h"
 #include <math.h>       // designed for basic mathematical operations. Most of the functions involve the use of floating point numbers. 
+// APP_INTERFACE--------------------------------------------------------------------------------------
+#include "App_LED.h"
+#include "level_sensor.h"
+#include "downstream_level_sensor.h"
+#include "valve.h"
+#include "autosampler.h"
+/* add app template
+#include "<name>.h"
+*/
+// ---------------------------------------------------------------------------------------------------
 
 // Pre-allocate some memory for the HTTP requests
 #define MAX_HTTP_HEADER_LENGTH 1000
@@ -118,17 +123,26 @@ uint8 timeToSycnRemoteParams;
 uint8 hey;
 
 // App variables
-// APP_INTERFACE
+// APP_INTERFACE--------------------------------------------------------------------------------------
 alarm alarmAppLED;
 uint8 timeToAppLED;
 
 alarm alarmLevelSensor;
-uint8 timetoLevelSensor;
+uint8 timeToLevelSensor;
 
 alarm alarmDownstreamLevelSensor;
-uint8 timetoDownstreamLevelSensor;
+uint8 timeToDownstreamLevelSensor;
 
 alarm alarmValve;
 uint8 timeToValve;
+
+alarm alarmAutosampler;
+uint8 timeToAutosampler;
+
+/* app add template
+alarm alarm<Name>;
+uint8 timeTo<Name>;
+*/
+// ---------------------------------------------------------------------------------------------------
 
 /* [] END OF FILE */

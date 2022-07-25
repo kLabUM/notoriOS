@@ -466,11 +466,16 @@ void updatable_parameters_initialize(){
     updatable_parameters.debug_level = 1u;
     
     // App timers
-    // APP_INTERFACE
+    // APP_INTERFACE---------------------------------------------------------------------------------------
     updatable_parameters.App_LED_freq = 120u; 
     updatable_parameters.Level_Sensor_freq = 120u; 
     updatable_parameters.Downstream_Level_Sensor_freq = 120u;
-    updatable_parameters.valve_freq = 120u;
+    updatable_parameters.Valve_freq = 120u;
+    updatable_parameters.Autosampler_freq = 120u;
+    /* app add on
+    updatable_parameters.<Name>_freq = 120u;
+    */
+     //----------------------------------------------------------------------------------------------------
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -484,7 +489,7 @@ void get_updated_parameters_from_malcom(){
     char s_debug_freq[10];
     
     //apps
-    // APP_INTERFACE
+    // APP_INTERFACE-----------------------------------------------------------------------------------
     char s_app_led[100];
     s_app_led[0] = '\0';
     
@@ -496,9 +501,18 @@ void get_updated_parameters_from_malcom(){
     
     char s_valve[100];
     s_valve[0] = '\0';
+
+    char s_autosampler[100];
+    s_autosampler[0] = '\0';
+
+    /* app add template
+    char s_<name>[100];
+    s_<name>[0] = '\0';
+    */
     
     char s_apps_enabled[200];
     s_apps_enabled[0]='\0';
+    //----------------------------------------------------------------------------------------------------
     
     s_node_type[0] = '\0';
     s_sim_type[0] = '\0';
@@ -514,18 +528,28 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
     
     // which apps are enabled?
-    // APP_INTERFACE
+ // APP_INTERFACE-------------------------------------------------------------------------------------
     if (strstr(uart_received_string,"Apps_Enabled: ")){
         extract_string(uart_received_string,"Apps_Enabled: ","\r",s_apps_enabled);
         // if an app is in this string, turn it on
-        if (strstr(s_apps_enabled,"Level_Sensor")!=NULL){
-            // if we see level sensor in the enabled list, turn it on
-            level_sensor_enabled = 1;
-        }        
+        // if we this app in the enabled list, turn it on, else we ensure it is disabled
+        /*************Testing new form of truncated code*********/
+        App_LED_enabled = (strstr(s_apps_enabled,"App_LED")!=NULL) ? 1 : 0;
+        level_sensor_enabled = (strstr(s_apps_enabled,"Level_Sensor")!=NULL) ? 1 : 0;
+        downstream_level_sensor_enabled = (strstr(s_apps_enabled,"Downstream_Level") != NULL) ? 1 : 0;
+        valve_enabled = (strstr(s_apps_enabled, "Valve") != NULL) ? 1 : 0;
+        autosampler_enabled = (strstr(s_apps_enabled, "Autosampler") != NULL) ? 1 : 0;
+        /* app add template 
+        <name>_enabled = (strstr(s_apps_enabled, "<Name>") != NULL) ? 1 : 0;
+        */
+
+        /* old code structure
+        (strstr(s_apps_enabled, "<Name>") != NULL)? <name>_enabled = 1 : <name>_enabled = 0;
+        
+        // if we see level sensor in the enabled list, turn it on
+        if (strstr(s_apps_enabled,"Level_Sensor")!=NULL){level_sensor_enabled = 1};        
         // if an app is currently on and not in this string, turn it off  
-        else if (level_sensor_enabled){ 
-            level_sensor_enabled = 0;
-        }
+        else if (level_sensor_enabled){level_sensor_enabled = 0;}
         
         if (strstr(s_apps_enabled,"App_LED")!=NULL){
             // if we this app in the enabled list, turn it on
@@ -550,12 +574,22 @@ void get_updated_parameters_from_malcom(){
             valve_enabled = 0u;
         }
         
+        if (strstr(s_apps_enabled, "Autosampler") != NULL){
+            autosampler_enabled = 1u;
+        }
+        else if(autosampler_enabled){
+            autosampler_enabled = 0u;
+        }
+        */
+        
     }
+    //----------------------------------------------------------------------------------------------------
+
 
         
     
     // update app parameters (valve open %, measuring freq, etc)
-    // APP_INTERFACE
+    // APP_INTERFACE --------------------------------------------------------------------------------------
     extract_string(uart_received_string,"App_LED: ","\r",s_app_led);
     App_LED_Update(s_app_led);
     
@@ -563,13 +597,22 @@ void get_updated_parameters_from_malcom(){
     Level_Sensor_Update(s_level_sensor);
     
     extract_string(uart_received_string,"Downstream_Level: ","\r",s_down_level_sensor);
-    downstream_Level_Sensor_Update(s_down_level_sensor);
+    Downstream_Level_Sensor_Update(s_down_level_sensor);
     
     extract_string(uart_received_string,"Valve:","\r", s_valve);
-    valve_Update(s_valve);
+    Valve_Update(s_valve);
+
+    extract_string(uart_received_string,"Autosampler:","\r", s_autosampler);
+    Autosampler_Update(s_autosampler);
     
+    /* app add template
+    extract_string(uart_received_string,"<Name>:","\r", s_<name>);
+    <Name>_Update(s_<name>);
+    */
+
     // Create variables for what is sent back from the server
-    int node_type, sim_type, sample_freq, report_freq, debug_freq, app_led_freq, level_sensor_freq, down_level_freq, valve_freq;
+    int node_type, sim_type, sample_freq, report_freq, debug_freq, \
+    app_led_freq, level_sensor_freq, down_level_freq, valve_freq, autosampler_freq;
     
     // Scan character arrays and save values 
     
@@ -610,11 +653,11 @@ void get_updated_parameters_from_malcom(){
     }
     
     // app alarm frequency updates
-    // APP_INTERFACE
+    // APP_INTERFACE--------------------------------------------------------------------------------------
     if (updatable_parameters.node_type == NODE_TYPE_CUSTOM){
-        
         char temp[100];
-        temp[0] = '\0';
+        temp[0] = '\0'; 
+        
         if(App_LED_enabled){ //if you're not enabled, don't talk
             if (strstr(s_app_led,"Freq=")!=NULL){
                 temp[0] = '\0';
@@ -643,7 +686,7 @@ void get_updated_parameters_from_malcom(){
                     updatable_parameters.Level_Sensor_freq = level_sensor_freq;
                     alarmLevelSensor = CreateAlarm(updatable_parameters.Level_Sensor_freq,ALARM_TYPE_MINUTE, ALARM_TYPE_CONTINUOUS);
 
-                    printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", app_led_freq);
+                    printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", level_sensor_freq);
                 } 
                 else{
                     printNotif(NOTIF_TYPE_ERROR,"Could not parse new Level_Sensor frequency value.");
@@ -661,7 +704,7 @@ void get_updated_parameters_from_malcom(){
                 if(sscanf(s_down_level_sensor, "%d", &down_level_freq)==1){
                     updatable_parameters.Downstream_Level_Sensor_freq = down_level_freq;
                     alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.Downstream_Level_Sensor_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
-                    printNotif(NOTIF_TYPE_EVENT, "Downstream_Level_Sensor frequency changed to: %d\r\n", app_led_freq);
+                    printNotif(NOTIF_TYPE_EVENT, "Downstream_Level_Sensor frequency changed to: %d\r\n", down_level_freq);
                 } 
                 else{
                     printNotif(NOTIF_TYPE_ERROR,"Could not parse new Downstream_Level_Sensor frequency value.");
@@ -676,11 +719,11 @@ void get_updated_parameters_from_malcom(){
             if (strstr(s_valve,"Freq=") !=NULL){
                 temp[0] = '\0';
                 strcpy(temp,s_valve);
-                extract_string(temp,"Freq=","\r",s_valve); // grab app frequency
-                if(sscanf(s_down_level_sensor, "%d", &valve_freq)==1){
-                    updatable_parameters.valve_freq = valve_freq;
-                    alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.valve_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
-                    printNotif(NOTIF_TYPE_EVENT, "Valve frequency changed to: %d\r\n", app_led_freq);
+                extract_string(temp,"Freq=","\r",s_valve); // grab valve frequency
+                if(sscanf(s_valve, "%d", &valve_freq)==1){
+                    updatable_parameters.Valve_freq = valve_freq;
+                    alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.Valve_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Valve frequency changed to: %d\r\n", valve_freq);
                 } 
                 else{
                     printNotif(NOTIF_TYPE_ERROR,"Could not parse new Valve frequency value.");
@@ -691,10 +734,47 @@ void get_updated_parameters_from_malcom(){
             }
         }
         */
-    }
-        
-
-        
+        if(autosampler_enabled){ 
+            if (strstr(s_autosampler,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_autosampler); // this temp may not actually be used
+                extract_string(temp,"Freq=","\r",s_autosampler); // grab autosampler app frequency
+                if(sscanf(s_autosampler, "%d", &autosampler_freq)==1){
+                    updatable_parameters.Autosampler_freq = autosampler_freq;
+                    alarmAutosampler = CreateAlarm(updatable_parameters.Autosampler_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Autosampler frequency changed to: %d\r\n", autosampler_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Autosampler frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Autosampler frequency value indicated.");
+            }
+        }
+        /* app add template
+        if(<name>_enabled){ 
+            if (strstr(s_<name>,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_<name>); // this temp may not actually be used
+                extract_string(temp,"Freq=","\r",s_<name>); // grab <name> app frequency
+                if(sscanf(s_<name>, "%d", &<name>_freq)==1){
+                    updatable_parameters.Autosampler_freq = <name>_freq;
+                    alarm<Name> = CreateAlarm(updatable_parameters.<Name>_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "<Name> frequency changed to: %d\r\n", <name>_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new <Name>frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No <Name> frequency value indicated.");
+            }
+        }
+        */
+    
+    }   
+    //----------------------------------------------------------------------------------------------------       
 }
     
 // Configure the modem settings

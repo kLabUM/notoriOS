@@ -274,4 +274,3 @@ void run_ultrasonic(const sensor_t *config) {
     average /= n;
   
 }*/
-

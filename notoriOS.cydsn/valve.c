@@ -50,7 +50,7 @@ uint8 App_Valve(){
 }
 
 
-void valve_Update(char * message){
+void Valve_Update(char * message){
     strcpy(valve_inbox, message);
 }
 

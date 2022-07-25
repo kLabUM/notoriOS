@@ -29,7 +29,7 @@ CY_ISR(Downstream_Level_Sensor_ISR) {
     }
 }
 
-void downstream_Level_Sensor_Update(char * message){
+void Downstream_Level_Sensor_Update(char * message){
     strcpy(downstream_level_sensor_inbox, message);
 }
 
