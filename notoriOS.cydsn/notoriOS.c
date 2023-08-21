@@ -154,6 +154,9 @@ int WorkWorkWorkWorkWorkWork()
         if(downstream_level_sensor_enabled && timeToDownstreamLevelSensor){
             timeToDownstreamLevelSensor = downstream_level_sensor();
         }
+        if (valve_enabled){
+            valve_enabled = App_Valve();
+        }
         
         if(autosampler_enabled && timeToAutosampler){
             timeToAutosampler = App_Autosampler();
@@ -168,18 +171,7 @@ int WorkWorkWorkWorkWorkWork()
 
     if(timeToSync){
         timeToSync = syncData();
-        
-        // valve isn't located with the other apps because a freqeucny doesn't make sense for the valve
-        // we just want it to run whenver we communicate with the server
-        if(valve_enabled){
-            valve_enabled = App_Valve();
-            timeToSync = syncData(); 
-        }
-
     }
-    
-    
-
     
     // Print the countdown to the next alarm
     //printNotif(NOTIF_TYPE_EVENT,"Measure CNT %d, Sync CNT %d, Data Wheel CNT %d",alarmMeasure.currentCountDownValue,alarmSync.currentCountDownValue,sizeOfDataStack());
