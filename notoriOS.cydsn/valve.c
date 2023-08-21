@@ -11,18 +11,23 @@ uint8 App_Valve(){
     char * compare_location;
     compare_location = strstr(valve_inbox, "Open:");
     float pos_des_float = 1.7;
-    char position_desired[10];
-    
-    // even if we didn't get a command, push up the current position
-    float32 current_pos = read_Valve_pos();
-    char s_current_pos[5];
-    snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
-    pushData("Valve_Current_Position:",s_current_pos, timestamp);
     
   
     
     if (compare_location != NULL){ // we got a command
-        extract_string(valve_inbox,"Open:",",",position_desired); // grab level app frequency
+        char valve_diameter_charstring[10];
+        extract_string(valve_inbox,"Valve_Diameter_Inches:",",",valve_diameter_charstring);
+        sscanf(valve_diameter_charstring, "%f", &valve_diameter);
+        extract_string(valve_inbox,"Valve_Type:",",",valve_type);
+        
+        
+        compare_location = strstr(valve_type,"LinAc");
+        if (compare_location != NULL){
+            printNotif(NOTIF_TYPE_ERROR, "\r\n\r\nWARNING for Linear Actuator (Two-Wire Actuation Scheme)\r\n\r\nDo not connect programmer and 12V battery at the same time. Programmer may bring VDD1 and VDD2 both high which will cause a short.\r\n\r\n");
+        }
+        
+        char position_desired[10];
+        extract_string(valve_inbox,"Open:",",",position_desired); 
         sscanf(position_desired, "%f", &pos_des_float);
         uint8 success = move_valve(pos_des_float);
         char s_success[4];
@@ -33,19 +38,26 @@ uint8 App_Valve(){
         
         // and the requested position
         pushData("Valve_Desired_Position:",position_desired, timestamp);
+        // push up the current position. need to know valve type to do this
+        float32 current_pos = read_Valve_pos();
+        char s_current_pos[5];
+        snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
+        pushData("Valve_Current_Position:",s_current_pos, timestamp);
         
+        // calculate and post discharge after moving
+        //float32 flow = calculate_discharge(current_pos);
+        //char s_flow[10];
+        //snprintf(s_flow, sizeof(s_flow), "%f",flow);
+        //pushData("Valve_Discharge_CFS:",s_flow, timestamp);
+        // i think this is better handled from the server side
     }
     
-    // calculate and post discharge after moving
-    float32 flow = calculate_discharge(current_pos);
-    char s_flow[10];
-    snprintf(s_flow, sizeof(s_flow), "%f",flow);
-    pushData("Valve_Discharge_CFS:",s_flow, timestamp);
+
     
     
     
     
-    // the valve is enabled with every connection and turned off after every attempt to move
+    
     return 0; 
 }
 
@@ -56,6 +68,9 @@ void Valve_Update(char * message){
 
 
 test_t valve_test(){
+    App_Valve(); // need to get the valve type in order to measure position
+    printNotif(NOTIF_TYPE_EVENT, "Current Valve Type: %s", valve_type);
+                
     
     // use more than just read_pos so we can see the actual voltages and print those
     
@@ -166,11 +181,28 @@ float32 read_Valve_pos(){
     readings.valve_pos_reading = channels[ADC_MUX_Valve_POS_reading]; // blue wire reading (opened percentage)
     readings.valve_pos_power = channels[ADC_MUX_Valve_POS_Power]; // brown wire power supply to potentiometer
     // same pin as Valve_POS_Power
-
-   
-    return (readings.valve_pos_reading/readings.valve_pos_power)/0.94; // divide because of the non-potentiometer resistance
-    // this code is written for the blue rotating dynaquip valve, not the linear actuator
+    float32 reading_offset = -0.1;
+    char * compare_location;
+    compare_location = strstr(valve_type, "Butterfly");
+    if (compare_location != NULL){
+        reading_offset = 0.94;
+        return (readings.valve_pos_reading/readings.valve_pos_power)/reading_offset; // divide because of the non-potentiometer resistance
+        // this code is written for the blue rotating dynaquip valve, not the linear actuator
+        
+    }
+    compare_location = strstr(valve_type,"LinAc");
+    if (compare_location != NULL){
+        float32 raw_pos = readings.valve_pos_reading / readings.valve_pos_power;
+        
+        // fully retracted (open) is about 0.739
+        // fully extended (closed) is about 0.0384
+        float32 processed_reading = raw_pos/0.7 - 0.045;
+        
+        return processed_reading;
+    }
     
+    
+    return -1;
 }
 
 uint8 move_valve(float32 position_desired){
@@ -186,17 +218,19 @@ uint8 move_valve(float32 position_desired){
     
     // are we already there? (wihtin a tolerance)
     if ( fabs(read_Valve_pos() - position_desired) < 0.05){
+        printNotif(NOTIF_TYPE_ERROR,"Already at command ::: position requested: %f : current position: %f", position_desired,read_Valve_pos());
+    
         return 1;
     }
     
 
     uint8 counter = 0;
-    
+    printNotif(NOTIF_TYPE_ERROR, "current_position: %f",  read_Valve_pos());
+               
     // is the desired position more closed?
     if( read_Valve_pos() > position_desired){
         
-        // turn the closing pin high
-        Power_VDD2_Write(1u);
+        
 
         
         // while loop
@@ -204,7 +238,17 @@ uint8 move_valve(float32 position_desired){
         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
         while(fabs(read_Valve_pos() - position_desired) > 0.03){
             prev_pos = read_Valve_pos();
-            CyDelay(1000u); // the delay should be tuned to be as small as possible
+            // turn the closing pin high
+            Power_VDD2_Write(1u);
+            if (strstr(valve_type,"LinAc") != NULL){
+                CyDelay(1000u);
+            }
+            if (strstr(valve_type,"Butterfly") != NULL){
+                CyDelay(1000u);
+            }
+            
+            Power_VDD2_Write(0u);
+            CyDelay(1000u);
             // without setting off false "stuck" errors
             // a shorter delay will mean a more accurate setting
             // are we moving? - if not at least one percent moved then no            
@@ -212,23 +256,41 @@ uint8 move_valve(float32 position_desired){
             // not moving or moving in the wrong direction (floating pins)
             
             // did we move in the right direction? if not, increment a counter
-            if (read_Valve_pos() > prev_pos){
+            if (fabs(read_Valve_pos()) > fabs(prev_pos)){
+                printNotif(NOTIF_TYPE_ERROR,"moving wrong direction");
                 counter +=1;
             }
             if (counter > 5){
-                printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
-                return 0;   
-            }
-            
-            
-            if (fabs(prev_pos - read_Valve_pos()) < 0.02 || read_Valve_pos() > prev_pos){
                 // turn the closing pin low
                 Power_VDD2_Write(0u);
                 // deactivate 12V battery
                 Pressure_Voltage_Enable_Write(OFF);
                 printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
-                return 0;
+                return 0;   
             }
+            
+            // did we go by it? if so, stop
+            if (fabs(read_Valve_pos()) < position_desired) {
+                printNotif(NOTIF_TYPE_ERROR,"went past command. stopping");
+                // turn the closing pin low
+                Power_VDD2_Write(0u);
+                // deactivate 12V battery
+                Pressure_Voltage_Enable_Write(OFF);
+                printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos());
+    
+                return 1;
+            }
+                
+            
+            
+            //if (fabs(prev_pos - read_Valve_pos()) < 0.02 || read_Valve_pos() > prev_pos){
+                // turn the closing pin low
+                //Power_VDD2_Write(0u);
+                // deactivate 12V battery
+                //Pressure_Voltage_Enable_Write(OFF);
+                //printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
+                //return 0;
+            //}
         }
         
         
@@ -247,40 +309,62 @@ uint8 move_valve(float32 position_desired){
         
     }
     // or more open?
-    else if(read_Valve_pos() < position_desired){
-        
-        // turn the opening pin high
-        Power_VDD1_Write(1u);
+    else if( read_Valve_pos() < position_desired ){
         
         // while loop
-        // continuously measure the position (measurement should be much faster than movement)
+        
         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
         while(fabs(read_Valve_pos() - position_desired) > 0.03){
             prev_pos = read_Valve_pos();
-            CyDelay(1000u); 
-            
+            // turn the opening pin high
+            Power_VDD1_Write(1u);
+            if (strstr(valve_type,"LinAc") != NULL){
+                CyDelay(1000u);
+            }
+            if (strstr(valve_type,"Butterfly") != NULL){
+                CyDelay(1000u);
+            }
+            Power_VDD1_Write(0u);
+            CyDelay(1000u);
             printNotif(NOTIF_TYPE_ERROR,"prev_pos: %f, current: %f", prev_pos,read_Valve_pos());
             
             // did we move in the right direction? if not, increment a counter
-            if (read_Valve_pos() < prev_pos){
+            if (fabs(read_Valve_pos()) < fabs(prev_pos)){
+                printNotif(NOTIF_TYPE_ERROR,"moving wrong direction");
                 counter +=1;
             }
             if (counter > 5){
-                printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
-                return 0;   
-            }
-            
-            
-            
-            // are we moving? (staying still or wrong direction)
-            if (fabs(prev_pos - read_Valve_pos()) < 0.02 || read_Valve_pos() < prev_pos){
                 // turn the opening pin low
                 Power_VDD1_Write(0u);
                 // deactivate 12V battery
                 Pressure_Voltage_Enable_Write(OFF);
                 printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
-                return 0;
+                return 0;   
             }
+            
+            // did we go by it? if so, stop
+            if (fabs(read_Valve_pos()) > position_desired) {
+                printNotif(NOTIF_TYPE_ERROR,"went past command. stopping");
+                // turn the opening pin low
+                Power_VDD1_Write(0u);
+                // deactivate 12V battery
+                Pressure_Voltage_Enable_Write(OFF);
+                printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos());
+    
+                return 1;
+            }
+                
+            
+            
+            // are we moving? (staying still or wrong direction)
+            //if (fabs(prev_pos - read_Valve_pos()) < 0.02 || read_Valve_pos() < prev_pos){
+                // turn the opening pin low
+                //Power_VDD1_Write(0u);
+                // deactivate 12V battery
+                //Pressure_Voltage_Enable_Write(OFF);
+                //printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
+                //return 0;
+            //}
         }
         
         // turn the opening pin low
@@ -292,7 +376,7 @@ uint8 move_valve(float32 position_desired){
         if(fabs(read_Valve_pos() - position_desired) > 0.05){
             // deactivate 12V battery
             Pressure_Voltage_Enable_Write(OFF);
-            printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: nrequested_position: %f", position_desired);
+            printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
             return 0;
         }
         
@@ -302,7 +386,7 @@ uint8 move_valve(float32 position_desired){
     
     // deactivate 12V battery
     Pressure_Voltage_Enable_Write(OFF);
-    
+    printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos());
     return 1; // everything worked fine
 }
 

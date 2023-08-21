@@ -144,7 +144,7 @@ int WorkWorkWorkWorkWorkWork()
     }  
     // custom nodes
     // APP_INTERFACE----------------------------------------------------------------------------------
-    else if(updatable_parameters.node_type == NODE_TYPE_CUSTOM){
+    if(updatable_parameters.node_type == NODE_TYPE_CUSTOM){
         if(App_LED_enabled && timeToAppLED){
             timeToAppLED = App_LED();
         }
@@ -154,9 +154,7 @@ int WorkWorkWorkWorkWorkWork()
         if(downstream_level_sensor_enabled && timeToDownstreamLevelSensor){
             timeToDownstreamLevelSensor = downstream_level_sensor();
         }
-        if(valve_enabled){
-            valve_enabled = App_Valve();
-        }
+        
         if(autosampler_enabled && timeToAutosampler){
             timeToAutosampler = App_Autosampler();
         }
@@ -166,12 +164,20 @@ int WorkWorkWorkWorkWorkWork()
             timeTo<Name> = App_<Name>();
         }
         */
-
     }
-    //------------------------------------------------------------------------------------------------
+
     if(timeToSync){
         timeToSync = syncData();
-    } 
+        
+        // valve isn't located with the other apps because a freqeucny doesn't make sense for the valve
+        // we just want it to run whenver we communicate with the server
+        if(valve_enabled){
+            valve_enabled = App_Valve();
+            timeToSync = syncData(); 
+        }
+
+    }
+    
     
 
     
@@ -354,8 +360,11 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     printTestStatus(t_down_level);
     
     // Test valve
-    test_t t_valve = valve_test();
-    printTestStatus(t_valve);
+    //test_t t_valve = valve_test();
+    //printTestStatus(t_valve);
+    // need to know the valve type in order to measure position
+    // but we don't know that until we talk to the server. 
+    // TODO: resolve this. find a way to test the valve without that info
     
     // Test voltages
     test_t t_voltages = voltages_test();

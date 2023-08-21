@@ -49,6 +49,4 @@ uint8 valve_enabled;
 char valve_inbox[100];
 void Valve_Update(char * message);
 
-
-
 float32 butterfly_Cv_curve(float32 current_position);
