@@ -678,9 +678,9 @@ uint8 makeMeasurements(){
         SD_write(Data_fileName, "a+", " vbat: ");
         SD_write(Data_fileName, "a+", value);
         
-        // If node type is green infrastructure node, take pressure transducer measurements
+        // If node type is green infrastructure or custom node, take pressure transducer measurements
          
-        if(updatable_parameters.node_type == NODE_TYPE_GREENINFRASTRUCTURE){
+        if(updatable_parameters.node_type == NODE_TYPE_GREENINFRASTRUCTURE || updatable_parameters.node_type == NODE_TYPE_CUSTOM){
             
             // pressure transducer voltage (V) data
             //snprintf(value,sizeof(value),"%.2f",m_voltage.voltage_pressure);
