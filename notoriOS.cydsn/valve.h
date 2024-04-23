@@ -30,9 +30,9 @@ void Power_VDD2_Write(uint8);
 // tests actuation and position reading
 test_t valve_test();
 
-float32 read_Valve_pos();
+float32 read_Valve_pos(uint8 valve_id);
 
-uint8 move_valve(float32 position_desired);
+uint8 move_valve(float32 position_desired,  uint8 valve_id);
 
 // fallback control strategy for when cell modem goes dark
 void valve_level_controller(int16 level_reading);

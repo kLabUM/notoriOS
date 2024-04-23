@@ -16,8 +16,8 @@ uint8 App_Valve(){
     
     if (compare_location != NULL){ // we got a command
         char valve_diameter_charstring[10];
-        extract_string(valve_inbox,"Valve_Diameter_Inches:",",",valve_diameter_charstring);
-        sscanf(valve_diameter_charstring, "%f", &valve_diameter);
+        //extract_string(valve_inbox,"Valve_Diameter_Inches:",",",valve_diameter_charstring);
+        //sscanf(valve_diameter_charstring, "%f", &valve_diameter);
         extract_string(valve_inbox,"Valve_Type:",",",valve_type);
         
         
@@ -26,10 +26,11 @@ uint8 App_Valve(){
             printNotif(NOTIF_TYPE_ERROR, "\r\n\r\nWARNING for Linear Actuator (Two-Wire Actuation Scheme)\r\n\r\nDo not connect programmer and 12V battery at the same time. Programmer may bring VDD1 and VDD2 both high which will cause a short.\r\n\r\n");
         }
         
+        // in the case of the linear actuator, take open percent to mean percent retracted
         char position_desired[10];
         extract_string(valve_inbox,"Open:",",",position_desired); 
         sscanf(position_desired, "%f", &pos_des_float);
-        uint8 success = move_valve(pos_des_float);
+        uint8 success = move_valve(pos_des_float,1);
         char s_success[4];
         
         // let the server know whether the move was successful
@@ -44,6 +45,30 @@ uint8 App_Valve(){
         snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
         pushData("Valve_Current_Position:",s_current_pos, timestamp);
         
+        // if we've got a second linear actuator in this node
+        compare_location = strstr(valve_type, "LinAc2");
+        if (compare_location != NULL){
+            printNotif(NOTIF_TYPE_ERROR, "\nDual Linear Actuator\n");
+            char position_desired[10];
+            extract_string(valve_inbox,"Open2:",",",position_desired);
+            sscanf(position_desired,"%f",&pos_des_float);
+            uint8 success = move_valve(pos_des_float,2);
+            char s_success[4];
+            // let the server know whether the move was successful
+            snprintf(s_success, sizeof(s_success), "%u", success);
+            pushData("Valve2_move_successful:", s_success, timestamp);
+            
+            // and the requested position
+            pushData("Valve2_Desired_Position:",position_desired, timestamp);
+            // push up the current position. need to know valve type to do this
+            float32 current_pos = read_Valve_pos();
+            char s_current_pos[5];
+            snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
+            pushData("Valve2_Current_Position:",s_current_pos, timestamp);
+                
+        
+        }
+        
         // calculate and post discharge after moving
         //float32 flow = calculate_discharge(current_pos);
         //char s_flow[10];
@@ -51,12 +76,6 @@ uint8 App_Valve(){
         //pushData("Valve_Discharge_CFS:",s_flow, timestamp);
         // i think this is better handled from the server side
     }
-    
-
-    
-    
-    
-    
     
     return 0; 
 }
@@ -71,11 +90,13 @@ test_t valve_test(){
     App_Valve(); // need to get the valve type in order to measure position
     printNotif(NOTIF_TYPE_EVENT, "Current Valve Type: %s", valve_type);
                 
+    uint8 valve_id = 1u; // this test function isn't being used right now anyhow
+    // make valve_id an argument if you'd like to be able to test both valves
     
     // use more than just read_pos so we can see the actual voltages and print those
     
     // activate 12V battery
-    Pressure_Voltage_Enable_Write(ON);
+    Level_Sensor_Power_Write(ON);
 
          
     test_t test; // test_t is a new data type we defined in test.h. We then use that data type to define a structure variable test
@@ -87,33 +108,33 @@ test_t valve_test(){
     voltage_t voltages[8];
     
     // all the way open
-    move_valve(1);
+    move_valve(1,1);
     // take a position reading to verify that it's all the way open (later)
-    positions[0] = read_Valve_pos();
+    positions[0] = read_Valve_pos(valve_id);
     voltages[0] = voltage_take_readings();
     // do the same for closed
-    test.status = move_valve(0);
+    test.status = move_valve(0,1);
     // take a position reading to verify that it's all the way closed (later)
-    positions[1] = read_Valve_pos();
+    positions[1] = read_Valve_pos(valve_id);
     voltages[1] = voltage_take_readings();
     if (test.status){ // don't do this if it's jammed (didn't close successfully)
-        move_valve(0.125);
-        positions[2] = read_Valve_pos();
+        move_valve(0.125,1);
+        positions[2] = read_Valve_pos(valve_id);
         
-        move_valve(0.25);
-        positions[3] = read_Valve_pos();
+        move_valve(0.25,1);
+        positions[3] = read_Valve_pos(valve_id);
         
-        move_valve(0.375);
-        positions[4] = read_Valve_pos();
+        move_valve(0.375,1);
+        positions[4] = read_Valve_pos(valve_id);
 
-        move_valve(0.5);
-        positions[5] = read_Valve_pos();
+        move_valve(0.5,1);
+        positions[5] = read_Valve_pos(valve_id);
 
-        move_valve(0.675);
-        positions[6] = read_Valve_pos();
+        move_valve(0.675,1);
+        positions[6] = read_Valve_pos(valve_id);
 
-        move_valve(0.75);
-        positions[7] = read_Valve_pos();
+        move_valve(0.75,1);
+        positions[7] = read_Valve_pos(valve_id);
     }
 
     // in test reason report the sequence of positions
@@ -127,20 +148,27 @@ test_t valve_test(){
         snprintf(test.reason,sizeof(test.reason),"valve jammed or battery dead" );
     }
     // deactivate 12V battery
-    Pressure_Voltage_Enable_Write(OFF);
+    Level_Sensor_Power_Write(OFF);
     
 
     return test;
 
 }
 
-float32 read_Valve_pos(){
+// TODO: going to have to edit the multiplexer to get this working
+float32 read_Valve_pos(uint8 valve_id){
     
     // similar flow to voltage_take_readings() in voltages.c
     
     valve_position_t readings;
     
-    Valve_POS_Power_Write(1);
+    if (valve_id < 2){
+        Valve_POS_Power_Write(1);
+    }
+    else{
+        Downstream_Level_Sensor_Power_Write(1u);
+    }
+    
     
     CyDelay(10u);	    // 10 seconds delay to give time to flip on ADC pin.
     
@@ -176,7 +204,13 @@ float32 read_Valve_pos(){
     ADC_Stop();         // Stops and powers down the ADC component and the internal clock if the external clock is not selected.
     
     // if valve type put voltage across valve potentiometer
-    Valve_POS_Power_Write(0);
+    if (valve_id < 2){
+        Valve_POS_Power_Write(0);
+    }
+    else {
+        Downstream_Level_Sensor_Power_Write(0u);
+    }
+    
  
     readings.valve_pos_reading = channels[ADC_MUX_Valve_POS_reading]; // blue wire reading (opened percentage)
     readings.valve_pos_power = channels[ADC_MUX_Valve_POS_Power]; // brown wire power supply to potentiometer
@@ -205,30 +239,29 @@ float32 read_Valve_pos(){
     return -1;
 }
 
-uint8 move_valve(float32 position_desired){
+uint8 move_valve(float32 position_desired, uint8 valve_id){
     
     // activate 12V battery
-    Pressure_Voltage_Enable_Write(ON);
+    //Level_Sensor_Power_SetDriveMode(PIN_DM_RES_UP);
+    Level_Sensor_Power_Write(1u);
+    //Pressure_Voltage_Enable_Write(ON);
     
-    // this uses "go until you're there" rather than pulsing and checking
-    // pulsing and checking could set up oscillations in the controller
-    // pulsing and checking would only be necessary if measurement consumed a similar amount of time to moving
     
     float32 prev_pos =  1.5;
     
     // are we already there? (wihtin a tolerance)
-    if ( fabs(read_Valve_pos() - position_desired) < 0.05){
-        printNotif(NOTIF_TYPE_ERROR,"Already at command ::: position requested: %f : current position: %f", position_desired,read_Valve_pos());
-    
+    if ( fabs(read_Valve_pos(valve_id) - position_desired) < 0.05){
+        printNotif(NOTIF_TYPE_ERROR,"Already at command ::: position requested: %f : current position: %f", position_desired,read_Valve_pos(valve_id));
+        Level_Sensor_Power_Write(0u);
         return 1;
     }
     
 
     uint8 counter = 0;
-    printNotif(NOTIF_TYPE_ERROR, "current_position: %f",  read_Valve_pos());
+    printNotif(NOTIF_TYPE_ERROR, "current_position: %f",  read_Valve_pos(valve_id));
                
     // is the desired position more closed?
-    if( read_Valve_pos() > position_desired){
+    if( read_Valve_pos(valve_id) > position_desired){
         
         
 
@@ -236,10 +269,15 @@ uint8 move_valve(float32 position_desired){
         // while loop
         // continuously measure the position (measurement should be much faster than movement)
         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
-        while(fabs(read_Valve_pos() - position_desired) > 0.03){
-            prev_pos = read_Valve_pos();
-            // turn the closing pin high
-            Power_VDD2_Write(1u);
+        while(fabs(read_Valve_pos(valve_id) - position_desired) > 0.03){
+            prev_pos = read_Valve_pos(valve_id);
+            // turn the closing pin high (for linAc, "closing" = "extending", even if we're controlling a weir)
+            if (valve_id < 2){
+                Power_VDD2_Write(1u);
+            }
+            else{ // other valve
+                Power_VBAT2_Write(1u);
+            }
             if (strstr(valve_type,"LinAc") != NULL){
                 CyDelay(1000u);
             }
@@ -247,36 +285,54 @@ uint8 move_valve(float32 position_desired){
                 CyDelay(1000u);
             }
             
-            Power_VDD2_Write(0u);
+            
+            if (valve_id < 2){
+                Power_VDD2_Write(0u);
+            }
+            else{ // other valve
+                Power_VBAT2_Write(0u);
+            }
             CyDelay(1000u);
             // without setting off false "stuck" errors
             // a shorter delay will mean a more accurate setting
             // are we moving? - if not at least one percent moved then no            
-            printNotif(NOTIF_TYPE_ERROR,"prev_pos: %f, current: %f", prev_pos,read_Valve_pos());
+            printNotif(NOTIF_TYPE_ERROR,"prev_pos: %f, current: %f", prev_pos,read_Valve_pos(valve_id));
             // not moving or moving in the wrong direction (floating pins)
             
             // did we move in the right direction? if not, increment a counter
-            if (fabs(read_Valve_pos()) > fabs(prev_pos)){
+            if (fabs(read_Valve_pos(valve_id)) > fabs(prev_pos)){
                 printNotif(NOTIF_TYPE_ERROR,"moving wrong direction");
                 counter +=1;
             }
             if (counter > 5){
                 // turn the closing pin low
-                Power_VDD2_Write(0u);
+                if (valve_id < 2){
+                    Power_VDD2_Write(0u);
+                }
+                else{ // other valve
+                    Power_VBAT2_Write(0u);
+                }
                 // deactivate 12V battery
-                Pressure_Voltage_Enable_Write(OFF);
+                //Pressure_Voltage_Enable_Write(OFF);
+                Level_Sensor_Power_Write(0u);
                 printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
                 return 0;   
             }
             
             // did we go by it? if so, stop
-            if (fabs(read_Valve_pos()) < position_desired) {
+            if (fabs(read_Valve_pos(valve_id)) < position_desired) {
                 printNotif(NOTIF_TYPE_ERROR,"went past command. stopping");
                 // turn the closing pin low
-                Power_VDD2_Write(0u);
+                if (valve_id < 2){
+                    Power_VDD2_Write(0u);
+                }
+                else{ // other valve
+                    Power_VBAT2_Write(0u);
+                }
                 // deactivate 12V battery
-                Pressure_Voltage_Enable_Write(OFF);
-                printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos());
+                //Level_Sensor_Power_Write(OFF);
+                Level_Sensor_Power_Write(0u);
+                printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos(valve_id));
     
                 return 1;
             }
@@ -287,7 +343,7 @@ uint8 move_valve(float32 position_desired){
                 // turn the closing pin low
                 //Power_VDD2_Write(0u);
                 // deactivate 12V battery
-                //Pressure_Voltage_Enable_Write(OFF);
+                //Level_Sensor_Power_Write(OFF);
                 //printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
                 //return 0;
             //}
@@ -295,61 +351,89 @@ uint8 move_valve(float32 position_desired){
         
         
         // turn the closing pin low
-        Power_VDD2_Write(0u);
+        if (valve_id < 2){
+            Power_VDD2_Write(0u);
+        }
+        else{ // other valve
+            Power_VBAT2_Write(0u);
+        }
         
         
         // read valve position once more and confirm we're where we want to be
         // if not return 0
-        if(fabs(read_Valve_pos() - position_desired) > 0.05){
+        if(fabs(read_Valve_pos(valve_id) - position_desired) > 0.05){
             // deactivate 12V battery
-            Pressure_Voltage_Enable_Write(OFF);
+            //Level_Sensor_Power_Write(OFF);
+            Level_Sensor_Power_Write(0u);
             printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
             return 0;
         }
         
     }
     // or more open?
-    else if( read_Valve_pos() < position_desired ){
+    else if( read_Valve_pos(valve_id) < position_desired ){
         
         // while loop
         
         // once we're within 5 percent of desired (can tighten this later) exit this do-while loop
-        while(fabs(read_Valve_pos() - position_desired) > 0.03){
-            prev_pos = read_Valve_pos();
+        while(fabs(read_Valve_pos(valve_id) - position_desired) > 0.03){
+            prev_pos = read_Valve_pos(valve_id);
             // turn the opening pin high
-            Power_VDD1_Write(1u);
+            if (valve_id < 2){
+                Power_VDD1_Write(1u);
+                }
+            else{ // other valve
+                Power_VBAT1_Write(1u);
+            }
             if (strstr(valve_type,"LinAc") != NULL){
                 CyDelay(1000u);
             }
             if (strstr(valve_type,"Butterfly") != NULL){
                 CyDelay(1000u);
             }
-            Power_VDD1_Write(0u);
+            if (valve_id < 2){
+                Power_VDD1_Write(0u);
+            }
+            else{ // other valve (weir)
+                Power_VBAT1_Write(0u);
+            }
             CyDelay(1000u);
-            printNotif(NOTIF_TYPE_ERROR,"prev_pos: %f, current: %f", prev_pos,read_Valve_pos());
+            printNotif(NOTIF_TYPE_ERROR,"prev_pos: %f, current: %f", prev_pos,read_Valve_pos(valve_id));
             
             // did we move in the right direction? if not, increment a counter
-            if (fabs(read_Valve_pos()) < fabs(prev_pos)){
+            if (fabs(read_Valve_pos(valve_id)) < fabs(prev_pos)){
                 printNotif(NOTIF_TYPE_ERROR,"moving wrong direction");
                 counter +=1;
             }
             if (counter > 5){
                 // turn the opening pin low
-                Power_VDD1_Write(0u);
+                if (valve_id < 2){
+                    Power_VDD1_Write(0u);
+                }
+                else{ // other valve
+                    Power_VBAT1_Write(0u);
+                }
                 // deactivate 12V battery
-                Pressure_Voltage_Enable_Write(OFF);
+                //Power_VDD1_Write(OFF);
+                Level_Sensor_Power_Write(0u);
                 printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
                 return 0;   
             }
             
             // did we go by it? if so, stop
-            if (fabs(read_Valve_pos()) > position_desired) {
+            if (fabs(read_Valve_pos(valve_id)) > position_desired) {
                 printNotif(NOTIF_TYPE_ERROR,"went past command. stopping");
                 // turn the opening pin low
-                Power_VDD1_Write(0u);
+                if (valve_id < 2){
+                    Power_VDD1_Write(0u);
+                }
+                else{ // other valve
+                    Power_VBAT1_Write(0u);
+                }
                 // deactivate 12V battery
-                Pressure_Voltage_Enable_Write(OFF);
-                printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos());
+                //Level_Sensor_Power_Write(OFF);
+                Level_Sensor_Power_Write(0u);
+                printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos(valve_id));
     
                 return 1;
             }
@@ -361,21 +445,26 @@ uint8 move_valve(float32 position_desired){
                 // turn the opening pin low
                 //Power_VDD1_Write(0u);
                 // deactivate 12V battery
-                //Pressure_Voltage_Enable_Write(OFF);
+                //Level_Sensor_Power_Write(OFF);
                 //printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
                 //return 0;
             //}
         }
         
         // turn the opening pin low
-         Power_VDD1_Write(0u);
-        
-        
+        if (valve_id < 2){
+            Power_VDD1_Write(0u);
+        }
+        else{ // other valve
+            Power_VBAT1_Write(0u);
+        }
+
         // read valve position once more and confirm we're where we want to be
         // if not return 0
-        if(fabs(read_Valve_pos() - position_desired) > 0.05){
+        if(fabs(read_Valve_pos(valve_id) - position_desired) > 0.05){
             // deactivate 12V battery
-            Pressure_Voltage_Enable_Write(OFF);
+            //Level_Sensor_Power_Write(OFF);
+            Level_Sensor_Power_Write(0u);
             printNotif(NOTIF_TYPE_ERROR, "move_valve failed ::: requested_position: %f", position_desired);
             return 0;
         }
@@ -385,23 +474,26 @@ uint8 move_valve(float32 position_desired){
 
     
     // deactivate 12V battery
-    Pressure_Voltage_Enable_Write(OFF);
-    printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos());
+    //Level_Sensor_Power_Write(OFF);
+    Level_Sensor_Power_Write(0u);
+    printNotif(NOTIF_TYPE_ERROR,"move_valve successful ::: position requested: %f : position reached: %f", position_desired,read_Valve_pos(valve_id));
     return 1; // everything worked fine
 }
-
+/*
 void valve_level_controller(int16 level_reading){
 
     // these controls should be site specific. i.e. if site_id = ARB016 cutoff = 1400 mm
     printNotif(NOTIF_TYPE_EVENT, "level_controller using level_reading:%d", level_reading);
     if(level_reading > 1500){ // water level is at least 1.5 meters below the cone
-        move_valve(0);
+        move_valve(0,1);
     }
     else {
-        move_valve(1);
+        move_valve(1,1);
     }
 }
+*/
 
+/*
 // this should only be called if both level_sensor and
 // downstream level sensor are enabled
 float32 calculate_discharge(float32 current_position){
@@ -500,3 +592,4 @@ float32 butterfly_Cv_curve(float32 current_position){
     return portion_of_Cv_max;
 
 }
+*/
