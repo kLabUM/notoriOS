@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Downstream_Level_Sensor_RX.c  
+* File Name: Valve2_POS_Power.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "Downstream_Level_Sensor_RX.h"
+#include "Valve2_POS_Power.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 Downstream_Level_Sensor_RX__PORT == 15 && ((Downstream_Level_Sensor_RX__MASK & 0xC0) != 0))
+	 Valve2_POS_Power__PORT == 15 && ((Valve2_POS_Power__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: Downstream_Level_Sensor_RX_Write
+* Function Name: Valve2_POS_Power_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet Downstream_Level_Sensor_RX_SUT.c usage_Downstream_Level_Sensor_RX_Write
+*  \snippet Valve2_POS_Power_SUT.c usage_Valve2_POS_Power_Write
 *******************************************************************************/
-void Downstream_Level_Sensor_RX_Write(uint8 value)
+void Valve2_POS_Power_Write(uint8 value)
 {
-    uint8 staticBits = (Downstream_Level_Sensor_RX_DR & (uint8)(~Downstream_Level_Sensor_RX_MASK));
-    Downstream_Level_Sensor_RX_DR = staticBits | ((uint8)(value << Downstream_Level_Sensor_RX_SHIFT) & Downstream_Level_Sensor_RX_MASK);
+    uint8 staticBits = (Valve2_POS_Power_DR & (uint8)(~Valve2_POS_Power_MASK));
+    Valve2_POS_Power_DR = staticBits | ((uint8)(value << Valve2_POS_Power_SHIFT) & Valve2_POS_Power_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: Downstream_Level_Sensor_RX_SetDriveMode
+* Function Name: Valve2_POS_Power_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void Downstream_Level_Sensor_RX_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet Downstream_Level_Sensor_RX_SUT.c usage_Downstream_Level_Sensor_RX_SetDriveMode
+*  \snippet Valve2_POS_Power_SUT.c usage_Valve2_POS_Power_SetDriveMode
 *******************************************************************************/
-void Downstream_Level_Sensor_RX_SetDriveMode(uint8 mode)
+void Valve2_POS_Power_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(Downstream_Level_Sensor_RX_0, mode);
+	CyPins_SetPinDriveMode(Valve2_POS_Power_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: Downstream_Level_Sensor_RX_Read
+* Function Name: Valve2_POS_Power_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void Downstream_Level_Sensor_RX_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet Downstream_Level_Sensor_RX_SUT.c usage_Downstream_Level_Sensor_RX_Read  
+*  \snippet Valve2_POS_Power_SUT.c usage_Valve2_POS_Power_Read  
 *******************************************************************************/
-uint8 Downstream_Level_Sensor_RX_Read(void)
+uint8 Valve2_POS_Power_Read(void)
 {
-    return (Downstream_Level_Sensor_RX_PS & Downstream_Level_Sensor_RX_MASK) >> Downstream_Level_Sensor_RX_SHIFT;
+    return (Valve2_POS_Power_PS & Valve2_POS_Power_MASK) >> Valve2_POS_Power_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: Downstream_Level_Sensor_RX_ReadDataReg
+* Function Name: Valve2_POS_Power_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 Downstream_Level_Sensor_RX_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred Downstream_Level_Sensor_RX_Read() API because the 
-* Downstream_Level_Sensor_RX_ReadDataReg() reads the data register instead of the status 
+* preferred Valve2_POS_Power_Read() API because the 
+* Valve2_POS_Power_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 Downstream_Level_Sensor_RX_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet Downstream_Level_Sensor_RX_SUT.c usage_Downstream_Level_Sensor_RX_ReadDataReg 
+*  \snippet Valve2_POS_Power_SUT.c usage_Valve2_POS_Power_ReadDataReg 
 *******************************************************************************/
-uint8 Downstream_Level_Sensor_RX_ReadDataReg(void)
+uint8 Valve2_POS_Power_ReadDataReg(void)
 {
-    return (Downstream_Level_Sensor_RX_DR & Downstream_Level_Sensor_RX_MASK) >> Downstream_Level_Sensor_RX_SHIFT;
+    return (Valve2_POS_Power_DR & Valve2_POS_Power_MASK) >> Valve2_POS_Power_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(Downstream_Level_Sensor_RX_INTSTAT) 
+#if defined(Valve2_POS_Power_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: Downstream_Level_Sensor_RX_SetInterruptMode
+    * Function Name: Valve2_POS_Power_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 Downstream_Level_Sensor_RX_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use Downstream_Level_Sensor_RX_INTR_ALL to configure the
+    *  component. Or you may use Valve2_POS_Power_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - Downstream_Level_Sensor_RX_0_INTR       (First pin in the list)
-    *  - Downstream_Level_Sensor_RX_1_INTR       (Second pin in the list)
+    *  - Valve2_POS_Power_0_INTR       (First pin in the list)
+    *  - Valve2_POS_Power_1_INTR       (Second pin in the list)
     *  - ...
-    *  - Downstream_Level_Sensor_RX_INTR_ALL     (All pins in Pins component)
+    *  - Valve2_POS_Power_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 Downstream_Level_Sensor_RX_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet Downstream_Level_Sensor_RX_SUT.c usage_Downstream_Level_Sensor_RX_SetInterruptMode
+    *  \snippet Valve2_POS_Power_SUT.c usage_Valve2_POS_Power_SetInterruptMode
     *******************************************************************************/
-    void Downstream_Level_Sensor_RX_SetInterruptMode(uint16 position, uint16 mode)
+    void Valve2_POS_Power_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & Downstream_Level_Sensor_RX_0_INTR) != 0u) 
+		if((position & Valve2_POS_Power_0_INTR) != 0u) 
 		{ 
-			 Downstream_Level_Sensor_RX_0_INTTYPE_REG = (uint8)mode; 
+			 Valve2_POS_Power_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: Downstream_Level_Sensor_RX_ClearInterrupt
+    * Function Name: Valve2_POS_Power_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 Downstream_Level_Sensor_RX_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet Downstream_Level_Sensor_RX_SUT.c usage_Downstream_Level_Sensor_RX_ClearInterrupt
+    *  \snippet Valve2_POS_Power_SUT.c usage_Valve2_POS_Power_ClearInterrupt
     *******************************************************************************/
-    uint8 Downstream_Level_Sensor_RX_ClearInterrupt(void)
+    uint8 Valve2_POS_Power_ClearInterrupt(void)
     {
-        return (Downstream_Level_Sensor_RX_INTSTAT & Downstream_Level_Sensor_RX_MASK) >> Downstream_Level_Sensor_RX_SHIFT;
+        return (Valve2_POS_Power_INTSTAT & Valve2_POS_Power_MASK) >> Valve2_POS_Power_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

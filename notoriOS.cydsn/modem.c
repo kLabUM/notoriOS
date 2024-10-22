@@ -536,7 +536,7 @@ void get_updated_parameters_from_malcom(){
         /*************Testing new form of truncated code*********/
         App_LED_enabled = (strstr(s_apps_enabled,"App_LED")!=NULL) ? 1 : 0;
         level_sensor_enabled = (strstr(s_apps_enabled,"Level_Sensor")!=NULL) ? 1 : 0;
-        downstream_level_sensor_enabled = (strstr(s_apps_enabled,"Downstream_Level") != NULL) ? 1 : 0;
+        //downstream_level_sensor_enabled = (strstr(s_apps_enabled,"Downstream_Level") != NULL) ? 1 : 0;
         valve_enabled = (strstr(s_apps_enabled, "Valve") != NULL) ? 1 : 0;
         autosampler_enabled = (strstr(s_apps_enabled, "Autosampler") != NULL) ? 1 : 0;
         /* app add template 
@@ -596,8 +596,8 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Level_Sensor: ","\r",s_level_sensor);
     Level_Sensor_Update(s_level_sensor);
     
-    extract_string(uart_received_string,"Downstream_Level: ","\r",s_down_level_sensor);
-    Downstream_Level_Sensor_Update(s_down_level_sensor);
+    //extract_string(uart_received_string,"Downstream_Level: ","\r",s_down_level_sensor);
+    //Downstream_Level_Sensor_Update(s_down_level_sensor);
     
     extract_string(uart_received_string,"Valve:","\r", s_valve);
     Valve_Update(s_valve);
@@ -696,6 +696,7 @@ void get_updated_parameters_from_malcom(){
                 printNotif(NOTIF_TYPE_ERROR,"No Level_Sensor frequency value indicated.");
             }
         }
+        /*
         if(downstream_level_sensor_enabled){ 
             if (strstr(s_down_level_sensor,"Freq=") !=NULL){
                 temp[0] = '\0';
@@ -714,6 +715,7 @@ void get_updated_parameters_from_malcom(){
                 printNotif(NOTIF_TYPE_ERROR,"No Downstream_Level_Sensor frequency value indicated.");
             }
         }
+        */
         /*
         if(valve_enabled){ 
             if (strstr(s_valve,"Freq=") !=NULL){

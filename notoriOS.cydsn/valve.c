@@ -40,7 +40,7 @@ uint8 App_Valve(){
         // and the requested position
         pushData("Valve_Desired_Position:",position_desired, timestamp);
         // push up the current position. need to know valve type to do this
-        float32 current_pos = read_Valve_pos();
+        float32 current_pos = read_Valve_pos(1);
         char s_current_pos[5];
         snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
         pushData("Valve_Current_Position:",s_current_pos, timestamp);
@@ -61,7 +61,7 @@ uint8 App_Valve(){
             // and the requested position
             pushData("Valve2_Desired_Position:",position_desired, timestamp);
             // push up the current position. need to know valve type to do this
-            float32 current_pos = read_Valve_pos();
+            float32 current_pos = read_Valve_pos(2);
             char s_current_pos[5];
             snprintf(s_current_pos, sizeof(s_current_pos), "%f",current_pos);
             pushData("Valve2_Current_Position:",s_current_pos, timestamp);
@@ -155,7 +155,7 @@ test_t valve_test(){
 
 }
 
-// TODO: going to have to edit the multiplexer to get this working
+
 float32 read_Valve_pos(uint8 valve_id){
     
     // similar flow to voltage_take_readings() in voltages.c
@@ -166,7 +166,7 @@ float32 read_Valve_pos(uint8 valve_id){
         Valve_POS_Power_Write(1);
     }
     else{
-        Downstream_Level_Sensor_Power_Write(1u);
+        Valve2_POS_Power_Write(1u);
     }
     
     
@@ -206,15 +206,16 @@ float32 read_Valve_pos(uint8 valve_id){
     // if valve type put voltage across valve potentiometer
     if (valve_id < 2){
         Valve_POS_Power_Write(0);
+        readings.valve_pos_reading = channels[ADC_MUX_Valve_POS_reading]; // blue wire reading (opened percentage)
+        readings.valve_pos_power = channels[ADC_MUX_Valve_POS_Power]; // brown wire power supply to potentiometer
     }
-    else {
-        Downstream_Level_Sensor_Power_Write(0u);
+    else { // second linear actuator
+        Valve2_POS_Power_Write(0u);
+        readings.valve_pos_reading = channels[ADC_MUX_Valve2_POS_reading]; // blue wire reading (percent retracted/open)
+        readings.valve_pos_power = channels[ADC_MUX_Valve2_POS_Power]; // brown (yellow) wire power supply to potentiometer
     }
     
- 
-    readings.valve_pos_reading = channels[ADC_MUX_Valve_POS_reading]; // blue wire reading (opened percentage)
-    readings.valve_pos_power = channels[ADC_MUX_Valve_POS_Power]; // brown wire power supply to potentiometer
-    // same pin as Valve_POS_Power
+
     float32 reading_offset = -0.1;
     char * compare_location;
     compare_location = strstr(valve_type, "Butterfly");
@@ -224,10 +225,9 @@ float32 read_Valve_pos(uint8 valve_id){
         // this code is written for the blue rotating dynaquip valve, not the linear actuator
         
     }
-    compare_location = strstr(valve_type,"LinAc");
+    compare_location = strstr(valve_type,"LinAc"); // LinAc2 type will also contain "LinAc"
     if (compare_location != NULL){
         float32 raw_pos = readings.valve_pos_reading / readings.valve_pos_power;
-        
         // fully retracted (open) is about 0.739
         // fully extended (closed) is about 0.0384
         float32 processed_reading = raw_pos/0.7 - 0.045;

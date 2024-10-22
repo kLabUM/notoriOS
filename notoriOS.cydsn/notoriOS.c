@@ -151,9 +151,11 @@ int WorkWorkWorkWorkWorkWork()
         if(level_sensor_enabled && timeToLevelSensor){
             timeToLevelSensor = level_sensor();
         }
+        /*
         if(downstream_level_sensor_enabled && timeToDownstreamLevelSensor){
             timeToDownstreamLevelSensor = downstream_level_sensor();
         }
+        */
         if (valve_enabled){
             valve_enabled = App_Valve();
         }
@@ -348,8 +350,8 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     printTestStatus(t_level_sensor);
     
     // Test downstream level sensor
-    test_t t_down_level = downstream_level_sensor_test();
-    printTestStatus(t_down_level);
+    //test_t t_down_level = downstream_level_sensor_test();
+    //printTestStatus(t_down_level);
     
     // Test valve
     //test_t t_valve = valve_test();

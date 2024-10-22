@@ -1,6 +1,6 @@
 // ======================================================================
 // notoriOS.v generated from TopDesign.cysch
-// 04/17/2024 at 13:55
+// 04/23/2024 at 10:53
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1233,94 +1233,6 @@ endmodule
 `include "C:\Program Files (x86)\Cypress\PSoC Creator\4.4\PSoC Creator\psoc\content\CyPrimitives\cyprimitives.cylib\mux_v1_10\mux_v1_10.v"
 `endif
 
-// UART_v2_50(Address1=0, Address2=0, BaudRate=9600, BreakBitsRX=13, BreakBitsTX=13, BreakDetect=false, CRCoutputsEn=false, Enable_RX=1, Enable_RXIntInterrupt=0, Enable_TX=0, Enable_TXIntInterrupt=0, EnableHWAddress=0, EnIntRXInterrupt=false, EnIntTXInterrupt=false, FlowControl=0, HalfDuplexEn=false, HwTXEnSignal=true, InternalClock=false, InternalClockToleranceMinus=3.93736842105263, InternalClockTolerancePlus=3.93736842105263, InternalClockUsed=0, InterruptOnAddDetect=0, InterruptOnAddressMatch=0, InterruptOnBreak=0, InterruptOnByteRcvd=1, InterruptOnOverrunError=0, InterruptOnParityError=0, InterruptOnStopError=0, InterruptOnTXComplete=false, InterruptOnTXFifoEmpty=false, InterruptOnTXFifoFull=false, InterruptOnTXFifoNotFull=false, IntOnAddressDetect=false, IntOnAddressMatch=false, IntOnBreak=false, IntOnByteRcvd=true, IntOnOverrunError=false, IntOnParityError=false, IntOnStopError=false, NumDataBits=8, NumStopBits=1, OverSamplingRate=8, ParityType=0, ParityTypeSw=false, RequiredClock=76800, RXAddressMode=0, RXBufferSize=4, RxBuffRegSizeReplacementString=uint8, RXEnable=true, TXBitClkGenDP=true, TXBufferSize=4, TxBuffRegSizeReplacementString=uint8, TXEnable=false, Use23Polling=true, CY_API_CALLBACK_HEADER_INCLUDE=#include "cyapicallbacks.h", CY_COMMENT=, CY_COMPONENT_NAME=UART_v2_50, CY_CONFIG_TITLE=Downstream_Level_Sensor_UART, CY_CONST_CONFIG=true, CY_CONTROL_FILE=<:default:>, CY_DATASHEET_FILE=<:default:>, CY_FITTER_NAME=Downstream_Level_Sensor_UART, CY_INSTANCE_SHORT_NAME=Downstream_Level_Sensor_UART, CY_MAJOR_VERSION=2, CY_MINOR_VERSION=50, CY_PDL_DRIVER_NAME=, CY_PDL_DRIVER_REQ_VERSION=, CY_PDL_DRIVER_SUBGROUP=, CY_PDL_DRIVER_VARIANT=, CY_REMOVE=false, CY_SUPPRESS_API_GEN=false, CY_VERSION=PSoC Creator  4.4, INSTANCE_NAME=Downstream_Level_Sensor_UART, )
-module UART_v2_50_8 (
-    clock,
-    cts_n,
-    reset,
-    rts_n,
-    rx,
-    rx_clk,
-    rx_data,
-    rx_interrupt,
-    tx,
-    tx_clk,
-    tx_data,
-    tx_en,
-    tx_interrupt);
-    input       clock;
-    input       cts_n;
-    input       reset;
-    output      rts_n;
-    input       rx;
-    output      rx_clk;
-    output      rx_data;
-    output      rx_interrupt;
-    output      tx;
-    output      tx_clk;
-    output      tx_data;
-    output      tx_en;
-    output      tx_interrupt;
-
-    parameter Address1 = 0;
-    parameter Address2 = 0;
-    parameter EnIntRXInterrupt = 0;
-    parameter EnIntTXInterrupt = 0;
-    parameter FlowControl = 0;
-    parameter HalfDuplexEn = 0;
-    parameter HwTXEnSignal = 1;
-    parameter NumDataBits = 8;
-    parameter NumStopBits = 1;
-    parameter ParityType = 0;
-    parameter RXEnable = 1;
-    parameter TXEnable = 0;
-
-          wire  Net_289;
-          wire  Net_61;
-          wire  Net_9;
-
-	// VirtualMux_1 (cy_virtualmux_v1_0)
-	assign Net_61 = clock;
-
-    B_UART_v2_50 BUART (
-        .clock(Net_61),
-        .cts_n(cts_n),
-        .reset(reset),
-        .rts_n(rts_n),
-        .rx(rx),
-        .rx_clk(rx_clk),
-        .rx_data(rx_data),
-        .rx_interrupt(rx_interrupt),
-        .tx(tx),
-        .tx_clk(tx_clk),
-        .tx_data(tx_data),
-        .tx_en(tx_en),
-        .tx_interrupt(tx_interrupt));
-    defparam BUART.Address1 = 0;
-    defparam BUART.Address2 = 0;
-    defparam BUART.BreakBitsRX = 13;
-    defparam BUART.BreakBitsTX = 13;
-    defparam BUART.BreakDetect = 0;
-    defparam BUART.CRCoutputsEn = 0;
-    defparam BUART.FlowControl = 0;
-    defparam BUART.HalfDuplexEn = 0;
-    defparam BUART.HwTXEnSignal = 1;
-    defparam BUART.NumDataBits = 8;
-    defparam BUART.NumStopBits = 1;
-    defparam BUART.OverSampleCount = 8;
-    defparam BUART.ParityType = 0;
-    defparam BUART.ParityTypeSw = 0;
-    defparam BUART.RXAddressMode = 0;
-    defparam BUART.RXEnable = 1;
-    defparam BUART.RXStatusIntEnable = 1;
-    defparam BUART.TXBitClkGenDP = 1;
-    defparam BUART.TXEnable = 0;
-    defparam BUART.Use23Polling = 1;
-
-
-
-endmodule
-
 // Component: PulseConvert_v1_0
 `ifdef CY_BLK_DIR
 `undef CY_BLK_DIR
@@ -1361,7 +1273,7 @@ endmodule
 `endif
 
 // Counter_v3_0(CaptureMode=0, CaptureModeSoftware=0, ClockMode=0, CompareMode=1, CompareModeSoftware=0, CompareStatusEdgeSense=true, CompareValue=128, CONTROL3=0, ControlRegRemoved=0, CyGetRegReplacementString=CY_GET_REG16, CySetRegReplacementString=CY_SET_REG16, EnableMode=0, FF16=false, FF8=false, FixedFunction=false, FixedFunctionUsed=0, InitCounterValue=0, InterruptOnCapture=false, InterruptOnCompare=false, InterruptOnOverUnderFlow=false, InterruptOnTC=false, Period=65534, RegDefReplacementString=reg16, RegSizeReplacementString=uint16, ReloadOnCapture=false, ReloadOnCompare=false, ReloadOnOverUnder=true, ReloadOnReset=true, Resolution=16, RunMode=0, UDB16=true, UDB24=false, UDB32=false, UDB8=false, UDBControlReg=true, UseInterrupt=true, VerilogSectionReplacementString=sC16, CY_API_CALLBACK_HEADER_INCLUDE=#include "cyapicallbacks.h", CY_COMMENT=, CY_COMPONENT_NAME=Counter_v3_0, CY_CONFIG_TITLE=BottleCounter, CY_CONST_CONFIG=true, CY_CONTROL_FILE=<:default:>, CY_DATASHEET_FILE=<:default:>, CY_FITTER_NAME=BottleCounter, CY_INSTANCE_SHORT_NAME=BottleCounter, CY_MAJOR_VERSION=3, CY_MINOR_VERSION=0, CY_PDL_DRIVER_NAME=, CY_PDL_DRIVER_REQ_VERSION=, CY_PDL_DRIVER_SUBGROUP=, CY_PDL_DRIVER_VARIANT=, CY_REMOVE=false, CY_SUPPRESS_API_GEN=false, CY_VERSION=PSoC Creator  4.4, INSTANCE_NAME=BottleCounter, )
-module Counter_v3_0_9 (
+module Counter_v3_0_8 (
     capture,
     clock,
     comp,
@@ -1472,19 +1384,6 @@ module top ;
           wire  Net_380;
           wire  Net_379;
           wire  Net_365;
-          wire  Net_392;
-          wire  Net_391;
-          wire  Net_390;
-          wire  Net_389;
-          wire  Net_388;
-          wire  Net_386;
-          wire  Net_385;
-          wire  Net_384;
-          wire  Net_383;
-          wire  Net_382;
-          wire  Net_381;
-          wire  Net_387;
-          wire  Net_401;
           wire  Net_222;
           wire  Net_221;
           wire  Net_219;
@@ -1526,7 +1425,6 @@ module top ;
           wire  Net_100;
           wire  Net_101;
     electrical  Net_97;
-    electrical  Net_339;
           wire  Net_28;
           wire  Net_24;
           wire  Net_30;
@@ -1540,17 +1438,19 @@ module top ;
           wire  Net_26;
           wire  Net_21;
           wire  Net_38;
-          wire  Net_309;
+    electrical  Net_433;
+    electrical  Net_443;
+    electrical  Net_441;
+    electrical  Net_440;
+    electrical  Net_436;
+    electrical  Net_437;
+    electrical  Net_438;
+    electrical  Net_439;
           wire  Net_1308;
           wire  Net_1240;
           wire  Net_1238;
           wire  Net_1194;
           wire  Net_1237;
-    electrical  Net_364;
-    electrical  Net_344;
-    electrical  Net_346;
-    electrical  Net_342;
-    electrical  Net_338;
           wire  Net_225;
           wire  Net_223;
           wire  Net_180;
@@ -2096,7 +1996,7 @@ module top ;
 		 (.oe(tmpOE__AN_VSOL_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_VSOL_net[0:0]}),
-		  .analog({Net_346}),
+		  .analog({Net_438}),
 		  .io({tmpIO_0__AN_VSOL_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_VSOL_net),
 		  .interrupt({tmpINTERRUPT_0__AN_VSOL_net[0:0]}),
@@ -2451,18 +2351,20 @@ module top ;
     
     cy_psoc3_amux_v1_0 AMux(
         .muxin({
-            Net_364,
-            Net_339,
-            Net_344,
-            Net_346,
-            Net_338,
-            Net_342
+            Net_443,
+            Net_433,
+            Net_441,
+            Net_440,
+            Net_439,
+            Net_438,
+            Net_437,
+            Net_436
             }),
         .vout(Net_97)
         );
     
-    defparam AMux.muxin_width = 6;
-    defparam AMux.init_mux_sel = 6'h0;
+    defparam AMux.muxin_width = 8;
+    defparam AMux.init_mux_sel = 8'h0;
     defparam AMux.one_active = 0;
     defparam AMux.connect_mode = 2;
     
@@ -2615,7 +2517,7 @@ module top ;
 		 (.oe(tmpOE__AN_VBAT_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_VBAT_net[0:0]}),
-		  .analog({Net_338}),
+		  .analog({Net_437}),
 		  .io({tmpIO_0__AN_VBAT_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_VBAT_net),
 		  .interrupt({tmpINTERRUPT_0__AN_VBAT_net[0:0]}),
@@ -3188,7 +3090,7 @@ module top ;
 		  .name("1.024V"),
 		  .autoenable(1))
 		vRef_1
-		 (.vout(Net_342));
+		 (.vout(Net_436));
 
 
 	wire [0:0] tmpOE__AN_PRTRANS_net;
@@ -3254,7 +3156,7 @@ module top ;
 		 (.oe(tmpOE__AN_PRTRANS_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__AN_PRTRANS_net[0:0]}),
-		  .analog({Net_344}),
+		  .analog({Net_439}),
 		  .io({tmpIO_0__AN_PRTRANS_net[0:0]}),
 		  .siovref(tmpSIOVREF__AN_PRTRANS_net),
 		  .interrupt({tmpINTERRUPT_0__AN_PRTRANS_net[0:0]}),
@@ -3267,61 +3169,16 @@ module top ;
 
 	assign tmpOE__AN_PRTRANS_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
-
-	cy_clock_v1_0
-		#(.id("0dfddc33-d48f-401c-a502-86edf4f352b5"),
-		  .source_clock_id("61737EF6-3B74-48f9-8B91-F7473A442AE7"),
-		  .divisor(0),
-		  .period("13020833333.3333"),
-		  .is_direct(0),
-		  .is_digital(1))
-		Downstream_Clock_IMO
-		 (.clock_out(Net_309));
-
-
-
-	cy_isr_v1_0
-		#(.int_type(2'b10))
-		Downstream_Level_Sensor_ISR
-		 (.int_signal(Net_387));
-
-
-    UART_v2_50_8 Downstream_Level_Sensor_UART (
-        .clock(Net_309),
-        .cts_n(1'b0),
-        .reset(1'b0),
-        .rts_n(Net_383),
-        .rx(Net_384),
-        .rx_clk(Net_385),
-        .rx_data(Net_386),
-        .rx_interrupt(Net_387),
-        .tx(Net_388),
-        .tx_clk(Net_389),
-        .tx_data(Net_390),
-        .tx_en(Net_391),
-        .tx_interrupt(Net_392));
-    defparam Downstream_Level_Sensor_UART.Address1 = 0;
-    defparam Downstream_Level_Sensor_UART.Address2 = 0;
-    defparam Downstream_Level_Sensor_UART.EnIntRXInterrupt = 0;
-    defparam Downstream_Level_Sensor_UART.EnIntTXInterrupt = 0;
-    defparam Downstream_Level_Sensor_UART.FlowControl = 0;
-    defparam Downstream_Level_Sensor_UART.HalfDuplexEn = 0;
-    defparam Downstream_Level_Sensor_UART.HwTXEnSignal = 1;
-    defparam Downstream_Level_Sensor_UART.NumDataBits = 8;
-    defparam Downstream_Level_Sensor_UART.NumStopBits = 1;
-    defparam Downstream_Level_Sensor_UART.ParityType = 0;
-    defparam Downstream_Level_Sensor_UART.RXEnable = 1;
-    defparam Downstream_Level_Sensor_UART.TXEnable = 0;
-
-	wire [0:0] tmpOE__Downstream_Level_Sensor_RX_net;
-	wire [0:0] tmpIO_0__Downstream_Level_Sensor_RX_net;
-	wire [0:0] tmpINTERRUPT_0__Downstream_Level_Sensor_RX_net;
-	electrical [0:0] tmpSIOVREF__Downstream_Level_Sensor_RX_net;
+	wire [0:0] tmpOE__Valve2_POS_reading_net;
+	wire [0:0] tmpFB_0__Valve2_POS_reading_net;
+	wire [0:0] tmpIO_0__Valve2_POS_reading_net;
+	wire [0:0] tmpINTERRUPT_0__Valve2_POS_reading_net;
+	electrical [0:0] tmpSIOVREF__Valve2_POS_reading_net;
 
 	cy_psoc3_pins_v1_10
 		#(.id("1342246d-aacd-4375-a9f9-10ee28b0ba01"),
-		  .drive_mode(3'b110),
-		  .ibuf_enabled(1'b1),
+		  .drive_mode(3'b000),
+		  .ibuf_enabled(1'b0),
 		  .init_dr_st(1'b0),
 		  .input_clk_en(0),
 		  .input_sync(1'b1),
@@ -3351,7 +3208,7 @@ module top ;
 		  .pa_out_clock_en(-1),
 		  .pa_out_reset(-1),
 		  .pin_aliases(""),
-		  .pin_mode("I"),
+		  .pin_mode("A"),
 		  .por_state(4),
 		  .sio_group_cnt(0),
 		  .sio_hyst(1'b1),
@@ -3365,19 +3222,20 @@ module top ;
 		  .slew_rate(1'b0),
 		  .spanning(0),
 		  .use_annotation(1'b0),
-		  .vtrip(2'b00),
+		  .vtrip(2'b10),
 		  .width(1),
 		  .ovt_hyst_trim(1'b0),
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		Downstream_Level_Sensor_RX
-		 (.oe(tmpOE__Downstream_Level_Sensor_RX_net),
+		Valve2_POS_reading
+		 (.oe(tmpOE__Valve2_POS_reading_net),
 		  .y({1'b0}),
-		  .fb({Net_384}),
-		  .io({tmpIO_0__Downstream_Level_Sensor_RX_net[0:0]}),
-		  .siovref(tmpSIOVREF__Downstream_Level_Sensor_RX_net),
-		  .interrupt({tmpINTERRUPT_0__Downstream_Level_Sensor_RX_net[0:0]}),
+		  .fb({tmpFB_0__Valve2_POS_reading_net[0:0]}),
+		  .analog({Net_433}),
+		  .io({tmpIO_0__Valve2_POS_reading_net[0:0]}),
+		  .siovref(tmpSIOVREF__Valve2_POS_reading_net),
+		  .interrupt({tmpINTERRUPT_0__Valve2_POS_reading_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -3385,13 +3243,13 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__Downstream_Level_Sensor_RX_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__Valve2_POS_reading_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
-	wire [0:0] tmpOE__Downstream_Level_Sensor_Power_net;
-	wire [0:0] tmpFB_0__Downstream_Level_Sensor_Power_net;
-	wire [0:0] tmpIO_0__Downstream_Level_Sensor_Power_net;
-	wire [0:0] tmpINTERRUPT_0__Downstream_Level_Sensor_Power_net;
-	electrical [0:0] tmpSIOVREF__Downstream_Level_Sensor_Power_net;
+	wire [0:0] tmpOE__Valve2_POS_Power_net;
+	wire [0:0] tmpFB_0__Valve2_POS_Power_net;
+	wire [0:0] tmpIO_0__Valve2_POS_Power_net;
+	wire [0:0] tmpINTERRUPT_0__Valve2_POS_Power_net;
+	electrical [0:0] tmpSIOVREF__Valve2_POS_Power_net;
 
 	cy_psoc3_pins_v1_10
 		#(.id("8670dc7a-a8b2-47c1-bbab-4400d31d2e0e"),
@@ -3446,13 +3304,14 @@ module top ;
 		  .ovt_needed(1'b0),
 		  .ovt_slew_control(2'b00),
 		  .input_buffer_sel(2'b00))
-		Downstream_Level_Sensor_Power
-		 (.oe(tmpOE__Downstream_Level_Sensor_Power_net),
+		Valve2_POS_Power
+		 (.oe(tmpOE__Valve2_POS_Power_net),
 		  .y({1'b0}),
-		  .fb({tmpFB_0__Downstream_Level_Sensor_Power_net[0:0]}),
-		  .io({tmpIO_0__Downstream_Level_Sensor_Power_net[0:0]}),
-		  .siovref(tmpSIOVREF__Downstream_Level_Sensor_Power_net),
-		  .interrupt({tmpINTERRUPT_0__Downstream_Level_Sensor_Power_net[0:0]}),
+		  .fb({tmpFB_0__Valve2_POS_Power_net[0:0]}),
+		  .analog({Net_443}),
+		  .io({tmpIO_0__Valve2_POS_Power_net[0:0]}),
+		  .siovref(tmpSIOVREF__Valve2_POS_Power_net),
+		  .interrupt({tmpINTERRUPT_0__Valve2_POS_Power_net[0:0]}),
 		  .in_clock({1'b0}),
 		  .in_clock_en({1'b1}),
 		  .in_reset({1'b0}),
@@ -3460,7 +3319,7 @@ module top ;
 		  .out_clock_en({1'b1}),
 		  .out_reset({1'b0}));
 
-	assign tmpOE__Downstream_Level_Sensor_Power_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+	assign tmpOE__Valve2_POS_Power_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 	wire [0:0] tmpOE__Valve_POS_reading_net;
 	wire [0:0] tmpFB_0__Valve_POS_reading_net;
@@ -3525,7 +3384,7 @@ module top ;
 		 (.oe(tmpOE__Valve_POS_reading_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__Valve_POS_reading_net[0:0]}),
-		  .analog({Net_339}),
+		  .analog({Net_440}),
 		  .io({tmpIO_0__Valve_POS_reading_net[0:0]}),
 		  .siovref(tmpSIOVREF__Valve_POS_reading_net),
 		  .interrupt({tmpINTERRUPT_0__Valve_POS_reading_net[0:0]}),
@@ -3601,7 +3460,7 @@ module top ;
 		 (.oe(tmpOE__Valve_POS_Power_net),
 		  .y({1'b0}),
 		  .fb({tmpFB_0__Valve_POS_Power_net[0:0]}),
-		  .analog({Net_364}),
+		  .analog({Net_441}),
 		  .io({tmpIO_0__Valve_POS_Power_net[0:0]}),
 		  .siovref(tmpSIOVREF__Valve_POS_Power_net),
 		  .interrupt({tmpINTERRUPT_0__Valve_POS_Power_net[0:0]}),
@@ -3950,7 +3809,7 @@ module top ;
 		 (.clock_out(Net_1240));
 
 
-    Counter_v3_0_9 BottleCounter (
+    Counter_v3_0_8 BottleCounter (
         .capture(1'b0),
         .clock(Net_1237),
         .comp(Net_369),

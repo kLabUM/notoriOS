@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Downstream_Level_Sensor_RX.h  
+* File Name: Valve2_POS_Power.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_Downstream_Level_Sensor_RX_ALIASES_H) /* Pins Downstream_Level_Sensor_RX_ALIASES_H */
-#define CY_PINS_Downstream_Level_Sensor_RX_ALIASES_H
+#if !defined(CY_PINS_Valve2_POS_Power_ALIASES_H) /* Pins Valve2_POS_Power_ALIASES_H */
+#define CY_PINS_Valve2_POS_Power_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define Downstream_Level_Sensor_RX_0			(Downstream_Level_Sensor_RX__0__PC)
-#define Downstream_Level_Sensor_RX_0_INTR	((uint16)((uint16)0x0001u << Downstream_Level_Sensor_RX__0__SHIFT))
+#define Valve2_POS_Power_0			(Valve2_POS_Power__0__PC)
+#define Valve2_POS_Power_0_INTR	((uint16)((uint16)0x0001u << Valve2_POS_Power__0__SHIFT))
 
-#define Downstream_Level_Sensor_RX_INTR_ALL	 ((uint16)(Downstream_Level_Sensor_RX_0_INTR))
+#define Valve2_POS_Power_INTR_ALL	 ((uint16)(Valve2_POS_Power_0_INTR))
 
-#endif /* End Pins Downstream_Level_Sensor_RX_ALIASES_H */
+#endif /* End Pins Valve2_POS_Power_ALIASES_H */
 
 
 /* [] END OF FILE */

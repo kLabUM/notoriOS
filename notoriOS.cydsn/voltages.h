@@ -13,6 +13,8 @@
 #define ADC_MUX_PRTRANS 3
 #define ADC_MUX_Valve_POS_reading 4
 #define ADC_MUX_Valve_POS_Power 5
+#define ADC_MUX_Valve2_POS_reading 6
+#define ADC_MUX_Valve2_POS_Power 7
 
 #define N_SAMPLES 11
 
