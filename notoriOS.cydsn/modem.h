@@ -102,6 +102,7 @@ typedef struct{
     uint8 Downstream_Level_Sensor_freq;
     uint8 Valve_freq;
     uint8 Autosampler_freq;
+    uint8 Sontek_freq; //Kayla's SonTek W25
     /* app add template
     uint8 <Name>_freq;
     */

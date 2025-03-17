@@ -105,6 +105,12 @@ void ReadyOrNot()
 
     alarmAutosampler = CreateAlarm(updatable_parameters.Autosampler_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToAutosampler = 1u;
+
+    //Kayla's SonTek Sensor W25: get measurement every minute
+    alarmSontek = CreateAlarm(updatable_parameters.SonTek_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    timeToSontek = 1u;
+
+
     /* app add template
     alarm<Name> = CreateAlarm(updatable_parameters.<Name>_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeTo<Name> = 1u;
@@ -163,6 +169,12 @@ int WorkWorkWorkWorkWorkWork()
         if(autosampler_enabled && timeToAutosampler){
             timeToAutosampler = App_Autosampler();
         }
+
+        // Kayla's SonTek W25
+        if(Sontek_enabled && timeToSontek){
+            timeToSontek = App_Sontek();
+        }
+
         // add other custom apps below
         /* add app template
         if(<name>_enabled && timeTo<Name>){
@@ -270,6 +282,12 @@ void AyoItsTime(uint8 alarmType)
     if(AlarmReady(&alarmAutosampler, alarmType)){
         timeToAutosampler = 1u;
     }
+
+    // Kayla's SonTek W25
+    if(AlarmReady(&alarmSontek, alarmType)){
+        timeToSontek = 1u;
+    }
+
     /* app add template
     if(AlarmReady(&alarm<Name>, alarmType)){
         timeTo<Name> = 1u;
