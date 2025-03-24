@@ -448,7 +448,7 @@ void get_cell_network_stats(){
         &modem_stats.rsrq,
         &modem_stats.rsrp);
 
-        //check to see if we’re getting a good received signal strength
+        //check to see if we're getting a good received signal strength
         //if(modem_stats.rsrp != 255 && modem_stats.rsrp > 26){// || modem_stats.rxlev !=0){
         //    break;
         //}

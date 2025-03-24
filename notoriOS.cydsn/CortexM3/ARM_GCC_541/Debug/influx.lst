@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 1
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 1
 
 
    1              		.syntax unified
@@ -23,7 +23,7 @@ ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 1
   20              		.comm	modem_start_time_stamp,4,4
   21              		.comm	modem_info,60,4
   22              		.comm	modem_stats,32,4
-  23              		.comm	updatable_parameters,10,4
+  23              		.comm	updatable_parameters,11,4
   24              		.syntax unified
   25              		.global _printf_float
   26              		.thumb
@@ -42,2494 +42,2549 @@ ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 1
   39              		.comm	valve_inbox,100,4
   40              		.comm	autosampler_enabled,1,1
   41              		.comm	autosampler_inbox,100,4
-  42              		.comm	http_request,10000,4
-  43              		.comm	http_body,10000,4
-  44              		.comm	http_route,200,4
-  45              		.comm	system_info,28,4
-  46              		.comm	system_settings,104,4
-  47              		.comm	alarmMeasure,6,4
-  48              		.comm	timeToMeasure,1,1
-  49              		.comm	alarmSync,6,4
-  50              		.comm	timeToSync,1,1
-  51              		.comm	timeToSycnRemoteParams,1,1
-  52              		.comm	hey,1,1
-  53              		.comm	alarmAppLED,6,4
-  54              		.comm	timeToAppLED,1,1
-  55              		.comm	alarmLevelSensor,6,4
-  56              		.comm	timeToLevelSensor,1,1
-  57              		.comm	alarmDownstreamLevelSensor,6,4
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 2
+  42              		.comm	Sontek_enabled,1,1
+  43              		.comm	http_request,10000,4
+  44              		.comm	http_body,10000,4
+  45              		.comm	http_route,200,4
+  46              		.comm	system_info,28,4
+  47              		.comm	system_settings,104,4
+  48              		.comm	alarmMeasure,6,4
+  49              		.comm	timeToMeasure,1,1
+  50              		.comm	alarmSync,6,4
+  51              		.comm	timeToSync,1,1
+  52              		.comm	timeToSycnRemoteParams,1,1
+  53              		.comm	hey,1,1
+  54              		.comm	alarmAppLED,6,4
+  55              		.comm	timeToAppLED,1,1
+  56              		.comm	alarmLevelSensor,6,4
+  57              		.comm	timeToLevelSensor,1,1
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 2
 
 
-  58              		.comm	timeToDownstreamLevelSensor,1,1
-  59              		.comm	alarmValve,6,4
-  60              		.comm	timeToValve,1,1
-  61              		.comm	alarmAutosampler,6,4
-  62              		.comm	timeToAutosampler,1,1
-  63              		.section	.rodata
-  64              		.align	2
-  65              	.LC0:
-  66 0000 25732573 		.ascii	"%s%s,node_id=%s value=%s %ld000000000\012\000"
-  66      2C6E6F64 
-  66      655F6964 
-  66      3D257320 
-  66      76616C75 
-  67              		.section	.text.construct_influx_write_body,"ax",%progbits
-  68              		.align	2
-  69              		.global	construct_influx_write_body
-  70              		.thumb
-  71              		.thumb_func
-  72              		.type	construct_influx_write_body, %function
-  73              	construct_influx_write_body:
-  74              	.LFB64:
-  75              		.file 1 "influx.c"
+  58              		.comm	alarmDownstreamLevelSensor,6,4
+  59              		.comm	timeToDownstreamLevelSensor,1,1
+  60              		.comm	alarmValve,6,4
+  61              		.comm	timeToValve,1,1
+  62              		.comm	alarmAutosampler,6,4
+  63              		.comm	timeToAutosampler,1,1
+  64              		.comm	alarmSontek,6,4
+  65              		.comm	timeToSontek,1,1
+  66              		.section	.rodata
+  67              		.align	2
+  68              	.LC0:
+  69 0000 25732573 		.ascii	"%s%s,node_id=%s value=%s %ld000000000\012\000"
+  69      2C6E6F64 
+  69      655F6964 
+  69      3D257320 
+  69      76616C75 
+  70              		.section	.text.construct_influx_write_body,"ax",%progbits
+  71              		.align	2
+  72              		.global	construct_influx_write_body
+  73              		.thumb
+  74              		.thumb_func
+  75              		.type	construct_influx_write_body, %function
+  76              	construct_influx_write_body:
+  77              	.LFB64:
+  78              		.file 1 "influx.c"
    1:influx.c      **** #include "influx.h"  
    2:influx.c      **** #include "notoriOS.h"
    3:influx.c      ****                         
    4:influx.c      **** // Prepare data from data wheel to send to influx
    5:influx.c      **** unsigned int construct_influx_write_body(char* body, char *node_id){
-  76              		.loc 1 5 0
-  77              		.cfi_startproc
-  78              		@ args = 0, pretend = 0, frame = 16
-  79              		@ frame_needed = 1, uses_anonymous_args = 0
-  80 0000 90B5     		push	{r4, r7, lr}
-  81              		.cfi_def_cfa_offset 12
-  82              		.cfi_offset 4, -12
-  83              		.cfi_offset 7, -8
-  84              		.cfi_offset 14, -4
-  85 0002 89B0     		sub	sp, sp, #36
-  86              		.cfi_def_cfa_offset 48
-  87 0004 04AF     		add	r7, sp, #16
-  88              		.cfi_def_cfa 7, 32
-  89 0006 7860     		str	r0, [r7, #4]
-  90 0008 3960     		str	r1, [r7]
+  79              		.loc 1 5 0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 16
+  82              		@ frame_needed = 1, uses_anonymous_args = 0
+  83 0000 90B5     		push	{r4, r7, lr}
+  84              		.cfi_def_cfa_offset 12
+  85              		.cfi_offset 4, -12
+  86              		.cfi_offset 7, -8
+  87              		.cfi_offset 14, -4
+  88 0002 89B0     		sub	sp, sp, #36
+  89              		.cfi_def_cfa_offset 48
+  90 0004 04AF     		add	r7, sp, #16
+  91              		.cfi_def_cfa 7, 32
+  92 0006 7860     		str	r0, [r7, #4]
+  93 0008 3960     		str	r1, [r7]
    6:influx.c      ****    
    7:influx.c      ****     body[0] = '\0'; // Set the array variable body to be 0
-  91              		.loc 1 7 0
-  92 000a 7B68     		ldr	r3, [r7, #4]
-  93 000c 0022     		movs	r2, #0
-  94 000e 1A70     		strb	r2, [r3]
-  95              	.LBB2:
+  94              		.loc 1 7 0
+  95 000a 7B68     		ldr	r3, [r7, #4]
+  96 000c 0022     		movs	r2, #0
+  97 000e 1A70     		strb	r2, [r3]
+  98              	.LBB2:
    8:influx.c      ****  
    9:influx.c      ****     // Get data from the data stack and put into http body to send to influx
   10:influx.c      ****     for(uint16 i = 0;i<sizeOfDataStack();i++){
-  96              		.loc 1 10 0
-  97 0010 0023     		movs	r3, #0
-  98 0012 FB81     		strh	r3, [r7, #14]	@ movhi
-  99 0014 24E0     		b	.L2
- 100              	.L3:
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 3
+  99              		.loc 1 10 0
+ 100 0010 0023     		movs	r3, #0
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 3
 
 
+ 101 0012 FB81     		strh	r3, [r7, #14]	@ movhi
+ 102 0014 24E0     		b	.L2
+ 103              	.L3:
   11:influx.c      ****         // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
   12:influx.c      ****         snprintf(body,sizeof(http_body), "%s%s,node_id=%s value=%s %ld000000000\n", body, data[i].k
- 101              		.loc 1 12 0 discriminator 3
- 102 0016 FB89     		ldrh	r3, [r7, #14]
- 103 0018 2C22     		movs	r2, #44
- 104 001a 02FB03F3 		mul	r3, r2, r3
- 105 001e 184A     		ldr	r2, .L5
- 106 0020 1344     		add	r3, r3, r2
- 107 0022 FA89     		ldrh	r2, [r7, #14]
- 108 0024 2C21     		movs	r1, #44
- 109 0026 01FB02F2 		mul	r2, r1, r2
- 110 002a 1032     		adds	r2, r2, #16
- 111 002c 1449     		ldr	r1, .L5
- 112 002e 0A44     		add	r2, r2, r1
- 113 0030 0432     		adds	r2, r2, #4
- 114 0032 F989     		ldrh	r1, [r7, #14]
- 115 0034 1248     		ldr	r0, .L5
- 116 0036 2C24     		movs	r4, #44
- 117 0038 04FB01F1 		mul	r1, r4, r1
- 118 003c 0144     		add	r1, r1, r0
- 119 003e 2831     		adds	r1, r1, #40
- 120 0040 0968     		ldr	r1, [r1]
- 121 0042 0391     		str	r1, [sp, #12]
- 122 0044 0292     		str	r2, [sp, #8]
- 123 0046 3A68     		ldr	r2, [r7]
- 124 0048 0192     		str	r2, [sp, #4]
- 125 004a 0093     		str	r3, [sp]
- 126 004c 7B68     		ldr	r3, [r7, #4]
- 127 004e 0D4A     		ldr	r2, .L5+4
- 128 0050 42F21071 		movw	r1, #10000
- 129 0054 7868     		ldr	r0, [r7, #4]
- 130 0056 FFF7FEFF 		bl	snprintf
+ 104              		.loc 1 12 0 discriminator 3
+ 105 0016 FB89     		ldrh	r3, [r7, #14]
+ 106 0018 2C22     		movs	r2, #44
+ 107 001a 02FB03F3 		mul	r3, r2, r3
+ 108 001e 184A     		ldr	r2, .L5
+ 109 0020 1344     		add	r3, r3, r2
+ 110 0022 FA89     		ldrh	r2, [r7, #14]
+ 111 0024 2C21     		movs	r1, #44
+ 112 0026 01FB02F2 		mul	r2, r1, r2
+ 113 002a 1032     		adds	r2, r2, #16
+ 114 002c 1449     		ldr	r1, .L5
+ 115 002e 0A44     		add	r2, r2, r1
+ 116 0030 0432     		adds	r2, r2, #4
+ 117 0032 F989     		ldrh	r1, [r7, #14]
+ 118 0034 1248     		ldr	r0, .L5
+ 119 0036 2C24     		movs	r4, #44
+ 120 0038 04FB01F1 		mul	r1, r4, r1
+ 121 003c 0144     		add	r1, r1, r0
+ 122 003e 2831     		adds	r1, r1, #40
+ 123 0040 0968     		ldr	r1, [r1]
+ 124 0042 0391     		str	r1, [sp, #12]
+ 125 0044 0292     		str	r2, [sp, #8]
+ 126 0046 3A68     		ldr	r2, [r7]
+ 127 0048 0192     		str	r2, [sp, #4]
+ 128 004a 0093     		str	r3, [sp]
+ 129 004c 7B68     		ldr	r3, [r7, #4]
+ 130 004e 0D4A     		ldr	r2, .L5+4
+ 131 0050 42F21071 		movw	r1, #10000
+ 132 0054 7868     		ldr	r0, [r7, #4]
+ 133 0056 FFF7FEFF 		bl	snprintf
   10:influx.c      ****         // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
- 131              		.loc 1 10 0 discriminator 3
- 132 005a FB89     		ldrh	r3, [r7, #14]
- 133 005c 0133     		adds	r3, r3, #1
- 134 005e FB81     		strh	r3, [r7, #14]	@ movhi
- 135              	.L2:
+ 134              		.loc 1 10 0 discriminator 3
+ 135 005a FB89     		ldrh	r3, [r7, #14]
+ 136 005c 0133     		adds	r3, r3, #1
+ 137 005e FB81     		strh	r3, [r7, #14]	@ movhi
+ 138              	.L2:
   10:influx.c      ****         // Note that influx uses a timestamp in nano-seconds, so we have to add 9 zeros
- 136              		.loc 1 10 0 is_stmt 0 discriminator 1
- 137 0060 FFF7FEFF 		bl	sizeOfDataStack
- 138 0064 0346     		mov	r3, r0
- 139 0066 1A46     		mov	r2, r3
- 140 0068 FB89     		ldrh	r3, [r7, #14]
- 141 006a 9342     		cmp	r3, r2
- 142 006c D3D3     		bcc	.L3
- 143              	.LBE2:
+ 139              		.loc 1 10 0 is_stmt 0 discriminator 1
+ 140 0060 FFF7FEFF 		bl	sizeOfDataStack
+ 141 0064 0346     		mov	r3, r0
+ 142 0066 1A46     		mov	r2, r3
+ 143 0068 FB89     		ldrh	r3, [r7, #14]
+ 144 006a 9342     		cmp	r3, r2
+ 145 006c D3D3     		bcc	.L3
+ 146              	.LBE2:
   13:influx.c      ****     }
   14:influx.c      ****     
   15:influx.c      ****     // The strlen() function calculates the length of a given string. The strlen() function takes a
   16:influx.c      ****     unsigned int request_len = strlen(body);
- 144              		.loc 1 16 0 is_stmt 1
- 145 006e 7868     		ldr	r0, [r7, #4]
- 146 0070 FFF7FEFF 		bl	strlen
- 147 0074 B860     		str	r0, [r7, #8]
+ 147              		.loc 1 16 0 is_stmt 1
+ 148 006e 7868     		ldr	r0, [r7, #4]
+ 149 0070 FFF7FEFF 		bl	strlen
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 4
+
+
+ 150 0074 B860     		str	r0, [r7, #8]
   17:influx.c      ****    
   18:influx.c      **** 
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 4
-
-
   19:influx.c      ****     return request_len;
- 148              		.loc 1 19 0
- 149 0076 BB68     		ldr	r3, [r7, #8]
+ 151              		.loc 1 19 0
+ 152 0076 BB68     		ldr	r3, [r7, #8]
   20:influx.c      **** }
- 150              		.loc 1 20 0
- 151 0078 1846     		mov	r0, r3
- 152 007a 1437     		adds	r7, r7, #20
- 153              		.cfi_def_cfa_offset 12
- 154 007c BD46     		mov	sp, r7
- 155              		.cfi_def_cfa_register 13
- 156              		@ sp needed
- 157 007e 90BD     		pop	{r4, r7, pc}
- 158              	.L6:
- 159              		.align	2
- 160              	.L5:
- 161 0080 00000000 		.word	data
- 162 0084 00000000 		.word	.LC0
- 163              		.cfi_endproc
- 164              	.LFE64:
- 165              		.size	construct_influx_write_body, .-construct_influx_write_body
- 166              		.section	.rodata
- 167 0027 00       		.align	2
- 168              	.LC1:
- 169 0028 25732573 		.ascii	"%s%s?u=%s&p=%s&db=%s\000"
- 169      3F753D25 
- 169      7326703D 
- 169      25732664 
- 169      623D2573 
- 170              		.section	.text.construct_influx_route,"ax",%progbits
- 171              		.align	2
- 172              		.global	construct_influx_route
- 173              		.thumb
- 174              		.thumb_func
- 175              		.type	construct_influx_route, %function
- 176              	construct_influx_route:
- 177              	.LFB65:
+ 153              		.loc 1 20 0
+ 154 0078 1846     		mov	r0, r3
+ 155 007a 1437     		adds	r7, r7, #20
+ 156              		.cfi_def_cfa_offset 12
+ 157 007c BD46     		mov	sp, r7
+ 158              		.cfi_def_cfa_register 13
+ 159              		@ sp needed
+ 160 007e 90BD     		pop	{r4, r7, pc}
+ 161              	.L6:
+ 162              		.align	2
+ 163              	.L5:
+ 164 0080 00000000 		.word	data
+ 165 0084 00000000 		.word	.LC0
+ 166              		.cfi_endproc
+ 167              	.LFE64:
+ 168              		.size	construct_influx_write_body, .-construct_influx_write_body
+ 169              		.section	.rodata
+ 170 0027 00       		.align	2
+ 171              	.LC1:
+ 172 0028 25732573 		.ascii	"%s%s?u=%s&p=%s&db=%s\000"
+ 172      3F753D25 
+ 172      7326703D 
+ 172      25732664 
+ 172      623D2573 
+ 173              		.section	.text.construct_influx_route,"ax",%progbits
+ 174              		.align	2
+ 175              		.global	construct_influx_route
+ 176              		.thumb
+ 177              		.thumb_func
+ 178              		.type	construct_influx_route, %function
+ 179              	construct_influx_route:
+ 180              	.LFB65:
   21:influx.c      **** 
   22:influx.c      **** // Create the route to connect to the influx database
   23:influx.c      **** void construct_influx_route(char* route, char* base, char* user, char* pass, char* database){
- 178              		.loc 1 23 0
- 179              		.cfi_startproc
- 180              		@ args = 4, pretend = 0, frame = 16
- 181              		@ frame_needed = 1, uses_anonymous_args = 0
- 182 0000 80B5     		push	{r7, lr}
- 183              		.cfi_def_cfa_offset 8
- 184              		.cfi_offset 7, -8
- 185              		.cfi_offset 14, -4
- 186 0002 88B0     		sub	sp, sp, #32
- 187              		.cfi_def_cfa_offset 40
- 188 0004 04AF     		add	r7, sp, #16
- 189              		.cfi_def_cfa 7, 24
- 190 0006 F860     		str	r0, [r7, #12]
- 191 0008 B960     		str	r1, [r7, #8]
- 192 000a 7A60     		str	r2, [r7, #4]
- 193 000c 3B60     		str	r3, [r7]
+ 181              		.loc 1 23 0
+ 182              		.cfi_startproc
+ 183              		@ args = 4, pretend = 0, frame = 16
+ 184              		@ frame_needed = 1, uses_anonymous_args = 0
+ 185 0000 80B5     		push	{r7, lr}
+ 186              		.cfi_def_cfa_offset 8
+ 187              		.cfi_offset 7, -8
+ 188              		.cfi_offset 14, -4
+ 189 0002 88B0     		sub	sp, sp, #32
+ 190              		.cfi_def_cfa_offset 40
+ 191 0004 04AF     		add	r7, sp, #16
+ 192              		.cfi_def_cfa 7, 24
+ 193 0006 F860     		str	r0, [r7, #12]
+ 194 0008 B960     		str	r1, [r7, #8]
+ 195 000a 7A60     		str	r2, [r7, #4]
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 5
+
+
+ 196 000c 3B60     		str	r3, [r7]
   24:influx.c      ****     // Detting a string to \0 is an easy way to set the string to be 0 because \0 denotes the end o
   25:influx.c      ****     route[0] = '\0';
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 5
-
-
- 194              		.loc 1 25 0
- 195 000e FB68     		ldr	r3, [r7, #12]
- 196 0010 0022     		movs	r2, #0
- 197 0012 1A70     		strb	r2, [r3]
+ 197              		.loc 1 25 0
+ 198 000e FB68     		ldr	r3, [r7, #12]
+ 199 0010 0022     		movs	r2, #0
+ 200 0012 1A70     		strb	r2, [r3]
   26:influx.c      ****     snprintf(route,sizeof(http_route), "%s%s?u=%s&p=%s&db=%s", route, base, user, pass, database); 
- 198              		.loc 1 26 0
- 199 0014 BB69     		ldr	r3, [r7, #24]
- 200 0016 0393     		str	r3, [sp, #12]
- 201 0018 3B68     		ldr	r3, [r7]
- 202 001a 0293     		str	r3, [sp, #8]
- 203 001c 7B68     		ldr	r3, [r7, #4]
- 204 001e 0193     		str	r3, [sp, #4]
- 205 0020 BB68     		ldr	r3, [r7, #8]
- 206 0022 0093     		str	r3, [sp]
- 207 0024 FB68     		ldr	r3, [r7, #12]
- 208 0026 044A     		ldr	r2, .L8
- 209 0028 C821     		movs	r1, #200
- 210 002a F868     		ldr	r0, [r7, #12]
- 211 002c FFF7FEFF 		bl	snprintf
+ 201              		.loc 1 26 0
+ 202 0014 BB69     		ldr	r3, [r7, #24]
+ 203 0016 0393     		str	r3, [sp, #12]
+ 204 0018 3B68     		ldr	r3, [r7]
+ 205 001a 0293     		str	r3, [sp, #8]
+ 206 001c 7B68     		ldr	r3, [r7, #4]
+ 207 001e 0193     		str	r3, [sp, #4]
+ 208 0020 BB68     		ldr	r3, [r7, #8]
+ 209 0022 0093     		str	r3, [sp]
+ 210 0024 FB68     		ldr	r3, [r7, #12]
+ 211 0026 044A     		ldr	r2, .L8
+ 212 0028 C821     		movs	r1, #200
+ 213 002a F868     		ldr	r0, [r7, #12]
+ 214 002c FFF7FEFF 		bl	snprintf
   27:influx.c      **** }
- 212              		.loc 1 27 0
- 213 0030 00BF     		nop
- 214 0032 1037     		adds	r7, r7, #16
- 215              		.cfi_def_cfa_offset 8
- 216 0034 BD46     		mov	sp, r7
- 217              		.cfi_def_cfa_register 13
- 218              		@ sp needed
- 219 0036 80BD     		pop	{r7, pc}
- 220              	.L9:
- 221              		.align	2
- 222              	.L8:
- 223 0038 28000000 		.word	.LC1
- 224              		.cfi_endproc
- 225              	.LFE65:
- 226              		.size	construct_influx_route, .-construct_influx_route
- 227              		.section	.rodata
- 228 003d 000000   		.align	2
- 229              	.LC2:
- 230 0040 494E464C 		.ascii	"INFLUX\000"
- 230      555800
- 231 0047 00       		.align	2
- 232              	.LC3:
- 233 0048 74657374 		.ascii	"test_reading_1,node_id=XYZ10, value=000 12345\012te"
- 233      5F726561 
- 233      64696E67 
- 233      5F312C6E 
- 233      6F64655F 
- 234 0078 73745F72 		.ascii	"st_reading_2,node_id=XYZ10, value=111 67890\015\012"
- 234      65616469 
- 234      6E675F32 
- 234      2C6E6F64 
- 234      655F6964 
- 235 00a5 00       		.ascii	"\000"
- 236 00a6 0000     		.align	2
- 237              	.LC4:
- 238 00a8 30303000 		.ascii	"000\000"
- 239              		.align	2
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 6
+ 215              		.loc 1 27 0
+ 216 0030 00BF     		nop
+ 217 0032 1037     		adds	r7, r7, #16
+ 218              		.cfi_def_cfa_offset 8
+ 219 0034 BD46     		mov	sp, r7
+ 220              		.cfi_def_cfa_register 13
+ 221              		@ sp needed
+ 222 0036 80BD     		pop	{r7, pc}
+ 223              	.L9:
+ 224              		.align	2
+ 225              	.L8:
+ 226 0038 28000000 		.word	.LC1
+ 227              		.cfi_endproc
+ 228              	.LFE65:
+ 229              		.size	construct_influx_route, .-construct_influx_route
+ 230              		.section	.rodata
+ 231 003d 000000   		.align	2
+ 232              	.LC2:
+ 233 0040 494E464C 		.ascii	"INFLUX\000"
+ 233      555800
+ 234 0047 00       		.align	2
+ 235              	.LC3:
+ 236 0048 74657374 		.ascii	"test_reading_1,node_id=XYZ10, value=000 12345\012te"
+ 236      5F726561 
+ 236      64696E67 
+ 236      5F312C6E 
+ 236      6F64655F 
+ 237 0078 73745F72 		.ascii	"st_reading_2,node_id=XYZ10, value=111 67890\015\012"
+ 237      65616469 
+ 237      6E675F32 
+ 237      2C6E6F64 
+ 237      655F6964 
+ 238 00a5 00       		.ascii	"\000"
+ 239 00a6 0000     		.align	2
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 6
 
 
- 240              	.LC5:
- 241 00ac 74657374 		.ascii	"test_reading_1\000"
- 241      5F726561 
- 241      64696E67 
- 241      5F3100
- 242 00bb 00       		.align	2
- 243              	.LC6:
- 244 00bc 31313100 		.ascii	"111\000"
- 245              		.align	2
- 246              	.LC7:
- 247 00c0 74657374 		.ascii	"test_reading_2\000"
- 247      5F726561 
- 247      64696E67 
- 247      5F3200
- 248 00cf 00       		.align	2
- 249              	.LC8:
- 250 00d0 58595A31 		.ascii	"XYZ10\000"
- 250      3000
- 251 00d6 0000     		.align	2
- 252              	.LC9:
- 253 00d8 496E666C 		.ascii	"Influx body generated correctly.\000"
- 253      75782062 
- 253      6F647920 
- 253      67656E65 
- 253      72617465 
- 254 00f9 000000   		.align	2
- 255              	.LC10:
- 256 00fc 496E666C 		.ascii	"Influx body could not be generated correctly.\000"
+ 240              	.LC4:
+ 241 00a8 30303000 		.ascii	"000\000"
+ 242              		.align	2
+ 243              	.LC5:
+ 244 00ac 74657374 		.ascii	"test_reading_1\000"
+ 244      5F726561 
+ 244      64696E67 
+ 244      5F3100
+ 245 00bb 00       		.align	2
+ 246              	.LC6:
+ 247 00bc 31313100 		.ascii	"111\000"
+ 248              		.align	2
+ 249              	.LC7:
+ 250 00c0 74657374 		.ascii	"test_reading_2\000"
+ 250      5F726561 
+ 250      64696E67 
+ 250      5F3200
+ 251 00cf 00       		.align	2
+ 252              	.LC8:
+ 253 00d0 58595A31 		.ascii	"XYZ10\000"
+ 253      3000
+ 254 00d6 0000     		.align	2
+ 255              	.LC9:
+ 256 00d8 496E666C 		.ascii	"Influx body generated correctly.\000"
  256      75782062 
  256      6F647920 
- 256      636F756C 
- 256      64206E6F 
- 257              		.section	.text.influx_test,"ax",%progbits
- 258              		.align	2
- 259              		.global	influx_test
- 260              		.thumb
- 261              		.thumb_func
- 262              		.type	influx_test, %function
- 263              	influx_test:
- 264              	.LFB66:
+ 256      67656E65 
+ 256      72617465 
+ 257 00f9 000000   		.align	2
+ 258              	.LC10:
+ 259 00fc 496E666C 		.ascii	"Influx body could not be generated correctly.\000"
+ 259      75782062 
+ 259      6F647920 
+ 259      636F756C 
+ 259      64206E6F 
+ 260              		.section	.text.influx_test,"ax",%progbits
+ 261              		.align	2
+ 262              		.global	influx_test
+ 263              		.thumb
+ 264              		.thumb_func
+ 265              		.type	influx_test, %function
+ 266              	influx_test:
+ 267              	.LFB66:
   28:influx.c      **** 
   29:influx.c      **** // Test the influx server
   30:influx.c      **** test_t influx_test(){
- 265              		.loc 1 30 0
- 266              		.cfi_startproc
- 267              		@ args = 0, pretend = 0, frame = 608
- 268              		@ frame_needed = 1, uses_anonymous_args = 0
- 269 0000 F0B5     		push	{r4, r5, r6, r7, lr}
- 270              		.cfi_def_cfa_offset 20
- 271              		.cfi_offset 4, -20
- 272              		.cfi_offset 5, -16
- 273              		.cfi_offset 6, -12
- 274              		.cfi_offset 7, -8
- 275              		.cfi_offset 14, -4
- 276 0002 ADF5197D 		sub	sp, sp, #612
- 277              		.cfi_def_cfa_offset 632
- 278 0006 00AF     		add	r7, sp, #0
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 7
+ 268              		.loc 1 30 0
+ 269              		.cfi_startproc
+ 270              		@ args = 0, pretend = 0, frame = 608
+ 271              		@ frame_needed = 1, uses_anonymous_args = 0
+ 272 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 273              		.cfi_def_cfa_offset 20
+ 274              		.cfi_offset 4, -20
+ 275              		.cfi_offset 5, -16
+ 276              		.cfi_offset 6, -12
+ 277              		.cfi_offset 7, -8
+ 278              		.cfi_offset 14, -4
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 7
 
 
- 279              		.cfi_def_cfa_register 7
- 280 0008 3B1D     		adds	r3, r7, #4
- 281 000a 1860     		str	r0, [r3]
+ 279 0002 ADF5197D 		sub	sp, sp, #612
+ 280              		.cfi_def_cfa_offset 632
+ 281 0006 00AF     		add	r7, sp, #0
+ 282              		.cfi_def_cfa_register 7
+ 283 0008 3B1D     		adds	r3, r7, #4
+ 284 000a 1860     		str	r0, [r3]
   31:influx.c      ****     test_t test; // Create variable test of data structure test_t
   32:influx.c      ****     test.status = 0u;
- 282              		.loc 1 32 0
- 283 000c 07F1D403 		add	r3, r7, #212
- 284 0010 0022     		movs	r2, #0
- 285 0012 83F88020 		strb	r2, [r3, #128]
+ 285              		.loc 1 32 0
+ 286 000c 07F1D403 		add	r3, r7, #212
+ 287 0010 0022     		movs	r2, #0
+ 288 0012 83F88020 		strb	r2, [r3, #128]
   33:influx.c      ****     snprintf(test.test_name,sizeof(test.test_name),"INFLUX");
- 286              		.loc 1 33 0
- 287 0016 07F1D403 		add	r3, r7, #212
- 288 001a 3C4A     		ldr	r2, .L16
- 289 001c 92E80300 		ldmia	r2, {r0, r1}
- 290 0020 1860     		str	r0, [r3]
- 291 0022 0433     		adds	r3, r3, #4
- 292 0024 1980     		strh	r1, [r3]	@ movhi
- 293 0026 0233     		adds	r3, r3, #2
- 294 0028 0A0C     		lsrs	r2, r1, #16
- 295 002a 1A70     		strb	r2, [r3]
+ 289              		.loc 1 33 0
+ 290 0016 07F1D403 		add	r3, r7, #212
+ 291 001a 3C4A     		ldr	r2, .L16
+ 292 001c 92E80300 		ldmia	r2, {r0, r1}
+ 293 0020 1860     		str	r0, [r3]
+ 294 0022 0433     		adds	r3, r3, #4
+ 295 0024 1980     		strh	r1, [r3]	@ movhi
+ 296 0026 0233     		adds	r3, r3, #2
+ 297 0028 0A0C     		lsrs	r2, r1, #16
+ 298 002a 1A70     		strb	r2, [r3]
   34:influx.c      ****     
   35:influx.c      ****     //we'll create a few fake test, generate a string and compare it to a known value
   36:influx.c      ****     char *expected_string = "test_reading_1,node_id=XYZ10, value=000 12345\ntest_reading_2,node_id=
- 296              		.loc 1 36 0
- 297 002c 384B     		ldr	r3, .L16+4
- 298 002e C7F85C32 		str	r3, [r7, #604]
+ 299              		.loc 1 36 0
+ 300 002c 384B     		ldr	r3, .L16+4
+ 301 002e C7F85C32 		str	r3, [r7, #604]
   37:influx.c      ****     
   38:influx.c      ****     Clear_Data_Stack();
- 299              		.loc 1 38 0
- 300 0032 FFF7FEFF 		bl	Clear_Data_Stack
+ 302              		.loc 1 38 0
+ 303 0032 FFF7FEFF 		bl	Clear_Data_Stack
   39:influx.c      ****     pushData("test_reading_1", "000", 12345);
- 301              		.loc 1 39 0
- 302 0036 43F23902 		movw	r2, #12345
- 303 003a 3649     		ldr	r1, .L16+8
- 304 003c 3648     		ldr	r0, .L16+12
- 305 003e FFF7FEFF 		bl	pushData
+ 304              		.loc 1 39 0
+ 305 0036 43F23902 		movw	r2, #12345
+ 306 003a 3649     		ldr	r1, .L16+8
+ 307 003c 3648     		ldr	r0, .L16+12
+ 308 003e FFF7FEFF 		bl	pushData
   40:influx.c      ****     pushData("test_reading_2", "111", 67890);
- 306              		.loc 1 40 0
- 307 0042 364A     		ldr	r2, .L16+16
- 308 0044 3649     		ldr	r1, .L16+20
- 309 0046 3748     		ldr	r0, .L16+24
- 310 0048 FFF7FEFF 		bl	pushData
+ 309              		.loc 1 40 0
+ 310 0042 364A     		ldr	r2, .L16+16
+ 311 0044 3649     		ldr	r1, .L16+20
+ 312 0046 3748     		ldr	r0, .L16+24
+ 313 0048 FFF7FEFF 		bl	pushData
   41:influx.c      ****     char test_write_body[200];
   42:influx.c      ****     construct_influx_write_body(test_write_body, "XYZ10");
- 311              		.loc 1 42 0
- 312 004c 07F10C03 		add	r3, r7, #12
- 313 0050 3549     		ldr	r1, .L16+28
- 314 0052 1846     		mov	r0, r3
- 315 0054 FFF7FEFF 		bl	construct_influx_write_body
+ 314              		.loc 1 42 0
+ 315 004c 07F10C03 		add	r3, r7, #12
+ 316 0050 3549     		ldr	r1, .L16+28
+ 317 0052 1846     		mov	r0, r3
+ 318 0054 FFF7FEFF 		bl	construct_influx_write_body
   43:influx.c      ****     
   44:influx.c      ****     // Will return zero if strings are identical.
   45:influx.c      ****     // int strcmp(const char *str1, const char *str2) compares the string pointed to, by str1 to th
   46:influx.c      ****     int compare = strcmp(test_write_body,expected_string);
- 316              		.loc 1 46 0
- 317 0058 07F10C03 		add	r3, r7, #12
- 318 005c D7F85C12 		ldr	r1, [r7, #604]
- 319 0060 1846     		mov	r0, r3
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 8
+ 319              		.loc 1 46 0
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 8
 
 
- 320 0062 FFF7FEFF 		bl	strcmp
- 321 0066 C7F85802 		str	r0, [r7, #600]
+ 320 0058 07F10C03 		add	r3, r7, #12
+ 321 005c D7F85C12 		ldr	r1, [r7, #604]
+ 322 0060 1846     		mov	r0, r3
+ 323 0062 FFF7FEFF 		bl	strcmp
+ 324 0066 C7F85802 		str	r0, [r7, #600]
   47:influx.c      ****     
   48:influx.c      ****     // If strings identical, change test status to 1
   49:influx.c      ****     if(compare == 0){
- 322              		.loc 1 49 0
- 323 006a D7F85832 		ldr	r3, [r7, #600]
- 324 006e 002B     		cmp	r3, #0
- 325 0070 1DD1     		bne	.L11
+ 325              		.loc 1 49 0
+ 326 006a D7F85832 		ldr	r3, [r7, #600]
+ 327 006e 002B     		cmp	r3, #0
+ 328 0070 1DD1     		bne	.L11
   50:influx.c      ****         test.status = 1u;
- 326              		.loc 1 50 0
- 327 0072 07F1D403 		add	r3, r7, #212
- 328 0076 0122     		movs	r2, #1
- 329 0078 83F88020 		strb	r2, [r3, #128]
+ 329              		.loc 1 50 0
+ 330 0072 07F1D403 		add	r3, r7, #212
+ 331 0076 0122     		movs	r2, #1
+ 332 0078 83F88020 		strb	r2, [r3, #128]
   51:influx.c      ****         snprintf(test.reason,sizeof(test.reason),"Influx body generated correctly.");
- 330              		.loc 1 51 0
- 331 007c 07F1D403 		add	r3, r7, #212
- 332 0080 8133     		adds	r3, r3, #129
- 333 0082 2A4A     		ldr	r2, .L16+32
- 334 0084 1446     		mov	r4, r2
- 335 0086 9E46     		mov	lr, r3
- 336 0088 04F1200C 		add	ip, r4, #32
- 337              	.L12:
- 338 008c 7546     		mov	r5, lr
- 339 008e 2646     		mov	r6, r4
- 340 0090 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
- 341 0092 2860     		str	r0, [r5]	@ unaligned
- 342 0094 6960     		str	r1, [r5, #4]	@ unaligned
- 343 0096 AA60     		str	r2, [r5, #8]	@ unaligned
- 344 0098 EB60     		str	r3, [r5, #12]	@ unaligned
- 345 009a 1034     		adds	r4, r4, #16
- 346 009c 0EF1100E 		add	lr, lr, #16
- 347 00a0 6445     		cmp	r4, ip
- 348 00a2 F3D1     		bne	.L12
- 349 00a4 7346     		mov	r3, lr
- 350 00a6 2246     		mov	r2, r4
- 351 00a8 1278     		ldrb	r2, [r2]
- 352 00aa 1A70     		strb	r2, [r3]
- 353 00ac 1BE0     		b	.L13
- 354              	.L11:
+ 333              		.loc 1 51 0
+ 334 007c 07F1D403 		add	r3, r7, #212
+ 335 0080 8133     		adds	r3, r3, #129
+ 336 0082 2A4A     		ldr	r2, .L16+32
+ 337 0084 1446     		mov	r4, r2
+ 338 0086 9E46     		mov	lr, r3
+ 339 0088 04F1200C 		add	ip, r4, #32
+ 340              	.L12:
+ 341 008c 7546     		mov	r5, lr
+ 342 008e 2646     		mov	r6, r4
+ 343 0090 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 344 0092 2860     		str	r0, [r5]	@ unaligned
+ 345 0094 6960     		str	r1, [r5, #4]	@ unaligned
+ 346 0096 AA60     		str	r2, [r5, #8]	@ unaligned
+ 347 0098 EB60     		str	r3, [r5, #12]	@ unaligned
+ 348 009a 1034     		adds	r4, r4, #16
+ 349 009c 0EF1100E 		add	lr, lr, #16
+ 350 00a0 6445     		cmp	r4, ip
+ 351 00a2 F3D1     		bne	.L12
+ 352 00a4 7346     		mov	r3, lr
+ 353 00a6 2246     		mov	r2, r4
+ 354 00a8 1278     		ldrb	r2, [r2]
+ 355 00aa 1A70     		strb	r2, [r3]
+ 356 00ac 1BE0     		b	.L13
+ 357              	.L11:
   52:influx.c      ****     }else{
   53:influx.c      ****         snprintf(test.reason,sizeof(test.reason),"Influx body could not be generated correctly.");
- 355              		.loc 1 53 0
- 356 00ae 07F1D403 		add	r3, r7, #212
- 357 00b2 8133     		adds	r3, r3, #129
- 358 00b4 1E4A     		ldr	r2, .L16+36
- 359 00b6 1446     		mov	r4, r2
- 360 00b8 9E46     		mov	lr, r3
- 361 00ba 04F1200C 		add	ip, r4, #32
- 362              	.L14:
- 363 00be 7546     		mov	r5, lr
- 364 00c0 2646     		mov	r6, r4
- 365 00c2 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
- 366 00c4 2860     		str	r0, [r5]	@ unaligned
- 367 00c6 6960     		str	r1, [r5, #4]	@ unaligned
- 368 00c8 AA60     		str	r2, [r5, #8]	@ unaligned
- 369 00ca EB60     		str	r3, [r5, #12]	@ unaligned
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 9
+ 358              		.loc 1 53 0
+ 359 00ae 07F1D403 		add	r3, r7, #212
+ 360 00b2 8133     		adds	r3, r3, #129
+ 361 00b4 1E4A     		ldr	r2, .L16+36
+ 362 00b6 1446     		mov	r4, r2
+ 363 00b8 9E46     		mov	lr, r3
+ 364 00ba 04F1200C 		add	ip, r4, #32
+ 365              	.L14:
+ 366 00be 7546     		mov	r5, lr
+ 367 00c0 2646     		mov	r6, r4
+ 368 00c2 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 369 00c4 2860     		str	r0, [r5]	@ unaligned
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 9
 
 
- 370 00cc 1034     		adds	r4, r4, #16
- 371 00ce 0EF1100E 		add	lr, lr, #16
- 372 00d2 6445     		cmp	r4, ip
- 373 00d4 F3D1     		bne	.L14
- 374 00d6 7546     		mov	r5, lr
- 375 00d8 2346     		mov	r3, r4
- 376 00da 07CB     		ldmia	r3!, {r0, r1, r2}
- 377 00dc 2860     		str	r0, [r5]	@ unaligned
- 378 00de 6960     		str	r1, [r5, #4]	@ unaligned
- 379 00e0 AA60     		str	r2, [r5, #8]	@ unaligned
- 380 00e2 1B88     		ldrh	r3, [r3]	@ unaligned
- 381 00e4 AB81     		strh	r3, [r5, #12]	@ unaligned
- 382              	.L13:
+ 370 00c6 6960     		str	r1, [r5, #4]	@ unaligned
+ 371 00c8 AA60     		str	r2, [r5, #8]	@ unaligned
+ 372 00ca EB60     		str	r3, [r5, #12]	@ unaligned
+ 373 00cc 1034     		adds	r4, r4, #16
+ 374 00ce 0EF1100E 		add	lr, lr, #16
+ 375 00d2 6445     		cmp	r4, ip
+ 376 00d4 F3D1     		bne	.L14
+ 377 00d6 7546     		mov	r5, lr
+ 378 00d8 2346     		mov	r3, r4
+ 379 00da 07CB     		ldmia	r3!, {r0, r1, r2}
+ 380 00dc 2860     		str	r0, [r5]	@ unaligned
+ 381 00de 6960     		str	r1, [r5, #4]	@ unaligned
+ 382 00e0 AA60     		str	r2, [r5, #8]	@ unaligned
+ 383 00e2 1B88     		ldrh	r3, [r3]	@ unaligned
+ 384 00e4 AB81     		strh	r3, [r5, #12]	@ unaligned
+ 385              	.L13:
   54:influx.c      ****     }
   55:influx.c      ****     
   56:influx.c      ****     Clear_Data_Stack(); // Clear the data stack
- 383              		.loc 1 56 0
- 384 00e6 FFF7FEFF 		bl	Clear_Data_Stack
+ 386              		.loc 1 56 0
+ 387 00e6 FFF7FEFF 		bl	Clear_Data_Stack
   57:influx.c      ****     
   58:influx.c      ****     return test;
- 385              		.loc 1 58 0
- 386 00ea 3B1D     		adds	r3, r7, #4
- 387 00ec 1A68     		ldr	r2, [r3]
- 388 00ee 07F1D403 		add	r3, r7, #212
- 389 00f2 1046     		mov	r0, r2
- 390 00f4 1946     		mov	r1, r3
- 391 00f6 40F28113 		movw	r3, #385
- 392 00fa 1A46     		mov	r2, r3
- 393 00fc FFF7FEFF 		bl	memcpy
+ 388              		.loc 1 58 0
+ 389 00ea 3B1D     		adds	r3, r7, #4
+ 390 00ec 1A68     		ldr	r2, [r3]
+ 391 00ee 07F1D403 		add	r3, r7, #212
+ 392 00f2 1046     		mov	r0, r2
+ 393 00f4 1946     		mov	r1, r3
+ 394 00f6 40F28113 		movw	r3, #385
+ 395 00fa 1A46     		mov	r2, r3
+ 396 00fc FFF7FEFF 		bl	memcpy
   59:influx.c      **** }...
- 394              		.loc 1 59 0
- 395 0100 3B1D     		adds	r3, r7, #4
- 396 0102 1868     		ldr	r0, [r3]
- 397 0104 07F51977 		add	r7, r7, #612
- 398              		.cfi_def_cfa_offset 20
- 399 0108 BD46     		mov	sp, r7
- 400              		.cfi_def_cfa_register 13
- 401              		@ sp needed
- 402 010a F0BD     		pop	{r4, r5, r6, r7, pc}
- 403              	.L17:
- 404              		.align	2
- 405              	.L16:
- 406 010c 40000000 		.word	.LC2
- 407 0110 48000000 		.word	.LC3
- 408 0114 A8000000 		.word	.LC4
- 409 0118 AC000000 		.word	.LC5
- 410 011c 32090100 		.word	67890
- 411 0120 BC000000 		.word	.LC6
- 412 0124 C0000000 		.word	.LC7
- 413 0128 D0000000 		.word	.LC8
- 414 012c D8000000 		.word	.LC9
- 415 0130 FC000000 		.word	.LC10
- 416              		.cfi_endproc
- 417              	.LFE66:
- 418              		.size	influx_test, .-influx_test
- 419              		.text
- 420              	.Letext0:
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 10
+ 397              		.loc 1 59 0
+ 398 0100 3B1D     		adds	r3, r7, #4
+ 399 0102 1868     		ldr	r0, [r3]
+ 400 0104 07F51977 		add	r7, r7, #612
+ 401              		.cfi_def_cfa_offset 20
+ 402 0108 BD46     		mov	sp, r7
+ 403              		.cfi_def_cfa_register 13
+ 404              		@ sp needed
+ 405 010a F0BD     		pop	{r4, r5, r6, r7, pc}
+ 406              	.L17:
+ 407              		.align	2
+ 408              	.L16:
+ 409 010c 40000000 		.word	.LC2
+ 410 0110 48000000 		.word	.LC3
+ 411 0114 A8000000 		.word	.LC4
+ 412 0118 AC000000 		.word	.LC5
+ 413 011c 32090100 		.word	67890
+ 414 0120 BC000000 		.word	.LC6
+ 415 0124 C0000000 		.word	.LC7
+ 416 0128 D0000000 		.word	.LC8
+ 417 012c D8000000 		.word	.LC9
+ 418 0130 FC000000 		.word	.LC10
+ 419              		.cfi_endproc
+ 420              	.LFE66:
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 10
 
 
- 421              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 422              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
- 423              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 424              		.file 5 "testing.h"
- 425              		.file 6 "modem.h"
- 426              		.file 7 "data.h"
- 427              		.file 8 "notoriOS.h"
- 428              		.file 9 "Generated_Source\\PSoC5/core_cm3.h"
- 429              		.file 10 "App_LED.h"
- 430              		.file 11 "level_sensor.h"
- 431              		.file 12 "valve.h"
- 432              		.file 13 "autosampler.h"
- 433              		.section	.debug_info,"",%progbits
- 434              	.Ldebug_info0:
- 435 0000 8E070000 		.4byte	0x78e
- 436 0004 0400     		.2byte	0x4
- 437 0006 00000000 		.4byte	.Ldebug_abbrev0
- 438 000a 04       		.byte	0x4
- 439 000b 01       		.uleb128 0x1
- 440 000c DC000000 		.4byte	.LASF116
- 441 0010 0C       		.byte	0xc
- 442 0011 D0010000 		.4byte	.LASF117
- 443 0015 0E000000 		.4byte	.LASF118
- 444 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 445 001d 00000000 		.4byte	0
- 446 0021 00000000 		.4byte	.Ldebug_line0
- 447 0025 02       		.uleb128 0x2
- 448 0026 04       		.byte	0x4
- 449 0027 05       		.byte	0x5
- 450 0028 696E7400 		.ascii	"int\000"
- 451 002c 03       		.uleb128 0x3
- 452 002d 04       		.byte	0x4
- 453 002e 07       		.byte	0x7
- 454 002f EF030000 		.4byte	.LASF0
- 455 0033 03       		.uleb128 0x3
- 456 0034 08       		.byte	0x8
- 457 0035 05       		.byte	0x5
- 458 0036 7D020000 		.4byte	.LASF1
- 459 003a 03       		.uleb128 0x3
- 460 003b 08       		.byte	0x8
- 461 003c 04       		.byte	0x4
- 462 003d 25030000 		.4byte	.LASF2
- 463 0041 03       		.uleb128 0x3
- 464 0042 01       		.byte	0x1
- 465 0043 06       		.byte	0x6
- 466 0044 91030000 		.4byte	.LASF3
- 467 0048 03       		.uleb128 0x3
- 468 0049 01       		.byte	0x1
- 469 004a 08       		.byte	0x8
- 470 004b 5B030000 		.4byte	.LASF4
- 471 004f 03       		.uleb128 0x3
- 472 0050 02       		.byte	0x2
- 473 0051 05       		.byte	0x5
- 474 0052 A1010000 		.4byte	.LASF5
- 475 0056 03       		.uleb128 0x3
- 476 0057 02       		.byte	0x2
- 477 0058 07       		.byte	0x7
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 11
+ 421              		.size	influx_test, .-influx_test
+ 422              		.text
+ 423              	.Letext0:
+ 424              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 425              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.4\\psoc creator\\import\\gnu\\arm\\5.4.
+ 426              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 427              		.file 5 "testing.h"
+ 428              		.file 6 "modem.h"
+ 429              		.file 7 "data.h"
+ 430              		.file 8 "notoriOS.h"
+ 431              		.file 9 "Generated_Source\\PSoC5/core_cm3.h"
+ 432              		.file 10 "App_LED.h"
+ 433              		.file 11 "level_sensor.h"
+ 434              		.file 12 "valve.h"
+ 435              		.file 13 "autosampler.h"
+ 436              		.file 14 "sontek.h"
+ 437              		.section	.debug_info,"",%progbits
+ 438              	.Ldebug_info0:
+ 439 0000 CD070000 		.4byte	0x7cd
+ 440 0004 0400     		.2byte	0x4
+ 441 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 442 000a 04       		.byte	0x4
+ 443 000b 01       		.uleb128 0x1
+ 444 000c 65000000 		.4byte	.LASF120
+ 445 0010 0C       		.byte	0xc
+ 446 0011 83020000 		.4byte	.LASF121
+ 447 0015 76030000 		.4byte	.LASF122
+ 448 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 449 001d 00000000 		.4byte	0
+ 450 0021 00000000 		.4byte	.Ldebug_line0
+ 451 0025 02       		.uleb128 0x2
+ 452 0026 04       		.byte	0x4
+ 453 0027 05       		.byte	0x5
+ 454 0028 696E7400 		.ascii	"int\000"
+ 455 002c 03       		.uleb128 0x3
+ 456 002d 04       		.byte	0x4
+ 457 002e 07       		.byte	0x7
+ 458 002f 32050000 		.4byte	.LASF0
+ 459 0033 03       		.uleb128 0x3
+ 460 0034 08       		.byte	0x8
+ 461 0035 05       		.byte	0x5
+ 462 0036 41010000 		.4byte	.LASF1
+ 463 003a 03       		.uleb128 0x3
+ 464 003b 08       		.byte	0x8
+ 465 003c 04       		.byte	0x4
+ 466 003d 21050000 		.4byte	.LASF2
+ 467 0041 03       		.uleb128 0x3
+ 468 0042 01       		.byte	0x1
+ 469 0043 06       		.byte	0x6
+ 470 0044 4F010000 		.4byte	.LASF3
+ 471 0048 03       		.uleb128 0x3
+ 472 0049 01       		.byte	0x1
+ 473 004a 08       		.byte	0x8
+ 474 004b 44040000 		.4byte	.LASF4
+ 475 004f 03       		.uleb128 0x3
+ 476 0050 02       		.byte	0x2
+ 477 0051 05       		.byte	0x5
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 11
 
 
- 478 0059 76040000 		.4byte	.LASF6
- 479 005d 04       		.uleb128 0x4
- 480 005e B4050000 		.4byte	.LASF12
- 481 0062 02       		.byte	0x2
- 482 0063 3F       		.byte	0x3f
- 483 0064 68000000 		.4byte	0x68
- 484 0068 03       		.uleb128 0x3
- 485 0069 04       		.byte	0x4
- 486 006a 05       		.byte	0x5
- 487 006b 97020000 		.4byte	.LASF7
- 488 006f 03       		.uleb128 0x3
- 489 0070 04       		.byte	0x4
- 490 0071 07       		.byte	0x7
- 491 0072 48050000 		.4byte	.LASF8
- 492 0076 03       		.uleb128 0x3
- 493 0077 08       		.byte	0x8
- 494 0078 07       		.byte	0x7
- 495 0079 BA030000 		.4byte	.LASF9
- 496 007d 03       		.uleb128 0x3
- 497 007e 04       		.byte	0x4
- 498 007f 07       		.byte	0x7
- 499 0080 C6000000 		.4byte	.LASF10
- 500 0084 05       		.uleb128 0x5
- 501 0085 04       		.byte	0x4
- 502 0086 8A000000 		.4byte	0x8a
- 503 008a 03       		.uleb128 0x3
- 504 008b 01       		.byte	0x1
- 505 008c 08       		.byte	0x8
- 506 008d 8B020000 		.4byte	.LASF11
- 507 0091 06       		.uleb128 0x6
- 508 0092 8A000000 		.4byte	0x8a
- 509 0096 A1000000 		.4byte	0xa1
- 510 009a 07       		.uleb128 0x7
- 511 009b 7D000000 		.4byte	0x7d
- 512 009f 17       		.byte	0x17
- 513 00a0 00       		.byte	0
- 514 00a1 04       		.uleb128 0x4
- 515 00a2 FA040000 		.4byte	.LASF13
- 516 00a6 03       		.byte	0x3
- 517 00a7 2C       		.byte	0x2c
- 518 00a8 5D000000 		.4byte	0x5d
- 519 00ac 03       		.uleb128 0x3
- 520 00ad 08       		.byte	0x8
- 521 00ae 04       		.byte	0x4
- 522 00af 60050000 		.4byte	.LASF14
- 523 00b3 03       		.uleb128 0x3
- 524 00b4 04       		.byte	0x4
- 525 00b5 04       		.byte	0x4
- 526 00b6 62020000 		.4byte	.LASF15
- 527 00ba 08       		.uleb128 0x8
- 528 00bb 12020000 		.4byte	.LASF16
- 529 00bf 04       		.byte	0x4
- 530 00c0 9201     		.2byte	0x192
- 531 00c2 48000000 		.4byte	0x48
- 532 00c6 08       		.uleb128 0x8
- 533 00c7 C9010000 		.4byte	.LASF17
- 534 00cb 04       		.byte	0x4
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 12
+ 478 0052 78040000 		.4byte	.LASF5
+ 479 0056 03       		.uleb128 0x3
+ 480 0057 02       		.byte	0x2
+ 481 0058 07       		.byte	0x7
+ 482 0059 84050000 		.4byte	.LASF6
+ 483 005d 04       		.uleb128 0x4
+ 484 005e 61050000 		.4byte	.LASF12
+ 485 0062 02       		.byte	0x2
+ 486 0063 3F       		.byte	0x3f
+ 487 0064 68000000 		.4byte	0x68
+ 488 0068 03       		.uleb128 0x3
+ 489 0069 04       		.byte	0x4
+ 490 006a 05       		.byte	0x5
+ 491 006b E1010000 		.4byte	.LASF7
+ 492 006f 03       		.uleb128 0x3
+ 493 0070 04       		.byte	0x4
+ 494 0071 07       		.byte	0x7
+ 495 0072 98020000 		.4byte	.LASF8
+ 496 0076 03       		.uleb128 0x3
+ 497 0077 08       		.byte	0x8
+ 498 0078 07       		.byte	0x7
+ 499 0079 F3000000 		.4byte	.LASF9
+ 500 007d 03       		.uleb128 0x3
+ 501 007e 04       		.byte	0x4
+ 502 007f 07       		.byte	0x7
+ 503 0080 BF030000 		.4byte	.LASF10
+ 504 0084 05       		.uleb128 0x5
+ 505 0085 04       		.byte	0x4
+ 506 0086 8A000000 		.4byte	0x8a
+ 507 008a 03       		.uleb128 0x3
+ 508 008b 01       		.byte	0x1
+ 509 008c 08       		.byte	0x8
+ 510 008d 2D050000 		.4byte	.LASF11
+ 511 0091 06       		.uleb128 0x6
+ 512 0092 8A000000 		.4byte	0x8a
+ 513 0096 A1000000 		.4byte	0xa1
+ 514 009a 07       		.uleb128 0x7
+ 515 009b 7D000000 		.4byte	0x7d
+ 516 009f 17       		.byte	0x17
+ 517 00a0 00       		.byte	0
+ 518 00a1 04       		.uleb128 0x4
+ 519 00a2 3C040000 		.4byte	.LASF13
+ 520 00a6 03       		.byte	0x3
+ 521 00a7 2C       		.byte	0x2c
+ 522 00a8 5D000000 		.4byte	0x5d
+ 523 00ac 03       		.uleb128 0x3
+ 524 00ad 08       		.byte	0x8
+ 525 00ae 04       		.byte	0x4
+ 526 00af CA060000 		.4byte	.LASF14
+ 527 00b3 03       		.uleb128 0x3
+ 528 00b4 04       		.byte	0x4
+ 529 00b5 04       		.byte	0x4
+ 530 00b6 21040000 		.4byte	.LASF15
+ 531 00ba 08       		.uleb128 0x8
+ 532 00bb 06020000 		.4byte	.LASF16
+ 533 00bf 04       		.byte	0x4
+ 534 00c0 9201     		.2byte	0x192
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 12
 
 
- 535 00cc 9301     		.2byte	0x193
- 536 00ce 56000000 		.4byte	0x56
- 537 00d2 08       		.uleb128 0x8
- 538 00d3 28020000 		.4byte	.LASF18
- 539 00d7 04       		.byte	0x4
- 540 00d8 9601     		.2byte	0x196
- 541 00da 4F000000 		.4byte	0x4f
- 542 00de 08       		.uleb128 0x8
- 543 00df 5A050000 		.4byte	.LASF19
- 544 00e3 04       		.byte	0x4
- 545 00e4 9701     		.2byte	0x197
- 546 00e6 68000000 		.4byte	0x68
- 547 00ea 08       		.uleb128 0x8
- 548 00eb 7E000000 		.4byte	.LASF20
- 549 00ef 04       		.byte	0x4
- 550 00f0 9801     		.2byte	0x198
- 551 00f2 B3000000 		.4byte	0xb3
- 552 00f6 09       		.uleb128 0x9
- 553 00f7 8101     		.2byte	0x181
- 554 00f9 05       		.byte	0x5
- 555 00fa 0A       		.byte	0xa
- 556 00fb 24010000 		.4byte	0x124
- 557 00ff 0A       		.uleb128 0xa
- 558 0100 EA050000 		.4byte	.LASF21
- 559 0104 05       		.byte	0x5
- 560 0105 0C       		.byte	0xc
- 561 0106 24010000 		.4byte	0x124
- 562 010a 00       		.byte	0
- 563 010b 0A       		.uleb128 0xa
- 564 010c A1040000 		.4byte	.LASF22
- 565 0110 05       		.byte	0x5
- 566 0111 0D       		.byte	0xd
- 567 0112 BA000000 		.4byte	0xba
- 568 0116 80       		.byte	0x80
- 569 0117 0A       		.uleb128 0xa
- 570 0118 90020000 		.4byte	.LASF23
- 571 011c 05       		.byte	0x5
- 572 011d 0F       		.byte	0xf
- 573 011e 34010000 		.4byte	0x134
- 574 0122 81       		.byte	0x81
- 575 0123 00       		.byte	0
- 576 0124 06       		.uleb128 0x6
- 577 0125 8A000000 		.4byte	0x8a
- 578 0129 34010000 		.4byte	0x134
- 579 012d 07       		.uleb128 0x7
- 580 012e 7D000000 		.4byte	0x7d
- 581 0132 7F       		.byte	0x7f
- 582 0133 00       		.byte	0
- 583 0134 06       		.uleb128 0x6
- 584 0135 8A000000 		.4byte	0x8a
- 585 0139 44010000 		.4byte	0x144
- 586 013d 07       		.uleb128 0x7
- 587 013e 7D000000 		.4byte	0x7d
- 588 0142 FF       		.byte	0xff
- 589 0143 00       		.byte	0
- 590 0144 04       		.uleb128 0x4
- 591 0145 EE040000 		.4byte	.LASF24
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 13
+ 535 00c2 48000000 		.4byte	0x48
+ 536 00c6 08       		.uleb128 0x8
+ 537 00c7 00000000 		.4byte	.LASF17
+ 538 00cb 04       		.byte	0x4
+ 539 00cc 9301     		.2byte	0x193
+ 540 00ce 56000000 		.4byte	0x56
+ 541 00d2 08       		.uleb128 0x8
+ 542 00d3 6E060000 		.4byte	.LASF18
+ 543 00d7 04       		.byte	0x4
+ 544 00d8 9601     		.2byte	0x196
+ 545 00da 4F000000 		.4byte	0x4f
+ 546 00de 08       		.uleb128 0x8
+ 547 00df 21020000 		.4byte	.LASF19
+ 548 00e3 04       		.byte	0x4
+ 549 00e4 9701     		.2byte	0x197
+ 550 00e6 68000000 		.4byte	0x68
+ 551 00ea 08       		.uleb128 0x8
+ 552 00eb B7030000 		.4byte	.LASF20
+ 553 00ef 04       		.byte	0x4
+ 554 00f0 9801     		.2byte	0x198
+ 555 00f2 B3000000 		.4byte	0xb3
+ 556 00f6 09       		.uleb128 0x9
+ 557 00f7 8101     		.2byte	0x181
+ 558 00f9 05       		.byte	0x5
+ 559 00fa 0A       		.byte	0xa
+ 560 00fb 24010000 		.4byte	0x124
+ 561 00ff 0A       		.uleb128 0xa
+ 562 0100 2C040000 		.4byte	.LASF21
+ 563 0104 05       		.byte	0x5
+ 564 0105 0C       		.byte	0xc
+ 565 0106 24010000 		.4byte	0x124
+ 566 010a 00       		.byte	0
+ 567 010b 0A       		.uleb128 0xa
+ 568 010c E0050000 		.4byte	.LASF22
+ 569 0110 05       		.byte	0x5
+ 570 0111 0D       		.byte	0xd
+ 571 0112 BA000000 		.4byte	0xba
+ 572 0116 80       		.byte	0x80
+ 573 0117 0A       		.uleb128 0xa
+ 574 0118 C5040000 		.4byte	.LASF23
+ 575 011c 05       		.byte	0x5
+ 576 011d 0F       		.byte	0xf
+ 577 011e 34010000 		.4byte	0x134
+ 578 0122 81       		.byte	0x81
+ 579 0123 00       		.byte	0
+ 580 0124 06       		.uleb128 0x6
+ 581 0125 8A000000 		.4byte	0x8a
+ 582 0129 34010000 		.4byte	0x134
+ 583 012d 07       		.uleb128 0x7
+ 584 012e 7D000000 		.4byte	0x7d
+ 585 0132 7F       		.byte	0x7f
+ 586 0133 00       		.byte	0
+ 587 0134 06       		.uleb128 0x6
+ 588 0135 8A000000 		.4byte	0x8a
+ 589 0139 44010000 		.4byte	0x144
+ 590 013d 07       		.uleb128 0x7
+ 591 013e 7D000000 		.4byte	0x7d
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 13
 
 
- 592 0149 05       		.byte	0x5
- 593 014a 10       		.byte	0x10
- 594 014b F6000000 		.4byte	0xf6
- 595 014f 0B       		.uleb128 0xb
- 596 0150 3C       		.byte	0x3c
- 597 0151 06       		.byte	0x6
- 598 0152 36       		.byte	0x36
- 599 0153 7C010000 		.4byte	0x17c
- 600 0157 0A       		.uleb128 0xa
- 601 0158 68000000 		.4byte	.LASF25
- 602 015c 06       		.byte	0x6
- 603 015d 37       		.byte	0x37
- 604 015e 7C010000 		.4byte	0x17c
- 605 0162 00       		.byte	0
- 606 0163 0A       		.uleb128 0xa
- 607 0164 4F000000 		.4byte	.LASF26
- 608 0168 06       		.byte	0x6
- 609 0169 38       		.byte	0x38
- 610 016a 7C010000 		.4byte	0x17c
- 611 016e 14       		.byte	0x14
- 612 016f 0A       		.uleb128 0xa
- 613 0170 F5040000 		.4byte	.LASF27
- 614 0174 06       		.byte	0x6
- 615 0175 39       		.byte	0x39
- 616 0176 7C010000 		.4byte	0x17c
- 617 017a 28       		.byte	0x28
- 618 017b 00       		.byte	0
- 619 017c 06       		.uleb128 0x6
- 620 017d 8A000000 		.4byte	0x8a
- 621 0181 8C010000 		.4byte	0x18c
- 622 0185 07       		.uleb128 0x7
- 623 0186 7D000000 		.4byte	0x7d
- 624 018a 13       		.byte	0x13
- 625 018b 00       		.byte	0
- 626 018c 04       		.uleb128 0x4
- 627 018d 91050000 		.4byte	.LASF28
- 628 0191 06       		.byte	0x6
- 629 0192 3B       		.byte	0x3b
- 630 0193 4F010000 		.4byte	0x14f
- 631 0197 0B       		.uleb128 0xb
- 632 0198 20       		.byte	0x20
- 633 0199 06       		.byte	0x6
- 634 019a 3D       		.byte	0x3d
- 635 019b 00020000 		.4byte	0x200
- 636 019f 0A       		.uleb128 0xa
- 637 01a0 57040000 		.4byte	.LASF29
- 638 01a4 06       		.byte	0x6
- 639 01a5 3E       		.byte	0x3e
- 640 01a6 25000000 		.4byte	0x25
- 641 01aa 00       		.byte	0
- 642 01ab 0C       		.uleb128 0xc
- 643 01ac 62657200 		.ascii	"ber\000"
- 644 01b0 06       		.byte	0x6
- 645 01b1 3F       		.byte	0x3f
- 646 01b2 25000000 		.4byte	0x25
- 647 01b6 04       		.byte	0x4
- 648 01b7 0A       		.uleb128 0xa
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 14
+ 592 0142 FF       		.byte	0xff
+ 593 0143 00       		.byte	0
+ 594 0144 04       		.uleb128 0x4
+ 595 0145 AD040000 		.4byte	.LASF24
+ 596 0149 05       		.byte	0x5
+ 597 014a 10       		.byte	0x10
+ 598 014b F6000000 		.4byte	0xf6
+ 599 014f 0B       		.uleb128 0xb
+ 600 0150 3C       		.byte	0x3c
+ 601 0151 06       		.byte	0x6
+ 602 0152 36       		.byte	0x36
+ 603 0153 7C010000 		.4byte	0x17c
+ 604 0157 0A       		.uleb128 0xa
+ 605 0158 97050000 		.4byte	.LASF25
+ 606 015c 06       		.byte	0x6
+ 607 015d 37       		.byte	0x37
+ 608 015e 7C010000 		.4byte	0x17c
+ 609 0162 00       		.byte	0
+ 610 0163 0A       		.uleb128 0xa
+ 611 0164 3F020000 		.4byte	.LASF26
+ 612 0168 06       		.byte	0x6
+ 613 0169 38       		.byte	0x38
+ 614 016a 7C010000 		.4byte	0x17c
+ 615 016e 14       		.byte	0x14
+ 616 016f 0A       		.uleb128 0xa
+ 617 0170 C0040000 		.4byte	.LASF27
+ 618 0174 06       		.byte	0x6
+ 619 0175 39       		.byte	0x39
+ 620 0176 7C010000 		.4byte	0x17c
+ 621 017a 28       		.byte	0x28
+ 622 017b 00       		.byte	0
+ 623 017c 06       		.uleb128 0x6
+ 624 017d 8A000000 		.4byte	0x8a
+ 625 0181 8C010000 		.4byte	0x18c
+ 626 0185 07       		.uleb128 0x7
+ 627 0186 7D000000 		.4byte	0x7d
+ 628 018a 13       		.byte	0x13
+ 629 018b 00       		.byte	0
+ 630 018c 04       		.uleb128 0x4
+ 631 018d B3010000 		.4byte	.LASF28
+ 632 0191 06       		.byte	0x6
+ 633 0192 3B       		.byte	0x3b
+ 634 0193 4F010000 		.4byte	0x14f
+ 635 0197 0B       		.uleb128 0xb
+ 636 0198 20       		.byte	0x20
+ 637 0199 06       		.byte	0x6
+ 638 019a 3D       		.byte	0x3d
+ 639 019b 00020000 		.4byte	0x200
+ 640 019f 0A       		.uleb128 0xa
+ 641 01a0 DB010000 		.4byte	.LASF29
+ 642 01a4 06       		.byte	0x6
+ 643 01a5 3E       		.byte	0x3e
+ 644 01a6 25000000 		.4byte	0x25
+ 645 01aa 00       		.byte	0
+ 646 01ab 0C       		.uleb128 0xc
+ 647 01ac 62657200 		.ascii	"ber\000"
+ 648 01b0 06       		.byte	0x6
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 14
 
 
- 649 01b8 23020000 		.4byte	.LASF30
- 650 01bc 06       		.byte	0x6
- 651 01bd 40       		.byte	0x40
- 652 01be 25000000 		.4byte	0x25
- 653 01c2 08       		.byte	0x8
- 654 01c3 0A       		.uleb128 0xa
- 655 01c4 9C010000 		.4byte	.LASF31
- 656 01c8 06       		.byte	0x6
- 657 01c9 41       		.byte	0x41
- 658 01ca 25000000 		.4byte	0x25
- 659 01ce 0C       		.byte	0xc
- 660 01cf 0A       		.uleb128 0xa
- 661 01d0 D7000000 		.4byte	.LASF32
- 662 01d4 06       		.byte	0x6
- 663 01d5 42       		.byte	0x42
- 664 01d6 25000000 		.4byte	0x25
- 665 01da 10       		.byte	0x10
- 666 01db 0A       		.uleb128 0xa
- 667 01dc 69030000 		.4byte	.LASF33
- 668 01e0 06       		.byte	0x6
- 669 01e1 43       		.byte	0x43
- 670 01e2 25000000 		.4byte	0x25
- 671 01e6 14       		.byte	0x14
- 672 01e7 0A       		.uleb128 0xa
- 673 01e8 89040000 		.4byte	.LASF34
- 674 01ec 06       		.byte	0x6
- 675 01ed 44       		.byte	0x44
- 676 01ee 25000000 		.4byte	0x25
- 677 01f2 18       		.byte	0x18
- 678 01f3 0A       		.uleb128 0xa
- 679 01f4 DB040000 		.4byte	.LASF35
- 680 01f8 06       		.byte	0x6
- 681 01f9 45       		.byte	0x45
- 682 01fa 25000000 		.4byte	0x25
- 683 01fe 1C       		.byte	0x1c
- 684 01ff 00       		.byte	0
- 685 0200 04       		.uleb128 0x4
- 686 0201 02050000 		.4byte	.LASF36
- 687 0205 06       		.byte	0x6
- 688 0206 47       		.byte	0x47
- 689 0207 97010000 		.4byte	0x197
- 690 020b 0B       		.uleb128 0xb
- 691 020c 0A       		.byte	0xa
- 692 020d 06       		.byte	0x6
- 693 020e 53       		.byte	0x53
- 694 020f 8C020000 		.4byte	0x28c
- 695 0213 0A       		.uleb128 0xa
- 696 0214 6D060000 		.4byte	.LASF37
- 697 0218 06       		.byte	0x6
- 698 0219 55       		.byte	0x55
- 699 021a BA000000 		.4byte	0xba
- 700 021e 00       		.byte	0
- 701 021f 0A       		.uleb128 0xa
- 702 0220 5D040000 		.4byte	.LASF38
- 703 0224 06       		.byte	0x6
- 704 0225 57       		.byte	0x57
- 705 0226 8C020000 		.4byte	0x28c
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 15
+ 649 01b1 3F       		.byte	0x3f
+ 650 01b2 25000000 		.4byte	0x25
+ 651 01b6 04       		.byte	0x4
+ 652 01b7 0A       		.uleb128 0xa
+ 653 01b8 A8040000 		.4byte	.LASF30
+ 654 01bc 06       		.byte	0x6
+ 655 01bd 40       		.byte	0x40
+ 656 01be 25000000 		.4byte	0x25
+ 657 01c2 08       		.byte	0x8
+ 658 01c3 0A       		.uleb128 0xa
+ 659 01c4 5B010000 		.4byte	.LASF31
+ 660 01c8 06       		.byte	0x6
+ 661 01c9 41       		.byte	0x41
+ 662 01ca 25000000 		.4byte	0x25
+ 663 01ce 0C       		.byte	0xc
+ 664 01cf 0A       		.uleb128 0xa
+ 665 01d0 73040000 		.4byte	.LASF32
+ 666 01d4 06       		.byte	0x6
+ 667 01d5 42       		.byte	0x42
+ 668 01d6 25000000 		.4byte	0x25
+ 669 01da 10       		.byte	0x10
+ 670 01db 0A       		.uleb128 0xa
+ 671 01dc CC040000 		.4byte	.LASF33
+ 672 01e0 06       		.byte	0x6
+ 673 01e1 43       		.byte	0x43
+ 674 01e2 25000000 		.4byte	0x25
+ 675 01e6 14       		.byte	0x14
+ 676 01e7 0A       		.uleb128 0xa
+ 677 01e8 6E010000 		.4byte	.LASF34
+ 678 01ec 06       		.byte	0x6
+ 679 01ed 44       		.byte	0x44
+ 680 01ee 25000000 		.4byte	0x25
+ 681 01f2 18       		.byte	0x18
+ 682 01f3 0A       		.uleb128 0xa
+ 683 01f4 F5020000 		.4byte	.LASF35
+ 684 01f8 06       		.byte	0x6
+ 685 01f9 45       		.byte	0x45
+ 686 01fa 25000000 		.4byte	0x25
+ 687 01fe 1C       		.byte	0x1c
+ 688 01ff 00       		.byte	0
+ 689 0200 04       		.uleb128 0x4
+ 690 0201 D1040000 		.4byte	.LASF36
+ 691 0205 06       		.byte	0x6
+ 692 0206 47       		.byte	0x47
+ 693 0207 97010000 		.4byte	0x197
+ 694 020b 0B       		.uleb128 0xb
+ 695 020c 0B       		.byte	0xb
+ 696 020d 06       		.byte	0x6
+ 697 020e 53       		.byte	0x53
+ 698 020f 98020000 		.4byte	0x298
+ 699 0213 0A       		.uleb128 0xa
+ 700 0214 27020000 		.4byte	.LASF37
+ 701 0218 06       		.byte	0x6
+ 702 0219 55       		.byte	0x55
+ 703 021a BA000000 		.4byte	0xba
+ 704 021e 00       		.byte	0
+ 705 021f 0A       		.uleb128 0xa
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 15
 
 
- 706 022a 01       		.byte	0x1
- 707 022b 0A       		.uleb128 0xa
- 708 022c FC020000 		.4byte	.LASF39
- 709 0230 06       		.byte	0x6
- 710 0231 59       		.byte	0x59
- 711 0232 BA000000 		.4byte	0xba
- 712 0236 02       		.byte	0x2
- 713 0237 0A       		.uleb128 0xa
- 714 0238 1C040000 		.4byte	.LASF40
- 715 023c 06       		.byte	0x6
- 716 023d 5B       		.byte	0x5b
- 717 023e BA000000 		.4byte	0xba
- 718 0242 03       		.byte	0x3
- 719 0243 0A       		.uleb128 0xa
- 720 0244 85050000 		.4byte	.LASF41
- 721 0248 06       		.byte	0x6
- 722 0249 5E       		.byte	0x5e
- 723 024a BA000000 		.4byte	0xba
- 724 024e 04       		.byte	0x4
- 725 024f 0A       		.uleb128 0xa
- 726 0250 6F010000 		.4byte	.LASF42
- 727 0254 06       		.byte	0x6
- 728 0255 63       		.byte	0x63
- 729 0256 BA000000 		.4byte	0xba
- 730 025a 05       		.byte	0x5
- 731 025b 0A       		.uleb128 0xa
- 732 025c 09030000 		.4byte	.LASF43
- 733 0260 06       		.byte	0x6
- 734 0261 65       		.byte	0x65
- 735 0262 BA000000 		.4byte	0xba
- 736 0266 06       		.byte	0x6
- 737 0267 0A       		.uleb128 0xa
- 738 0268 9D030000 		.4byte	.LASF44
- 739 026c 06       		.byte	0x6
- 740 026d 66       		.byte	0x66
- 741 026e BA000000 		.4byte	0xba
- 742 0272 07       		.byte	0x7
- 743 0273 0A       		.uleb128 0xa
- 744 0274 85010000 		.4byte	.LASF45
- 745 0278 06       		.byte	0x6
- 746 0279 67       		.byte	0x67
- 747 027a BA000000 		.4byte	0xba
- 748 027e 08       		.byte	0x8
- 749 027f 0A       		.uleb128 0xa
- 750 0280 F4050000 		.4byte	.LASF46
- 751 0284 06       		.byte	0x6
- 752 0285 68       		.byte	0x68
- 753 0286 BA000000 		.4byte	0xba
- 754 028a 09       		.byte	0x9
- 755 028b 00       		.byte	0
- 756 028c 03       		.uleb128 0x3
- 757 028d 01       		.byte	0x1
- 758 028e 02       		.byte	0x2
- 759 028f 10050000 		.4byte	.LASF47
- 760 0293 04       		.uleb128 0x4
- 761 0294 40040000 		.4byte	.LASF48
- 762 0298 06       		.byte	0x6
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 16
+ 706 0220 93060000 		.4byte	.LASF38
+ 707 0224 06       		.byte	0x6
+ 708 0225 57       		.byte	0x57
+ 709 0226 98020000 		.4byte	0x298
+ 710 022a 01       		.byte	0x1
+ 711 022b 0A       		.uleb128 0xa
+ 712 022c 6B050000 		.4byte	.LASF39
+ 713 0230 06       		.byte	0x6
+ 714 0231 59       		.byte	0x59
+ 715 0232 BA000000 		.4byte	0xba
+ 716 0236 02       		.byte	0x2
+ 717 0237 0A       		.uleb128 0xa
+ 718 0238 82040000 		.4byte	.LASF40
+ 719 023c 06       		.byte	0x6
+ 720 023d 5B       		.byte	0x5b
+ 721 023e BA000000 		.4byte	0xba
+ 722 0242 03       		.byte	0x3
+ 723 0243 0A       		.uleb128 0xa
+ 724 0244 57020000 		.4byte	.LASF41
+ 725 0248 06       		.byte	0x6
+ 726 0249 5E       		.byte	0x5e
+ 727 024a BA000000 		.4byte	0xba
+ 728 024e 04       		.byte	0x4
+ 729 024f 0A       		.uleb128 0xa
+ 730 0250 27060000 		.4byte	.LASF42
+ 731 0254 06       		.byte	0x6
+ 732 0255 63       		.byte	0x63
+ 733 0256 BA000000 		.4byte	0xba
+ 734 025a 05       		.byte	0x5
+ 735 025b 0A       		.uleb128 0xa
+ 736 025c FC040000 		.4byte	.LASF43
+ 737 0260 06       		.byte	0x6
+ 738 0261 65       		.byte	0x65
+ 739 0262 BA000000 		.4byte	0xba
+ 740 0266 06       		.byte	0x6
+ 741 0267 0A       		.uleb128 0xa
+ 742 0268 9E050000 		.4byte	.LASF44
+ 743 026c 06       		.byte	0x6
+ 744 026d 66       		.byte	0x66
+ 745 026e BA000000 		.4byte	0xba
+ 746 0272 07       		.byte	0x7
+ 747 0273 0A       		.uleb128 0xa
+ 748 0274 68040000 		.4byte	.LASF45
+ 749 0278 06       		.byte	0x6
+ 750 0279 67       		.byte	0x67
+ 751 027a BA000000 		.4byte	0xba
+ 752 027e 08       		.byte	0x8
+ 753 027f 0A       		.uleb128 0xa
+ 754 0280 74060000 		.4byte	.LASF46
+ 755 0284 06       		.byte	0x6
+ 756 0285 68       		.byte	0x68
+ 757 0286 BA000000 		.4byte	0xba
+ 758 028a 09       		.byte	0x9
+ 759 028b 0A       		.uleb128 0xa
+ 760 028c 55050000 		.4byte	.LASF47
+ 761 0290 06       		.byte	0x6
+ 762 0291 69       		.byte	0x69
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 16
 
 
- 763 0299 6E       		.byte	0x6e
- 764 029a 0B020000 		.4byte	0x20b
- 765 029e 0B       		.uleb128 0xb
- 766 029f 2C       		.byte	0x2c
- 767 02a0 07       		.byte	0x7
- 768 02a1 14       		.byte	0x14
- 769 02a2 CB020000 		.4byte	0x2cb
- 770 02a6 0C       		.uleb128 0xc
- 771 02a7 6B657900 		.ascii	"key\000"
- 772 02ab 07       		.byte	0x7
- 773 02ac 15       		.byte	0x15
- 774 02ad 7C010000 		.4byte	0x17c
- 775 02b1 00       		.byte	0
- 776 02b2 0A       		.uleb128 0xa
- 777 02b3 B7010000 		.4byte	.LASF49
- 778 02b7 07       		.byte	0x7
- 779 02b8 16       		.byte	0x16
- 780 02b9 7C010000 		.4byte	0x17c
- 781 02bd 14       		.byte	0x14
- 782 02be 0A       		.uleb128 0xa
- 783 02bf 2E020000 		.4byte	.LASF50
- 784 02c3 07       		.byte	0x7
- 785 02c4 17       		.byte	0x17
- 786 02c5 DE000000 		.4byte	0xde
- 787 02c9 28       		.byte	0x28
- 788 02ca 00       		.byte	0
- 789 02cb 04       		.uleb128 0x4
- 790 02cc FC030000 		.4byte	.LASF51
- 791 02d0 07       		.byte	0x7
- 792 02d1 19       		.byte	0x19
- 793 02d2 9E020000 		.4byte	0x29e
- 794 02d6 0B       		.uleb128 0xb
- 795 02d7 06       		.byte	0x6
- 796 02d8 08       		.byte	0x8
- 797 02d9 35       		.byte	0x35
- 798 02da 0F030000 		.4byte	0x30f
- 799 02de 0A       		.uleb128 0xa
- 800 02df 9C000000 		.4byte	.LASF52
- 801 02e3 08       		.byte	0x8
- 802 02e4 37       		.byte	0x37
- 803 02e5 C6000000 		.4byte	0xc6
- 804 02e9 00       		.byte	0
- 805 02ea 0A       		.uleb128 0xa
- 806 02eb 86000000 		.4byte	.LASF53
- 807 02ef 08       		.byte	0x8
- 808 02f0 38       		.byte	0x38
- 809 02f1 D2000000 		.4byte	0xd2
- 810 02f5 02       		.byte	0x2
- 811 02f6 0A       		.uleb128 0xa
- 812 02f7 9E050000 		.4byte	.LASF54
- 813 02fb 08       		.byte	0x8
- 814 02fc 39       		.byte	0x39
- 815 02fd BA000000 		.4byte	0xba
- 816 0301 04       		.byte	0x4
- 817 0302 0A       		.uleb128 0xa
- 818 0303 17060000 		.4byte	.LASF55
- 819 0307 08       		.byte	0x8
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 17
+ 763 0292 BA000000 		.4byte	0xba
+ 764 0296 0A       		.byte	0xa
+ 765 0297 00       		.byte	0
+ 766 0298 03       		.uleb128 0x3
+ 767 0299 01       		.byte	0x1
+ 768 029a 02       		.byte	0x2
+ 769 029b 36040000 		.4byte	.LASF48
+ 770 029f 04       		.uleb128 0x4
+ 771 02a0 36030000 		.4byte	.LASF49
+ 772 02a4 06       		.byte	0x6
+ 773 02a5 6F       		.byte	0x6f
+ 774 02a6 0B020000 		.4byte	0x20b
+ 775 02aa 0B       		.uleb128 0xb
+ 776 02ab 2C       		.byte	0x2c
+ 777 02ac 07       		.byte	0x7
+ 778 02ad 14       		.byte	0x14
+ 779 02ae D7020000 		.4byte	0x2d7
+ 780 02b2 0C       		.uleb128 0xc
+ 781 02b3 6B657900 		.ascii	"key\000"
+ 782 02b7 07       		.byte	0x7
+ 783 02b8 15       		.byte	0x15
+ 784 02b9 7C010000 		.4byte	0x17c
+ 785 02bd 00       		.byte	0
+ 786 02be 0A       		.uleb128 0xa
+ 787 02bf 63020000 		.4byte	.LASF50
+ 788 02c3 07       		.byte	0x7
+ 789 02c4 16       		.byte	0x16
+ 790 02c5 7C010000 		.4byte	0x17c
+ 791 02c9 14       		.byte	0x14
+ 792 02ca 0A       		.uleb128 0xa
+ 793 02cb EE030000 		.4byte	.LASF51
+ 794 02cf 07       		.byte	0x7
+ 795 02d0 17       		.byte	0x17
+ 796 02d1 DE000000 		.4byte	0xde
+ 797 02d5 28       		.byte	0x28
+ 798 02d6 00       		.byte	0
+ 799 02d7 04       		.uleb128 0x4
+ 800 02d8 8C020000 		.4byte	.LASF52
+ 801 02dc 07       		.byte	0x7
+ 802 02dd 19       		.byte	0x19
+ 803 02de AA020000 		.4byte	0x2aa
+ 804 02e2 0B       		.uleb128 0xb
+ 805 02e3 06       		.byte	0x6
+ 806 02e4 08       		.byte	0x8
+ 807 02e5 36       		.byte	0x36
+ 808 02e6 1B030000 		.4byte	0x31b
+ 809 02ea 0A       		.uleb128 0xa
+ 810 02eb 48020000 		.4byte	.LASF53
+ 811 02ef 08       		.byte	0x8
+ 812 02f0 38       		.byte	0x38
+ 813 02f1 C6000000 		.4byte	0xc6
+ 814 02f5 00       		.byte	0
+ 815 02f6 0A       		.uleb128 0xa
+ 816 02f7 EA010000 		.4byte	.LASF54
+ 817 02fb 08       		.byte	0x8
+ 818 02fc 39       		.byte	0x39
+ 819 02fd D2000000 		.4byte	0xd2
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 17
 
 
- 820 0308 3A       		.byte	0x3a
- 821 0309 BA000000 		.4byte	0xba
- 822 030d 05       		.byte	0x5
- 823 030e 00       		.byte	0
- 824 030f 04       		.uleb128 0x4
- 825 0310 F6020000 		.4byte	.LASF56
- 826 0314 08       		.byte	0x8
- 827 0315 3D       		.byte	0x3d
- 828 0316 1A030000 		.4byte	0x31a
- 829 031a 0D       		.uleb128 0xd
- 830 031b D6020000 		.4byte	0x2d6
- 831 031f 0B       		.uleb128 0xb
- 832 0320 1C       		.byte	0x1c
- 833 0321 08       		.byte	0x8
- 834 0322 40       		.byte	0x40
- 835 0323 40030000 		.4byte	0x340
- 836 0327 0A       		.uleb128 0xa
- 837 0328 18020000 		.4byte	.LASF57
- 838 032c 08       		.byte	0x8
- 839 032d 42       		.byte	0x42
- 840 032e 40030000 		.4byte	0x340
- 841 0332 00       		.byte	0
- 842 0333 0A       		.uleb128 0xa
- 843 0334 E1030000 		.4byte	.LASF58
- 844 0338 08       		.byte	0x8
- 845 0339 43       		.byte	0x43
- 846 033a 91000000 		.4byte	0x91
- 847 033e 04       		.byte	0x4
- 848 033f 00       		.byte	0
- 849 0340 05       		.uleb128 0x5
- 850 0341 04       		.byte	0x4
- 851 0342 8C010000 		.4byte	0x18c
- 852 0346 04       		.uleb128 0x4
- 853 0347 66040000 		.4byte	.LASF59
- 854 034b 08       		.byte	0x8
- 855 034c 45       		.byte	0x45
- 856 034d 1F030000 		.4byte	0x31f
- 857 0351 0B       		.uleb128 0xb
- 858 0352 68       		.byte	0x68
- 859 0353 08       		.byte	0x8
- 860 0354 4B       		.byte	0x4b
- 861 0355 72030000 		.4byte	0x372
- 862 0359 0A       		.uleb128 0xa
- 863 035a CF000000 		.4byte	.LASF60
- 864 035e 08       		.byte	0x8
- 865 035f 50       		.byte	0x50
- 866 0360 72030000 		.4byte	0x372
- 867 0364 00       		.byte	0
- 868 0365 0A       		.uleb128 0xa
- 869 0366 44060000 		.4byte	.LASF61
- 870 036a 08       		.byte	0x8
- 871 036b 51       		.byte	0x51
- 872 036c 25000000 		.4byte	0x25
- 873 0370 64       		.byte	0x64
- 874 0371 00       		.byte	0
- 875 0372 06       		.uleb128 0x6
- 876 0373 8A000000 		.4byte	0x8a
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 18
+ 820 0301 02       		.byte	0x2
+ 821 0302 0A       		.uleb128 0xa
+ 822 0303 85060000 		.4byte	.LASF55
+ 823 0307 08       		.byte	0x8
+ 824 0308 3A       		.byte	0x3a
+ 825 0309 BA000000 		.4byte	0xba
+ 826 030d 04       		.byte	0x4
+ 827 030e 0A       		.uleb128 0xa
+ 828 030f 30000000 		.4byte	.LASF56
+ 829 0313 08       		.byte	0x8
+ 830 0314 3B       		.byte	0x3b
+ 831 0315 BA000000 		.4byte	0xba
+ 832 0319 05       		.byte	0x5
+ 833 031a 00       		.byte	0
+ 834 031b 04       		.uleb128 0x4
+ 835 031c 00020000 		.4byte	.LASF57
+ 836 0320 08       		.byte	0x8
+ 837 0321 3E       		.byte	0x3e
+ 838 0322 26030000 		.4byte	0x326
+ 839 0326 0D       		.uleb128 0xd
+ 840 0327 E2020000 		.4byte	0x2e2
+ 841 032b 0B       		.uleb128 0xb
+ 842 032c 1C       		.byte	0x1c
+ 843 032d 08       		.byte	0x8
+ 844 032e 41       		.byte	0x41
+ 845 032f 4C030000 		.4byte	0x34c
+ 846 0333 0A       		.uleb128 0xa
+ 847 0334 B7020000 		.4byte	.LASF58
+ 848 0338 08       		.byte	0x8
+ 849 0339 43       		.byte	0x43
+ 850 033a 4C030000 		.4byte	0x34c
+ 851 033e 00       		.byte	0
+ 852 033f 0A       		.uleb128 0xa
+ 853 0340 31020000 		.4byte	.LASF59
+ 854 0344 08       		.byte	0x8
+ 855 0345 44       		.byte	0x44
+ 856 0346 91000000 		.4byte	0x91
+ 857 034a 04       		.byte	0x4
+ 858 034b 00       		.byte	0
+ 859 034c 05       		.uleb128 0x5
+ 860 034d 04       		.byte	0x4
+ 861 034e 8C010000 		.4byte	0x18c
+ 862 0352 04       		.uleb128 0x4
+ 863 0353 2B030000 		.4byte	.LASF60
+ 864 0357 08       		.byte	0x8
+ 865 0358 46       		.byte	0x46
+ 866 0359 2B030000 		.4byte	0x32b
+ 867 035d 0B       		.uleb128 0xb
+ 868 035e 68       		.byte	0x68
+ 869 035f 08       		.byte	0x8
+ 870 0360 4C       		.byte	0x4c
+ 871 0361 7E030000 		.4byte	0x37e
+ 872 0365 0A       		.uleb128 0xa
+ 873 0366 C2020000 		.4byte	.LASF61
+ 874 036a 08       		.byte	0x8
+ 875 036b 51       		.byte	0x51
+ 876 036c 7E030000 		.4byte	0x37e
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 18
 
 
- 877 0377 82030000 		.4byte	0x382
- 878 037b 07       		.uleb128 0x7
- 879 037c 7D000000 		.4byte	0x7d
- 880 0380 63       		.byte	0x63
- 881 0381 00       		.byte	0
- 882 0382 04       		.uleb128 0x4
- 883 0383 6F000000 		.4byte	.LASF62
- 884 0387 08       		.byte	0x8
- 885 0388 57       		.byte	0x57
- 886 0389 51030000 		.4byte	0x351
- 887 038d 0E       		.uleb128 0xe
- 888 038e E4010000 		.4byte	.LASF119
- 889 0392 01       		.byte	0x1
- 890 0393 05       		.byte	0x5
- 891 0394 2C000000 		.4byte	0x2c
- 892 0398 00000000 		.4byte	.LFB64
- 893 039c 88000000 		.4byte	.LFE64-.LFB64
- 894 03a0 01       		.uleb128 0x1
- 895 03a1 9C       		.byte	0x9c
- 896 03a2 E7030000 		.4byte	0x3e7
- 897 03a6 0F       		.uleb128 0xf
- 898 03a7 CD020000 		.4byte	.LASF63
- 899 03ab 01       		.byte	0x1
- 900 03ac 05       		.byte	0x5
- 901 03ad 84000000 		.4byte	0x84
- 902 03b1 02       		.uleb128 0x2
- 903 03b2 91       		.byte	0x91
- 904 03b3 64       		.sleb128 -28
- 905 03b4 0F       		.uleb128 0xf
- 906 03b5 E2050000 		.4byte	.LASF64
- 907 03b9 01       		.byte	0x1
- 908 03ba 05       		.byte	0x5
- 909 03bb 84000000 		.4byte	0x84
- 910 03bf 02       		.uleb128 0x2
- 911 03c0 91       		.byte	0x91
- 912 03c1 60       		.sleb128 -32
- 913 03c2 10       		.uleb128 0x10
- 914 03c3 90010000 		.4byte	.LASF65
- 915 03c7 01       		.byte	0x1
- 916 03c8 10       		.byte	0x10
- 917 03c9 2C000000 		.4byte	0x2c
- 918 03cd 02       		.uleb128 0x2
- 919 03ce 91       		.byte	0x91
- 920 03cf 68       		.sleb128 -24
- 921 03d0 11       		.uleb128 0x11
- 922 03d1 10000000 		.4byte	.LBB2
- 923 03d5 5E000000 		.4byte	.LBE2-.LBB2
- 924 03d9 12       		.uleb128 0x12
- 925 03da 6900     		.ascii	"i\000"
- 926 03dc 01       		.byte	0x1
- 927 03dd 0A       		.byte	0xa
- 928 03de C6000000 		.4byte	0xc6
- 929 03e2 02       		.uleb128 0x2
- 930 03e3 91       		.byte	0x91
- 931 03e4 6E       		.sleb128 -18
- 932 03e5 00       		.byte	0
- 933 03e6 00       		.byte	0
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 19
+ 877 0370 00       		.byte	0
+ 878 0371 0A       		.uleb128 0xa
+ 879 0372 AF020000 		.4byte	.LASF62
+ 880 0376 08       		.byte	0x8
+ 881 0377 52       		.byte	0x52
+ 882 0378 25000000 		.4byte	0x25
+ 883 037c 64       		.byte	0x64
+ 884 037d 00       		.byte	0
+ 885 037e 06       		.uleb128 0x6
+ 886 037f 8A000000 		.4byte	0x8a
+ 887 0383 8E030000 		.4byte	0x38e
+ 888 0387 07       		.uleb128 0x7
+ 889 0388 7D000000 		.4byte	0x7d
+ 890 038c 63       		.byte	0x63
+ 891 038d 00       		.byte	0
+ 892 038e 04       		.uleb128 0x4
+ 893 038f C8030000 		.4byte	.LASF63
+ 894 0393 08       		.byte	0x8
+ 895 0394 58       		.byte	0x58
+ 896 0395 5D030000 		.4byte	0x35d
+ 897 0399 0E       		.uleb128 0xe
+ 898 039a 9C060000 		.4byte	.LASF123
+ 899 039e 01       		.byte	0x1
+ 900 039f 05       		.byte	0x5
+ 901 03a0 2C000000 		.4byte	0x2c
+ 902 03a4 00000000 		.4byte	.LFB64
+ 903 03a8 88000000 		.4byte	.LFE64-.LFB64
+ 904 03ac 01       		.uleb128 0x1
+ 905 03ad 9C       		.byte	0x9c
+ 906 03ae F3030000 		.4byte	0x3f3
+ 907 03b2 0F       		.uleb128 0xf
+ 908 03b3 07000000 		.4byte	.LASF64
+ 909 03b7 01       		.byte	0x1
+ 910 03b8 05       		.byte	0x5
+ 911 03b9 84000000 		.4byte	0x84
+ 912 03bd 02       		.uleb128 0x2
+ 913 03be 91       		.byte	0x91
+ 914 03bf 64       		.sleb128 -28
+ 915 03c0 0F       		.uleb128 0xf
+ 916 03c1 0C020000 		.4byte	.LASF65
+ 917 03c5 01       		.byte	0x1
+ 918 03c6 05       		.byte	0x5
+ 919 03c7 84000000 		.4byte	0x84
+ 920 03cb 02       		.uleb128 0x2
+ 921 03cc 91       		.byte	0x91
+ 922 03cd 60       		.sleb128 -32
+ 923 03ce 10       		.uleb128 0x10
+ 924 03cf F0040000 		.4byte	.LASF66
+ 925 03d3 01       		.byte	0x1
+ 926 03d4 10       		.byte	0x10
+ 927 03d5 2C000000 		.4byte	0x2c
+ 928 03d9 02       		.uleb128 0x2
+ 929 03da 91       		.byte	0x91
+ 930 03db 68       		.sleb128 -24
+ 931 03dc 11       		.uleb128 0x11
+ 932 03dd 10000000 		.4byte	.LBB2
+ 933 03e1 5E000000 		.4byte	.LBE2-.LBB2
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 19
 
 
- 934 03e7 13       		.uleb128 0x13
- 935 03e8 BE050000 		.4byte	.LASF71
- 936 03ec 01       		.byte	0x1
- 937 03ed 17       		.byte	0x17
- 938 03ee 00000000 		.4byte	.LFB65
- 939 03f2 3C000000 		.4byte	.LFE65-.LFB65
- 940 03f6 01       		.uleb128 0x1
- 941 03f7 9C       		.byte	0x9c
- 942 03f8 43040000 		.4byte	0x443
- 943 03fc 0F       		.uleb128 0xf
- 944 03fd F0020000 		.4byte	.LASF66
- 945 0401 01       		.byte	0x1
- 946 0402 17       		.byte	0x17
- 947 0403 84000000 		.4byte	0x84
- 948 0407 02       		.uleb128 0x2
- 949 0408 91       		.byte	0x91
- 950 0409 74       		.sleb128 -12
- 951 040a 0F       		.uleb128 0xf
- 952 040b 4C060000 		.4byte	.LASF67
- 953 040f 01       		.byte	0x1
- 954 0410 17       		.byte	0x17
- 955 0411 84000000 		.4byte	0x84
- 956 0415 02       		.uleb128 0x2
- 957 0416 91       		.byte	0x91
- 958 0417 70       		.sleb128 -16
- 959 0418 0F       		.uleb128 0xf
- 960 0419 71040000 		.4byte	.LASF68
- 961 041d 01       		.byte	0x1
- 962 041e 17       		.byte	0x17
- 963 041f 84000000 		.4byte	0x84
- 964 0423 02       		.uleb128 0x2
- 965 0424 91       		.byte	0x91
- 966 0425 6C       		.sleb128 -20
- 967 0426 0F       		.uleb128 0xf
- 968 0427 A8040000 		.4byte	.LASF69
- 969 042b 01       		.byte	0x1
- 970 042c 17       		.byte	0x17
- 971 042d 84000000 		.4byte	0x84
- 972 0431 02       		.uleb128 0x2
- 973 0432 91       		.byte	0x91
- 974 0433 68       		.sleb128 -24
- 975 0434 0F       		.uleb128 0xf
- 976 0435 7C010000 		.4byte	.LASF70
- 977 0439 01       		.byte	0x1
- 978 043a 17       		.byte	0x17
- 979 043b 84000000 		.4byte	0x84
- 980 043f 02       		.uleb128 0x2
- 981 0440 91       		.byte	0x91
- 982 0441 00       		.sleb128 0
- 983 0442 00       		.byte	0
- 984 0443 14       		.uleb128 0x14
- 985 0444 87060000 		.4byte	.LASF72
- 986 0448 01       		.byte	0x1
- 987 0449 1E       		.byte	0x1e
- 988 044a 44010000 		.4byte	0x144
- 989 044e 00000000 		.4byte	.LFB66
- 990 0452 34010000 		.4byte	.LFE66-.LFB66
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 20
+ 934 03e5 12       		.uleb128 0x12
+ 935 03e6 6900     		.ascii	"i\000"
+ 936 03e8 01       		.byte	0x1
+ 937 03e9 0A       		.byte	0xa
+ 938 03ea C6000000 		.4byte	0xc6
+ 939 03ee 02       		.uleb128 0x2
+ 940 03ef 91       		.byte	0x91
+ 941 03f0 6E       		.sleb128 -18
+ 942 03f1 00       		.byte	0
+ 943 03f2 00       		.byte	0
+ 944 03f3 13       		.uleb128 0x13
+ 945 03f4 C9050000 		.4byte	.LASF72
+ 946 03f8 01       		.byte	0x1
+ 947 03f9 17       		.byte	0x17
+ 948 03fa 00000000 		.4byte	.LFB65
+ 949 03fe 3C000000 		.4byte	.LFE65-.LFB65
+ 950 0402 01       		.uleb128 0x1
+ 951 0403 9C       		.byte	0x9c
+ 952 0404 4F040000 		.4byte	0x44f
+ 953 0408 0F       		.uleb128 0xf
+ 954 0409 52040000 		.4byte	.LASF67
+ 955 040d 01       		.byte	0x1
+ 956 040e 17       		.byte	0x17
+ 957 040f 84000000 		.4byte	0x84
+ 958 0413 02       		.uleb128 0x2
+ 959 0414 91       		.byte	0x91
+ 960 0415 74       		.sleb128 -12
+ 961 0416 0F       		.uleb128 0xf
+ 962 0417 4D030000 		.4byte	.LASF68
+ 963 041b 01       		.byte	0x1
+ 964 041c 17       		.byte	0x17
+ 965 041d 84000000 		.4byte	0x84
+ 966 0421 02       		.uleb128 0x2
+ 967 0422 91       		.byte	0x91
+ 968 0423 70       		.sleb128 -16
+ 969 0424 0F       		.uleb128 0xf
+ 970 0425 27040000 		.4byte	.LASF69
+ 971 0429 01       		.byte	0x1
+ 972 042a 17       		.byte	0x17
+ 973 042b 84000000 		.4byte	0x84
+ 974 042f 02       		.uleb128 0x2
+ 975 0430 91       		.byte	0x91
+ 976 0431 6C       		.sleb128 -20
+ 977 0432 0F       		.uleb128 0xf
+ 978 0433 B8060000 		.4byte	.LASF70
+ 979 0437 01       		.byte	0x1
+ 980 0438 17       		.byte	0x17
+ 981 0439 84000000 		.4byte	0x84
+ 982 043d 02       		.uleb128 0x2
+ 983 043e 91       		.byte	0x91
+ 984 043f 68       		.sleb128 -24
+ 985 0440 0F       		.uleb128 0xf
+ 986 0441 AA010000 		.4byte	.LASF71
+ 987 0445 01       		.byte	0x1
+ 988 0446 17       		.byte	0x17
+ 989 0447 84000000 		.4byte	0x84
+ 990 044b 02       		.uleb128 0x2
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 20
 
 
- 991 0456 01       		.uleb128 0x1
- 992 0457 9C       		.byte	0x9c
- 993 0458 97040000 		.4byte	0x497
- 994 045c 10       		.uleb128 0x10
- 995 045d 2D050000 		.4byte	.LASF73
- 996 0461 01       		.byte	0x1
- 997 0462 1F       		.byte	0x1f
- 998 0463 44010000 		.4byte	0x144
- 999 0467 03       		.uleb128 0x3
- 1000 0468 91       		.byte	0x91
- 1001 0469 DC7C     		.sleb128 -420
- 1002 046b 10       		.uleb128 0x10
- 1003 046c 58000000 		.4byte	.LASF74
- 1004 0470 01       		.byte	0x1
- 1005 0471 24       		.byte	0x24
- 1006 0472 84000000 		.4byte	0x84
- 1007 0476 02       		.uleb128 0x2
- 1008 0477 91       		.byte	0x91
- 1009 0478 64       		.sleb128 -28
- 1010 0479 10       		.uleb128 0x10
- 1011 047a B0020000 		.4byte	.LASF75
- 1012 047e 01       		.byte	0x1
- 1013 047f 29       		.byte	0x29
- 1014 0480 97040000 		.4byte	0x497
- 1015 0484 03       		.uleb128 0x3
- 1016 0485 91       		.byte	0x91
- 1017 0486 947B     		.sleb128 -620
- 1018 0488 10       		.uleb128 0x10
- 1019 0489 AC050000 		.4byte	.LASF76
- 1020 048d 01       		.byte	0x1
- 1021 048e 2E       		.byte	0x2e
- 1022 048f 25000000 		.4byte	0x25
- 1023 0493 02       		.uleb128 0x2
- 1024 0494 91       		.byte	0x91
- 1025 0495 60       		.sleb128 -32
- 1026 0496 00       		.byte	0
- 1027 0497 06       		.uleb128 0x6
- 1028 0498 8A000000 		.4byte	0x8a
- 1029 049c A7040000 		.4byte	0x4a7
- 1030 04a0 07       		.uleb128 0x7
- 1031 04a1 7D000000 		.4byte	0x7d
- 1032 04a5 C7       		.byte	0xc7
- 1033 04a6 00       		.byte	0
- 1034 04a7 15       		.uleb128 0x15
- 1035 04a8 67050000 		.4byte	.LASF77
- 1036 04ac 09       		.byte	0x9
- 1037 04ad 1207     		.2byte	0x712
- 1038 04af B3040000 		.4byte	0x4b3
- 1039 04b3 0D       		.uleb128 0xd
- 1040 04b4 A1000000 		.4byte	0xa1
- 1041 04b8 16       		.uleb128 0x16
- 1042 04b9 85030000 		.4byte	.LASF78
- 1043 04bd 06       		.byte	0x6
- 1044 04be 20       		.byte	0x20
- 1045 04bf BA000000 		.4byte	0xba
- 1046 04c3 05       		.uleb128 0x5
- 1047 04c4 03       		.byte	0x3
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 21
+ 991 044c 91       		.byte	0x91
+ 992 044d 00       		.sleb128 0
+ 993 044e 00       		.byte	0
+ 994 044f 14       		.uleb128 0x14
+ 995 0450 9C040000 		.4byte	.LASF73
+ 996 0454 01       		.byte	0x1
+ 997 0455 1E       		.byte	0x1e
+ 998 0456 44010000 		.4byte	0x144
+ 999 045a 00000000 		.4byte	.LFB66
+ 1000 045e 34010000 		.4byte	.LFE66-.LFB66
+ 1001 0462 01       		.uleb128 0x1
+ 1002 0463 9C       		.byte	0x9c
+ 1003 0464 A3040000 		.4byte	0x4a3
+ 1004 0468 10       		.uleb128 0x10
+ 1005 0469 16010000 		.4byte	.LASF74
+ 1006 046d 01       		.byte	0x1
+ 1007 046e 1F       		.byte	0x1f
+ 1008 046f 44010000 		.4byte	0x144
+ 1009 0473 03       		.uleb128 0x3
+ 1010 0474 91       		.byte	0x91
+ 1011 0475 DC7C     		.sleb128 -420
+ 1012 0477 10       		.uleb128 0x10
+ 1013 0478 8C040000 		.4byte	.LASF75
+ 1014 047c 01       		.byte	0x1
+ 1015 047d 24       		.byte	0x24
+ 1016 047e 84000000 		.4byte	0x84
+ 1017 0482 02       		.uleb128 0x2
+ 1018 0483 91       		.byte	0x91
+ 1019 0484 64       		.sleb128 -28
+ 1020 0485 10       		.uleb128 0x10
+ 1021 0486 E5020000 		.4byte	.LASF76
+ 1022 048a 01       		.byte	0x1
+ 1023 048b 29       		.byte	0x29
+ 1024 048c A3040000 		.4byte	0x4a3
+ 1025 0490 03       		.uleb128 0x3
+ 1026 0491 91       		.byte	0x91
+ 1027 0492 947B     		.sleb128 -620
+ 1028 0494 10       		.uleb128 0x10
+ 1029 0495 F8030000 		.4byte	.LASF77
+ 1030 0499 01       		.byte	0x1
+ 1031 049a 2E       		.byte	0x2e
+ 1032 049b 25000000 		.4byte	0x25
+ 1033 049f 02       		.uleb128 0x2
+ 1034 04a0 91       		.byte	0x91
+ 1035 04a1 60       		.sleb128 -32
+ 1036 04a2 00       		.byte	0
+ 1037 04a3 06       		.uleb128 0x6
+ 1038 04a4 8A000000 		.4byte	0x8a
+ 1039 04a8 B3040000 		.4byte	0x4b3
+ 1040 04ac 07       		.uleb128 0x7
+ 1041 04ad 7D000000 		.4byte	0x7d
+ 1042 04b1 C7       		.byte	0xc7
+ 1043 04b2 00       		.byte	0
+ 1044 04b3 15       		.uleb128 0x15
+ 1045 04b4 28010000 		.4byte	.LASF78
+ 1046 04b8 09       		.byte	0x9
+ 1047 04b9 1207     		.2byte	0x712
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 21
 
 
- 1048 04c5 00000000 		.4byte	modem_state
- 1049 04c9 16       		.uleb128 0x16
- 1050 04ca 6E030000 		.4byte	.LASF79
- 1051 04ce 06       		.byte	0x6
- 1052 04cf 71       		.byte	0x71
- 1053 04d0 DE000000 		.4byte	0xde
- 1054 04d4 05       		.uleb128 0x5
- 1055 04d5 03       		.byte	0x3
- 1056 04d6 00000000 		.4byte	modem_start_time_stamp
- 1057 04da 16       		.uleb128 0x16
- 1058 04db 18020000 		.4byte	.LASF57
- 1059 04df 06       		.byte	0x6
- 1060 04e0 72       		.byte	0x72
- 1061 04e1 8C010000 		.4byte	0x18c
- 1062 04e5 05       		.uleb128 0x5
- 1063 04e6 03       		.byte	0x3
- 1064 04e7 00000000 		.4byte	modem_info
- 1065 04eb 16       		.uleb128 0x16
- 1066 04ec 26040000 		.4byte	.LASF80
- 1067 04f0 06       		.byte	0x6
- 1068 04f1 73       		.byte	0x73
- 1069 04f2 00020000 		.4byte	0x200
- 1070 04f6 05       		.uleb128 0x5
- 1071 04f7 03       		.byte	0x3
- 1072 04f8 00000000 		.4byte	modem_stats
- 1073 04fc 16       		.uleb128 0x16
- 1074 04fd 2F060000 		.4byte	.LASF81
- 1075 0501 06       		.byte	0x6
- 1076 0502 74       		.byte	0x74
- 1077 0503 93020000 		.4byte	0x293
- 1078 0507 05       		.uleb128 0x5
- 1079 0508 03       		.byte	0x3
- 1080 0509 00000000 		.4byte	updatable_parameters
- 1081 050d 16       		.uleb128 0x16
- 1082 050e A0020000 		.4byte	.LASF82
- 1083 0512 07       		.byte	0x7
- 1084 0513 11       		.byte	0x11
- 1085 0514 8C020000 		.4byte	0x28c
- 1086 0518 05       		.uleb128 0x5
- 1087 0519 03       		.byte	0x3
- 1088 051a 00000000 		.4byte	buffer_overflow
- 1089 051e 16       		.uleb128 0x16
- 1090 051f 00020000 		.4byte	.LASF83
- 1091 0523 07       		.byte	0x7
- 1092 0524 22       		.byte	0x22
- 1093 0525 C6000000 		.4byte	0xc6
- 1094 0529 05       		.uleb128 0x5
- 1095 052a 03       		.byte	0x3
- 1096 052b 00000000 		.4byte	dataPointsInStack
- 1097 052f 16       		.uleb128 0x16
- 1098 0530 49020000 		.4byte	.LASF84
- 1099 0534 07       		.byte	0x7
- 1100 0535 23       		.byte	0x23
- 1101 0536 C6000000 		.4byte	0xc6
- 1102 053a 05       		.uleb128 0x5
- 1103 053b 03       		.byte	0x3
- 1104 053c 00000000 		.4byte	dataPointsInStackDesired
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 22
+ 1048 04bb BF040000 		.4byte	0x4bf
+ 1049 04bf 0D       		.uleb128 0xd
+ 1050 04c0 A1000000 		.4byte	0xa1
+ 1051 04c4 16       		.uleb128 0x16
+ 1052 04c5 0A010000 		.4byte	.LASF79
+ 1053 04c9 06       		.byte	0x6
+ 1054 04ca 20       		.byte	0x20
+ 1055 04cb BA000000 		.4byte	0xba
+ 1056 04cf 05       		.uleb128 0x5
+ 1057 04d0 03       		.byte	0x3
+ 1058 04d1 00000000 		.4byte	modem_state
+ 1059 04d5 16       		.uleb128 0x16
+ 1060 04d6 14030000 		.4byte	.LASF80
+ 1061 04da 06       		.byte	0x6
+ 1062 04db 72       		.byte	0x72
+ 1063 04dc DE000000 		.4byte	0xde
+ 1064 04e0 05       		.uleb128 0x5
+ 1065 04e1 03       		.byte	0x3
+ 1066 04e2 00000000 		.4byte	modem_start_time_stamp
+ 1067 04e6 16       		.uleb128 0x16
+ 1068 04e7 B7020000 		.4byte	.LASF58
+ 1069 04eb 06       		.byte	0x6
+ 1070 04ec 73       		.byte	0x73
+ 1071 04ed 8C010000 		.4byte	0x18c
+ 1072 04f1 05       		.uleb128 0x5
+ 1073 04f2 03       		.byte	0x3
+ 1074 04f3 00000000 		.4byte	modem_info
+ 1075 04f7 16       		.uleb128 0x16
+ 1076 04f8 35010000 		.4byte	.LASF81
+ 1077 04fc 06       		.byte	0x6
+ 1078 04fd 74       		.byte	0x74
+ 1079 04fe 00020000 		.4byte	0x200
+ 1080 0502 05       		.uleb128 0x5
+ 1081 0503 03       		.byte	0x3
+ 1082 0504 00000000 		.4byte	modem_stats
+ 1083 0508 16       		.uleb128 0x16
+ 1084 0509 00040000 		.4byte	.LASF82
+ 1085 050d 06       		.byte	0x6
+ 1086 050e 75       		.byte	0x75
+ 1087 050f 9F020000 		.4byte	0x29f
+ 1088 0513 05       		.uleb128 0x5
+ 1089 0514 03       		.byte	0x3
+ 1090 0515 00000000 		.4byte	updatable_parameters
+ 1091 0519 16       		.uleb128 0x16
+ 1092 051a 20000000 		.4byte	.LASF83
+ 1093 051e 07       		.byte	0x7
+ 1094 051f 11       		.byte	0x11
+ 1095 0520 98020000 		.4byte	0x298
+ 1096 0524 05       		.uleb128 0x5
+ 1097 0525 03       		.byte	0x3
+ 1098 0526 00000000 		.4byte	buffer_overflow
+ 1099 052a 16       		.uleb128 0x16
+ 1100 052b 52030000 		.4byte	.LASF84
+ 1101 052f 07       		.byte	0x7
+ 1102 0530 22       		.byte	0x22
+ 1103 0531 C6000000 		.4byte	0xc6
+ 1104 0535 05       		.uleb128 0x5
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 22
 
 
- 1105 0540 06       		.uleb128 0x6
- 1106 0541 CB020000 		.4byte	0x2cb
- 1107 0545 50050000 		.4byte	0x550
- 1108 0549 07       		.uleb128 0x7
- 1109 054a 7D000000 		.4byte	0x7d
- 1110 054e 95       		.byte	0x95
- 1111 054f 00       		.byte	0
- 1112 0550 16       		.uleb128 0x16
- 1113 0551 6A010000 		.4byte	.LASF85
- 1114 0555 07       		.byte	0x7
- 1115 0556 24       		.byte	0x24
- 1116 0557 40050000 		.4byte	0x540
- 1117 055b 05       		.uleb128 0x5
- 1118 055c 03       		.byte	0x3
- 1119 055d 00000000 		.4byte	data
- 1120 0561 16       		.uleb128 0x16
- 1121 0562 77060000 		.4byte	.LASF86
- 1122 0566 0A       		.byte	0xa
- 1123 0567 07       		.byte	0x7
- 1124 0568 BA000000 		.4byte	0xba
- 1125 056c 05       		.uleb128 0x5
- 1126 056d 03       		.byte	0x3
- 1127 056e 00000000 		.4byte	App_LED_enabled
- 1128 0572 16       		.uleb128 0x16
- 1129 0573 31030000 		.4byte	.LASF87
- 1130 0577 0A       		.byte	0xa
- 1131 0578 08       		.byte	0x8
- 1132 0579 72030000 		.4byte	0x372
- 1133 057d 05       		.uleb128 0x5
- 1134 057e 03       		.byte	0x3
- 1135 057f 00000000 		.4byte	app_led_inbox
- 1136 0583 16       		.uleb128 0x16
- 1137 0584 AD040000 		.4byte	.LASF88
- 1138 0588 0B       		.byte	0xb
- 1139 0589 25       		.byte	0x25
- 1140 058a 72030000 		.4byte	0x372
- 1141 058e 05       		.uleb128 0x5
- 1142 058f 03       		.byte	0x3
- 1143 0590 00000000 		.4byte	level_sensor_inbox
- 1144 0594 16       		.uleb128 0x16
- 1145 0595 68020000 		.4byte	.LASF89
- 1146 0599 0B       		.byte	0xb
- 1147 059a 27       		.byte	0x27
- 1148 059b 8C020000 		.4byte	0x28c
- 1149 059f 05       		.uleb128 0x5
- 1150 05a0 03       		.byte	0x3
- 1151 05a1 00000000 		.4byte	level_sensor_enabled
- 1152 05a5 16       		.uleb128 0x16
- 1153 05a6 C0040000 		.4byte	.LASF90
- 1154 05aa 0C       		.byte	0xc
- 1155 05ab 2A       		.byte	0x2a
- 1156 05ac EA000000 		.4byte	0xea
- 1157 05b0 05       		.uleb128 0x5
- 1158 05b1 03       		.byte	0x3
- 1159 05b2 00000000 		.4byte	valve_diameter
- 1160 05b6 06       		.uleb128 0x6
- 1161 05b7 8A000000 		.4byte	0x8a
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 23
+ 1105 0536 03       		.byte	0x3
+ 1106 0537 00000000 		.4byte	dataPointsInStack
+ 1107 053b 16       		.uleb128 0x16
+ 1108 053c 0E060000 		.4byte	.LASF85
+ 1109 0540 07       		.byte	0x7
+ 1110 0541 23       		.byte	0x23
+ 1111 0542 C6000000 		.4byte	0xc6
+ 1112 0546 05       		.uleb128 0x5
+ 1113 0547 03       		.byte	0x3
+ 1114 0548 00000000 		.4byte	dataPointsInStackDesired
+ 1115 054c 06       		.uleb128 0x6
+ 1116 054d D7020000 		.4byte	0x2d7
+ 1117 0551 5C050000 		.4byte	0x55c
+ 1118 0555 07       		.uleb128 0x7
+ 1119 0556 7D000000 		.4byte	0x7d
+ 1120 055a 95       		.byte	0x95
+ 1121 055b 00       		.byte	0
+ 1122 055c 16       		.uleb128 0x16
+ 1123 055d AA020000 		.4byte	.LASF86
+ 1124 0561 07       		.byte	0x7
+ 1125 0562 24       		.byte	0x24
+ 1126 0563 4C050000 		.4byte	0x54c
+ 1127 0567 05       		.uleb128 0x5
+ 1128 0568 03       		.byte	0x3
+ 1129 0569 00000000 		.4byte	data
+ 1130 056d 16       		.uleb128 0x16
+ 1131 056e 73020000 		.4byte	.LASF87
+ 1132 0572 0A       		.byte	0xa
+ 1133 0573 07       		.byte	0x7
+ 1134 0574 BA000000 		.4byte	0xba
+ 1135 0578 05       		.uleb128 0x5
+ 1136 0579 03       		.byte	0x3
+ 1137 057a 00000000 		.4byte	App_LED_enabled
+ 1138 057e 16       		.uleb128 0x16
+ 1139 057f D1060000 		.4byte	.LASF88
+ 1140 0583 0A       		.byte	0xa
+ 1141 0584 08       		.byte	0x8
+ 1142 0585 7E030000 		.4byte	0x37e
+ 1143 0589 05       		.uleb128 0x5
+ 1144 058a 03       		.byte	0x3
+ 1145 058b 00000000 		.4byte	app_led_inbox
+ 1146 058f 16       		.uleb128 0x16
+ 1147 0590 0E050000 		.4byte	.LASF89
+ 1148 0594 0B       		.byte	0xb
+ 1149 0595 25       		.byte	0x25
+ 1150 0596 7E030000 		.4byte	0x37e
+ 1151 059a 05       		.uleb128 0x5
+ 1152 059b 03       		.byte	0x3
+ 1153 059c 00000000 		.4byte	level_sensor_inbox
+ 1154 05a0 16       		.uleb128 0x16
+ 1155 05a1 F9050000 		.4byte	.LASF90
+ 1156 05a5 0B       		.byte	0xb
+ 1157 05a6 27       		.byte	0x27
+ 1158 05a7 98020000 		.4byte	0x298
+ 1159 05ab 05       		.uleb128 0x5
+ 1160 05ac 03       		.byte	0x3
+ 1161 05ad 00000000 		.4byte	level_sensor_enabled
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 23
 
 
- 1162 05bb C6050000 		.4byte	0x5c6
- 1163 05bf 07       		.uleb128 0x7
- 1164 05c0 7D000000 		.4byte	0x7d
- 1165 05c4 09       		.byte	0x9
- 1166 05c5 00       		.byte	0
- 1167 05c6 16       		.uleb128 0x16
- 1168 05c7 D9010000 		.4byte	.LASF91
- 1169 05cb 0C       		.byte	0xc
- 1170 05cc 2B       		.byte	0x2b
- 1171 05cd B6050000 		.4byte	0x5b6
- 1172 05d1 05       		.uleb128 0x5
- 1173 05d2 03       		.byte	0x3
- 1174 05d3 00000000 		.4byte	valve_type
- 1175 05d7 16       		.uleb128 0x16
- 1176 05d8 00000000 		.4byte	.LASF92
- 1177 05dc 0C       		.byte	0xc
- 1178 05dd 30       		.byte	0x30
- 1179 05de BA000000 		.4byte	0xba
- 1180 05e2 05       		.uleb128 0x5
- 1181 05e3 03       		.byte	0x3
- 1182 05e4 00000000 		.4byte	valve_enabled
- 1183 05e8 16       		.uleb128 0x16
- 1184 05e9 BD010000 		.4byte	.LASF93
- 1185 05ed 0C       		.byte	0xc
- 1186 05ee 31       		.byte	0x31
- 1187 05ef 72030000 		.4byte	0x372
- 1188 05f3 05       		.uleb128 0x5
- 1189 05f4 03       		.byte	0x3
- 1190 05f5 00000000 		.4byte	valve_inbox
- 1191 05f9 16       		.uleb128 0x16
- 1192 05fa 08040000 		.4byte	.LASF94
- 1193 05fe 0D       		.byte	0xd
- 1194 05ff 69       		.byte	0x69
- 1195 0600 BA000000 		.4byte	0xba
- 1196 0604 05       		.uleb128 0x5
- 1197 0605 03       		.byte	0x3
- 1198 0606 00000000 		.4byte	autosampler_enabled
- 1199 060a 16       		.uleb128 0x16
- 1200 060b 5B060000 		.4byte	.LASF95
- 1201 060f 0D       		.byte	0xd
- 1202 0610 6B       		.byte	0x6b
- 1203 0611 72030000 		.4byte	0x372
- 1204 0615 05       		.uleb128 0x5
- 1205 0616 03       		.byte	0x3
- 1206 0617 00000000 		.4byte	autosampler_inbox
- 1207 061b 06       		.uleb128 0x6
- 1208 061c 8A000000 		.4byte	0x8a
- 1209 0620 2C060000 		.4byte	0x62c
- 1210 0624 17       		.uleb128 0x17
- 1211 0625 7D000000 		.4byte	0x7d
- 1212 0629 0F27     		.2byte	0x270f
- 1213 062b 00       		.byte	0
- 1214 062c 16       		.uleb128 0x16
- 1215 062d 93060000 		.4byte	.LASF96
- 1216 0631 08       		.byte	0x8
- 1217 0632 1F       		.byte	0x1f
- 1218 0633 1B060000 		.4byte	0x61b
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 24
+ 1162 05b1 16       		.uleb128 0x16
+ 1163 05b2 9B010000 		.4byte	.LASF91
+ 1164 05b6 0C       		.byte	0xc
+ 1165 05b7 2A       		.byte	0x2a
+ 1166 05b8 EA000000 		.4byte	0xea
+ 1167 05bc 05       		.uleb128 0x5
+ 1168 05bd 03       		.byte	0x3
+ 1169 05be 00000000 		.4byte	valve_diameter
+ 1170 05c2 06       		.uleb128 0x6
+ 1171 05c3 8A000000 		.4byte	0x8a
+ 1172 05c7 D2050000 		.4byte	0x5d2
+ 1173 05cb 07       		.uleb128 0x7
+ 1174 05cc 7D000000 		.4byte	0x7d
+ 1175 05d0 09       		.byte	0x9
+ 1176 05d1 00       		.byte	0
+ 1177 05d2 16       		.uleb128 0x16
+ 1178 05d3 5A000000 		.4byte	.LASF92
+ 1179 05d7 0C       		.byte	0xc
+ 1180 05d8 2B       		.byte	0x2b
+ 1181 05d9 C2050000 		.4byte	0x5c2
+ 1182 05dd 05       		.uleb128 0x5
+ 1183 05de 03       		.byte	0x3
+ 1184 05df 00000000 		.4byte	valve_type
+ 1185 05e3 16       		.uleb128 0x16
+ 1186 05e4 BB050000 		.4byte	.LASF93
+ 1187 05e8 0C       		.byte	0xc
+ 1188 05e9 30       		.byte	0x30
+ 1189 05ea BA000000 		.4byte	0xba
+ 1190 05ee 05       		.uleb128 0x5
+ 1191 05ef 03       		.byte	0x3
+ 1192 05f0 00000000 		.4byte	valve_enabled
+ 1193 05f4 16       		.uleb128 0x16
+ 1194 05f5 CA020000 		.4byte	.LASF94
+ 1195 05f9 0C       		.byte	0xc
+ 1196 05fa 31       		.byte	0x31
+ 1197 05fb 7E030000 		.4byte	0x37e
+ 1198 05ff 05       		.uleb128 0x5
+ 1199 0600 03       		.byte	0x3
+ 1200 0601 00000000 		.4byte	valve_inbox
+ 1201 0605 16       		.uleb128 0x16
+ 1202 0606 0C000000 		.4byte	.LASF95
+ 1203 060a 0D       		.byte	0xd
+ 1204 060b 69       		.byte	0x69
+ 1205 060c BA000000 		.4byte	0xba
+ 1206 0610 05       		.uleb128 0x5
+ 1207 0611 03       		.byte	0x3
+ 1208 0612 00000000 		.4byte	autosampler_enabled
+ 1209 0616 16       		.uleb128 0x16
+ 1210 0617 64030000 		.4byte	.LASF96
+ 1211 061b 0D       		.byte	0xd
+ 1212 061c 6B       		.byte	0x6b
+ 1213 061d 7E030000 		.4byte	0x37e
+ 1214 0621 05       		.uleb128 0x5
+ 1215 0622 03       		.byte	0x3
+ 1216 0623 00000000 		.4byte	autosampler_inbox
+ 1217 0627 16       		.uleb128 0x16
+ 1218 0628 D6020000 		.4byte	.LASF97
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 24
 
 
- 1219 0637 05       		.uleb128 0x5
- 1220 0638 03       		.byte	0x3
- 1221 0639 00000000 		.4byte	http_request
- 1222 063d 16       		.uleb128 0x16
- 1223 063e 51060000 		.4byte	.LASF97
- 1224 0642 08       		.byte	0x8
- 1225 0643 20       		.byte	0x20
- 1226 0644 1B060000 		.4byte	0x61b
- 1227 0648 05       		.uleb128 0x5
- 1228 0649 03       		.byte	0x3
- 1229 064a 00000000 		.4byte	http_body
- 1230 064e 16       		.uleb128 0x16
- 1231 064f 3D050000 		.4byte	.LASF98
- 1232 0653 08       		.byte	0x8
- 1233 0654 21       		.byte	0x21
- 1234 0655 97040000 		.4byte	0x497
- 1235 0659 05       		.uleb128 0x5
- 1236 065a 03       		.byte	0x3
- 1237 065b 00000000 		.4byte	http_route
- 1238 065f 16       		.uleb128 0x16
- 1239 0660 CF040000 		.4byte	.LASF99
- 1240 0664 08       		.byte	0x8
- 1241 0665 48       		.byte	0x48
- 1242 0666 46030000 		.4byte	0x346
- 1243 066a 05       		.uleb128 0x5
- 1244 066b 03       		.byte	0x3
- 1245 066c 00000000 		.4byte	system_info
- 1246 0670 16       		.uleb128 0x16
- 1247 0671 D1030000 		.4byte	.LASF100
- 1248 0675 08       		.byte	0x8
- 1249 0676 5A       		.byte	0x5a
- 1250 0677 82030000 		.4byte	0x382
- 1251 067b 05       		.uleb128 0x5
- 1252 067c 03       		.byte	0x3
- 1253 067d 00000000 		.4byte	system_settings
- 1254 0681 16       		.uleb128 0x16
- 1255 0682 C0020000 		.4byte	.LASF101
- 1256 0686 08       		.byte	0x8
- 1257 0687 76       		.byte	0x76
- 1258 0688 0F030000 		.4byte	0x30f
- 1259 068c 05       		.uleb128 0x5
- 1260 068d 03       		.byte	0x3
- 1261 068e 00000000 		.4byte	alarmMeasure
- 1262 0692 16       		.uleb128 0x16
- 1263 0693 32040000 		.4byte	.LASF102
- 1264 0697 08       		.byte	0x8
- 1265 0698 77       		.byte	0x77
- 1266 0699 BA000000 		.4byte	0xba
- 1267 069d 05       		.uleb128 0x5
- 1268 069e 03       		.byte	0x3
- 1269 069f 00000000 		.4byte	timeToMeasure
- 1270 06a3 16       		.uleb128 0x16
- 1271 06a4 1B030000 		.4byte	.LASF103
- 1272 06a8 08       		.byte	0x8
- 1273 06a9 78       		.byte	0x78
- 1274 06aa 0F030000 		.4byte	0x30f
- 1275 06ae 05       		.uleb128 0x5
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 25
+ 1219 062c 0E       		.byte	0xe
+ 1220 062d 1D       		.byte	0x1d
+ 1221 062e BA000000 		.4byte	0xba
+ 1222 0632 05       		.uleb128 0x5
+ 1223 0633 03       		.byte	0x3
+ 1224 0634 00000000 		.4byte	Sontek_enabled
+ 1225 0638 06       		.uleb128 0x6
+ 1226 0639 8A000000 		.4byte	0x8a
+ 1227 063d 49060000 		.4byte	0x649
+ 1228 0641 17       		.uleb128 0x17
+ 1229 0642 7D000000 		.4byte	0x7d
+ 1230 0646 0F27     		.2byte	0x270f
+ 1231 0648 00       		.byte	0
+ 1232 0649 16       		.uleb128 0x16
+ 1233 064a BD060000 		.4byte	.LASF98
+ 1234 064e 08       		.byte	0x8
+ 1235 064f 20       		.byte	0x20
+ 1236 0650 38060000 		.4byte	0x638
+ 1237 0654 05       		.uleb128 0x5
+ 1238 0655 03       		.byte	0x3
+ 1239 0656 00000000 		.4byte	http_request
+ 1240 065a 16       		.uleb128 0x16
+ 1241 065b 91010000 		.4byte	.LASF99
+ 1242 065f 08       		.byte	0x8
+ 1243 0660 21       		.byte	0x21
+ 1244 0661 38060000 		.4byte	0x638
+ 1245 0665 05       		.uleb128 0x5
+ 1246 0666 03       		.byte	0x3
+ 1247 0667 00000000 		.4byte	http_body
+ 1248 066b 16       		.uleb128 0x16
+ 1249 066c 4A050000 		.4byte	.LASF100
+ 1250 0670 08       		.byte	0x8
+ 1251 0671 22       		.byte	0x22
+ 1252 0672 A3040000 		.4byte	0x4a3
+ 1253 0676 05       		.uleb128 0x5
+ 1254 0677 03       		.byte	0x3
+ 1255 0678 00000000 		.4byte	http_route
+ 1256 067c 16       		.uleb128 0x16
+ 1257 067d B4040000 		.4byte	.LASF101
+ 1258 0681 08       		.byte	0x8
+ 1259 0682 49       		.byte	0x49
+ 1260 0683 52030000 		.4byte	0x352
+ 1261 0687 05       		.uleb128 0x5
+ 1262 0688 03       		.byte	0x3
+ 1263 0689 00000000 		.4byte	system_info
+ 1264 068d 16       		.uleb128 0x16
+ 1265 068e 58040000 		.4byte	.LASF102
+ 1266 0692 08       		.byte	0x8
+ 1267 0693 5B       		.byte	0x5b
+ 1268 0694 8E030000 		.4byte	0x38e
+ 1269 0698 05       		.uleb128 0x5
+ 1270 0699 03       		.byte	0x3
+ 1271 069a 00000000 		.4byte	system_settings
+ 1272 069e 16       		.uleb128 0x16
+ 1273 069f 1B010000 		.4byte	.LASF103
+ 1274 06a3 08       		.byte	0x8
+ 1275 06a4 77       		.byte	0x77
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 25
 
 
- 1276 06af 03       		.byte	0x3
- 1277 06b0 00000000 		.4byte	alarmSync
- 1278 06b4 16       		.uleb128 0x16
- 1279 06b5 A0060000 		.4byte	.LASF104
- 1280 06b9 08       		.byte	0x8
- 1281 06ba 79       		.byte	0x79
- 1282 06bb BA000000 		.4byte	0xba
- 1283 06bf 05       		.uleb128 0x5
- 1284 06c0 03       		.byte	0x3
- 1285 06c1 00000000 		.4byte	timeToSync
- 1286 06c5 16       		.uleb128 0x16
- 1287 06c6 16050000 		.4byte	.LASF105
- 1288 06ca 08       		.byte	0x8
- 1289 06cb 7A       		.byte	0x7a
- 1290 06cc BA000000 		.4byte	0xba
- 1291 06d0 05       		.uleb128 0x5
- 1292 06d1 03       		.byte	0x3
- 1293 06d2 00000000 		.4byte	timeToSycnRemoteParams
- 1294 06d6 18       		.uleb128 0x18
- 1295 06d7 68657900 		.ascii	"hey\000"
- 1296 06db 08       		.byte	0x8
- 1297 06dc 7B       		.byte	0x7b
- 1298 06dd BA000000 		.4byte	0xba
- 1299 06e1 05       		.uleb128 0x5
- 1300 06e2 03       		.byte	0x3
- 1301 06e3 00000000 		.4byte	hey
- 1302 06e7 16       		.uleb128 0x16
- 1303 06e8 AB010000 		.4byte	.LASF106
- 1304 06ec 08       		.byte	0x8
- 1305 06ed 7F       		.byte	0x7f
- 1306 06ee 0F030000 		.4byte	0x30f
- 1307 06f2 05       		.uleb128 0x5
- 1308 06f3 03       		.byte	0x3
- 1309 06f4 00000000 		.4byte	alarmAppLED
- 1310 06f8 16       		.uleb128 0x16
- 1311 06f9 D5050000 		.4byte	.LASF107
- 1312 06fd 08       		.byte	0x8
- 1313 06fe 80       		.byte	0x80
- 1314 06ff BA000000 		.4byte	0xba
- 1315 0703 05       		.uleb128 0x5
- 1316 0704 03       		.byte	0x3
- 1317 0705 00000000 		.4byte	timeToAppLED
- 1318 0709 16       		.uleb128 0x16
- 1319 070a 74050000 		.4byte	.LASF108
- 1320 070e 08       		.byte	0x8
- 1321 070f 82       		.byte	0x82
- 1322 0710 0F030000 		.4byte	0x30f
- 1323 0714 05       		.uleb128 0x5
- 1324 0715 03       		.byte	0x3
- 1325 0716 00000000 		.4byte	alarmLevelSensor
- 1326 071a 16       		.uleb128 0x16
- 1327 071b 05060000 		.4byte	.LASF109
- 1328 071f 08       		.byte	0x8
- 1329 0720 83       		.byte	0x83
- 1330 0721 BA000000 		.4byte	0xba
- 1331 0725 05       		.uleb128 0x5
- 1332 0726 03       		.byte	0x3
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 26
+ 1276 06a5 1B030000 		.4byte	0x31b
+ 1277 06a9 05       		.uleb128 0x5
+ 1278 06aa 03       		.byte	0x3
+ 1279 06ab 00000000 		.4byte	alarmMeasure
+ 1280 06af 16       		.uleb128 0x16
+ 1281 06b0 60010000 		.4byte	.LASF104
+ 1282 06b4 08       		.byte	0x8
+ 1283 06b5 78       		.byte	0x78
+ 1284 06b6 BA000000 		.4byte	0xba
+ 1285 06ba 05       		.uleb128 0x5
+ 1286 06bb 03       		.byte	0x3
+ 1287 06bc 00000000 		.4byte	timeToMeasure
+ 1288 06c0 16       		.uleb128 0x16
+ 1289 06c1 69020000 		.4byte	.LASF105
+ 1290 06c5 08       		.byte	0x8
+ 1291 06c6 79       		.byte	0x79
+ 1292 06c7 1B030000 		.4byte	0x31b
+ 1293 06cb 05       		.uleb128 0x5
+ 1294 06cc 03       		.byte	0x3
+ 1295 06cd 00000000 		.4byte	alarmSync
+ 1296 06d1 16       		.uleb128 0x16
+ 1297 06d2 86010000 		.4byte	.LASF106
+ 1298 06d6 08       		.byte	0x8
+ 1299 06d7 7A       		.byte	0x7a
+ 1300 06d8 BA000000 		.4byte	0xba
+ 1301 06dc 05       		.uleb128 0x5
+ 1302 06dd 03       		.byte	0x3
+ 1303 06de 00000000 		.4byte	timeToSync
+ 1304 06e2 16       		.uleb128 0x16
+ 1305 06e3 D7030000 		.4byte	.LASF107
+ 1306 06e7 08       		.byte	0x8
+ 1307 06e8 7B       		.byte	0x7b
+ 1308 06e9 BA000000 		.4byte	0xba
+ 1309 06ed 05       		.uleb128 0x5
+ 1310 06ee 03       		.byte	0x3
+ 1311 06ef 00000000 		.4byte	timeToSycnRemoteParams
+ 1312 06f3 18       		.uleb128 0x18
+ 1313 06f4 68657900 		.ascii	"hey\000"
+ 1314 06f8 08       		.byte	0x8
+ 1315 06f9 7C       		.byte	0x7c
+ 1316 06fa BA000000 		.4byte	0xba
+ 1317 06fe 05       		.uleb128 0x5
+ 1318 06ff 03       		.byte	0x3
+ 1319 0700 00000000 		.4byte	hey
+ 1320 0704 16       		.uleb128 0x16
+ 1321 0705 08030000 		.4byte	.LASF108
+ 1322 0709 08       		.byte	0x8
+ 1323 070a 80       		.byte	0x80
+ 1324 070b 1B030000 		.4byte	0x31b
+ 1325 070f 05       		.uleb128 0x5
+ 1326 0710 03       		.byte	0x3
+ 1327 0711 00000000 		.4byte	alarmAppLED
+ 1328 0715 16       		.uleb128 0x16
+ 1329 0716 14020000 		.4byte	.LASF109
+ 1330 071a 08       		.byte	0x8
+ 1331 071b 81       		.byte	0x81
+ 1332 071c BA000000 		.4byte	0xba
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 26
 
 
- 1333 0727 00000000 		.4byte	timeToLevelSensor
- 1334 072b 16       		.uleb128 0x16
- 1335 072c AB000000 		.4byte	.LASF110
- 1336 0730 08       		.byte	0x8
- 1337 0731 85       		.byte	0x85
- 1338 0732 0F030000 		.4byte	0x30f
- 1339 0736 05       		.uleb128 0x5
- 1340 0737 03       		.byte	0x3
- 1341 0738 00000000 		.4byte	alarmDownstreamLevelSensor
- 1342 073c 16       		.uleb128 0x16
- 1343 073d 3F030000 		.4byte	.LASF111
- 1344 0741 08       		.byte	0x8
- 1345 0742 86       		.byte	0x86
- 1346 0743 BA000000 		.4byte	0xba
- 1347 0747 05       		.uleb128 0x5
- 1348 0748 03       		.byte	0x3
- 1349 0749 00000000 		.4byte	timeToDownstreamLevelSensor
- 1350 074d 16       		.uleb128 0x16
- 1351 074e 32050000 		.4byte	.LASF112
- 1352 0752 08       		.byte	0x8
- 1353 0753 88       		.byte	0x88
- 1354 0754 0F030000 		.4byte	0x30f
- 1355 0758 05       		.uleb128 0x5
- 1356 0759 03       		.byte	0x3
- 1357 075a 00000000 		.4byte	alarmValve
- 1358 075e 16       		.uleb128 0x16
- 1359 075f E4020000 		.4byte	.LASF113
- 1360 0763 08       		.byte	0x8
- 1361 0764 89       		.byte	0x89
- 1362 0765 BA000000 		.4byte	0xba
- 1363 0769 05       		.uleb128 0x5
- 1364 076a 03       		.byte	0x3
- 1365 076b 00000000 		.4byte	timeToValve
- 1366 076f 16       		.uleb128 0x16
- 1367 0770 38020000 		.4byte	.LASF114
- 1368 0774 08       		.byte	0x8
- 1369 0775 8B       		.byte	0x8b
- 1370 0776 0F030000 		.4byte	0x30f
- 1371 077a 05       		.uleb128 0x5
- 1372 077b 03       		.byte	0x3
- 1373 077c 00000000 		.4byte	alarmAutosampler
- 1374 0780 16       		.uleb128 0x16
- 1375 0781 D2020000 		.4byte	.LASF115
- 1376 0785 08       		.byte	0x8
- 1377 0786 8C       		.byte	0x8c
- 1378 0787 BA000000 		.4byte	0xba
- 1379 078b 05       		.uleb128 0x5
- 1380 078c 03       		.byte	0x3
- 1381 078d 00000000 		.4byte	timeToAutosampler
- 1382 0791 00       		.byte	0
- 1383              		.section	.debug_abbrev,"",%progbits
- 1384              	.Ldebug_abbrev0:
- 1385 0000 01       		.uleb128 0x1
- 1386 0001 11       		.uleb128 0x11
- 1387 0002 01       		.byte	0x1
- 1388 0003 25       		.uleb128 0x25
- 1389 0004 0E       		.uleb128 0xe
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 27
+ 1333 0720 05       		.uleb128 0x5
+ 1334 0721 03       		.byte	0x3
+ 1335 0722 00000000 		.4byte	timeToAppLED
+ 1336 0726 16       		.uleb128 0x16
+ 1337 0727 DF040000 		.4byte	.LASF110
+ 1338 072b 08       		.byte	0x8
+ 1339 072c 83       		.byte	0x83
+ 1340 072d 1B030000 		.4byte	0x31b
+ 1341 0731 05       		.uleb128 0x5
+ 1342 0732 03       		.byte	0x3
+ 1343 0733 00000000 		.4byte	alarmLevelSensor
+ 1344 0737 16       		.uleb128 0x16
+ 1345 0738 E7050000 		.4byte	.LASF111
+ 1346 073c 08       		.byte	0x8
+ 1347 073d 84       		.byte	0x84
+ 1348 073e BA000000 		.4byte	0xba
+ 1349 0742 05       		.uleb128 0x5
+ 1350 0743 03       		.byte	0x3
+ 1351 0744 00000000 		.4byte	timeToLevelSensor
+ 1352 0748 16       		.uleb128 0x16
+ 1353 0749 C0010000 		.4byte	.LASF112
+ 1354 074d 08       		.byte	0x8
+ 1355 074e 86       		.byte	0x86
+ 1356 074f 1B030000 		.4byte	0x31b
+ 1357 0753 05       		.uleb128 0x5
+ 1358 0754 03       		.byte	0x3
+ 1359 0755 00000000 		.4byte	alarmDownstreamLevelSensor
+ 1360 0759 16       		.uleb128 0x16
+ 1361 075a 41060000 		.4byte	.LASF113
+ 1362 075e 08       		.byte	0x8
+ 1363 075f 87       		.byte	0x87
+ 1364 0760 BA000000 		.4byte	0xba
+ 1365 0764 05       		.uleb128 0x5
+ 1366 0765 03       		.byte	0x3
+ 1367 0766 00000000 		.4byte	timeToDownstreamLevelSensor
+ 1368 076a 16       		.uleb128 0x16
+ 1369 076b 3F050000 		.4byte	.LASF114
+ 1370 076f 08       		.byte	0x8
+ 1371 0770 89       		.byte	0x89
+ 1372 0771 1B030000 		.4byte	0x31b
+ 1373 0775 05       		.uleb128 0x5
+ 1374 0776 03       		.byte	0x3
+ 1375 0777 00000000 		.4byte	alarmValve
+ 1376 077b 16       		.uleb128 0x16
+ 1377 077c 15040000 		.4byte	.LASF115
+ 1378 0780 08       		.byte	0x8
+ 1379 0781 8A       		.byte	0x8a
+ 1380 0782 BA000000 		.4byte	0xba
+ 1381 0786 05       		.uleb128 0x5
+ 1382 0787 03       		.byte	0x3
+ 1383 0788 00000000 		.4byte	timeToValve
+ 1384 078c 16       		.uleb128 0x16
+ 1385 078d 5D060000 		.4byte	.LASF116
+ 1386 0791 08       		.byte	0x8
+ 1387 0792 8C       		.byte	0x8c
+ 1388 0793 1B030000 		.4byte	0x31b
+ 1389 0797 05       		.uleb128 0x5
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 27
 
 
- 1390 0005 13       		.uleb128 0x13
- 1391 0006 0B       		.uleb128 0xb
- 1392 0007 03       		.uleb128 0x3
- 1393 0008 0E       		.uleb128 0xe
- 1394 0009 1B       		.uleb128 0x1b
- 1395 000a 0E       		.uleb128 0xe
- 1396 000b 55       		.uleb128 0x55
- 1397 000c 17       		.uleb128 0x17
- 1398 000d 11       		.uleb128 0x11
- 1399 000e 01       		.uleb128 0x1
- 1400 000f 10       		.uleb128 0x10
- 1401 0010 17       		.uleb128 0x17
- 1402 0011 00       		.byte	0
- 1403 0012 00       		.byte	0
- 1404 0013 02       		.uleb128 0x2
- 1405 0014 24       		.uleb128 0x24
- 1406 0015 00       		.byte	0
- 1407 0016 0B       		.uleb128 0xb
- 1408 0017 0B       		.uleb128 0xb
- 1409 0018 3E       		.uleb128 0x3e
- 1410 0019 0B       		.uleb128 0xb
- 1411 001a 03       		.uleb128 0x3
- 1412 001b 08       		.uleb128 0x8
- 1413 001c 00       		.byte	0
- 1414 001d 00       		.byte	0
- 1415 001e 03       		.uleb128 0x3
- 1416 001f 24       		.uleb128 0x24
- 1417 0020 00       		.byte	0
- 1418 0021 0B       		.uleb128 0xb
- 1419 0022 0B       		.uleb128 0xb
- 1420 0023 3E       		.uleb128 0x3e
- 1421 0024 0B       		.uleb128 0xb
- 1422 0025 03       		.uleb128 0x3
- 1423 0026 0E       		.uleb128 0xe
- 1424 0027 00       		.byte	0
- 1425 0028 00       		.byte	0
- 1426 0029 04       		.uleb128 0x4
- 1427 002a 16       		.uleb128 0x16
- 1428 002b 00       		.byte	0
- 1429 002c 03       		.uleb128 0x3
- 1430 002d 0E       		.uleb128 0xe
- 1431 002e 3A       		.uleb128 0x3a
- 1432 002f 0B       		.uleb128 0xb
- 1433 0030 3B       		.uleb128 0x3b
- 1434 0031 0B       		.uleb128 0xb
- 1435 0032 49       		.uleb128 0x49
- 1436 0033 13       		.uleb128 0x13
- 1437 0034 00       		.byte	0
- 1438 0035 00       		.byte	0
- 1439 0036 05       		.uleb128 0x5
- 1440 0037 0F       		.uleb128 0xf
- 1441 0038 00       		.byte	0
- 1442 0039 0B       		.uleb128 0xb
- 1443 003a 0B       		.uleb128 0xb
- 1444 003b 49       		.uleb128 0x49
- 1445 003c 13       		.uleb128 0x13
- 1446 003d 00       		.byte	0
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 28
+ 1390 0798 03       		.byte	0x3
+ 1391 0799 00000000 		.4byte	alarmAutosampler
+ 1392 079d 16       		.uleb128 0x16
+ 1393 079e 48000000 		.4byte	.LASF117
+ 1394 07a2 08       		.byte	0x8
+ 1395 07a3 8D       		.byte	0x8d
+ 1396 07a4 BA000000 		.4byte	0xba
+ 1397 07a8 05       		.uleb128 0x5
+ 1398 07a9 03       		.byte	0x3
+ 1399 07aa 00000000 		.4byte	timeToAutosampler
+ 1400 07ae 16       		.uleb128 0x16
+ 1401 07af 78050000 		.4byte	.LASF118
+ 1402 07b3 08       		.byte	0x8
+ 1403 07b4 90       		.byte	0x90
+ 1404 07b5 1B030000 		.4byte	0x31b
+ 1405 07b9 05       		.uleb128 0x5
+ 1406 07ba 03       		.byte	0x3
+ 1407 07bb 00000000 		.4byte	alarmSontek
+ 1408 07bf 16       		.uleb128 0x16
+ 1409 07c0 34060000 		.4byte	.LASF119
+ 1410 07c4 08       		.byte	0x8
+ 1411 07c5 91       		.byte	0x91
+ 1412 07c6 BA000000 		.4byte	0xba
+ 1413 07ca 05       		.uleb128 0x5
+ 1414 07cb 03       		.byte	0x3
+ 1415 07cc 00000000 		.4byte	timeToSontek
+ 1416 07d0 00       		.byte	0
+ 1417              		.section	.debug_abbrev,"",%progbits
+ 1418              	.Ldebug_abbrev0:
+ 1419 0000 01       		.uleb128 0x1
+ 1420 0001 11       		.uleb128 0x11
+ 1421 0002 01       		.byte	0x1
+ 1422 0003 25       		.uleb128 0x25
+ 1423 0004 0E       		.uleb128 0xe
+ 1424 0005 13       		.uleb128 0x13
+ 1425 0006 0B       		.uleb128 0xb
+ 1426 0007 03       		.uleb128 0x3
+ 1427 0008 0E       		.uleb128 0xe
+ 1428 0009 1B       		.uleb128 0x1b
+ 1429 000a 0E       		.uleb128 0xe
+ 1430 000b 55       		.uleb128 0x55
+ 1431 000c 17       		.uleb128 0x17
+ 1432 000d 11       		.uleb128 0x11
+ 1433 000e 01       		.uleb128 0x1
+ 1434 000f 10       		.uleb128 0x10
+ 1435 0010 17       		.uleb128 0x17
+ 1436 0011 00       		.byte	0
+ 1437 0012 00       		.byte	0
+ 1438 0013 02       		.uleb128 0x2
+ 1439 0014 24       		.uleb128 0x24
+ 1440 0015 00       		.byte	0
+ 1441 0016 0B       		.uleb128 0xb
+ 1442 0017 0B       		.uleb128 0xb
+ 1443 0018 3E       		.uleb128 0x3e
+ 1444 0019 0B       		.uleb128 0xb
+ 1445 001a 03       		.uleb128 0x3
+ 1446 001b 08       		.uleb128 0x8
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 28
 
 
- 1447 003e 00       		.byte	0
- 1448 003f 06       		.uleb128 0x6
- 1449 0040 01       		.uleb128 0x1
- 1450 0041 01       		.byte	0x1
- 1451 0042 49       		.uleb128 0x49
- 1452 0043 13       		.uleb128 0x13
- 1453 0044 01       		.uleb128 0x1
- 1454 0045 13       		.uleb128 0x13
- 1455 0046 00       		.byte	0
- 1456 0047 00       		.byte	0
- 1457 0048 07       		.uleb128 0x7
- 1458 0049 21       		.uleb128 0x21
- 1459 004a 00       		.byte	0
- 1460 004b 49       		.uleb128 0x49
- 1461 004c 13       		.uleb128 0x13
- 1462 004d 2F       		.uleb128 0x2f
- 1463 004e 0B       		.uleb128 0xb
- 1464 004f 00       		.byte	0
- 1465 0050 00       		.byte	0
- 1466 0051 08       		.uleb128 0x8
- 1467 0052 16       		.uleb128 0x16
- 1468 0053 00       		.byte	0
- 1469 0054 03       		.uleb128 0x3
- 1470 0055 0E       		.uleb128 0xe
- 1471 0056 3A       		.uleb128 0x3a
- 1472 0057 0B       		.uleb128 0xb
- 1473 0058 3B       		.uleb128 0x3b
- 1474 0059 05       		.uleb128 0x5
- 1475 005a 49       		.uleb128 0x49
- 1476 005b 13       		.uleb128 0x13
- 1477 005c 00       		.byte	0
- 1478 005d 00       		.byte	0
- 1479 005e 09       		.uleb128 0x9
- 1480 005f 13       		.uleb128 0x13
- 1481 0060 01       		.byte	0x1
- 1482 0061 0B       		.uleb128 0xb
- 1483 0062 05       		.uleb128 0x5
- 1484 0063 3A       		.uleb128 0x3a
- 1485 0064 0B       		.uleb128 0xb
- 1486 0065 3B       		.uleb128 0x3b
- 1487 0066 0B       		.uleb128 0xb
- 1488 0067 01       		.uleb128 0x1
- 1489 0068 13       		.uleb128 0x13
- 1490 0069 00       		.byte	0
- 1491 006a 00       		.byte	0
- 1492 006b 0A       		.uleb128 0xa
- 1493 006c 0D       		.uleb128 0xd
- 1494 006d 00       		.byte	0
- 1495 006e 03       		.uleb128 0x3
- 1496 006f 0E       		.uleb128 0xe
- 1497 0070 3A       		.uleb128 0x3a
- 1498 0071 0B       		.uleb128 0xb
- 1499 0072 3B       		.uleb128 0x3b
- 1500 0073 0B       		.uleb128 0xb
- 1501 0074 49       		.uleb128 0x49
- 1502 0075 13       		.uleb128 0x13
- 1503 0076 38       		.uleb128 0x38
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 29
+ 1447 001c 00       		.byte	0
+ 1448 001d 00       		.byte	0
+ 1449 001e 03       		.uleb128 0x3
+ 1450 001f 24       		.uleb128 0x24
+ 1451 0020 00       		.byte	0
+ 1452 0021 0B       		.uleb128 0xb
+ 1453 0022 0B       		.uleb128 0xb
+ 1454 0023 3E       		.uleb128 0x3e
+ 1455 0024 0B       		.uleb128 0xb
+ 1456 0025 03       		.uleb128 0x3
+ 1457 0026 0E       		.uleb128 0xe
+ 1458 0027 00       		.byte	0
+ 1459 0028 00       		.byte	0
+ 1460 0029 04       		.uleb128 0x4
+ 1461 002a 16       		.uleb128 0x16
+ 1462 002b 00       		.byte	0
+ 1463 002c 03       		.uleb128 0x3
+ 1464 002d 0E       		.uleb128 0xe
+ 1465 002e 3A       		.uleb128 0x3a
+ 1466 002f 0B       		.uleb128 0xb
+ 1467 0030 3B       		.uleb128 0x3b
+ 1468 0031 0B       		.uleb128 0xb
+ 1469 0032 49       		.uleb128 0x49
+ 1470 0033 13       		.uleb128 0x13
+ 1471 0034 00       		.byte	0
+ 1472 0035 00       		.byte	0
+ 1473 0036 05       		.uleb128 0x5
+ 1474 0037 0F       		.uleb128 0xf
+ 1475 0038 00       		.byte	0
+ 1476 0039 0B       		.uleb128 0xb
+ 1477 003a 0B       		.uleb128 0xb
+ 1478 003b 49       		.uleb128 0x49
+ 1479 003c 13       		.uleb128 0x13
+ 1480 003d 00       		.byte	0
+ 1481 003e 00       		.byte	0
+ 1482 003f 06       		.uleb128 0x6
+ 1483 0040 01       		.uleb128 0x1
+ 1484 0041 01       		.byte	0x1
+ 1485 0042 49       		.uleb128 0x49
+ 1486 0043 13       		.uleb128 0x13
+ 1487 0044 01       		.uleb128 0x1
+ 1488 0045 13       		.uleb128 0x13
+ 1489 0046 00       		.byte	0
+ 1490 0047 00       		.byte	0
+ 1491 0048 07       		.uleb128 0x7
+ 1492 0049 21       		.uleb128 0x21
+ 1493 004a 00       		.byte	0
+ 1494 004b 49       		.uleb128 0x49
+ 1495 004c 13       		.uleb128 0x13
+ 1496 004d 2F       		.uleb128 0x2f
+ 1497 004e 0B       		.uleb128 0xb
+ 1498 004f 00       		.byte	0
+ 1499 0050 00       		.byte	0
+ 1500 0051 08       		.uleb128 0x8
+ 1501 0052 16       		.uleb128 0x16
+ 1502 0053 00       		.byte	0
+ 1503 0054 03       		.uleb128 0x3
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 29
 
 
- 1504 0077 0B       		.uleb128 0xb
- 1505 0078 00       		.byte	0
- 1506 0079 00       		.byte	0
- 1507 007a 0B       		.uleb128 0xb
- 1508 007b 13       		.uleb128 0x13
- 1509 007c 01       		.byte	0x1
- 1510 007d 0B       		.uleb128 0xb
- 1511 007e 0B       		.uleb128 0xb
- 1512 007f 3A       		.uleb128 0x3a
- 1513 0080 0B       		.uleb128 0xb
- 1514 0081 3B       		.uleb128 0x3b
- 1515 0082 0B       		.uleb128 0xb
- 1516 0083 01       		.uleb128 0x1
- 1517 0084 13       		.uleb128 0x13
- 1518 0085 00       		.byte	0
- 1519 0086 00       		.byte	0
- 1520 0087 0C       		.uleb128 0xc
- 1521 0088 0D       		.uleb128 0xd
- 1522 0089 00       		.byte	0
- 1523 008a 03       		.uleb128 0x3
- 1524 008b 08       		.uleb128 0x8
- 1525 008c 3A       		.uleb128 0x3a
- 1526 008d 0B       		.uleb128 0xb
- 1527 008e 3B       		.uleb128 0x3b
- 1528 008f 0B       		.uleb128 0xb
- 1529 0090 49       		.uleb128 0x49
- 1530 0091 13       		.uleb128 0x13
- 1531 0092 38       		.uleb128 0x38
- 1532 0093 0B       		.uleb128 0xb
- 1533 0094 00       		.byte	0
- 1534 0095 00       		.byte	0
- 1535 0096 0D       		.uleb128 0xd
- 1536 0097 35       		.uleb128 0x35
- 1537 0098 00       		.byte	0
- 1538 0099 49       		.uleb128 0x49
- 1539 009a 13       		.uleb128 0x13
- 1540 009b 00       		.byte	0
- 1541 009c 00       		.byte	0
- 1542 009d 0E       		.uleb128 0xe
- 1543 009e 2E       		.uleb128 0x2e
- 1544 009f 01       		.byte	0x1
- 1545 00a0 3F       		.uleb128 0x3f
- 1546 00a1 19       		.uleb128 0x19
- 1547 00a2 03       		.uleb128 0x3
- 1548 00a3 0E       		.uleb128 0xe
- 1549 00a4 3A       		.uleb128 0x3a
- 1550 00a5 0B       		.uleb128 0xb
- 1551 00a6 3B       		.uleb128 0x3b
- 1552 00a7 0B       		.uleb128 0xb
- 1553 00a8 27       		.uleb128 0x27
- 1554 00a9 19       		.uleb128 0x19
- 1555 00aa 49       		.uleb128 0x49
- 1556 00ab 13       		.uleb128 0x13
- 1557 00ac 11       		.uleb128 0x11
- 1558 00ad 01       		.uleb128 0x1
- 1559 00ae 12       		.uleb128 0x12
- 1560 00af 06       		.uleb128 0x6
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 30
+ 1504 0055 0E       		.uleb128 0xe
+ 1505 0056 3A       		.uleb128 0x3a
+ 1506 0057 0B       		.uleb128 0xb
+ 1507 0058 3B       		.uleb128 0x3b
+ 1508 0059 05       		.uleb128 0x5
+ 1509 005a 49       		.uleb128 0x49
+ 1510 005b 13       		.uleb128 0x13
+ 1511 005c 00       		.byte	0
+ 1512 005d 00       		.byte	0
+ 1513 005e 09       		.uleb128 0x9
+ 1514 005f 13       		.uleb128 0x13
+ 1515 0060 01       		.byte	0x1
+ 1516 0061 0B       		.uleb128 0xb
+ 1517 0062 05       		.uleb128 0x5
+ 1518 0063 3A       		.uleb128 0x3a
+ 1519 0064 0B       		.uleb128 0xb
+ 1520 0065 3B       		.uleb128 0x3b
+ 1521 0066 0B       		.uleb128 0xb
+ 1522 0067 01       		.uleb128 0x1
+ 1523 0068 13       		.uleb128 0x13
+ 1524 0069 00       		.byte	0
+ 1525 006a 00       		.byte	0
+ 1526 006b 0A       		.uleb128 0xa
+ 1527 006c 0D       		.uleb128 0xd
+ 1528 006d 00       		.byte	0
+ 1529 006e 03       		.uleb128 0x3
+ 1530 006f 0E       		.uleb128 0xe
+ 1531 0070 3A       		.uleb128 0x3a
+ 1532 0071 0B       		.uleb128 0xb
+ 1533 0072 3B       		.uleb128 0x3b
+ 1534 0073 0B       		.uleb128 0xb
+ 1535 0074 49       		.uleb128 0x49
+ 1536 0075 13       		.uleb128 0x13
+ 1537 0076 38       		.uleb128 0x38
+ 1538 0077 0B       		.uleb128 0xb
+ 1539 0078 00       		.byte	0
+ 1540 0079 00       		.byte	0
+ 1541 007a 0B       		.uleb128 0xb
+ 1542 007b 13       		.uleb128 0x13
+ 1543 007c 01       		.byte	0x1
+ 1544 007d 0B       		.uleb128 0xb
+ 1545 007e 0B       		.uleb128 0xb
+ 1546 007f 3A       		.uleb128 0x3a
+ 1547 0080 0B       		.uleb128 0xb
+ 1548 0081 3B       		.uleb128 0x3b
+ 1549 0082 0B       		.uleb128 0xb
+ 1550 0083 01       		.uleb128 0x1
+ 1551 0084 13       		.uleb128 0x13
+ 1552 0085 00       		.byte	0
+ 1553 0086 00       		.byte	0
+ 1554 0087 0C       		.uleb128 0xc
+ 1555 0088 0D       		.uleb128 0xd
+ 1556 0089 00       		.byte	0
+ 1557 008a 03       		.uleb128 0x3
+ 1558 008b 08       		.uleb128 0x8
+ 1559 008c 3A       		.uleb128 0x3a
+ 1560 008d 0B       		.uleb128 0xb
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 30
 
 
- 1561 00b0 40       		.uleb128 0x40
- 1562 00b1 18       		.uleb128 0x18
- 1563 00b2 9642     		.uleb128 0x2116
- 1564 00b4 19       		.uleb128 0x19
- 1565 00b5 01       		.uleb128 0x1
- 1566 00b6 13       		.uleb128 0x13
- 1567 00b7 00       		.byte	0
- 1568 00b8 00       		.byte	0
- 1569 00b9 0F       		.uleb128 0xf
- 1570 00ba 05       		.uleb128 0x5
- 1571 00bb 00       		.byte	0
- 1572 00bc 03       		.uleb128 0x3
- 1573 00bd 0E       		.uleb128 0xe
- 1574 00be 3A       		.uleb128 0x3a
- 1575 00bf 0B       		.uleb128 0xb
- 1576 00c0 3B       		.uleb128 0x3b
- 1577 00c1 0B       		.uleb128 0xb
- 1578 00c2 49       		.uleb128 0x49
- 1579 00c3 13       		.uleb128 0x13
- 1580 00c4 02       		.uleb128 0x2
- 1581 00c5 18       		.uleb128 0x18
- 1582 00c6 00       		.byte	0
- 1583 00c7 00       		.byte	0
- 1584 00c8 10       		.uleb128 0x10
- 1585 00c9 34       		.uleb128 0x34
- 1586 00ca 00       		.byte	0
- 1587 00cb 03       		.uleb128 0x3
- 1588 00cc 0E       		.uleb128 0xe
- 1589 00cd 3A       		.uleb128 0x3a
- 1590 00ce 0B       		.uleb128 0xb
- 1591 00cf 3B       		.uleb128 0x3b
- 1592 00d0 0B       		.uleb128 0xb
- 1593 00d1 49       		.uleb128 0x49
- 1594 00d2 13       		.uleb128 0x13
- 1595 00d3 02       		.uleb128 0x2
- 1596 00d4 18       		.uleb128 0x18
- 1597 00d5 00       		.byte	0
- 1598 00d6 00       		.byte	0
- 1599 00d7 11       		.uleb128 0x11
- 1600 00d8 0B       		.uleb128 0xb
- 1601 00d9 01       		.byte	0x1
- 1602 00da 11       		.uleb128 0x11
- 1603 00db 01       		.uleb128 0x1
- 1604 00dc 12       		.uleb128 0x12
- 1605 00dd 06       		.uleb128 0x6
- 1606 00de 00       		.byte	0
- 1607 00df 00       		.byte	0
- 1608 00e0 12       		.uleb128 0x12
- 1609 00e1 34       		.uleb128 0x34
- 1610 00e2 00       		.byte	0
- 1611 00e3 03       		.uleb128 0x3
- 1612 00e4 08       		.uleb128 0x8
- 1613 00e5 3A       		.uleb128 0x3a
- 1614 00e6 0B       		.uleb128 0xb
- 1615 00e7 3B       		.uleb128 0x3b
- 1616 00e8 0B       		.uleb128 0xb
- 1617 00e9 49       		.uleb128 0x49
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 31
+ 1561 008e 3B       		.uleb128 0x3b
+ 1562 008f 0B       		.uleb128 0xb
+ 1563 0090 49       		.uleb128 0x49
+ 1564 0091 13       		.uleb128 0x13
+ 1565 0092 38       		.uleb128 0x38
+ 1566 0093 0B       		.uleb128 0xb
+ 1567 0094 00       		.byte	0
+ 1568 0095 00       		.byte	0
+ 1569 0096 0D       		.uleb128 0xd
+ 1570 0097 35       		.uleb128 0x35
+ 1571 0098 00       		.byte	0
+ 1572 0099 49       		.uleb128 0x49
+ 1573 009a 13       		.uleb128 0x13
+ 1574 009b 00       		.byte	0
+ 1575 009c 00       		.byte	0
+ 1576 009d 0E       		.uleb128 0xe
+ 1577 009e 2E       		.uleb128 0x2e
+ 1578 009f 01       		.byte	0x1
+ 1579 00a0 3F       		.uleb128 0x3f
+ 1580 00a1 19       		.uleb128 0x19
+ 1581 00a2 03       		.uleb128 0x3
+ 1582 00a3 0E       		.uleb128 0xe
+ 1583 00a4 3A       		.uleb128 0x3a
+ 1584 00a5 0B       		.uleb128 0xb
+ 1585 00a6 3B       		.uleb128 0x3b
+ 1586 00a7 0B       		.uleb128 0xb
+ 1587 00a8 27       		.uleb128 0x27
+ 1588 00a9 19       		.uleb128 0x19
+ 1589 00aa 49       		.uleb128 0x49
+ 1590 00ab 13       		.uleb128 0x13
+ 1591 00ac 11       		.uleb128 0x11
+ 1592 00ad 01       		.uleb128 0x1
+ 1593 00ae 12       		.uleb128 0x12
+ 1594 00af 06       		.uleb128 0x6
+ 1595 00b0 40       		.uleb128 0x40
+ 1596 00b1 18       		.uleb128 0x18
+ 1597 00b2 9642     		.uleb128 0x2116
+ 1598 00b4 19       		.uleb128 0x19
+ 1599 00b5 01       		.uleb128 0x1
+ 1600 00b6 13       		.uleb128 0x13
+ 1601 00b7 00       		.byte	0
+ 1602 00b8 00       		.byte	0
+ 1603 00b9 0F       		.uleb128 0xf
+ 1604 00ba 05       		.uleb128 0x5
+ 1605 00bb 00       		.byte	0
+ 1606 00bc 03       		.uleb128 0x3
+ 1607 00bd 0E       		.uleb128 0xe
+ 1608 00be 3A       		.uleb128 0x3a
+ 1609 00bf 0B       		.uleb128 0xb
+ 1610 00c0 3B       		.uleb128 0x3b
+ 1611 00c1 0B       		.uleb128 0xb
+ 1612 00c2 49       		.uleb128 0x49
+ 1613 00c3 13       		.uleb128 0x13
+ 1614 00c4 02       		.uleb128 0x2
+ 1615 00c5 18       		.uleb128 0x18
+ 1616 00c6 00       		.byte	0
+ 1617 00c7 00       		.byte	0
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 31
 
 
- 1618 00ea 13       		.uleb128 0x13
- 1619 00eb 02       		.uleb128 0x2
- 1620 00ec 18       		.uleb128 0x18
- 1621 00ed 00       		.byte	0
- 1622 00ee 00       		.byte	0
- 1623 00ef 13       		.uleb128 0x13
- 1624 00f0 2E       		.uleb128 0x2e
- 1625 00f1 01       		.byte	0x1
- 1626 00f2 3F       		.uleb128 0x3f
- 1627 00f3 19       		.uleb128 0x19
- 1628 00f4 03       		.uleb128 0x3
- 1629 00f5 0E       		.uleb128 0xe
- 1630 00f6 3A       		.uleb128 0x3a
- 1631 00f7 0B       		.uleb128 0xb
- 1632 00f8 3B       		.uleb128 0x3b
- 1633 00f9 0B       		.uleb128 0xb
- 1634 00fa 27       		.uleb128 0x27
- 1635 00fb 19       		.uleb128 0x19
- 1636 00fc 11       		.uleb128 0x11
- 1637 00fd 01       		.uleb128 0x1
- 1638 00fe 12       		.uleb128 0x12
- 1639 00ff 06       		.uleb128 0x6
- 1640 0100 40       		.uleb128 0x40
- 1641 0101 18       		.uleb128 0x18
- 1642 0102 9642     		.uleb128 0x2116
- 1643 0104 19       		.uleb128 0x19
- 1644 0105 01       		.uleb128 0x1
- 1645 0106 13       		.uleb128 0x13
- 1646 0107 00       		.byte	0
- 1647 0108 00       		.byte	0
- 1648 0109 14       		.uleb128 0x14
- 1649 010a 2E       		.uleb128 0x2e
- 1650 010b 01       		.byte	0x1
- 1651 010c 3F       		.uleb128 0x3f
- 1652 010d 19       		.uleb128 0x19
- 1653 010e 03       		.uleb128 0x3
- 1654 010f 0E       		.uleb128 0xe
- 1655 0110 3A       		.uleb128 0x3a
- 1656 0111 0B       		.uleb128 0xb
- 1657 0112 3B       		.uleb128 0x3b
- 1658 0113 0B       		.uleb128 0xb
- 1659 0114 49       		.uleb128 0x49
- 1660 0115 13       		.uleb128 0x13
- 1661 0116 11       		.uleb128 0x11
- 1662 0117 01       		.uleb128 0x1
- 1663 0118 12       		.uleb128 0x12
- 1664 0119 06       		.uleb128 0x6
- 1665 011a 40       		.uleb128 0x40
- 1666 011b 18       		.uleb128 0x18
- 1667 011c 9642     		.uleb128 0x2116
- 1668 011e 19       		.uleb128 0x19
- 1669 011f 01       		.uleb128 0x1
- 1670 0120 13       		.uleb128 0x13
- 1671 0121 00       		.byte	0
- 1672 0122 00       		.byte	0
- 1673 0123 15       		.uleb128 0x15
- 1674 0124 34       		.uleb128 0x34
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 32
+ 1618 00c8 10       		.uleb128 0x10
+ 1619 00c9 34       		.uleb128 0x34
+ 1620 00ca 00       		.byte	0
+ 1621 00cb 03       		.uleb128 0x3
+ 1622 00cc 0E       		.uleb128 0xe
+ 1623 00cd 3A       		.uleb128 0x3a
+ 1624 00ce 0B       		.uleb128 0xb
+ 1625 00cf 3B       		.uleb128 0x3b
+ 1626 00d0 0B       		.uleb128 0xb
+ 1627 00d1 49       		.uleb128 0x49
+ 1628 00d2 13       		.uleb128 0x13
+ 1629 00d3 02       		.uleb128 0x2
+ 1630 00d4 18       		.uleb128 0x18
+ 1631 00d5 00       		.byte	0
+ 1632 00d6 00       		.byte	0
+ 1633 00d7 11       		.uleb128 0x11
+ 1634 00d8 0B       		.uleb128 0xb
+ 1635 00d9 01       		.byte	0x1
+ 1636 00da 11       		.uleb128 0x11
+ 1637 00db 01       		.uleb128 0x1
+ 1638 00dc 12       		.uleb128 0x12
+ 1639 00dd 06       		.uleb128 0x6
+ 1640 00de 00       		.byte	0
+ 1641 00df 00       		.byte	0
+ 1642 00e0 12       		.uleb128 0x12
+ 1643 00e1 34       		.uleb128 0x34
+ 1644 00e2 00       		.byte	0
+ 1645 00e3 03       		.uleb128 0x3
+ 1646 00e4 08       		.uleb128 0x8
+ 1647 00e5 3A       		.uleb128 0x3a
+ 1648 00e6 0B       		.uleb128 0xb
+ 1649 00e7 3B       		.uleb128 0x3b
+ 1650 00e8 0B       		.uleb128 0xb
+ 1651 00e9 49       		.uleb128 0x49
+ 1652 00ea 13       		.uleb128 0x13
+ 1653 00eb 02       		.uleb128 0x2
+ 1654 00ec 18       		.uleb128 0x18
+ 1655 00ed 00       		.byte	0
+ 1656 00ee 00       		.byte	0
+ 1657 00ef 13       		.uleb128 0x13
+ 1658 00f0 2E       		.uleb128 0x2e
+ 1659 00f1 01       		.byte	0x1
+ 1660 00f2 3F       		.uleb128 0x3f
+ 1661 00f3 19       		.uleb128 0x19
+ 1662 00f4 03       		.uleb128 0x3
+ 1663 00f5 0E       		.uleb128 0xe
+ 1664 00f6 3A       		.uleb128 0x3a
+ 1665 00f7 0B       		.uleb128 0xb
+ 1666 00f8 3B       		.uleb128 0x3b
+ 1667 00f9 0B       		.uleb128 0xb
+ 1668 00fa 27       		.uleb128 0x27
+ 1669 00fb 19       		.uleb128 0x19
+ 1670 00fc 11       		.uleb128 0x11
+ 1671 00fd 01       		.uleb128 0x1
+ 1672 00fe 12       		.uleb128 0x12
+ 1673 00ff 06       		.uleb128 0x6
+ 1674 0100 40       		.uleb128 0x40
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 32
 
 
- 1675 0125 00       		.byte	0
- 1676 0126 03       		.uleb128 0x3
- 1677 0127 0E       		.uleb128 0xe
- 1678 0128 3A       		.uleb128 0x3a
- 1679 0129 0B       		.uleb128 0xb
- 1680 012a 3B       		.uleb128 0x3b
- 1681 012b 05       		.uleb128 0x5
- 1682 012c 49       		.uleb128 0x49
- 1683 012d 13       		.uleb128 0x13
- 1684 012e 3F       		.uleb128 0x3f
- 1685 012f 19       		.uleb128 0x19
- 1686 0130 3C       		.uleb128 0x3c
- 1687 0131 19       		.uleb128 0x19
- 1688 0132 00       		.byte	0
- 1689 0133 00       		.byte	0
- 1690 0134 16       		.uleb128 0x16
- 1691 0135 34       		.uleb128 0x34
- 1692 0136 00       		.byte	0
- 1693 0137 03       		.uleb128 0x3
- 1694 0138 0E       		.uleb128 0xe
- 1695 0139 3A       		.uleb128 0x3a
- 1696 013a 0B       		.uleb128 0xb
- 1697 013b 3B       		.uleb128 0x3b
- 1698 013c 0B       		.uleb128 0xb
- 1699 013d 49       		.uleb128 0x49
- 1700 013e 13       		.uleb128 0x13
- 1701 013f 3F       		.uleb128 0x3f
- 1702 0140 19       		.uleb128 0x19
- 1703 0141 02       		.uleb128 0x2
- 1704 0142 18       		.uleb128 0x18
- 1705 0143 00       		.byte	0
- 1706 0144 00       		.byte	0
- 1707 0145 17       		.uleb128 0x17
- 1708 0146 21       		.uleb128 0x21
- 1709 0147 00       		.byte	0
- 1710 0148 49       		.uleb128 0x49
- 1711 0149 13       		.uleb128 0x13
- 1712 014a 2F       		.uleb128 0x2f
- 1713 014b 05       		.uleb128 0x5
- 1714 014c 00       		.byte	0
- 1715 014d 00       		.byte	0
- 1716 014e 18       		.uleb128 0x18
- 1717 014f 34       		.uleb128 0x34
- 1718 0150 00       		.byte	0
- 1719 0151 03       		.uleb128 0x3
- 1720 0152 08       		.uleb128 0x8
- 1721 0153 3A       		.uleb128 0x3a
- 1722 0154 0B       		.uleb128 0xb
- 1723 0155 3B       		.uleb128 0x3b
- 1724 0156 0B       		.uleb128 0xb
- 1725 0157 49       		.uleb128 0x49
- 1726 0158 13       		.uleb128 0x13
- 1727 0159 3F       		.uleb128 0x3f
- 1728 015a 19       		.uleb128 0x19
- 1729 015b 02       		.uleb128 0x2
- 1730 015c 18       		.uleb128 0x18
- 1731 015d 00       		.byte	0
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 33
+ 1675 0101 18       		.uleb128 0x18
+ 1676 0102 9642     		.uleb128 0x2116
+ 1677 0104 19       		.uleb128 0x19
+ 1678 0105 01       		.uleb128 0x1
+ 1679 0106 13       		.uleb128 0x13
+ 1680 0107 00       		.byte	0
+ 1681 0108 00       		.byte	0
+ 1682 0109 14       		.uleb128 0x14
+ 1683 010a 2E       		.uleb128 0x2e
+ 1684 010b 01       		.byte	0x1
+ 1685 010c 3F       		.uleb128 0x3f
+ 1686 010d 19       		.uleb128 0x19
+ 1687 010e 03       		.uleb128 0x3
+ 1688 010f 0E       		.uleb128 0xe
+ 1689 0110 3A       		.uleb128 0x3a
+ 1690 0111 0B       		.uleb128 0xb
+ 1691 0112 3B       		.uleb128 0x3b
+ 1692 0113 0B       		.uleb128 0xb
+ 1693 0114 49       		.uleb128 0x49
+ 1694 0115 13       		.uleb128 0x13
+ 1695 0116 11       		.uleb128 0x11
+ 1696 0117 01       		.uleb128 0x1
+ 1697 0118 12       		.uleb128 0x12
+ 1698 0119 06       		.uleb128 0x6
+ 1699 011a 40       		.uleb128 0x40
+ 1700 011b 18       		.uleb128 0x18
+ 1701 011c 9642     		.uleb128 0x2116
+ 1702 011e 19       		.uleb128 0x19
+ 1703 011f 01       		.uleb128 0x1
+ 1704 0120 13       		.uleb128 0x13
+ 1705 0121 00       		.byte	0
+ 1706 0122 00       		.byte	0
+ 1707 0123 15       		.uleb128 0x15
+ 1708 0124 34       		.uleb128 0x34
+ 1709 0125 00       		.byte	0
+ 1710 0126 03       		.uleb128 0x3
+ 1711 0127 0E       		.uleb128 0xe
+ 1712 0128 3A       		.uleb128 0x3a
+ 1713 0129 0B       		.uleb128 0xb
+ 1714 012a 3B       		.uleb128 0x3b
+ 1715 012b 05       		.uleb128 0x5
+ 1716 012c 49       		.uleb128 0x49
+ 1717 012d 13       		.uleb128 0x13
+ 1718 012e 3F       		.uleb128 0x3f
+ 1719 012f 19       		.uleb128 0x19
+ 1720 0130 3C       		.uleb128 0x3c
+ 1721 0131 19       		.uleb128 0x19
+ 1722 0132 00       		.byte	0
+ 1723 0133 00       		.byte	0
+ 1724 0134 16       		.uleb128 0x16
+ 1725 0135 34       		.uleb128 0x34
+ 1726 0136 00       		.byte	0
+ 1727 0137 03       		.uleb128 0x3
+ 1728 0138 0E       		.uleb128 0xe
+ 1729 0139 3A       		.uleb128 0x3a
+ 1730 013a 0B       		.uleb128 0xb
+ 1731 013b 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 33
 
 
- 1732 015e 00       		.byte	0
- 1733 015f 00       		.byte	0
- 1734              		.section	.debug_aranges,"",%progbits
- 1735 0000 2C000000 		.4byte	0x2c
- 1736 0004 0200     		.2byte	0x2
- 1737 0006 00000000 		.4byte	.Ldebug_info0
- 1738 000a 04       		.byte	0x4
- 1739 000b 00       		.byte	0
- 1740 000c 0000     		.2byte	0
- 1741 000e 0000     		.2byte	0
- 1742 0010 00000000 		.4byte	.LFB64
- 1743 0014 88000000 		.4byte	.LFE64-.LFB64
- 1744 0018 00000000 		.4byte	.LFB65
- 1745 001c 3C000000 		.4byte	.LFE65-.LFB65
- 1746 0020 00000000 		.4byte	.LFB66
- 1747 0024 34010000 		.4byte	.LFE66-.LFB66
- 1748 0028 00000000 		.4byte	0
- 1749 002c 00000000 		.4byte	0
- 1750              		.section	.debug_ranges,"",%progbits
- 1751              	.Ldebug_ranges0:
- 1752 0000 00000000 		.4byte	.LFB64
- 1753 0004 88000000 		.4byte	.LFE64
- 1754 0008 00000000 		.4byte	.LFB65
- 1755 000c 3C000000 		.4byte	.LFE65
- 1756 0010 00000000 		.4byte	.LFB66
- 1757 0014 34010000 		.4byte	.LFE66
- 1758 0018 00000000 		.4byte	0
- 1759 001c 00000000 		.4byte	0
- 1760              		.section	.debug_line,"",%progbits
- 1761              	.Ldebug_line0:
- 1762 0000 15020000 		.section	.debug_str,"MS",%progbits,1
- 1762      0200B901 
- 1762      00000201 
- 1762      FB0E0D00 
- 1762      01010101 
- 1763              	.LASF92:
- 1764 0000 76616C76 		.ascii	"valve_enabled\000"
- 1764      655F656E 
- 1764      61626C65 
- 1764      6400
- 1765              	.LASF118:
- 1766 000e 433A5C55 		.ascii	"C:\\Users\\jniej\\OneDrive\\Documents\\GitHub\\noto"
- 1766      73657273 
- 1766      5C6A6E69 
- 1766      656A5C4F 
- 1766      6E654472 
- 1767 003b 72694F53 		.ascii	"riOS\\notoriOS.cydsn\000"
- 1767      5C6E6F74 
- 1767      6F72694F 
- 1767      532E6379 
- 1767      64736E00 
- 1768              	.LASF26:
- 1769 004f 6D6F6465 		.ascii	"model_id\000"
- 1769      6C5F6964 
- 1769      00
- 1770              	.LASF74:
- 1771 0058 65787065 		.ascii	"expected_string\000"
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 34
+ 1732 013c 0B       		.uleb128 0xb
+ 1733 013d 49       		.uleb128 0x49
+ 1734 013e 13       		.uleb128 0x13
+ 1735 013f 3F       		.uleb128 0x3f
+ 1736 0140 19       		.uleb128 0x19
+ 1737 0141 02       		.uleb128 0x2
+ 1738 0142 18       		.uleb128 0x18
+ 1739 0143 00       		.byte	0
+ 1740 0144 00       		.byte	0
+ 1741 0145 17       		.uleb128 0x17
+ 1742 0146 21       		.uleb128 0x21
+ 1743 0147 00       		.byte	0
+ 1744 0148 49       		.uleb128 0x49
+ 1745 0149 13       		.uleb128 0x13
+ 1746 014a 2F       		.uleb128 0x2f
+ 1747 014b 05       		.uleb128 0x5
+ 1748 014c 00       		.byte	0
+ 1749 014d 00       		.byte	0
+ 1750 014e 18       		.uleb128 0x18
+ 1751 014f 34       		.uleb128 0x34
+ 1752 0150 00       		.byte	0
+ 1753 0151 03       		.uleb128 0x3
+ 1754 0152 08       		.uleb128 0x8
+ 1755 0153 3A       		.uleb128 0x3a
+ 1756 0154 0B       		.uleb128 0xb
+ 1757 0155 3B       		.uleb128 0x3b
+ 1758 0156 0B       		.uleb128 0xb
+ 1759 0157 49       		.uleb128 0x49
+ 1760 0158 13       		.uleb128 0x13
+ 1761 0159 3F       		.uleb128 0x3f
+ 1762 015a 19       		.uleb128 0x19
+ 1763 015b 02       		.uleb128 0x2
+ 1764 015c 18       		.uleb128 0x18
+ 1765 015d 00       		.byte	0
+ 1766 015e 00       		.byte	0
+ 1767 015f 00       		.byte	0
+ 1768              		.section	.debug_aranges,"",%progbits
+ 1769 0000 2C000000 		.4byte	0x2c
+ 1770 0004 0200     		.2byte	0x2
+ 1771 0006 00000000 		.4byte	.Ldebug_info0
+ 1772 000a 04       		.byte	0x4
+ 1773 000b 00       		.byte	0
+ 1774 000c 0000     		.2byte	0
+ 1775 000e 0000     		.2byte	0
+ 1776 0010 00000000 		.4byte	.LFB64
+ 1777 0014 88000000 		.4byte	.LFE64-.LFB64
+ 1778 0018 00000000 		.4byte	.LFB65
+ 1779 001c 3C000000 		.4byte	.LFE65-.LFB65
+ 1780 0020 00000000 		.4byte	.LFB66
+ 1781 0024 34010000 		.4byte	.LFE66-.LFB66
+ 1782 0028 00000000 		.4byte	0
+ 1783 002c 00000000 		.4byte	0
+ 1784              		.section	.debug_ranges,"",%progbits
+ 1785              	.Ldebug_ranges0:
+ 1786 0000 00000000 		.4byte	.LFB64
+ 1787 0004 88000000 		.4byte	.LFE64
+ 1788 0008 00000000 		.4byte	.LFB65
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 34
 
 
- 1771      63746564 
- 1771      5F737472 
- 1771      696E6700 
- 1772              	.LASF25:
- 1773 0068 73696D5F 		.ascii	"sim_id\000"
- 1773      696400
- 1774              	.LASF62:
- 1775 006f 7379735F 		.ascii	"sys_settings_t\000"
- 1775      73657474 
- 1775      696E6773 
- 1775      5F7400
- 1776              	.LASF20:
- 1777 007e 666C6F61 		.ascii	"float32\000"
- 1777      74333200 
- 1778              	.LASF53:
- 1779 0086 63757272 		.ascii	"currentCountDownValue\000"
- 1779      656E7443 
- 1779      6F756E74 
- 1779      446F776E 
- 1779      56616C75 
- 1780              	.LASF52:
- 1781 009c 636F756E 		.ascii	"countDownValue\000"
- 1781      74446F77 
- 1781      6E56616C 
- 1781      756500
- 1782              	.LASF110:
- 1783 00ab 616C6172 		.ascii	"alarmDownstreamLevelSensor\000"
- 1783      6D446F77 
- 1783      6E737472 
- 1783      65616D4C 
- 1783      6576656C 
- 1784              	.LASF10:
- 1785 00c6 73697A65 		.ascii	"sizetype\000"
- 1785      74797065 
- 1785      00
- 1786              	.LASF60:
- 1787 00cf 65705F68 		.ascii	"ep_host\000"
- 1787      6F737400 
- 1788              	.LASF32:
- 1789 00d7 72737271 		.ascii	"rsrq\000"
- 1789      00
- 1790              	.LASF116:
- 1791 00dc 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1791      43313120 
- 1791      352E342E 
- 1791      31203230 
- 1791      31363036 
- 1792 010f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1792      20726576 
- 1792      6973696F 
- 1792      6E203233 
- 1792      37373135 
- 1793 0142 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1793      66756E63 
- 1793      74696F6E 
- 1793      2D736563 
- 1793      74696F6E 
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 35
+ 1789 000c 3C000000 		.4byte	.LFE65
+ 1790 0010 00000000 		.4byte	.LFB66
+ 1791 0014 34010000 		.4byte	.LFE66
+ 1792 0018 00000000 		.4byte	0
+ 1793 001c 00000000 		.4byte	0
+ 1794              		.section	.debug_line,"",%progbits
+ 1795              	.Ldebug_line0:
+ 1796 0000 21020000 		.section	.debug_str,"MS",%progbits,1
+ 1796      0200C501 
+ 1796      00000201 
+ 1796      FB0E0D00 
+ 1796      01010101 
+ 1797              	.LASF17:
+ 1798 0000 75696E74 		.ascii	"uint16\000"
+ 1798      313600
+ 1799              	.LASF64:
+ 1800 0007 626F6479 		.ascii	"body\000"
+ 1800      00
+ 1801              	.LASF95:
+ 1802 000c 6175746F 		.ascii	"autosampler_enabled\000"
+ 1802      73616D70 
+ 1802      6C65725F 
+ 1802      656E6162 
+ 1802      6C656400 
+ 1803              	.LASF83:
+ 1804 0020 62756666 		.ascii	"buffer_overflow\000"
+ 1804      65725F6F 
+ 1804      76657266 
+ 1804      6C6F7700 
+ 1805              	.LASF56:
+ 1806 0030 636F756E 		.ascii	"countDownResetCondition\000"
+ 1806      74446F77 
+ 1806      6E526573 
+ 1806      6574436F 
+ 1806      6E646974 
+ 1807              	.LASF117:
+ 1808 0048 74696D65 		.ascii	"timeToAutosampler\000"
+ 1808      546F4175 
+ 1808      746F7361 
+ 1808      6D706C65 
+ 1808      7200
+ 1809              	.LASF92:
+ 1810 005a 76616C76 		.ascii	"valve_type\000"
+ 1810      655F7479 
+ 1810      706500
+ 1811              	.LASF120:
+ 1812 0065 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1812      43313120 
+ 1812      352E342E 
+ 1812      31203230 
+ 1812      31363036 
+ 1813 0098 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1813      20726576 
+ 1813      6973696F 
+ 1813      6E203233 
+ 1813      37373135 
+ 1814 00cb 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 35
 
 
- 1794              	.LASF85:
- 1795 016a 64617461 		.ascii	"data\000"
- 1795      00
- 1796              	.LASF42:
- 1797 016f 4170705F 		.ascii	"App_LED_freq\000"
- 1797      4C45445F 
- 1797      66726571 
- 1797      00
- 1798              	.LASF70:
- 1799 017c 64617461 		.ascii	"database\000"
- 1799      62617365 
- 1799      00
- 1800              	.LASF45:
- 1801 0185 56616C76 		.ascii	"Valve_freq\000"
- 1801      655F6672 
- 1801      657100
- 1802              	.LASF65:
- 1803 0190 72657175 		.ascii	"request_len\000"
- 1803      6573745F 
- 1803      6C656E00 
- 1804              	.LASF31:
- 1805 019c 65636E6F 		.ascii	"ecno\000"
- 1805      00
- 1806              	.LASF5:
- 1807 01a1 73686F72 		.ascii	"short int\000"
- 1807      7420696E 
- 1807      7400
- 1808              	.LASF106:
- 1809 01ab 616C6172 		.ascii	"alarmAppLED\000"
- 1809      6D417070 
- 1809      4C454400 
- 1810              	.LASF49:
- 1811 01b7 76616C75 		.ascii	"value\000"
- 1811      6500
- 1812              	.LASF93:
- 1813 01bd 76616C76 		.ascii	"valve_inbox\000"
- 1813      655F696E 
- 1813      626F7800 
- 1814              	.LASF17:
- 1815 01c9 75696E74 		.ascii	"uint16\000"
- 1815      313600
- 1816              	.LASF117:
- 1817 01d0 696E666C 		.ascii	"influx.c\000"
- 1817      75782E63 
- 1817      00
- 1818              	.LASF91:
- 1819 01d9 76616C76 		.ascii	"valve_type\000"
- 1819      655F7479 
- 1819      706500
- 1820              	.LASF119:
- 1821 01e4 636F6E73 		.ascii	"construct_influx_write_body\000"
- 1821      74727563 
- 1821      745F696E 
- 1821      666C7578 
- 1821      5F777269 
- 1822              	.LASF83:
- 1823 0200 64617461 		.ascii	"dataPointsInStack\000"
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 36
+ 1814      66756E63 
+ 1814      74696F6E 
+ 1814      2D736563 
+ 1814      74696F6E 
+ 1815              	.LASF9:
+ 1816 00f3 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1816      206C6F6E 
+ 1816      6720756E 
+ 1816      7369676E 
+ 1816      65642069 
+ 1817              	.LASF79:
+ 1818 010a 6D6F6465 		.ascii	"modem_state\000"
+ 1818      6D5F7374 
+ 1818      61746500 
+ 1819              	.LASF74:
+ 1820 0116 74657374 		.ascii	"test\000"
+ 1820      00
+ 1821              	.LASF103:
+ 1822 011b 616C6172 		.ascii	"alarmMeasure\000"
+ 1822      6D4D6561 
+ 1822      73757265 
+ 1822      00
+ 1823              	.LASF78:
+ 1824 0128 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1824      52784275 
+ 1824      66666572 
+ 1824      00
+ 1825              	.LASF81:
+ 1826 0135 6D6F6465 		.ascii	"modem_stats\000"
+ 1826      6D5F7374 
+ 1826      61747300 
+ 1827              	.LASF1:
+ 1828 0141 6C6F6E67 		.ascii	"long long int\000"
+ 1828      206C6F6E 
+ 1828      6720696E 
+ 1828      7400
+ 1829              	.LASF3:
+ 1830 014f 7369676E 		.ascii	"signed char\000"
+ 1830      65642063 
+ 1830      68617200 
+ 1831              	.LASF31:
+ 1832 015b 65636E6F 		.ascii	"ecno\000"
+ 1832      00
+ 1833              	.LASF104:
+ 1834 0160 74696D65 		.ascii	"timeToMeasure\000"
+ 1834      546F4D65 
+ 1834      61737572 
+ 1834      6500
+ 1835              	.LASF34:
+ 1836 016e 74696D65 		.ascii	"time_to_network_connect\000"
+ 1836      5F746F5F 
+ 1836      6E657477 
+ 1836      6F726B5F 
+ 1836      636F6E6E 
+ 1837              	.LASF106:
+ 1838 0186 74696D65 		.ascii	"timeToSync\000"
+ 1838      546F5379 
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 36
 
 
- 1823      506F696E 
- 1823      7473496E 
- 1823      53746163 
- 1823      6B00
- 1824              	.LASF16:
- 1825 0212 75696E74 		.ascii	"uint8\000"
- 1825      3800
- 1826              	.LASF57:
- 1827 0218 6D6F6465 		.ascii	"modem_info\000"
- 1827      6D5F696E 
- 1827      666F00
- 1828              	.LASF30:
- 1829 0223 72736370 		.ascii	"rscp\000"
- 1829      00
- 1830              	.LASF18:
- 1831 0228 696E7431 		.ascii	"int16\000"
- 1831      3600
- 1832              	.LASF50:
- 1833 022e 74696D65 		.ascii	"timeStamp\000"
- 1833      5374616D 
- 1833      7000
- 1834              	.LASF114:
- 1835 0238 616C6172 		.ascii	"alarmAutosampler\000"
- 1835      6D417574 
- 1835      6F73616D 
- 1835      706C6572 
- 1835      00
- 1836              	.LASF84:
- 1837 0249 64617461 		.ascii	"dataPointsInStackDesired\000"
- 1837      506F696E 
- 1837      7473496E 
- 1837      53746163 
- 1837      6B446573 
- 1838              	.LASF15:
- 1839 0262 666C6F61 		.ascii	"float\000"
- 1839      7400
- 1840              	.LASF89:
- 1841 0268 6C657665 		.ascii	"level_sensor_enabled\000"
- 1841      6C5F7365 
- 1841      6E736F72 
- 1841      5F656E61 
- 1841      626C6564 
- 1842              	.LASF1:
- 1843 027d 6C6F6E67 		.ascii	"long long int\000"
- 1843      206C6F6E 
- 1843      6720696E 
- 1843      7400
- 1844              	.LASF11:
- 1845 028b 63686172 		.ascii	"char\000"
- 1845      00
- 1846              	.LASF23:
- 1847 0290 72656173 		.ascii	"reason\000"
- 1847      6F6E00
- 1848              	.LASF7:
- 1849 0297 6C6F6E67 		.ascii	"long int\000"
- 1849      20696E74 
- 1849      00
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 37
+ 1838      6E6300
+ 1839              	.LASF99:
+ 1840 0191 68747470 		.ascii	"http_body\000"
+ 1840      5F626F64 
+ 1840      7900
+ 1841              	.LASF91:
+ 1842 019b 76616C76 		.ascii	"valve_diameter\000"
+ 1842      655F6469 
+ 1842      616D6574 
+ 1842      657200
+ 1843              	.LASF71:
+ 1844 01aa 64617461 		.ascii	"database\000"
+ 1844      62617365 
+ 1844      00
+ 1845              	.LASF28:
+ 1846 01b3 6D6F6465 		.ascii	"modem_info_t\000"
+ 1846      6D5F696E 
+ 1846      666F5F74 
+ 1846      00
+ 1847              	.LASF112:
+ 1848 01c0 616C6172 		.ascii	"alarmDownstreamLevelSensor\000"
+ 1848      6D446F77 
+ 1848      6E737472 
+ 1848      65616D4C 
+ 1848      6576656C 
+ 1849              	.LASF29:
+ 1850 01db 72786C65 		.ascii	"rxlev\000"
+ 1850      7600
+ 1851              	.LASF7:
+ 1852 01e1 6C6F6E67 		.ascii	"long int\000"
+ 1852      20696E74 
+ 1852      00
+ 1853              	.LASF54:
+ 1854 01ea 63757272 		.ascii	"currentCountDownValue\000"
+ 1854      656E7443 
+ 1854      6F756E74 
+ 1854      446F776E 
+ 1854      56616C75 
+ 1855              	.LASF57:
+ 1856 0200 616C6172 		.ascii	"alarm\000"
+ 1856      6D00
+ 1857              	.LASF16:
+ 1858 0206 75696E74 		.ascii	"uint8\000"
+ 1858      3800
+ 1859              	.LASF65:
+ 1860 020c 6E6F6465 		.ascii	"node_id\000"
+ 1860      5F696400 
+ 1861              	.LASF109:
+ 1862 0214 74696D65 		.ascii	"timeToAppLED\000"
+ 1862      546F4170 
+ 1862      704C4544 
+ 1862      00
+ 1863              	.LASF19:
+ 1864 0221 696E7433 		.ascii	"int32\000"
+ 1864      3200
+ 1865              	.LASF37:
+ 1866 0227 6E6F6465 		.ascii	"node_type\000"
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 37
 
 
- 1850              	.LASF82:
- 1851 02a0 62756666 		.ascii	"buffer_overflow\000"
- 1851      65725F6F 
- 1851      76657266 
- 1851      6C6F7700 
- 1852              	.LASF75:
- 1853 02b0 74657374 		.ascii	"test_write_body\000"
- 1853      5F777269 
- 1853      74655F62 
- 1853      6F647900 
- 1854              	.LASF101:
- 1855 02c0 616C6172 		.ascii	"alarmMeasure\000"
- 1855      6D4D6561 
- 1855      73757265 
- 1855      00
- 1856              	.LASF63:
- 1857 02cd 626F6479 		.ascii	"body\000"
- 1857      00
- 1858              	.LASF115:
- 1859 02d2 74696D65 		.ascii	"timeToAutosampler\000"
- 1859      546F4175 
- 1859      746F7361 
- 1859      6D706C65 
- 1859      7200
- 1860              	.LASF113:
- 1861 02e4 74696D65 		.ascii	"timeToValve\000"
- 1861      546F5661 
- 1861      6C766500 
- 1862              	.LASF66:
- 1863 02f0 726F7574 		.ascii	"route\000"
- 1863      6500
- 1864              	.LASF56:
- 1865 02f6 616C6172 		.ascii	"alarm\000"
- 1865      6D00
- 1866              	.LASF39:
- 1867 02fc 6D656173 		.ascii	"measure_time\000"
- 1867      7572655F 
- 1867      74696D65 
- 1867      00
- 1868              	.LASF43:
- 1869 0309 4C657665 		.ascii	"Level_Sensor_freq\000"
- 1869      6C5F5365 
- 1869      6E736F72 
- 1869      5F667265 
- 1869      7100
- 1870              	.LASF103:
- 1871 031b 616C6172 		.ascii	"alarmSync\000"
- 1871      6D53796E 
- 1871      6300
- 1872              	.LASF2:
- 1873 0325 6C6F6E67 		.ascii	"long double\000"
- 1873      20646F75 
- 1873      626C6500 
- 1874              	.LASF87:
- 1875 0331 6170705F 		.ascii	"app_led_inbox\000"
- 1875      6C65645F 
- 1875      696E626F 
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 38
+ 1866      5F747970 
+ 1866      6500
+ 1867              	.LASF59:
+ 1868 0231 63686970 		.ascii	"chip_uniqueId\000"
+ 1868      5F756E69 
+ 1868      71756549 
+ 1868      6400
+ 1869              	.LASF26:
+ 1870 023f 6D6F6465 		.ascii	"model_id\000"
+ 1870      6C5F6964 
+ 1870      00
+ 1871              	.LASF53:
+ 1872 0248 636F756E 		.ascii	"countDownValue\000"
+ 1872      74446F77 
+ 1872      6E56616C 
+ 1872      756500
+ 1873              	.LASF41:
+ 1874 0257 64656275 		.ascii	"debug_level\000"
+ 1874      675F6C65 
+ 1874      76656C00 
+ 1875              	.LASF50:
+ 1876 0263 76616C75 		.ascii	"value\000"
+ 1876      6500
+ 1877              	.LASF105:
+ 1878 0269 616C6172 		.ascii	"alarmSync\000"
+ 1878      6D53796E 
+ 1878      6300
+ 1879              	.LASF87:
+ 1880 0273 4170705F 		.ascii	"App_LED_enabled\000"
+ 1880      4C45445F 
+ 1880      656E6162 
+ 1880      6C656400 
+ 1881              	.LASF121:
+ 1882 0283 696E666C 		.ascii	"influx.c\000"
+ 1882      75782E63 
+ 1882      00
+ 1883              	.LASF52:
+ 1884 028c 6B65795F 		.ascii	"key_value_t\000"
+ 1884      76616C75 
+ 1884      655F7400 
+ 1885              	.LASF8:
+ 1886 0298 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1886      20756E73 
+ 1886      69676E65 
+ 1886      6420696E 
+ 1886      7400
+ 1887              	.LASF86:
+ 1888 02aa 64617461 		.ascii	"data\000"
+ 1888      00
+ 1889              	.LASF62:
+ 1890 02af 65705F70 		.ascii	"ep_port\000"
+ 1890      6F727400 
+ 1891              	.LASF58:
+ 1892 02b7 6D6F6465 		.ascii	"modem_info\000"
+ 1892      6D5F696E 
+ 1892      666F00
+ 1893              	.LASF61:
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 38
 
 
- 1875      7800
- 1876              	.LASF111:
- 1877 033f 74696D65 		.ascii	"timeToDownstreamLevelSensor\000"
- 1877      546F446F 
- 1877      776E7374 
- 1877      7265616D 
- 1877      4C657665 
- 1878              	.LASF4:
- 1879 035b 756E7369 		.ascii	"unsigned char\000"
- 1879      676E6564 
- 1879      20636861 
- 1879      7200
- 1880              	.LASF33:
- 1881 0369 72737270 		.ascii	"rsrp\000"
- 1881      00
- 1882              	.LASF79:
- 1883 036e 6D6F6465 		.ascii	"modem_start_time_stamp\000"
- 1883      6D5F7374 
- 1883      6172745F 
- 1883      74696D65 
- 1883      5F737461 
- 1884              	.LASF78:
- 1885 0385 6D6F6465 		.ascii	"modem_state\000"
- 1885      6D5F7374 
- 1885      61746500 
- 1886              	.LASF3:
- 1887 0391 7369676E 		.ascii	"signed char\000"
- 1887      65642063 
- 1887      68617200 
- 1888              	.LASF44:
- 1889 039d 446F776E 		.ascii	"Downstream_Level_Sensor_freq\000"
- 1889      73747265 
- 1889      616D5F4C 
- 1889      6576656C 
- 1889      5F53656E 
- 1890              	.LASF9:
- 1891 03ba 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1891      206C6F6E 
- 1891      6720756E 
- 1891      7369676E 
- 1891      65642069 
- 1892              	.LASF100:
- 1893 03d1 73797374 		.ascii	"system_settings\000"
- 1893      656D5F73 
- 1893      65747469 
- 1893      6E677300 
- 1894              	.LASF58:
- 1895 03e1 63686970 		.ascii	"chip_uniqueId\000"
- 1895      5F756E69 
- 1895      71756549 
- 1895      6400
- 1896              	.LASF0:
- 1897 03ef 756E7369 		.ascii	"unsigned int\000"
- 1897      676E6564 
- 1897      20696E74 
- 1897      00
- 1898              	.LASF51:
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 39
+ 1894 02c2 65705F68 		.ascii	"ep_host\000"
+ 1894      6F737400 
+ 1895              	.LASF94:
+ 1896 02ca 76616C76 		.ascii	"valve_inbox\000"
+ 1896      655F696E 
+ 1896      626F7800 
+ 1897              	.LASF97:
+ 1898 02d6 536F6E74 		.ascii	"Sontek_enabled\000"
+ 1898      656B5F65 
+ 1898      6E61626C 
+ 1898      656400
+ 1899              	.LASF76:
+ 1900 02e5 74657374 		.ascii	"test_write_body\000"
+ 1900      5F777269 
+ 1900      74655F62 
+ 1900      6F647900 
+ 1901              	.LASF35:
+ 1902 02f5 74696D65 		.ascii	"time_to_acquire_ip\000"
+ 1902      5F746F5F 
+ 1902      61637175 
+ 1902      6972655F 
+ 1902      697000
+ 1903              	.LASF108:
+ 1904 0308 616C6172 		.ascii	"alarmAppLED\000"
+ 1904      6D417070 
+ 1904      4C454400 
+ 1905              	.LASF80:
+ 1906 0314 6D6F6465 		.ascii	"modem_start_time_stamp\000"
+ 1906      6D5F7374 
+ 1906      6172745F 
+ 1906      74696D65 
+ 1906      5F737461 
+ 1907              	.LASF60:
+ 1908 032b 7379735F 		.ascii	"sys_info_t\000"
+ 1908      696E666F 
+ 1908      5F7400
+ 1909              	.LASF49:
+ 1910 0336 75706461 		.ascii	"updatable_parameters_t\000"
+ 1910      7461626C 
+ 1910      655F7061 
+ 1910      72616D65 
+ 1910      74657273 
+ 1911              	.LASF68:
+ 1912 034d 62617365 		.ascii	"base\000"
+ 1912      00
+ 1913              	.LASF84:
+ 1914 0352 64617461 		.ascii	"dataPointsInStack\000"
+ 1914      506F696E 
+ 1914      7473496E 
+ 1914      53746163 
+ 1914      6B00
+ 1915              	.LASF96:
+ 1916 0364 6175746F 		.ascii	"autosampler_inbox\000"
+ 1916      73616D70 
+ 1916      6C65725F 
+ 1916      696E626F 
+ 1916      7800
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 39
 
 
- 1899 03fc 6B65795F 		.ascii	"key_value_t\000"
- 1899      76616C75 
- 1899      655F7400 
- 1900              	.LASF94:
- 1901 0408 6175746F 		.ascii	"autosampler_enabled\000"
- 1901      73616D70 
- 1901      6C65725F 
- 1901      656E6162 
- 1901      6C656400 
- 1902              	.LASF40:
- 1903 041c 73796E63 		.ascii	"sync_time\000"
- 1903      5F74696D 
- 1903      6500
- 1904              	.LASF80:
- 1905 0426 6D6F6465 		.ascii	"modem_stats\000"
- 1905      6D5F7374 
- 1905      61747300 
- 1906              	.LASF102:
- 1907 0432 74696D65 		.ascii	"timeToMeasure\000"
- 1907      546F4D65 
- 1907      61737572 
- 1907      6500
- 1908              	.LASF48:
- 1909 0440 75706461 		.ascii	"updatable_parameters_t\000"
- 1909      7461626C 
- 1909      655F7061 
- 1909      72616D65 
- 1909      74657273 
- 1910              	.LASF29:
- 1911 0457 72786C65 		.ascii	"rxlev\000"
- 1911      7600
- 1912              	.LASF38:
- 1913 045d 73696D5F 		.ascii	"sim_type\000"
- 1913      74797065 
- 1913      00
- 1914              	.LASF59:
- 1915 0466 7379735F 		.ascii	"sys_info_t\000"
- 1915      696E666F 
- 1915      5F7400
- 1916              	.LASF68:
- 1917 0471 75736572 		.ascii	"user\000"
- 1917      00
- 1918              	.LASF6:
- 1919 0476 73686F72 		.ascii	"short unsigned int\000"
- 1919      7420756E 
- 1919      7369676E 
- 1919      65642069 
- 1919      6E7400
- 1920              	.LASF34:
- 1921 0489 74696D65 		.ascii	"time_to_network_connect\000"
- 1921      5F746F5F 
- 1921      6E657477 
- 1921      6F726B5F 
- 1921      636F6E6E 
- 1922              	.LASF22:
- 1923 04a1 73746174 		.ascii	"status\000"
- 1923      757300
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 40
+ 1917              	.LASF122:
+ 1918 0376 433A5C55 		.ascii	"C:\\Users\\kland\\OneDrive\\Documents\\GitHub\\noto"
+ 1918      73657273 
+ 1918      5C6B6C61 
+ 1918      6E645C4F 
+ 1918      6E654472 
+ 1919 03a3 72694F53 		.ascii	"riOS\\notoriOS.cydsn\000"
+ 1919      5C6E6F74 
+ 1919      6F72694F 
+ 1919      532E6379 
+ 1919      64736E00 
+ 1920              	.LASF20:
+ 1921 03b7 666C6F61 		.ascii	"float32\000"
+ 1921      74333200 
+ 1922              	.LASF10:
+ 1923 03bf 73697A65 		.ascii	"sizetype\000"
+ 1923      74797065 
+ 1923      00
+ 1924              	.LASF63:
+ 1925 03c8 7379735F 		.ascii	"sys_settings_t\000"
+ 1925      73657474 
+ 1925      696E6773 
+ 1925      5F7400
+ 1926              	.LASF107:
+ 1927 03d7 74696D65 		.ascii	"timeToSycnRemoteParams\000"
+ 1927      546F5379 
+ 1927      636E5265 
+ 1927      6D6F7465 
+ 1927      50617261 
+ 1928              	.LASF51:
+ 1929 03ee 74696D65 		.ascii	"timeStamp\000"
+ 1929      5374616D 
+ 1929      7000
+ 1930              	.LASF77:
+ 1931 03f8 636F6D70 		.ascii	"compare\000"
+ 1931      61726500 
+ 1932              	.LASF82:
+ 1933 0400 75706461 		.ascii	"updatable_parameters\000"
+ 1933      7461626C 
+ 1933      655F7061 
+ 1933      72616D65 
+ 1933      74657273 
+ 1934              	.LASF115:
+ 1935 0415 74696D65 		.ascii	"timeToValve\000"
+ 1935      546F5661 
+ 1935      6C766500 
+ 1936              	.LASF15:
+ 1937 0421 666C6F61 		.ascii	"float\000"
+ 1937      7400
+ 1938              	.LASF69:
+ 1939 0427 75736572 		.ascii	"user\000"
+ 1939      00
+ 1940              	.LASF21:
+ 1941 042c 74657374 		.ascii	"test_name\000"
+ 1941      5F6E616D 
+ 1941      6500
+ 1942              	.LASF48:
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 40
 
 
- 1924              	.LASF69:
- 1925 04a8 70617373 		.ascii	"pass\000"
- 1925      00
- 1926              	.LASF88:
- 1927 04ad 6C657665 		.ascii	"level_sensor_inbox\000"
- 1927      6C5F7365 
- 1927      6E736F72 
- 1927      5F696E62 
- 1927      6F7800
- 1928              	.LASF90:
- 1929 04c0 76616C76 		.ascii	"valve_diameter\000"
- 1929      655F6469 
- 1929      616D6574 
- 1929      657200
- 1930              	.LASF99:
- 1931 04cf 73797374 		.ascii	"system_info\000"
- 1931      656D5F69 
- 1931      6E666F00 
- 1932              	.LASF35:
- 1933 04db 74696D65 		.ascii	"time_to_acquire_ip\000"
- 1933      5F746F5F 
- 1933      61637175 
- 1933      6972655F 
- 1933      697000
- 1934              	.LASF24:
- 1935 04ee 74657374 		.ascii	"test_t\000"
- 1935      5F7400
- 1936              	.LASF27:
- 1937 04f5 696D6569 		.ascii	"imei\000"
- 1937      00
- 1938              	.LASF13:
- 1939 04fa 696E7433 		.ascii	"int32_t\000"
- 1939      325F7400 
- 1940              	.LASF36:
- 1941 0502 6D6F6465 		.ascii	"modem_stats_t\000"
- 1941      6D5F7374 
- 1941      6174735F 
- 1941      7400
- 1942              	.LASF47:
- 1943 0510 5F426F6F 		.ascii	"_Bool\000"
+ 1943 0436 5F426F6F 		.ascii	"_Bool\000"
  1943      6C00
- 1944              	.LASF105:
- 1945 0516 74696D65 		.ascii	"timeToSycnRemoteParams\000"
- 1945      546F5379 
- 1945      636E5265 
- 1945      6D6F7465 
- 1945      50617261 
- 1946              	.LASF73:
- 1947 052d 74657374 		.ascii	"test\000"
- 1947      00
- 1948              	.LASF112:
- 1949 0532 616C6172 		.ascii	"alarmValve\000"
- 1949      6D56616C 
- 1949      766500
- 1950              	.LASF98:
- 1951 053d 68747470 		.ascii	"http_route\000"
- 1951      5F726F75 
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 41
-
-
- 1951      746500
- 1952              	.LASF8:
- 1953 0548 6C6F6E67 		.ascii	"long unsigned int\000"
- 1953      20756E73 
- 1953      69676E65 
- 1953      6420696E 
- 1953      7400
- 1954              	.LASF19:
- 1955 055a 696E7433 		.ascii	"int32\000"
- 1955      3200
- 1956              	.LASF14:
- 1957 0560 646F7562 		.ascii	"double\000"
- 1957      6C6500
- 1958              	.LASF77:
- 1959 0567 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1959      52784275 
- 1959      66666572 
- 1959      00
- 1960              	.LASF108:
- 1961 0574 616C6172 		.ascii	"alarmLevelSensor\000"
- 1961      6D4C6576 
- 1961      656C5365 
- 1961      6E736F72 
- 1961      00
- 1962              	.LASF41:
- 1963 0585 64656275 		.ascii	"debug_level\000"
- 1963      675F6C65 
- 1963      76656C00 
- 1964              	.LASF28:
- 1965 0591 6D6F6465 		.ascii	"modem_info_t\000"
- 1965      6D5F696E 
- 1965      666F5F74 
+ 1944              	.LASF13:
+ 1945 043c 696E7433 		.ascii	"int32_t\000"
+ 1945      325F7400 
+ 1946              	.LASF4:
+ 1947 0444 756E7369 		.ascii	"unsigned char\000"
+ 1947      676E6564 
+ 1947      20636861 
+ 1947      7200
+ 1948              	.LASF67:
+ 1949 0452 726F7574 		.ascii	"route\000"
+ 1949      6500
+ 1950              	.LASF102:
+ 1951 0458 73797374 		.ascii	"system_settings\000"
+ 1951      656D5F73 
+ 1951      65747469 
+ 1951      6E677300 
+ 1952              	.LASF45:
+ 1953 0468 56616C76 		.ascii	"Valve_freq\000"
+ 1953      655F6672 
+ 1953      657100
+ 1954              	.LASF32:
+ 1955 0473 72737271 		.ascii	"rsrq\000"
+ 1955      00
+ 1956              	.LASF5:
+ 1957 0478 73686F72 		.ascii	"short int\000"
+ 1957      7420696E 
+ 1957      7400
+ 1958              	.LASF40:
+ 1959 0482 73796E63 		.ascii	"sync_time\000"
+ 1959      5F74696D 
+ 1959      6500
+ 1960              	.LASF75:
+ 1961 048c 65787065 		.ascii	"expected_string\000"
+ 1961      63746564 
+ 1961      5F737472 
+ 1961      696E6700 
+ 1962              	.LASF73:
+ 1963 049c 696E666C 		.ascii	"influx_test\000"
+ 1963      75785F74 
+ 1963      65737400 
+ 1964              	.LASF30:
+ 1965 04a8 72736370 		.ascii	"rscp\000"
  1965      00
- 1966              	.LASF54:
- 1967 059e 636F756E 		.ascii	"countDownType\000"
- 1967      74446F77 
- 1967      6E547970 
- 1967      6500
- 1968              	.LASF76:
- 1969 05ac 636F6D70 		.ascii	"compare\000"
- 1969      61726500 
- 1970              	.LASF12:
- 1971 05b4 5F5F696E 		.ascii	"__int32_t\000"
- 1971      7433325F 
- 1971      7400
- 1972              	.LASF71:
- 1973 05be 636F6E73 		.ascii	"construct_influx_route\000"
- 1973      74727563 
- 1973      745F696E 
- 1973      666C7578 
- 1973      5F726F75 
- 1974              	.LASF107:
- 1975 05d5 74696D65 		.ascii	"timeToAppLED\000"
- 1975      546F4170 
- 1975      704C4544 
+ 1966              	.LASF24:
+ 1967 04ad 74657374 		.ascii	"test_t\000"
+ 1967      5F7400
+ 1968              	.LASF101:
+ 1969 04b4 73797374 		.ascii	"system_info\000"
+ 1969      656D5F69 
+ 1969      6E666F00 
+ 1970              	.LASF27:
+ 1971 04c0 696D6569 		.ascii	"imei\000"
+ 1971      00
+ 1972              	.LASF23:
+ 1973 04c5 72656173 		.ascii	"reason\000"
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 41
+
+
+ 1973      6F6E00
+ 1974              	.LASF33:
+ 1975 04cc 72737270 		.ascii	"rsrp\000"
  1975      00
- 1976              	.LASF64:
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 42
-
-
- 1977 05e2 6E6F6465 		.ascii	"node_id\000"
- 1977      5F696400 
- 1978              	.LASF21:
- 1979 05ea 74657374 		.ascii	"test_name\000"
- 1979      5F6E616D 
- 1979      6500
- 1980              	.LASF46:
- 1981 05f4 4175746F 		.ascii	"Autosampler_freq\000"
- 1981      73616D70 
- 1981      6C65725F 
- 1981      66726571 
- 1981      00
- 1982              	.LASF109:
- 1983 0605 74696D65 		.ascii	"timeToLevelSensor\000"
- 1983      546F4C65 
- 1983      76656C53 
- 1983      656E736F 
- 1983      7200
- 1984              	.LASF55:
- 1985 0617 636F756E 		.ascii	"countDownResetCondition\000"
- 1985      74446F77 
- 1985      6E526573 
- 1985      6574436F 
- 1985      6E646974 
- 1986              	.LASF81:
- 1987 062f 75706461 		.ascii	"updatable_parameters\000"
- 1987      7461626C 
- 1987      655F7061 
- 1987      72616D65 
- 1987      74657273 
- 1988              	.LASF61:
- 1989 0644 65705F70 		.ascii	"ep_port\000"
- 1989      6F727400 
- 1990              	.LASF67:
- 1991 064c 62617365 		.ascii	"base\000"
+ 1976              	.LASF36:
+ 1977 04d1 6D6F6465 		.ascii	"modem_stats_t\000"
+ 1977      6D5F7374 
+ 1977      6174735F 
+ 1977      7400
+ 1978              	.LASF110:
+ 1979 04df 616C6172 		.ascii	"alarmLevelSensor\000"
+ 1979      6D4C6576 
+ 1979      656C5365 
+ 1979      6E736F72 
+ 1979      00
+ 1980              	.LASF66:
+ 1981 04f0 72657175 		.ascii	"request_len\000"
+ 1981      6573745F 
+ 1981      6C656E00 
+ 1982              	.LASF43:
+ 1983 04fc 4C657665 		.ascii	"Level_Sensor_freq\000"
+ 1983      6C5F5365 
+ 1983      6E736F72 
+ 1983      5F667265 
+ 1983      7100
+ 1984              	.LASF89:
+ 1985 050e 6C657665 		.ascii	"level_sensor_inbox\000"
+ 1985      6C5F7365 
+ 1985      6E736F72 
+ 1985      5F696E62 
+ 1985      6F7800
+ 1986              	.LASF2:
+ 1987 0521 6C6F6E67 		.ascii	"long double\000"
+ 1987      20646F75 
+ 1987      626C6500 
+ 1988              	.LASF11:
+ 1989 052d 63686172 		.ascii	"char\000"
+ 1989      00
+ 1990              	.LASF0:
+ 1991 0532 756E7369 		.ascii	"unsigned int\000"
+ 1991      676E6564 
+ 1991      20696E74 
  1991      00
- 1992              	.LASF97:
- 1993 0651 68747470 		.ascii	"http_body\000"
- 1993      5F626F64 
- 1993      7900
- 1994              	.LASF95:
- 1995 065b 6175746F 		.ascii	"autosampler_inbox\000"
- 1995      73616D70 
- 1995      6C65725F 
- 1995      696E626F 
- 1995      7800
- 1996              	.LASF37:
- 1997 066d 6E6F6465 		.ascii	"node_type\000"
- 1997      5F747970 
- 1997      6500
- 1998              	.LASF86:
- 1999 0677 4170705F 		.ascii	"App_LED_enabled\000"
- 1999      4C45445F 
- 1999      656E6162 
- 1999      6C656400 
- 2000              	.LASF72:
- 2001 0687 696E666C 		.ascii	"influx_test\000"
-ARM GAS  C:\Users\jniej\AppData\Local\Temp\cccOms2Q.s 			page 43
+ 1992              	.LASF114:
+ 1993 053f 616C6172 		.ascii	"alarmValve\000"
+ 1993      6D56616C 
+ 1993      766500
+ 1994              	.LASF100:
+ 1995 054a 68747470 		.ascii	"http_route\000"
+ 1995      5F726F75 
+ 1995      746500
+ 1996              	.LASF47:
+ 1997 0555 536F6E74 		.ascii	"Sontek_freq\000"
+ 1997      656B5F66 
+ 1997      72657100 
+ 1998              	.LASF12:
+ 1999 0561 5F5F696E 		.ascii	"__int32_t\000"
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 42
 
 
- 2001      75785F74 
- 2001      65737400 
- 2002              	.LASF96:
- 2003 0693 68747470 		.ascii	"http_request\000"
- 2003      5F726571 
- 2003      75657374 
- 2003      00
- 2004              	.LASF104:
- 2005 06a0 74696D65 		.ascii	"timeToSync\000"
- 2005      546F5379 
- 2005      6E6300
- 2006              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 1999      7433325F 
+ 1999      7400
+ 2000              	.LASF39:
+ 2001 056b 6D656173 		.ascii	"measure_time\000"
+ 2001      7572655F 
+ 2001      74696D65 
+ 2001      00
+ 2002              	.LASF118:
+ 2003 0578 616C6172 		.ascii	"alarmSontek\000"
+ 2003      6D536F6E 
+ 2003      74656B00 
+ 2004              	.LASF6:
+ 2005 0584 73686F72 		.ascii	"short unsigned int\000"
+ 2005      7420756E 
+ 2005      7369676E 
+ 2005      65642069 
+ 2005      6E7400
+ 2006              	.LASF25:
+ 2007 0597 73696D5F 		.ascii	"sim_id\000"
+ 2007      696400
+ 2008              	.LASF44:
+ 2009 059e 446F776E 		.ascii	"Downstream_Level_Sensor_freq\000"
+ 2009      73747265 
+ 2009      616D5F4C 
+ 2009      6576656C 
+ 2009      5F53656E 
+ 2010              	.LASF93:
+ 2011 05bb 76616C76 		.ascii	"valve_enabled\000"
+ 2011      655F656E 
+ 2011      61626C65 
+ 2011      6400
+ 2012              	.LASF72:
+ 2013 05c9 636F6E73 		.ascii	"construct_influx_route\000"
+ 2013      74727563 
+ 2013      745F696E 
+ 2013      666C7578 
+ 2013      5F726F75 
+ 2014              	.LASF22:
+ 2015 05e0 73746174 		.ascii	"status\000"
+ 2015      757300
+ 2016              	.LASF111:
+ 2017 05e7 74696D65 		.ascii	"timeToLevelSensor\000"
+ 2017      546F4C65 
+ 2017      76656C53 
+ 2017      656E736F 
+ 2017      7200
+ 2018              	.LASF90:
+ 2019 05f9 6C657665 		.ascii	"level_sensor_enabled\000"
+ 2019      6C5F7365 
+ 2019      6E736F72 
+ 2019      5F656E61 
+ 2019      626C6564 
+ 2020              	.LASF85:
+ 2021 060e 64617461 		.ascii	"dataPointsInStackDesired\000"
+ 2021      506F696E 
+ 2021      7473496E 
+ 2021      53746163 
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 43
+
+
+ 2021      6B446573 
+ 2022              	.LASF42:
+ 2023 0627 4170705F 		.ascii	"App_LED_freq\000"
+ 2023      4C45445F 
+ 2023      66726571 
+ 2023      00
+ 2024              	.LASF119:
+ 2025 0634 74696D65 		.ascii	"timeToSontek\000"
+ 2025      546F536F 
+ 2025      6E74656B 
+ 2025      00
+ 2026              	.LASF113:
+ 2027 0641 74696D65 		.ascii	"timeToDownstreamLevelSensor\000"
+ 2027      546F446F 
+ 2027      776E7374 
+ 2027      7265616D 
+ 2027      4C657665 
+ 2028              	.LASF116:
+ 2029 065d 616C6172 		.ascii	"alarmAutosampler\000"
+ 2029      6D417574 
+ 2029      6F73616D 
+ 2029      706C6572 
+ 2029      00
+ 2030              	.LASF18:
+ 2031 066e 696E7431 		.ascii	"int16\000"
+ 2031      3600
+ 2032              	.LASF46:
+ 2033 0674 4175746F 		.ascii	"Autosampler_freq\000"
+ 2033      73616D70 
+ 2033      6C65725F 
+ 2033      66726571 
+ 2033      00
+ 2034              	.LASF55:
+ 2035 0685 636F756E 		.ascii	"countDownType\000"
+ 2035      74446F77 
+ 2035      6E547970 
+ 2035      6500
+ 2036              	.LASF38:
+ 2037 0693 73696D5F 		.ascii	"sim_type\000"
+ 2037      74797065 
+ 2037      00
+ 2038              	.LASF123:
+ 2039 069c 636F6E73 		.ascii	"construct_influx_write_body\000"
+ 2039      74727563 
+ 2039      745F696E 
+ 2039      666C7578 
+ 2039      5F777269 
+ 2040              	.LASF70:
+ 2041 06b8 70617373 		.ascii	"pass\000"
+ 2041      00
+ 2042              	.LASF98:
+ 2043 06bd 68747470 		.ascii	"http_request\000"
+ 2043      5F726571 
+ 2043      75657374 
+ 2043      00
+ 2044              	.LASF14:
+ 2045 06ca 646F7562 		.ascii	"double\000"
+ARM GAS  C:\Users\kland\AppData\Local\Temp\ccbQgUwU.s 			page 44
+
+
+ 2045      6C6500
+ 2046              	.LASF88:
+ 2047 06d1 6170705F 		.ascii	"app_led_inbox\000"
+ 2047      6C65645F 
+ 2047      696E626F 
+ 2047      7800
+ 2048              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
