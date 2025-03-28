@@ -1,6 +1,13 @@
 #include "sontek.h"
 #include "notoriOS.h"
 
+// Simple random number generator implementation
+static uint32 rand_seed = 1;
+uint32 CyGetRand(void) {
+    rand_seed = rand_seed * 1103515245 + 12345;
+    return (uint32)(rand_seed / 65536) % 32768;
+}
+
 // Initialize global variables
 uint8 Sontek_enabled = 0;
 char Sontek_inbox[100] = {0};
