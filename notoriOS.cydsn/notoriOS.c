@@ -386,10 +386,6 @@ void ChickityCheckYourselfBeforeYouWreckYourself(){
     test_t t_pressure = pressure_sensor_test();
     printTestStatus(t_pressure);
     
-    // Test Sontek Kayla W25
-    test_t t_sontek = Sontek_test();
-    printTestStatus(t_sontek);
-    
     // Test SD card
     test_t t_sd_card = SD_card_test();
     printTestStatus(t_sd_card);

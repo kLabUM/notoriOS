@@ -448,7 +448,7 @@ void get_cell_network_stats(){
         &modem_stats.rsrq,
         &modem_stats.rsrp);
 
-        //check to see if we’re getting a good received signal strength
+        //check to see if we're getting a good received signal strength
         //if(modem_stats.rsrp != 255 && modem_stats.rsrp > 26){// || modem_stats.rxlev !=0){
         //    break;
         //}
@@ -461,9 +461,23 @@ void get_cell_network_stats(){
 void updatable_parameters_initialize(){
     updatable_parameters.node_type = NODE_TYPE_DEPTH;
     updatable_parameters.sim_type = SIM_TYPE_SUPER;
-    updatable_parameters.measure_time = 10u;
-    updatable_parameters.sync_time = 60u;
+    updatable_parameters.measure_time = 1u;
+    updatable_parameters.sync_time = 1u;
     updatable_parameters.debug_level = 1u;
+    
+    // App timers
+    // APP_INTERFACE---------------------------------------------------------------------------------------
+    updatable_parameters.App_LED_freq = 120u; 
+    updatable_parameters.Level_Sensor_freq = 120u; 
+    updatable_parameters.Downstream_Level_Sensor_freq = 120u;
+    updatable_parameters.Valve_freq = 120u;
+    updatable_parameters.Autosampler_freq = 120u;
+    updatable_parameters.Sontek_freq = 120u; // Kayla's SonTek W25
+
+    /* app add on
+    updatable_parameters.<Name>_freq = 120u;
+    */
+     //----------------------------------------------------------------------------------------------------
 }
 
 // Get the update values for sampling frequency, reporting frequency, and the debug level from the malcom middle layer
@@ -475,6 +489,36 @@ void get_updated_parameters_from_malcom(){
     char s_sample_freq[10];
     char s_report_freq[10];
     char s_debug_freq[10];
+    
+    //apps
+    // APP_INTERFACE-----------------------------------------------------------------------------------
+    char s_app_led[100];
+    s_app_led[0] = '\0';
+    
+    char s_level_sensor[100];
+    s_level_sensor[0] = '\0';
+    
+    char s_down_level_sensor[100];
+    s_down_level_sensor[0] = '\0';
+    
+    char s_valve[100];
+    s_valve[0] = '\0';
+
+    char s_autosampler[100];
+    s_autosampler[0] = '\0';
+
+    // Kayla's SonTek W25
+    char s_Sontek[100];
+    s_Sontek[0] = '\0'; 
+
+    /* app add template
+    char s_<name>[100];
+    s_<name>[0] = '\0';
+    */
+    
+    char s_apps_enabled[200];
+    s_apps_enabled[0]='\0';
+    //----------------------------------------------------------------------------------------------------
     
     s_node_type[0] = '\0';
     s_sim_type[0] = '\0';
@@ -489,16 +533,108 @@ void get_updated_parameters_from_malcom(){
     extract_string(uart_received_string,"Report_Freq: ","\r",s_report_freq);
     extract_string(uart_received_string,"Debug_Freq: ","\r",s_debug_freq);
     
+    // which apps are enabled?
+ // APP_INTERFACE-------------------------------------------------------------------------------------
+    if (strstr(uart_received_string,"Apps_Enabled: ")){
+        extract_string(uart_received_string,"Apps_Enabled: ","\r",s_apps_enabled);
+        // if an app is in this string, turn it on
+        // if we this app in the enabled list, turn it on, else we ensure it is disabled
+        /*************Testing new form of truncated code*********/
+        App_LED_enabled = (strstr(s_apps_enabled,"App_LED")!=NULL) ? 1 : 0;
+        level_sensor_enabled = (strstr(s_apps_enabled,"Level_Sensor")!=NULL) ? 1 : 0;
+        //downstream_level_sensor_enabled = (strstr(s_apps_enabled,"Downstream_Level") != NULL) ? 1 : 0;
+        valve_enabled = (strstr(s_apps_enabled, "Valve") != NULL) ? 1 : 0;
+        autosampler_enabled = (strstr(s_apps_enabled, "Autosampler") != NULL) ? 1 : 0;
+        Sontek_enabled = (strstr(s_apps_enabled, "Sontek") != NULL) ? 1 : 0; //Kayla's SonTek W25
+
+        /* app add template 
+        <name>_enabled = (strstr(s_apps_enabled, "<Name>") != NULL) ? 1 : 0;
+        */
+
+        /* old code structure
+        (strstr(s_apps_enabled, "<Name>") != NULL)? <name>_enabled = 1 : <name>_enabled = 0;
+        
+        // if we see level sensor in the enabled list, turn it on
+        if (strstr(s_apps_enabled,"Level_Sensor")!=NULL){level_sensor_enabled = 1};        
+        // if an app is currently on and not in this string, turn it off  
+        else if (level_sensor_enabled){level_sensor_enabled = 0;}
+        
+        if (strstr(s_apps_enabled,"App_LED")!=NULL){
+            // if we this app in the enabled list, turn it on
+            App_LED_enabled = 1;
+        }
+        else if (App_LED_enabled){
+            App_LED_enabled = 0;
+        }
+        
+        if (strstr(s_apps_enabled,"Downstream_Level") != NULL){
+            downstream_level_sensor_enabled = 1;
+        }        
+        // if an app is currently on and not in this string, turn it off  
+        else if (downstream_level_sensor_enabled){ 
+            downstream_level_sensor_enabled = 0;
+        }
+        
+        if (strstr(s_apps_enabled, "Valve") != NULL){
+            valve_enabled = 1u;
+        }
+        else if(valve_enabled){
+            valve_enabled = 0u;
+        }
+        
+        if (strstr(s_apps_enabled, "Autosampler") != NULL){
+            autosampler_enabled = 1u;
+        }
+        else if(autosampler_enabled){
+            autosampler_enabled = 0u;
+        }
+        */
+        
+    }
+    //----------------------------------------------------------------------------------------------------
+
+
+        
+    
+    // update app parameters (valve open %, measuring freq, etc)
+    // APP_INTERFACE --------------------------------------------------------------------------------------
+    extract_string(uart_received_string,"App_LED: ","\r",s_app_led);
+    App_LED_Update(s_app_led);
+    
+    extract_string(uart_received_string,"Level_Sensor: ","\r",s_level_sensor);
+    Level_Sensor_Update(s_level_sensor);
+    
+    //extract_string(uart_received_string,"Downstream_Level: ","\r",s_down_level_sensor);
+    //Downstream_Level_Sensor_Update(s_down_level_sensor);
+    
+    extract_string(uart_received_string,"Valve:","\r", s_valve);
+    Valve_Update(s_valve);
+
+    extract_string(uart_received_string,"Autosampler:","\r", s_autosampler);
+    Autosampler_Update(s_autosampler);
+
+    // Kayla's SonTek W25
+    extract_string(uart_received_string,"Sontek:","\r", s_Sontek);
+    Sontek_Update(s_Sontek);
+    
+    /* app add template
+    extract_string(uart_received_string,"<Name>:","\r", s_<name>);
+    <Name>_Update(s_<name>);
+    */
+
     // Create variables for what is sent back from the server
-    int node_type, sim_type, sample_freq, report_freq, debug_freq;
+    int node_type, sim_type, sample_freq, report_freq, debug_freq, \
+    app_led_freq, level_sensor_freq, down_level_freq, valve_freq, autosampler_freq, Sontek_freq;
     
     // Scan character arrays and save values 
+    
     if(sscanf(s_node_type, "%d", &node_type)==1){
         updatable_parameters.node_type = node_type;
         printNotif(NOTIF_TYPE_EVENT, "Node type changed to: %d\r\n", node_type);
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not change node type.");
     }
+    
     if(sscanf(s_sim_type, "%d", &sim_type)==1){
         updatable_parameters.sim_type = sim_type;
         printNotif(NOTIF_TYPE_EVENT, "SIM type changed to: %d\r\n", sim_type);
@@ -527,6 +663,153 @@ void get_updated_parameters_from_malcom(){
     }else{
         printNotif(NOTIF_TYPE_ERROR,"Could not parse new debugging frequency value.");
     }
+    
+    // app alarm frequency updates
+    // APP_INTERFACE--------------------------------------------------------------------------------------
+    if (updatable_parameters.node_type == NODE_TYPE_CUSTOM){
+        char temp[100];
+        temp[0] = '\0'; 
+        
+        if(App_LED_enabled){ //if you're not enabled, don't talk
+            if (strstr(s_app_led,"Freq=")!=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_app_led);
+                extract_string(temp,"Freq=","\r",s_app_led); // grab level app frequency
+                if(sscanf(s_app_led, "%d", &app_led_freq)==1){
+                    updatable_parameters.App_LED_freq = app_led_freq;
+                    // update the alarm to the new frequency
+                    alarmAppLED = CreateAlarm(updatable_parameters.App_LED_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "App_LED frequency changed to: %d\r\n", app_led_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new App_LED frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No App_LED frequency value indicated.");
+            }
+        }
+        if(level_sensor_enabled){
+            if (strstr(s_level_sensor,"Freq=")!=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_level_sensor);
+                extract_string(temp,"Freq=","\r",s_level_sensor); // grab level app frequency
+                if(sscanf(s_level_sensor, "%d", &level_sensor_freq)==1){
+                    updatable_parameters.Level_Sensor_freq = level_sensor_freq;
+                    alarmLevelSensor = CreateAlarm(updatable_parameters.Level_Sensor_freq,ALARM_TYPE_MINUTE, ALARM_TYPE_CONTINUOUS);
+
+                    printNotif(NOTIF_TYPE_EVENT, "Level_Sensor frequency changed to: %d\r\n", level_sensor_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Level_Sensor frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Level_Sensor frequency value indicated.");
+            }
+        }
+        /*
+        if(downstream_level_sensor_enabled){ 
+            if (strstr(s_down_level_sensor,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_down_level_sensor); // this temp may not actually be used
+                extract_string(temp,"Freq=","\r",s_down_level_sensor); // grab level app frequency
+                if(sscanf(s_down_level_sensor, "%d", &down_level_freq)==1){
+                    updatable_parameters.Downstream_Level_Sensor_freq = down_level_freq;
+                    alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.Downstream_Level_Sensor_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Downstream_Level_Sensor frequency changed to: %d\r\n", down_level_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Downstream_Level_Sensor frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Downstream_Level_Sensor frequency value indicated.");
+            }
+        }
+        */
+        /*
+        if(valve_enabled){ 
+            if (strstr(s_valve,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_valve);
+                extract_string(temp,"Freq=","\r",s_valve); // grab valve frequency
+                if(sscanf(s_valve, "%d", &valve_freq)==1){
+                    updatable_parameters.Valve_freq = valve_freq;
+                    alarmDownstreamLevelSensor = CreateAlarm(updatable_parameters.Valve_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Valve frequency changed to: %d\r\n", valve_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Valve frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Valve frequency value indicated.");
+            }
+        }
+        */
+        if(autosampler_enabled){ 
+            if (strstr(s_autosampler,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_autosampler); // this temp may not actually be used
+                extract_string(temp,"Freq=","\r",s_autosampler); // grab autosampler app frequency
+                if(sscanf(s_autosampler, "%d", &autosampler_freq)==1){
+                    updatable_parameters.Autosampler_freq = autosampler_freq;
+                    alarmAutosampler = CreateAlarm(updatable_parameters.Autosampler_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Autosampler frequency changed to: %d\r\n", autosampler_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Autosampler frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Autosampler frequency value indicated.");
+            }
+
+            // Kayla's SonTek W25
+            if(Sontek_enabled){ 
+            if (strstr(s_Sontek,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_Sontek); // this temp may not actually be used
+                extract_string(temp,"Freq=","\r",s_Sontek); // grab <name> app frequency
+                if(sscanf(s_Sontek, "%d", &Sontek_freq)==1){
+                    updatable_parameters.Autosampler_freq = Sontek_freq;
+                    alarmSontek = CreateAlarm(updatable_parameters.Sontek_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "Sontek frequency changed to: %d\r\n", Sontek_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Sontek frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No Sontek frequency value indicated.");
+            }
+        }
+        }
+        
+        /* app add template
+        if(<name>_enabled){ 
+            if (strstr(s_<name>,"Freq=") !=NULL){
+                temp[0] = '\0';
+                strcpy(temp,s_<name>); // this temp may not actually be used
+                extract_string(temp,"Freq=","\r",s_<name>); // grab <name> app frequency
+                if(sscanf(s_<name>, "%d", &<name>_freq)==1){
+                    updatable_parameters.Autosampler_freq = <name>_freq;
+                    alarm<Name> = CreateAlarm(updatable_parameters.<Name>_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+                    printNotif(NOTIF_TYPE_EVENT, "<Name> frequency changed to: %d\r\n", <name>_freq);
+                } 
+                else{
+                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new <Name>frequency value.");
+                }
+            }
+            else{
+                printNotif(NOTIF_TYPE_ERROR,"No <Name> frequency value indicated.");
+            }
+        }
+        */
+    
+    }   
+    //----------------------------------------------------------------------------------------------------       
 }
     
 // Configure the modem settings
