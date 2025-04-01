@@ -677,24 +677,7 @@ uint8 makeMeasurements(){
             //pushData("maxbotix_depth","error",timeStamp);
         }
     }
-
-    // Take Sontek sensor readings if enabled
-    if(Sontek_enabled) {
-        sontek_sensor_t m_sontek = sontek_sensor_take_reading();
-        if(m_sontek.status) {
-            snprintf(value,sizeof(value),"%d",m_sontek.reading);
-            printNotif(NOTIF_TYPE_EVENT,"sontek_reading=%s",value);
-            pushData("sontek_reading",value,timeStamp);
-            
-            // Print measurement to SD card to file called data.txt
-            SD_write(Data_fileName, "a+", " ");
-            SD_write(Data_fileName, "a+", c_timeStamp);
-            SD_write(Data_fileName, "a+", " sontek_reading: ");
-            SD_write(Data_fileName, "a+", value);
-        } else {
-            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Sontek sensor.");
-        }
-    }
+    
     
     // voltage_t is a new data type we defined in voltages.h. We then use that data type to define a structure variable m_voltage
     voltage_t m_voltage;
