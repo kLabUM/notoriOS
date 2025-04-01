@@ -105,6 +105,10 @@ void ReadyOrNot()
 
     alarmAutosampler = CreateAlarm(updatable_parameters.Autosampler_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToAutosampler = 1u;
+    
+    alarmSontek = CreateAlarm(updatable_parameters.Sontek_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS); //Kayla: make the sontek alarm and raise timeToSontek flag
+    timeToSontek = 1u;
+    
     /* app add template
     alarm<Name> = CreateAlarm(updatable_parameters.<Name>_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeTo<Name> = 1u;
@@ -164,6 +168,11 @@ int WorkWorkWorkWorkWorkWork()
             timeToAutosampler = App_Autosampler();
         }
         // add other custom apps below
+        
+        if(sontek_enabled && timeToSontek){ //Kayla: if it's time to call the sontek app, call it! reset the timeToSontek flag to 0
+            timeToSontek = App_Sontek();
+        
+        
         /* add app template
         if(<name>_enabled && timeTo<Name>){
             timeTo<Name> = App_<Name>();
@@ -269,6 +278,10 @@ void AyoItsTime(uint8 alarmType)
     */
     if(AlarmReady(&alarmAutosampler, alarmType)){
         timeToAutosampler = 1u;
+        
+    if(AlarmReady(&alarmSontek, alarmType)){ //Kayla: check sontek alarm and if it's time, set flag of 1
+        timeToSontek = 1u;
+    
     }
     /* app add template
     if(AlarmReady(&alarm<Name>, alarmType)){
@@ -311,7 +324,7 @@ void ResetAlarm(alarm * alarmToBeReset)
 }
 
 // ==============================================
-// Creates a new alarm, which will be handeled by another cutions
+// Creates a new alarm, which will be handeled by another executions
 // ==============================================
 alarm CreateAlarm(uint16 countDownValue, uint8 countDownType,uint8 countDownResetCondition)
 {
@@ -657,6 +670,33 @@ uint8 makeMeasurements(){
         }else{
             printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Maxbotix.");
             //pushData("maxbotix_depth","error",timeStamp);
+        }
+    }
+    
+    //Kayla
+    // If the node type is custom, it could be the Sontek sensor so run the code to check if sontek is ready and run the app
+    if(updatable_parameters.node_type == NODE_TYPE_SONTEK_FLOW || updatable_parameters.node_type == NODE_TYPE_CUSTOM){
+        
+        // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable m_sontek
+        sontek_t m_sontek;
+        
+        // Take sontek sensor readings and save them to m_sontek
+        m_sontek = sontek_take_reading();
+    
+        // If the number of valid sontek sensor readings is greater than 0, then print the sontek sensor reading, and push the data to the data wheel
+        if(m_sontek.num_valid_readings > 0){
+            snprintf(value,sizeof(value),"%d",m_sontek.sontek_reading);
+            printNotif(NOTIF_TYPE_EVENT,"sontek_reading=%s",value);
+            pushData("sontek_reading",value,timeStamp);
+            
+            // Print measurement to SD card to file called data.txt
+            SD_write(Data_fileName, "a+", c_timeStamp);
+            SD_write(Data_fileName, "a+", " sontek_reading: ");
+            SD_write(Data_fileName, "a+", value);
+            SD_write(Data_fileName, "a+", " ");
+        }else{
+            printNotif(NOTIF_TYPE_ERROR,"Could not get valid readings from Sontek sensor.");
+            //pushData("sontek_reading","error",timeStamp);
         }
     }
     

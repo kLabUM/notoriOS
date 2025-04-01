@@ -24,6 +24,7 @@
 #define NODE_TYPE_DEPTH                 0u
 #define NODE_TYPE_GREENINFRASTRUCTURE   1u  
 #define NODE_TYPE_CUSTOM                4u
+#define NODE_TYPE_SONTEK_FLOW           2u //Kayla: this code is from Meagan's sontek branch since 2 is the key coded into malcolm to ID sontek nodes              
     
 // Define sim types
 #define SIM_TYPE_STANDARD               0u
@@ -102,6 +103,8 @@ typedef struct{
     uint8 Downstream_Level_Sensor_freq;
     uint8 Valve_freq;
     uint8 Autosampler_freq;
+    uint8 Sontek_freq; //Kayla: create variable for call in other files
+    
     /* app add template
     uint8 <Name>_freq;
     */
