@@ -107,7 +107,7 @@ void ReadyOrNot()
     timeToAutosampler = 1u;
 
     //Kayla's SonTek Sensor W25: get measurement every minute
-    alarmSontek = CreateAlarm(updatable_parameters.Sontek_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
+    alarmSontek = CreateAlarm(updatable_parameters.SonTek_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
     timeToSontek = 1u;
 
 
@@ -259,14 +259,14 @@ void AyoItsTime(uint8 alarmType)
     {
         // Create new task and pass off to workworkworkworkwork()
         timeToSync = 1u;
-        //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
+         //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
     }
     
     // APP_INTERFACE----------------------------------------------------------------------------------
     if(AlarmReady(&alarmAppLED,alarmType)){
         // Create new task and pass off to workworkworkworkwork()
         timeToAppLED = 1u;
-        //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
+         //printNotif(NOTIF_TYPE_EVENT,"Sync Alarm");
     }
     if(AlarmReady(&alarmLevelSensor, alarmType)){
         timeToLevelSensor = 1u;
@@ -429,7 +429,7 @@ uint8 syncData(){
     /*
     //at_write_command("AT#SCFG?\r","OK",1000);
     uint8 check = 0;
-    //"AT#SD=,0,80,\"www.google.com\""
+    //"AT#SD=,0,80,\”www.google.com\”,0,0,0\r"
     check = at_write_command("AT#SD=1,0,8086,\"data.open-storm.org\",0,0,1\r","OK",10000u);
     check = at_write_command("AT#SSEND=1\r\n",   ">", 1000u);
     check = at_write_command("POST /write?db=ARB&u=generic_node&p=MakeFloodsCurrents HTTP/1.1\r\nHost: data.open-storm.org:8086\r\nConnection: Close\r\nContent-Length: 39\r\nContent-Type: plain/text\r\n\r\nmaxbotix_depth,node_id=GGB000 value=111\r\n\r\n\032", "NO CARRIER", 10000u);
