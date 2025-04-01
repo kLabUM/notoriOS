@@ -19,7 +19,6 @@
 //#include "downstream_level_sensor.h"
 #include "valve.h"
 #include "autosampler.h"
-#include "sontek.h" // Kayla's SonTek
 /* add app template
 #include "<name>.h"
 */
@@ -139,10 +138,6 @@ uint8 timeToValve;
 
 alarm alarmAutosampler;
 uint8 timeToAutosampler;
-
-// Kayla's SonTek
-alarm alarmSontek;
-uint8 timeToSontek;
 
 /* app add template
 alarm alarm<Name>;

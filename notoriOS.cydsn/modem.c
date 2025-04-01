@@ -472,8 +472,6 @@ void updatable_parameters_initialize(){
     updatable_parameters.Downstream_Level_Sensor_freq = 120u;
     updatable_parameters.Valve_freq = 120u;
     updatable_parameters.Autosampler_freq = 120u;
-    updatable_parameters.Sontek_freq = 120u; // Kayla's SonTek W25
-
     /* app add on
     updatable_parameters.<Name>_freq = 120u;
     */
@@ -506,10 +504,6 @@ void get_updated_parameters_from_malcom(){
 
     char s_autosampler[100];
     s_autosampler[0] = '\0';
-
-    // Kayla's SonTek W25
-    char s_Sontek[100];
-    s_Sontek[0] = '\0'; 
 
     /* app add template
     char s_<name>[100];
@@ -545,8 +539,6 @@ void get_updated_parameters_from_malcom(){
         //downstream_level_sensor_enabled = (strstr(s_apps_enabled,"Downstream_Level") != NULL) ? 1 : 0;
         valve_enabled = (strstr(s_apps_enabled, "Valve") != NULL) ? 1 : 0;
         autosampler_enabled = (strstr(s_apps_enabled, "Autosampler") != NULL) ? 1 : 0;
-        Sontek_enabled = (strstr(s_apps_enabled, "Sontek") != NULL) ? 1 : 0; //Kayla's SonTek W25
-
         /* app add template 
         <name>_enabled = (strstr(s_apps_enabled, "<Name>") != NULL) ? 1 : 0;
         */
@@ -612,10 +604,6 @@ void get_updated_parameters_from_malcom(){
 
     extract_string(uart_received_string,"Autosampler:","\r", s_autosampler);
     Autosampler_Update(s_autosampler);
-
-    // Kayla's SonTek W25
-    extract_string(uart_received_string,"Sontek:","\r", s_Sontek);
-    Sontek_Update(s_Sontek);
     
     /* app add template
     extract_string(uart_received_string,"<Name>:","\r", s_<name>);
@@ -624,7 +612,7 @@ void get_updated_parameters_from_malcom(){
 
     // Create variables for what is sent back from the server
     int node_type, sim_type, sample_freq, report_freq, debug_freq, \
-    app_led_freq, level_sensor_freq, down_level_freq, valve_freq, autosampler_freq, Sontek_freq;
+    app_led_freq, level_sensor_freq, down_level_freq, valve_freq, autosampler_freq;
     
     // Scan character arrays and save values 
     
@@ -765,28 +753,7 @@ void get_updated_parameters_from_malcom(){
             else{
                 printNotif(NOTIF_TYPE_ERROR,"No Autosampler frequency value indicated.");
             }
-
-            // Kayla's SonTek W25
-            if(Sontek_enabled){ 
-            if (strstr(s_Sontek,"Freq=") !=NULL){
-                temp[0] = '\0';
-                strcpy(temp,s_Sontek); // this temp may not actually be used
-                extract_string(temp,"Freq=","\r",s_Sontek); // grab <name> app frequency
-                if(sscanf(s_Sontek, "%d", &Sontek_freq)==1){
-                    updatable_parameters.Autosampler_freq = Sontek_freq;
-                    alarmSontek = CreateAlarm(updatable_parameters.Sontek_freq,ALARM_TYPE_MINUTE,ALARM_TYPE_CONTINUOUS);
-                    printNotif(NOTIF_TYPE_EVENT, "Sontek frequency changed to: %d\r\n", Sontek_freq);
-                } 
-                else{
-                    printNotif(NOTIF_TYPE_ERROR,"Could not parse new Sontek frequency value.");
-                }
-            }
-            else{
-                printNotif(NOTIF_TYPE_ERROR,"No Sontek frequency value indicated.");
-            }
         }
-        }
-        
         /* app add template
         if(<name>_enabled){ 
             if (strstr(s_<name>,"Freq=") !=NULL){
