@@ -667,6 +667,7 @@ void get_updated_parameters_from_malcom(){
             }
         }
         
+        /* Comment this out for debugging
         // I put it inside the NODE_TYPE_CUSTOM loop bc it is but I need to check if having NODE_TYPE_SONTEK_FLOW throws this off
         if(sontek_enabled){ //Kayla: when I want to change my sampling freq; happens once on programming since alarm and everything needs to be checked for consistency whenever it's changed
             if (strstr(s_sontek,"Freq=") !=NULL){
@@ -686,6 +687,7 @@ void get_updated_parameters_from_malcom(){
                 printNotif(NOTIF_TYPE_ERROR, "No Sontek frequency value indicated.");
             }
         }       
+        */
         
         /*
         if(downstream_level_sensor_enabled){ 

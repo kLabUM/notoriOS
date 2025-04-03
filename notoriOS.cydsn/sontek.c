@@ -3,10 +3,6 @@
 #include "sontek.h"   //include the sontek header file where the app interface is initialized
 #include "notoriOS.h" //include notorios header for general variables, app interface / alarm variables
 
-uint8 App_Sontek(){
-    return 0u; //In notoriOS.c, this function will set timeToSontek flag back to 0 until alarm sets it to 1 again
-}
-
 void Sontek_Update(char * message){
     strcpy(Sontek_inbox, message);
 }
@@ -29,9 +25,9 @@ test_t sontek_test(){
     // if the random number exists since they should all be above 0, pass the sensor
     if(sensor.sontek_reading > -1){//pass
         test.status = 1;
-        
-    return test;
     }
+    
+    return test;
 }
 
 uint8 App_Sontek(){
@@ -62,16 +58,31 @@ compare_location = strstr(Sontek_inbox,"ON");
     // i.e. it stays on until you turn it off.
 }
 
+// Initialize random seed at program start
+void sontek_init() {
+    srand(time(NULL));
+}
+
 // makes a random number and returns it like a Sontek reading
 sontek_t sontek_take_reading(){
+    
+    // Initialize random number generator if not already done
+    static uint8 initialized = 0;
+    if (!initialized) {
+        sontek_init();
+        initialized = 1;
+    }
     
     // sontek_t is a new data type we defined in sontek.h. We then use that data type to define a structure variable sontek_output.
     sontek_t sontek_output;
     
-    //Code for random number generation; uses time as a seed so the random number changes
-    srand(time(NULL));   // Initialization, should only be called once.
-    int16 r = rand();      // Returns a pseudo-random integer between 0 and RAND_MAX.
-    sontek_output.sontek_reading = r;
+    // Generate random number between 1 and 100
+    int min = 1;
+    int max = 100;
+    int random_number = (rand() % (max - min + 1)) + min;
+    sontek_output.sontek_reading = random_number;
+    
+    sontek_output.num_valid_readings = 1;  // Since we got a valid reading, set to 1
     
     return sontek_output;
 }
