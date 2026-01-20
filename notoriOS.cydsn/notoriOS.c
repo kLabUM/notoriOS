@@ -640,7 +640,7 @@ uint8 setTime(long timeStamp){
     localTime.Min = t->tm_min;
     localTime.Hour = t->tm_hour;
     localTime.Year = t->tm_year + 1900;
-    localTime.Month = t->tm_mon;
+    localTime.Month = t->tm_mon + 1; //to reverse -1 added in gettime in debug.c
     localTime.DayOfMonth = t->tm_mday;
 
     // Writes time and date values as current time and date.
