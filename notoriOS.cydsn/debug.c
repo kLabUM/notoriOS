@@ -159,7 +159,7 @@ long getTimeStamp(){
     t.tm_min = localTime->Min;
     t.tm_hour = localTime->Hour;
     t.tm_year = localTime->Year - 1900;  // Year - 1900
-    t.tm_mon = localTime->Month;           // Month, where 0 = jan
+    t.tm_mon = localTime->Month-1;           // Month, where 0 = jan. We add back month in setTime in notorios.c
     t.tm_mday = localTime->DayOfMonth;          // Day of the month
     t.tm_isdst = 0;        // Is Daylight Savings on? 1 = yes, 0 = no, -1 = unknown
     
